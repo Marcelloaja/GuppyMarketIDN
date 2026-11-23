@@ -190,6 +190,23 @@ class HomeFragment : Fragment() {
             snapHelper.attachToRecyclerView(carouselRecyclerView)
         }
 
+        // Add 3D Depth Parallax Zoom-Scale Transformer on Carousel
+        carouselRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val center = recyclerView.width / 2f
+                for (i in 0 until recyclerView.childCount) {
+                    val child = recyclerView.getChildAt(i)
+                    val childCenter = (child.left + child.right) / 2f
+                    val distanceFromCenter = Math.abs(center - childCenter)
+                    val scale = 1f - (distanceFromCenter / recyclerView.width) * 0.12f
+                    val alpha = 1f - (distanceFromCenter / recyclerView.width) * 0.25f
+                    child.scaleX = scale.coerceAtLeast(0.88f)
+                    child.scaleY = scale.coerceAtLeast(0.88f)
+                    child.alpha = alpha.coerceAtLeast(0.75f)
+                }
+            }
+        })
+
         carouselRunnable = Runnable {
             val itemCount = adapter.itemCount
             if (itemCount > 0) {
