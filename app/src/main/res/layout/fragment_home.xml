@@ -505,20 +505,21 @@
                     android:orientation="horizontal">
 
                     <!-- LELANG CARD 1 -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="240dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="4dp"
                         app:cardCornerRadius="18dp"
                         app:cardElevation="0dp"
-                        android:layout_marginBottom="4dp">
+                        app:cardBackgroundColor="@color/white"
+                        app:strokeColor="@color/guppy_stroke"
+                        app:strokeWidth="1dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:background="@drawable/bg_border_card"
-                            android:padding="1dp">
+                            android:orientation="vertical">
 
                             <FrameLayout
                                 android:layout_width="match_parent"
@@ -669,23 +670,24 @@
                                     android:focusable="true"/>
                             </LinearLayout>
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                     <!-- LELANG CARD 2 -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="240dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="4dp"
                         app:cardCornerRadius="18dp"
                         app:cardElevation="0dp"
-                        android:layout_marginBottom="4dp">
+                        app:cardBackgroundColor="@color/white"
+                        app:strokeColor="@color/guppy_stroke"
+                        app:strokeWidth="1dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:background="@drawable/bg_border_card"
-                            android:padding="1dp">
+                            android:orientation="vertical">
 
                             <FrameLayout
                                 android:layout_width="match_parent"
@@ -836,7 +838,7 @@
                                     android:focusable="true"/>
                             </LinearLayout>
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
             </HorizontalScrollView>
