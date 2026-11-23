@@ -166,7 +166,7 @@
                 android:id="@+id/carouselRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-40dp"
+                android:layout_marginTop="-70dp"
                 android:clipToPadding="false"
                 android:paddingHorizontal="10dp" />
 
