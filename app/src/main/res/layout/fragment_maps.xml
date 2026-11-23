@@ -66,10 +66,14 @@
                         android:textSize="13sp"/>
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:id="@+id/btnMicSearch"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:src="@drawable/ic_mic"
-                        app:tint="@color/guppy_text_black"/>
+                        app:tint="@color/guppy_primary"
+                        android:padding="2dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -516,6 +520,7 @@
 
             <!-- FARM ITEM 1 (Highlighted) -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardFarm1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -639,6 +644,7 @@
 
             <!-- FARM ITEM 2 -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardFarm2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -715,6 +721,20 @@
                         android:focusable="true"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- EMPTY SEARCH STATE -->
+            <TextView
+                android:id="@+id/tvNoFarmFound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Farm tidak ditemukan.\nCoba cari kata kunci lain seperti 'Guppy King' atau 'Aquatic'."
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="13sp"
+                android:lineSpacingExtra="4dp"
+                android:visibility="gone"/>
 
         </LinearLayout>
         </androidx.core.widget.NestedScrollView>

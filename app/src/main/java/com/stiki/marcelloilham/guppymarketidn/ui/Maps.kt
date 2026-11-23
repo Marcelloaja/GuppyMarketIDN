@@ -2,6 +2,7 @@ package com.stiki.marcelloilham.guppymarketidn.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,7 +13,10 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,8 +24,10 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -37,12 +43,19 @@ class Maps : Fragment() {
     private var tts: TextToSpeech? = null
     private var isNavigating = false
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
+    private val SPEECH_REQUEST_CODE = 1002
 
     private lateinit var bottomSheetFarm: View
     private lateinit var cardSearchContainer: View
     private lateinit var cardNavBanner: View
     private lateinit var tvNavInfoSubtitle: TextView
     private lateinit var tvUserLocationAddress: TextView
+
+    private lateinit var etSearchHome: EditText
+    private lateinit var btnMicSearch: ImageView
+    private lateinit var cardFarm1: View
+    private lateinit var cardFarm2: View
+    private lateinit var tvNoFarmFound: TextView
 
     private var lastGeocodedLat: Double = 0.0
     private var lastGeocodedLng: Double = 0.0
@@ -61,9 +74,85 @@ class Maps : Fragment() {
 
         setupWebView()
         setupMapControls(view)
+        setupSearchAndVoice(view)
         setupTTS()
         checkAndRequestLocationPermission()
         return view
+    }
+
+    private fun setupSearchAndVoice(view: View) {
+        etSearchHome = view.findViewById(R.id.etSearchHome)
+        btnMicSearch = view.findViewById(R.id.btnMicSearch)
+        cardFarm1 = view.findViewById(R.id.cardFarm1)
+        cardFarm2 = view.findViewById(R.id.cardFarm2)
+        tvNoFarmFound = view.findViewById(R.id.tvNoFarmFound)
+
+        btnMicSearch.setOnClickListener {
+            startVoiceRecognition()
+        }
+
+        etSearchHome.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterFarms(s.toString())
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun startVoiceRecognition() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "id-ID")
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Bicara nama farm guppy...")
+        }
+        try {
+            @Suppress("DEPRECATION")
+            startActivityForResult(intent, SPEECH_REQUEST_CODE)
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Voice input tidak didukung di HP ini", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SPEECH_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val results = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            if (!results.isNullOrEmpty()) {
+                val spokenText = results[0]
+                etSearchHome.setText(spokenText)
+                filterFarms(spokenText)
+            }
+        }
+    }
+
+    private fun filterFarms(query: String) {
+        val cleanQuery = query.trim().lowercase()
+
+        if (cleanQuery.isEmpty()) {
+            cardFarm1.visibility = View.VISIBLE
+            cardFarm2.visibility = View.VISIBLE
+            tvNoFarmFound.visibility = View.GONE
+            return
+        }
+
+        val farm1Name = "guppy king farm jatinegara breeder 150+ varian".lowercase()
+        val farm2Name = "aquatic indo tebet".lowercase()
+
+        val match1 = farm1Name.contains(cleanQuery)
+        val match2 = farm2Name.contains(cleanQuery)
+
+        cardFarm1.visibility = if (match1) View.VISIBLE else View.GONE
+        cardFarm2.visibility = if (match2) View.VISIBLE else View.GONE
+
+        if (!match1 && !match2) {
+            tvNoFarmFound.text = "Farm '$query' tidak ditemukan.\nCoba kata kunci lain seperti 'Guppy King' atau 'Aquatic'."
+            tvNoFarmFound.visibility = View.VISIBLE
+        } else {
+            tvNoFarmFound.visibility = View.GONE
+        }
     }
 
     private fun setupTTS() {
