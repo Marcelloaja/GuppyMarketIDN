@@ -10,24 +10,33 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.speech.tts.TextToSpeech
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.stiki.marcelloilham.guppymarketidn.R
+import java.util.Locale
 
 class Maps : Fragment() {
     private lateinit var webView: WebView
     private lateinit var locationManager: LocationManager
     private var locationListener: LocationListener? = null
     private var gpsDialog: AlertDialog? = null
+    private var tts: TextToSpeech? = null
+    private var isNavigating = false
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
+
+    private lateinit var bottomSheetFarm: View
+    private lateinit var cardSearchContainer: View
+    private lateinit var cardNavBanner: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,10 +44,27 @@ class Maps : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
         webView = view.findViewById(R.id.webViewMaps)
+        bottomSheetFarm = view.findViewById(R.id.bottomSheetFarm)
+        cardSearchContainer = view.findViewById(R.id.cardSearchContainer)
+        cardNavBanner = view.findViewById(R.id.cardNavBanner)
+
         setupWebView()
         setupMapControls(view)
+        setupTTS()
         checkAndRequestLocationPermission()
         return view
+    }
+
+    private fun setupTTS() {
+        tts = TextToSpeech(requireContext()) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                tts?.language = Locale("id", "ID")
+            }
+        }
+    }
+
+    private fun speakText(text: String) {
+        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "GuppyNavTTS")
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -53,7 +79,9 @@ class Maps : Fragment() {
         val btnZoomIn = view.findViewById<TextView>(R.id.btnZoomIn)
         val btnZoomOut = view.findViewById<TextView>(R.id.btnZoomOut)
         val btnMyLocation = view.findViewById<CardView>(R.id.btnMyLocation)
-        val btnNavigationAction = view.findViewById<View>(R.id.btnStartNavigation)
+        val btnStartNavigation = view.findViewById<View>(R.id.btnStartNavigation)
+        val btnEndNav = view.findViewById<ImageView>(R.id.btnEndNav)
+        val btnStopNavText = view.findViewById<TextView>(R.id.btnStopNavText)
 
         btnZoomIn?.setOnClickListener {
             webView.evaluateJavascript("javascript:zoomIn()", null)
@@ -66,10 +94,62 @@ class Maps : Fragment() {
         btnMyLocation?.setOnClickListener {
             webView.evaluateJavascript("javascript:centerLocation()", null)
         }
-        
-        btnNavigationAction?.setOnClickListener {
-            webView.evaluateJavascript("javascript:toggleNavigation()", null)
+
+        btnStartNavigation?.setOnClickListener {
+            toggleFullNavigationMode()
         }
+
+        btnEndNav?.setOnClickListener {
+            exitNavigationMode()
+        }
+
+        btnStopNavText?.setOnClickListener {
+            exitNavigationMode()
+        }
+    }
+
+    private fun toggleFullNavigationMode() {
+        if (!isNavigating) {
+            enterNavigationMode()
+        } else {
+            exitNavigationMode()
+        }
+    }
+
+    private fun enterNavigationMode() {
+        isNavigating = true
+
+        // Hide Bottom Sheet & Search Bar to make map 100% full screen
+        bottomSheetFarm.visibility = View.GONE
+        cardSearchContainer.visibility = View.GONE
+        cardNavBanner.visibility = View.VISIBLE
+
+        // Hide Floating Bottom Navigation Bar in MainActivity
+        activity?.findViewById<View>(R.id.cardBottomNav)?.visibility = View.GONE
+
+        // Trigger MapLibre 3D Turn-by-Turn Navigation
+        webView.evaluateJavascript("javascript:startNavigation()", null)
+
+        // Indonesian Voice Announcement
+        speakText("Navigasi dimulai. Ikuti rute menuju Guppy King Farm.")
+    }
+
+    private fun exitNavigationMode() {
+        isNavigating = false
+
+        // Show Bottom Sheet & Search Bar
+        bottomSheetFarm.visibility = View.VISIBLE
+        cardSearchContainer.visibility = View.VISIBLE
+        cardNavBanner.visibility = View.GONE
+
+        // Restore Floating Bottom Navigation Bar in MainActivity
+        activity?.findViewById<View>(R.id.cardBottomNav)?.visibility = View.VISIBLE
+
+        // Reset MapLibre camera & clear route line
+        webView.evaluateJavascript("javascript:stopNavigation()", null)
+
+        // Indonesian Voice Announcement
+        speakText("Navigasi dihentikan.")
     }
 
     private fun checkAndRequestLocationPermission() {
@@ -196,7 +276,11 @@ class Maps : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Restore Bottom Nav when leaving maps fragment
+        activity?.findViewById<View>(R.id.cardBottomNav)?.visibility = View.VISIBLE
         gpsDialog?.dismiss()
+        tts?.stop()
+        tts?.shutdown()
         locationListener?.let {
             if (::locationManager.isInitialized) {
                 locationManager.removeUpdates(it)

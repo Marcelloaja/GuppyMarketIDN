@@ -28,6 +28,7 @@
 
             <!-- Floating Search Bar -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardSearchContainer"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="16dp"
@@ -69,6 +70,79 @@
                         android:layout_height="20dp"
                         android:src="@drawable/ic_mic"
                         app:tint="@color/guppy_text_black"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- NAVIGATION MODE HEADER BANNER -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardNavBanner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="36dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="10dp"
+                app:cardBackgroundColor="@color/guppy_primary"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+
+                    <!-- Back / End Nav Button -->
+                    <ImageView
+                        android:id="@+id/btnEndNav"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_circle_icon_action"
+                        android:src="@drawable/ic_chevron_left"
+                        android:padding="8dp"
+                        app:tint="@color/guppy_text_black"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Menuju Guppy King Farm"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="0,8 km · Estimasi 2 menit"
+                            android:textColor="#E0F2F1"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/btnStopNavText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_tag_photo_count"
+                        android:backgroundTint="@color/guppy_red"
+                        android:text="Akhiri"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
