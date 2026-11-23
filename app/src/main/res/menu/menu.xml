@@ -3,27 +3,27 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/home"
-        android:title="Home"/>
+        android:icon="@drawable/ic_nav_home"
+        android:title="Beranda"/>
 
     <item
         android:id="@+id/navigation_bid"
-        android:icon="@drawable/bid"
+        android:icon="@drawable/ic_nav_auction"
         android:title="Lelang"/>
 
     <item
         android:id="@+id/navigation_community"
-        android:icon="@drawable/comments"
+        android:icon="@drawable/ic_nav_hub"
         android:title="Hub"/>
 
     <item
         android:id="@+id/navigation_map"
-        android:icon="@drawable/map"
+        android:icon="@drawable/ic_nav_maps"
         android:title="Maps"/>
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/user"
+        android:icon="@drawable/ic_nav_account"
         android:title="Akun"/>
 
 </menu>
