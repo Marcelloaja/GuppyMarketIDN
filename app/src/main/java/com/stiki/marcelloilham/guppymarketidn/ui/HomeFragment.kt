@@ -33,6 +33,8 @@ import com.stiki.marcelloilham.guppymarketidn.menuHome.KeranjangHome
 import com.stiki.marcelloilham.guppymarketidn.menuProfile.MyProductsActivity
 import java.util.Calendar
 
+import com.facebook.shimmer.ShimmerFrameLayout
+
 class HomeFragment : Fragment() {
     private lateinit var textUserName: TextView
     private lateinit var textGreeting: TextView
@@ -45,6 +47,8 @@ class HomeFragment : Fragment() {
     private lateinit var btnNotifHome: ImageView
     private lateinit var filterRecyclerView: RecyclerView
     private lateinit var gridViewRecycler: RecyclerView
+    private lateinit var shimmerCarousel: ShimmerFrameLayout
+    private lateinit var shimmerGrid: ShimmerFrameLayout
     private lateinit var textNoData: TextView
     private lateinit var gridAdapter: GridAdapter
 
@@ -86,6 +90,8 @@ class HomeFragment : Fragment() {
         btnNotifHome = view.findViewById(R.id.btnNotifHome)
         // filterRecyclerView = view.findViewById(R.id.filterRecyclerView)
         gridViewRecycler = view.findViewById(R.id.gridViewRecycler)
+        shimmerCarousel = view.findViewById(R.id.shimmerCarousel)
+        shimmerGrid = view.findViewById(R.id.shimmerGrid)
         textNoData = view.findViewById(R.id.textNoData)
     }
 
@@ -266,32 +272,46 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupGridViewRecycler() {
-        val items = listOf(
-            Item(R.drawable.skyblue, "Sky Blue","Albino","Rp. 75.000"),
-            Item(R.drawable.gsrts, "GSRTS","Round Tail","Rp. 100.000"),
-            Item(R.drawable.platinumrd,"Platinum RD","Halfmoon","Rp. 125.000"),
-            Item(R.drawable.mssrl, "MSSRL","Metal Head","Rp. 95.000")
-        )
+        // Simulate data loading delay to show shimmer effect
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (!isAdded) return@postDelayed
 
-        gridAdapter = GridAdapter(requireContext(), items)
-        gridViewRecycler.adapter = gridAdapter
+            // Stop Shimmer
+            shimmerCarousel.stopShimmer()
+            shimmerCarousel.visibility = View.GONE
+            carouselRecyclerView.visibility = View.VISIBLE
+            
+            shimmerGrid.stopShimmer()
+            shimmerGrid.visibility = View.GONE
+            gridViewRecycler.visibility = View.VISIBLE
 
-        val layoutManager = GridLayoutManager(requireContext(), 2)
-        gridViewRecycler.layoutManager = layoutManager
-        gridViewRecycler.isNestedScrollingEnabled = false
+            val items = listOf(
+                Item(R.drawable.skyblue, "Sky Blue","Albino","Rp. 75.000"),
+                Item(R.drawable.gsrts, "GSRTS","Round Tail","Rp. 100.000"),
+                Item(R.drawable.platinumrd,"Platinum RD","Halfmoon","Rp. 125.000"),
+                Item(R.drawable.mssrl, "MSSRL","Metal Head","Rp. 95.000")
+            )
 
-        runLayoutAnimation(gridViewRecycler)
+            gridAdapter = GridAdapter(requireContext(), items)
+            gridViewRecycler.adapter = gridAdapter
 
-        gridAdapter.setOnItemClickListener(object : GridAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val item = gridAdapter.getItem(position)
-                val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-                    putExtra("ITEM_NAME", item.name)
-                    putExtra("ITEM_IMAGE", item.image)
+            val layoutManager = GridLayoutManager(requireContext(), 2)
+            gridViewRecycler.layoutManager = layoutManager
+            gridViewRecycler.isNestedScrollingEnabled = false
+
+            runLayoutAnimation(gridViewRecycler)
+
+            gridAdapter.setOnItemClickListener(object : GridAdapter.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val item = gridAdapter.getItem(position)
+                    val intent = Intent(requireContext(), DetailActivity::class.java).apply {
+                        putExtra("ITEM_NAME", item.name)
+                        putExtra("ITEM_IMAGE", item.image)
+                    }
+                    startActivity(intent)
                 }
-                startActivity(intent)
-            }
-        })
+            })
+        }, 1500) // 1.5 seconds loading simulation
     }
 
     private fun runLayoutAnimation(recyclerView: RecyclerView) {

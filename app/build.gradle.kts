@@ -85,6 +85,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.10.1") // Pastikan versi terbaru
 
     implementation("com.google.android.gms:play-services-maps:18.0.0")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
 
 
     // Additional dependencies (using AndroidX alternatives)

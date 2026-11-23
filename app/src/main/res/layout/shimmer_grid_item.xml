@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="240dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Image Placeholder -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="145dp"
+            android:background="#DDDDDD" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Category Tag Placeholder -->
+            <View
+                android:layout_width="60dp"
+                android:layout_height="14dp"
+                android:background="#EEEEEE"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Title Placeholder -->
+            <View
+                android:layout_width="120dp"
+                android:layout_height="18dp"
+                android:background="#EEEEEE"
+                android:layout_marginBottom="4dp"/>
+
+            <View
+                android:layout_width="80dp"
+                android:layout_height="14dp"
+                android:background="#EEEEEE"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Price and Cart Button Placeholder -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="16dp"
+                    android:background="#EEEEEE"
+                    android:layout_marginEnd="8dp"/>
+
+                <View
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_circle_image"
+                    android:backgroundTint="#EEEEEE" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
