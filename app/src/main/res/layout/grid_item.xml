@@ -42,14 +42,12 @@
             android:scaleType="fitCenter"/>
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="top|start"
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
-            android:src="@drawable/available"
-            android:background="@drawable/bg_circle_image"
-            android:backgroundTint="#80000000"/>
+            android:src="@drawable/ic_verified_badge" />
     </FrameLayout>
 
     <LinearLayout
