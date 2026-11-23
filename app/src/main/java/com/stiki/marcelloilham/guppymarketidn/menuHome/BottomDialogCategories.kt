@@ -30,6 +30,7 @@ class BottomDialogCategories(
         }
 
         val categoriesList = listOf(
+            CategoryItem("Semua", R.drawable.skyblue, "Semua varian"),
             CategoryItem("Albino", R.drawable.skyblue, "32 varian"),
             CategoryItem("Solid", R.drawable.gsrts, "28 varian"),
             CategoryItem("Tuxedo", R.drawable.platinumrd, "24 varian"),
@@ -51,7 +52,11 @@ class BottomDialogCategories(
         )
 
         val adapter = CategoryAdapter(requireContext(), categoriesList) { selected ->
-            onCategorySelected?.invoke(selected.name)
+            if (selected.name == "Semua") {
+                onCategorySelected?.invoke("")
+            } else {
+                onCategorySelected?.invoke(selected.name)
+            }
             dismiss()
         }
 
