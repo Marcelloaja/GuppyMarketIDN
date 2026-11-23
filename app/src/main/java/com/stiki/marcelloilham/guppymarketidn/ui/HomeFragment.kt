@@ -136,15 +136,18 @@ class HomeFragment : Fragment() {
         if (userId != null) {
             db.collection("user").document(userId).get()
                 .addOnSuccessListener { document ->
-                    val prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    if (!isAdded) return@addOnSuccessListener
+                    val safeContext = context ?: return@addOnSuccessListener
+                    val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                     val userName = document.getString("name")
-                    textUserName.text = if (userName != null) {
+                    textUserName.text = if (!userName.isNullOrEmpty()) {
                         "Hi, $userName!"
                     } else {
                         "Hi, ${prefs.getString("name", "User")}!"
                     }
                 }
                 .addOnFailureListener { exception ->
+                    if (!isAdded) return@addOnFailureListener
                     println("Error getting documents: $exception")
                     textUserName.text = "Hi, User!"
                 }

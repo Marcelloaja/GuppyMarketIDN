@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
@@ -22,7 +22,7 @@ class Profile : Fragment() {
     private lateinit var textEmail: TextView
     private lateinit var textPhone: TextView
     private lateinit var textDescription: TextView
-    private lateinit var btnMenuProfile: ImageButton
+    private lateinit var btnMenuProfile: ImageView
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
@@ -45,34 +45,39 @@ class Profile : Fragment() {
             val userDocRef = db.collection("user").document(userId)
 
             userDocRef.get().addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
+                if (isAdded && document != null && document.exists()) {
                     val name = document.getString("name").orEmpty()
                     val email = document.getString("email").orEmpty()
                     val phone = document.getString("phone").orEmpty()
                     val description = document.getString("description").orEmpty()
 
-                    textName.text = name
-                    textEmail.text = email
-                    textPhone.text = phone
-                    textDescription.text = description
+                    textName.text = if (name.isNotEmpty()) name else textName.text
+                    textEmail.text = if (email.isNotEmpty()) email else textEmail.text
+                    textPhone.text = if (phone.isNotEmpty()) phone else textPhone.text
+                    textDescription.text = if (description.isNotEmpty()) description else textDescription.text
 
                     saveUserDataLocally(name, email, phone, description)
                     Log.d("Profile", "Data retrieved: Name=$name, Email=$email, Phone=$phone, Description=$description")
                 } else {
                     Log.e("Profile", "No document exists for user.")
-                    loadUserDataLocally() // Load locally saved data if Firestore data is not available
+                    loadUserDataLocally()
                 }
             }.addOnFailureListener { error ->
                 Log.e("Profile", "Error retrieving data: ", error)
                 loadUserDataLocally()
             }
+        } else {
+            loadUserDataLocally()
         }
 
         btnMenuProfile.setOnClickListener {
-            val animation = AnimationUtils.loadAnimation(context, R.anim.button_click)
+            val animContext = context ?: return@setOnClickListener
+            val animation = AnimationUtils.loadAnimation(animContext, R.anim.button_click)
             btnMenuProfile.startAnimation(animation)
             btnMenuProfile.postDelayed({
-                startActivity(Intent(activity, MenuProfile::class.java))
+                if (isAdded) {
+                    startActivity(Intent(activity, MenuProfile::class.java))
+                }
             }, animation.duration)
         }
 
@@ -80,7 +85,8 @@ class Profile : Fragment() {
     }
 
     private fun saveUserDataLocally(name: String, email: String, phone: String, description: String) {
-        val prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val safeContext = context ?: return
+        val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         prefs.edit().apply {
             putString("name", name)
             putString("email", email)
@@ -91,10 +97,16 @@ class Profile : Fragment() {
     }
 
     private fun loadUserDataLocally() {
-        val prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        textName.text = prefs.getString("name", "")
-        textEmail.text = prefs.getString("email", "")
-        textPhone.text = prefs.getString("phone", "")
-        textDescription.text = prefs.getString("description", "")
+        val safeContext = context ?: return
+        val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val savedName = prefs.getString("name", "")
+        val savedEmail = prefs.getString("email", "")
+        val savedPhone = prefs.getString("phone", "")
+        val savedDesc = prefs.getString("description", "")
+
+        if (!savedName.isNullOrEmpty()) textName.text = savedName
+        if (!savedEmail.isNullOrEmpty()) textEmail.text = savedEmail
+        if (!savedPhone.isNullOrEmpty()) textPhone.text = savedPhone
+        if (!savedDesc.isNullOrEmpty()) textDescription.text = savedDesc
     }
 }

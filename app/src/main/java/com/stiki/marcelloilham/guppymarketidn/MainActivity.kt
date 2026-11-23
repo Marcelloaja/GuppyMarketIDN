@@ -2,9 +2,14 @@ package com.stiki.marcelloilham.guppymarketidn
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -27,6 +32,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         navview = findViewById(R.id.nav_view)
+        val cardBottomNav = findViewById<View>(R.id.cardBottomNav)
+
+        // Responsif Window Insets: Menyesuaikan posisi Navigasi Melayang terhadap Gesture Bar / Nav Bar HP
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            cardBottomNav.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                val baseBottomMargin = (16 * resources.displayMetrics.density).toInt()
+                bottomMargin = systemBars.bottom + baseBottomMargin
+            }
+            insets
+        }
 
         // Check for extras in the intent
         val navigateTo = intent.getStringExtra("navigate_to")
@@ -93,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         if (currentTime - backPressedTime < 2000) {
             super.onBackPressed()
         } else {
-            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Tekan sekali lagi untuk keluar", Toast.LENGTH_SHORT).show()
             backPressedTime = currentTime
         }
     }
