@@ -68,7 +68,7 @@ class Maps : Fragment() {
         }
         
         btnNavigationAction?.setOnClickListener {
-            webView.evaluateJavascript("javascript:startNavigation()", null)
+            webView.evaluateJavascript("javascript:toggleNavigation()", null)
         }
     }
 

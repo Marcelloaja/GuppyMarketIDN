@@ -6,8 +6,6 @@
     <title>MapLibre Routing Map</title>
     <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
-    <!-- OSRM Turf.js for bounding box & line calculations (optional but helpful) -->
-    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { width: 100vw; height: 100vh; overflow: hidden; background-color: #F5F5F5; }
@@ -125,9 +123,9 @@
         farmEl.className = 'marker-badge';
         farmEl.innerHTML = 'Guppy King Farm <span class="verified-icon">✓</span>';
 
-        // Click listener on Farm Marker to start Routing
+        // Click listener on Farm Marker to toggle Navigation
         farmEl.addEventListener('click', () => {
-            startNavigation();
+            toggleNavigation();
         });
 
         new maplibregl.Marker({ element: farmEl, anchor: 'center' })
@@ -159,7 +157,7 @@
                 }
             });
 
-            // Outer casing for the route line (creates a border effect)
+            // Outer casing for the route line
             map.addLayer({
                 'id': 'route-casing',
                 'type': 'line',
@@ -198,7 +196,7 @@
         function zoomOut() { map.zoomOut(); }
 
         function centerLocation() {
-            map.flyTo({ center: [currentLng, currentLat], zoom: 15, pitch: 45, speed: 1.2 });
+            map.flyTo({ center: [currentLng, currentLat], zoom: 15, pitch: 25, speed: 1.2 });
         }
 
         // Real-time Update User Location from Android GPS
@@ -228,8 +226,6 @@
             // If routing is active, update the route line dynamically!
             if (isRoutingActive) {
                 fetchRoute(currentLng, currentLat, destLng, destLat);
-
-                // Track camera to user with a navigation tilt
                 map.flyTo({ center: [currentLng, currentLat], zoom: 16.5, pitch: 60, speed: 0.5 });
             } else {
                 map.flyTo({ center: [currentLng, currentLat], zoom: 15, speed: 1.2 });
@@ -239,7 +235,6 @@
         // OSRM Public API call to get road coordinates
         async function fetchRoute(startLng, startLat, endLng, endLat) {
             try {
-                // Using open OSRM routing machine API (Car Driving profile)
                 const url = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${endLng},${endLat}?overview=full&geometries=geojson`;
                 const response = await fetch(url);
                 const data = await response.json();
@@ -247,7 +242,6 @@
                 if (data.routes && data.routes.length > 0) {
                     const coords = data.routes[0].geometry.coordinates;
 
-                    // Update MapLibre GeoJSON Source
                     map.getSource('route').setData({
                         'type': 'Feature',
                         'properties': {},
@@ -265,11 +259,8 @@
         // Triggered via Android FAB button or clicking the Farm Marker
         function startNavigation() {
             isRoutingActive = true;
-
-            // Initial route fetch
             fetchRoute(currentLng, currentLat, destLng, destLat);
 
-            // Adjust camera for turn-by-turn nav perspective
             map.flyTo({
                 center: [currentLng, currentLat],
                 zoom: 16.5,
@@ -277,6 +268,41 @@
                 bearing: 0,
                 speed: 1.5
             });
+        }
+
+        // Stop / Cancel active navigation route
+        function stopNavigation() {
+            isRoutingActive = false;
+
+            // Clear route line GeoJSON data
+            if (map.getSource('route')) {
+                map.getSource('route').setData({
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': []
+                    }
+                });
+            }
+
+            // Reset camera back to standard top-down view
+            map.flyTo({
+                center: [currentLng, currentLat],
+                zoom: 14.6,
+                pitch: 25,
+                bearing: 0,
+                speed: 1.2
+            });
+        }
+
+        // Toggle navigation state on/off
+        function toggleNavigation() {
+            if (isRoutingActive) {
+                stopNavigation();
+            } else {
+                startNavigation();
+            }
         }
     </script>
 </body>
