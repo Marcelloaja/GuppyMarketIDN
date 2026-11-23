@@ -1,10 +1,13 @@
 package com.stiki.marcelloilham.guppymarketidn.adapter
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +22,19 @@ class HomeCategoryAdapter(
 ) : RecyclerView.Adapter<HomeCategoryAdapter.HomeCategoryViewHolder>() {
 
     private var selectedPosition = 0
+
+    // Pastel colorful background palette matching the user's mockup design
+    private val pastelColors = listOf(
+        "#E8F5E9", // Mint Green (Semua)
+        "#FCE4EC", // Soft Pink (Ikan Kontes)
+        "#EDE7F6", // Soft Purple (Pakan Ikan)
+        "#FFF8E1", // Soft Yellow (Obat & Vitamin)
+        "#E3F2FD", // Soft Blue (Sol & Akrilik)
+        "#FFE0B2", // Soft Orange (Indukan)
+        "#E0F7FA", // Soft Cyan (Aksesoris)
+        "#E8F5E9", // Soft Light Green (Tanaman Air)
+        "#E8EAF6"  // Soft Indigo (Filter & Pompa)
+    )
 
     fun setSelectedPosition(position: Int) {
         val previous = selectedPosition
@@ -51,22 +67,22 @@ class HomeCategoryAdapter(
 
     override fun onBindViewHolder(holder: HomeCategoryViewHolder, position: Int) {
         val item = categories[position]
-        val density = context.resources.displayMetrics.density
+        val isSelected = (position == selectedPosition)
 
         holder.tvName.text = item.name
         holder.imgCategory.setImageResource(item.imageRes)
 
-        val isSelected = (position == selectedPosition)
+        // Pick pastel color based on position
+        val colorHex = pastelColors[position % pastelColors.size]
+        val parsedColor = Color.parseColor(colorHex)
 
         if (isSelected) {
-            holder.imgCategory.strokeColor = ContextCompat.getColorStateList(context, R.color.guppy_primary)
-            holder.imgCategory.strokeWidth = 2.5f * density
+            holder.containerBgCircle.background.setColorFilter(ContextCompat.getColor(context, R.color.guppy_primary), PorterDuff.Mode.SRC_IN)
             holder.tvName.setTextColor(ContextCompat.getColor(context, R.color.guppy_primary))
             holder.tvName.typeface = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.inter_bold)
         } else {
-            holder.imgCategory.strokeColor = ContextCompat.getColorStateList(context, R.color.guppy_stroke)
-            holder.imgCategory.strokeWidth = 1f * density
-            holder.tvName.setTextColor(ContextCompat.getColor(context, R.color.guppy_text_gray))
+            holder.containerBgCircle.background.setColorFilter(parsedColor, PorterDuff.Mode.SRC_IN)
+            holder.tvName.setTextColor(ContextCompat.getColor(context, R.color.guppy_text_black))
             holder.tvName.typeface = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.inter_medium)
         }
 
@@ -85,6 +101,7 @@ class HomeCategoryAdapter(
     override fun getItemCount(): Int = categories.size
 
     class HomeCategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val containerBgCircle: FrameLayout = itemView.findViewById(R.id.containerBgCircle)
         val imgCategory: ShapeableImageView = itemView.findViewById(R.id.imgCategoryHome)
         val tvName: TextView = itemView.findViewById(R.id.tvCategoryNameHome)
     }
