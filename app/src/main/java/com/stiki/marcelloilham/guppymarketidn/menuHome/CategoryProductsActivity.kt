@@ -5,10 +5,15 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
@@ -27,6 +32,21 @@ class CategoryProductsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_products)
 
+        val topBarCategory = findViewById<View>(R.id.topBarCategory)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            topBarCategory.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = 0
+            }
+            topBarCategory.setPadding(
+                topBarCategory.paddingLeft,
+                systemBars.top + (12 * resources.displayMetrics.density).toInt(),
+                topBarCategory.paddingRight,
+                topBarCategory.paddingBottom
+            )
+            insets
+        }
+
         val categoryName = intent.getStringExtra("EXTRA_CATEGORY_NAME") ?: "Kategori"
 
         tvTitle = findViewById(R.id.tvCategoryPageTitle)
@@ -37,6 +57,24 @@ class CategoryProductsActivity : AppCompatActivity() {
 
         val btnBack = findViewById<ImageView>(R.id.btnBackCategory)
         val btnCart = findViewById<ImageView>(R.id.btnCartCategoryPage)
+
+        val chipPopular = findViewById<TextView>(R.id.chipCategoryPopular)
+        val chipLatest = findViewById<TextView>(R.id.chipCategoryLatest)
+        val chipPrice = findViewById<TextView>(R.id.chipCategoryPrice)
+
+        val selectChip = { active: TextView, inactives: List<TextView> ->
+            active.setBackgroundResource(R.drawable.bg_filter_green)
+            active.setTextColor(ContextCompat.getColor(this, R.color.white))
+
+            inactives.forEach { inactive ->
+                inactive.setBackgroundResource(R.drawable.bg_chip_outline)
+                inactive.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
+            }
+        }
+
+        chipPopular.setOnClickListener { selectChip(chipPopular, listOf(chipLatest, chipPrice)) }
+        chipLatest.setOnClickListener { selectChip(chipLatest, listOf(chipPopular, chipPrice)) }
+        chipPrice.setOnClickListener { selectChip(chipPrice, listOf(chipPopular, chipLatest)) }
 
         btnBack.setOnClickListener { finish() }
         btnCart.setOnClickListener {
