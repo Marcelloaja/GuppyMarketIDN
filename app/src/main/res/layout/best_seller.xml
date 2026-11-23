@@ -9,84 +9,96 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="175dp"
+        android:layout_height="180dp"
         app:cardCornerRadius="20dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/guppy_primary">
+        app:cardElevation="2dp"
+        app:cardPreventCornerOverlap="false">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:background="@drawable/bg_promo_gradient">
 
-            <!-- Texts & Button (Left Side) -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.4"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_tag_promo"
-                    android:text="HOT PROMO"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:fontFamily="@font/inter_bold"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp" />
+                <!-- Left Text Column -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.4"
+                    android:orientation="vertical"
+                    android:padding="18dp"
+                    android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Diskon Spesial\nFarm Jakarta"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/inter_bold"
-                    android:maxLines="2"
-                    android:ellipsize="end"
-                    android:lineSpacingExtra="1dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_tag_hot_promo"
+                        android:text="🔥 HOT PROMO"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:fontFamily="@font/inter_bold"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Hingga 50% untuk Albino"
-                    android:textColor="#E7F3EE"
-                    android:textSize="11sp"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/inter_regular"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Diskon Spesial\nFarm Jakarta"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:fontFamily="@font/inter_bold"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:lineSpacingExtra="2dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_btn_white"
-                    android:text="Lihat Promo"
-                    android:textColor="@color/guppy_primary"
-                    android:textSize="11sp"
-                    android:fontFamily="@font/inter_bold"
-                    android:gravity="center"
-                    android:paddingHorizontal="16dp"
-                    android:clickable="true"
-                    android:focusable="true"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Hingga 50% untuk varian Albino"
+                        android:textColor="#E0F2EB"
+                        android:textSize="11sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/inter_medium"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_btn_promo_white"
+                        android:text="Lihat Promo  ➔"
+                        android:textColor="@color/guppy_primary"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:paddingHorizontal="16dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                </LinearLayout>
+
+                <!-- Right Image Container -->
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imageCarouselItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/bg_image_grid" />
+
+                </FrameLayout>
 
             </LinearLayout>
-
-            <!-- Fish Image (Right Side) -->
-            <ImageView
-                android:id="@+id/imageCarouselItem"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.9"
-                android:scaleType="centerCrop"
-                android:src="@drawable/bg_image_grid" />
-
-        </LinearLayout>
+        </FrameLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
