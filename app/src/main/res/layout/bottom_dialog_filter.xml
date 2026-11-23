@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Price: High - Low"
-                android:textColor="#C5C5C5"
+                android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_semi_bold"
                 android:textSize="13sp"
                 android:gravity="center"/>
@@ -115,7 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Price: Low - High"
-                android:textColor="#C5C5C5"
+                android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_semi_bold"
                 android:textSize="13sp"
                 android:gravity="center"/>
