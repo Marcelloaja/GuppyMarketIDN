@@ -32,12 +32,26 @@ class MainActivity : AppCompatActivity() {
         val navigateTo = intent.getStringExtra("navigate_to")
         if (navigateTo != null) {
             when (navigateTo) {
-                "HomeFragment" -> replaceFragment(HomeFragment(), "HomeFragment", false)
-                "MapsFragment" -> replaceFragment(Maps(), "MapsFragment", false)
-                "BidFragment" -> replaceFragment(AuctionFragment(), "BidFragment", false)
-                "CommunityFragment" -> replaceFragment(Community(), "CommunityFragment", false)
-                "ProfileFragment" -> replaceFragment(Profile(), "ProfileFragment", false)
-                // Add other cases if necessary
+                "HomeFragment" -> {
+                    navview.selectedItemId = R.id.navigation_home
+                    replaceFragment(HomeFragment(), "HomeFragment", false)
+                }
+                "MapsFragment" -> {
+                    navview.selectedItemId = R.id.navigation_map
+                    replaceFragment(Maps(), "MapsFragment", false)
+                }
+                "BidFragment" -> {
+                    navview.selectedItemId = R.id.navigation_bid
+                    replaceFragment(AuctionFragment(), "BidFragment", false)
+                }
+                "CommunityFragment" -> {
+                    navview.selectedItemId = R.id.navigation_community
+                    replaceFragment(Community(), "CommunityFragment", false)
+                }
+                "ProfileFragment" -> {
+                    navview.selectedItemId = R.id.navigation_profile
+                    replaceFragment(Profile(), "ProfileFragment", false)
+                }
             }
         } else {
             // Load default fragment if no intent extras
