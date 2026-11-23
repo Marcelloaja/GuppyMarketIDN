@@ -10,22 +10,16 @@
     android:clickable="true"
     android:focusable="true">
 
-    <FrameLayout
-        android:id="@+id/containerBgCircle"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:background="@drawable/bg_circle_image"
-        android:backgroundTint="#FCE4EC">
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imgCategoryHome"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center"
-            android:src="@drawable/skyblue"
-            android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/CircleImageStyle"/>
-    </FrameLayout>
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgCategoryHome"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:src="@drawable/skyblue"
+        android:scaleType="centerCrop"
+        android:padding="2dp"
+        app:shapeAppearanceOverlay="@style/CircleImageStyle"
+        app:strokeColor="@color/guppy_primary"
+        app:strokeWidth="2.5dp"/>
 
     <TextView
         android:id="@+id/tvCategoryNameHome"
@@ -33,7 +27,7 @@
         android:layout_height="wrap_content"
         android:text="Semua"
         android:textSize="12sp"
-        android:fontFamily="@font/inter_semi_bold"
-        android:textColor="@color/guppy_text_black"
+        android:fontFamily="@font/inter_bold"
+        android:textColor="@color/guppy_primary"
         android:layout_marginTop="8dp"/>
 </LinearLayout>
