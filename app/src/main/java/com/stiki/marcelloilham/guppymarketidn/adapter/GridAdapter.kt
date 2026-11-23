@@ -38,6 +38,20 @@ class GridAdapter(
         notifyDataSetChanged()
     }
 
+    fun searchItems(query: String) {
+        val cleanQuery = query.trim().lowercase()
+        items = if (cleanQuery.isEmpty()) {
+            originalItems
+        } else {
+            originalItems.filter {
+                it.name.lowercase().contains(cleanQuery) ||
+                it.type.lowercase().contains(cleanQuery) ||
+                it.price.lowercase().contains(cleanQuery)
+            }
+        }
+        notifyDataSetChanged()
+    }
+
     fun getItem(position: Int): Item {
         return items[position]
     }

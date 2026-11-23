@@ -6,12 +6,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ImageButton
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -29,11 +32,9 @@ import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogFilter
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.Item
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.stiki.marcelloilham.guppymarketidn.menuHome.KeranjangHome
-import com.stiki.marcelloilham.guppymarketidn.menuProfile.MyProductsActivity
-import java.util.Calendar
-
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.stiki.marcelloilham.guppymarketidn.menuHome.KeranjangHome
+import java.util.Calendar
 
 class HomeFragment : Fragment() {
     private lateinit var textUserName: TextView
@@ -47,6 +48,7 @@ class HomeFragment : Fragment() {
     private lateinit var btnNotifHome: ImageView
     private lateinit var filterRecyclerView: RecyclerView
     private lateinit var gridViewRecycler: RecyclerView
+    private lateinit var etSearchHome: EditText
     private lateinit var shimmerCarousel: ShimmerFrameLayout
     private lateinit var shimmerGrid: ShimmerFrameLayout
     private lateinit var textNoData: TextView
@@ -74,7 +76,7 @@ class HomeFragment : Fragment() {
         setupCarousel()
         setupHeaderButtons()
         setupFilterButton()
-        // setupFilterRecyclerView()
+        setupSearchBar()
         setupGridViewRecycler()
 
         return view
@@ -88,11 +90,32 @@ class HomeFragment : Fragment() {
         filterHome = view.findViewById(R.id.filterHome)
         btnCartHome = view.findViewById(R.id.btnCartHome)
         btnNotifHome = view.findViewById(R.id.btnNotifHome)
-        // filterRecyclerView = view.findViewById(R.id.filterRecyclerView)
+        etSearchHome = view.findViewById(R.id.etSearchHome)
         gridViewRecycler = view.findViewById(R.id.gridViewRecycler)
         shimmerCarousel = view.findViewById(R.id.shimmerCarousel)
         shimmerGrid = view.findViewById(R.id.shimmerGrid)
         textNoData = view.findViewById(R.id.textNoData)
+    }
+
+    private fun setupSearchBar() {
+        etSearchHome.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString()
+                if (::gridAdapter.isInitialized) {
+                    gridAdapter.searchItems(query)
+                    if (gridAdapter.itemCount == 0) {
+                        gridViewRecycler.visibility = View.GONE
+                        textNoData.text = "Produk '$query' tidak ditemukan"
+                        textNoData.visibility = View.VISIBLE
+                    } else {
+                        gridViewRecycler.visibility = View.VISIBLE
+                        textNoData.visibility = View.GONE
+                    }
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
     private fun setupHeaderButtons() {
@@ -124,10 +147,7 @@ class HomeFragment : Fragment() {
                 content?.animate()
                     ?.alpha(1.0f)
                     ?.translationY(0f)
-                    ?.setDuration(400)
-                    ?.setInterpolator(android.view.animation.DecelerateInterpolator())
-                    ?.start()
-            }, 1200)
+            }, 1000)
         }
     }
 
@@ -173,8 +193,9 @@ class HomeFragment : Fragment() {
 
         textGreeting.text = when (hour) {
             in 0..11 -> "Good Morning!"
-            in 12..17 -> "Good Afternoon!"
-            else -> "Good Evening!"
+            in 12..16 -> "Good Afternoon!"
+            in 17..20 -> "Good Evening!"
+            else -> "Good Night!"
         }
     }
 
@@ -285,7 +306,7 @@ class HomeFragment : Fragment() {
             shimmerCarousel.stopShimmer()
             shimmerCarousel.visibility = View.GONE
             carouselRecyclerView.visibility = View.VISIBLE
-            
+
             shimmerGrid.stopShimmer()
             shimmerGrid.visibility = View.GONE
             gridViewRecycler.visibility = View.VISIBLE
@@ -316,7 +337,7 @@ class HomeFragment : Fragment() {
                     startActivity(intent)
                 }
             })
-        }, 1500) // 1.5 seconds loading simulation
+        }, 1500)
     }
 
     private fun runLayoutAnimation(recyclerView: RecyclerView) {
@@ -343,8 +364,8 @@ class HomeFragment : Fragment() {
         fun newInstance(param1: String, param2: String) =
             HomeFragment().apply {
                 arguments = Bundle().apply {
-                    // putString(ARG_PARAM1, param1)
-                    // putString(ARG_PARAM2, param2)
+//                    putString(ARG_PARAM1, param1)
+//                    putString(ARG_PARAM2, param2)
                 }
             }
     }
