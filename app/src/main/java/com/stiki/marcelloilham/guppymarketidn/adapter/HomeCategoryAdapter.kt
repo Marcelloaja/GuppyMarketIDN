@@ -1,6 +1,7 @@
 package com.stiki.marcelloilham.guppymarketidn.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.imageview.ShapeableImageView
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.menuHome.CategoryItem
@@ -59,15 +61,18 @@ class HomeCategoryAdapter(
         val isSelected = (position == selectedPosition)
 
         if (isSelected) {
-            holder.imgCategory.strokeColor = ContextCompat.getColorStateList(context, R.color.guppy_primary)
-            holder.imgCategory.strokeWidth = 2.5f * density
-            holder.tvName.setTextColor(ContextCompat.getColor(context, R.color.guppy_primary))
+            holder.cardCategory.setCardBackgroundColor(ContextCompat.getColor(context, R.color.guppy_primary))
+            holder.cardCategory.strokeWidth = 0
+            holder.tvName.setTextColor(ContextCompat.getColor(context, R.color.white))
             holder.tvName.typeface = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.inter_bold)
+            holder.imgCategory.strokeWidth = 0f
         } else {
-            holder.imgCategory.strokeColor = ContextCompat.getColorStateList(context, R.color.guppy_stroke)
-            holder.imgCategory.strokeWidth = 1f * density
-            holder.tvName.setTextColor(ContextCompat.getColor(context, R.color.guppy_text_gray))
-            holder.tvName.typeface = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.inter_medium)
+            holder.cardCategory.setCardBackgroundColor(Color.parseColor("#F5F8F6"))
+            holder.cardCategory.strokeColor = ContextCompat.getColor(context, R.color.guppy_stroke)
+            holder.cardCategory.strokeWidth = (1f * density).toInt()
+            holder.tvName.setTextColor(ContextCompat.getColor(context, R.color.guppy_text_black))
+            holder.tvName.typeface = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.inter_semi_bold)
+            holder.imgCategory.strokeWidth = 0f
         }
 
         holder.itemView.setOnClickListener {
@@ -85,6 +90,7 @@ class HomeCategoryAdapter(
     override fun getItemCount(): Int = categories.size
 
     class HomeCategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cardCategory: MaterialCardView = itemView.findViewById(R.id.cardCategoryHome)
         val imgCategory: ShapeableImageView = itemView.findViewById(R.id.imgCategoryHome)
         val tvName: TextView = itemView.findViewById(R.id.tvCategoryNameHome)
     }

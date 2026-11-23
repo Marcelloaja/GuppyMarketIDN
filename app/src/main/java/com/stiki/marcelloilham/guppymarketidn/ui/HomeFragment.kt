@@ -55,6 +55,7 @@ class HomeFragment : Fragment() {
     private lateinit var homeCategoryAdapter: HomeCategoryAdapter
     private lateinit var etSearchHome: EditText
     private lateinit var btnSeeAllCategories: TextView
+    private lateinit var tvSectionTitleGrid: TextView
     private lateinit var shimmerCarousel: ShimmerFrameLayout
     private lateinit var shimmerGrid: ShimmerFrameLayout
     private lateinit var textNoData: TextView
@@ -116,6 +117,7 @@ class HomeFragment : Fragment() {
         btnSeeAllCategories = view.findViewById(R.id.btnSeeAllCategories)
         categoryHorizontalRecycler = view.findViewById(R.id.categoryHorizontalRecycler)
         gridViewRecycler = view.findViewById(R.id.gridViewRecycler)
+        tvSectionTitleGrid = view.findViewById(R.id.tvSectionTitleGrid)
         shimmerCarousel = view.findViewById(R.id.shimmerCarousel)
         shimmerGrid = view.findViewById(R.id.shimmerGrid)
         textNoData = view.findViewById(R.id.textNoData)
@@ -177,6 +179,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun toggleNoDataState(query: String = "") {
+        if (::tvSectionTitleGrid.isInitialized) {
+            if (query.isNotEmpty() && !query.equals("Semua", ignoreCase = true)) {
+                tvSectionTitleGrid.text = "Kategori: $query"
+            } else {
+                tvSectionTitleGrid.text = "Baru Ditambahkan"
+            }
+        }
+
         if (gridAdapter.itemCount == 0) {
             gridViewRecycler.visibility = View.GONE
             textNoData.text = if (query.isNotEmpty()) "Produk '$query' tidak ditemukan" else "Data tidak ditemukan"
