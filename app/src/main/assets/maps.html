@@ -192,11 +192,23 @@
             setTimeout(() => { map.resize(); }, 300);
         });
 
+        // Calculate forward-facing bearing angle towards target coordinate
+        function calculateBearing(startLng, startLat, endLng, endLat) {
+            const rad = Math.PI / 180;
+            const lat1 = startLat * rad;
+            const lat2 = endLat * rad;
+            const dLng = (endLng - startLng) * rad;
+
+            const y = Math.sin(dLng) * Math.cos(lat2);
+            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+            const brng = Math.atan2(y, x) * (180 / Math.PI);
+            return (brng + 360) % 360;
+        }
+
         // Switch Vehicle Profile & dynamically change line colors + ETAs
         function setRouteProfile(profile) {
             currentProfile = profile;
 
-            // Change route line color dynamically based on mode
             if (map.getLayer('route-line')) {
                 if (profile === 'bike') {
                     map.setPaintProperty('route-line', 'line-color', '#00BCD4'); // Motor: Vibrant Cyan
@@ -217,7 +229,8 @@
         function zoomOut() { map.zoomOut(); }
 
         function centerLocation() {
-            map.flyTo({ center: [currentLng, currentLat], zoom: 15, pitch: 25, speed: 1.2 });
+            const targetBearing = isRoutingActive ? calculateBearing(currentLng, currentLat, destLng, destLat) : 0;
+            map.flyTo({ center: [currentLng, currentLat], zoom: 15.5, pitch: isRoutingActive ? 60 : 25, bearing: targetBearing, speed: 1.2 });
         }
 
         // Real-time Update User Location from Android GPS
@@ -244,12 +257,19 @@
                 .addTo(map);
             }
 
-            // If routing is active, update the route line and dynamic distance/time!
+            // If routing is active, dynamically update line, ETA, AND ROTATE CAMERA FORWARD
             if (isRoutingActive) {
                 fetchRoute(currentLng, currentLat, destLng, destLat);
-                map.flyTo({ center: [currentLng, currentLat], zoom: 16.5, pitch: 60, speed: 0.5 });
+                const targetBearing = calculateBearing(currentLng, currentLat, destLng, destLat);
+                map.flyTo({
+                    center: [currentLng, currentLat],
+                    zoom: 16.8,
+                    pitch: 60,
+                    bearing: targetBearing, // <--- Camera automatically turns forward along the route line!
+                    speed: 0.5
+                });
             } else {
-                map.flyTo({ center: [currentLng, currentLat], zoom: 15, speed: 1.2 });
+                map.flyTo({ center: [currentLng, currentLat], zoom: 15, pitch: 25, bearing: 0, speed: 1.2 });
             }
         }
 
@@ -284,13 +304,10 @@
 
                     // Apply Realistic Indonesia Urban Speed Profiles:
                     if (currentProfile === 'bike') {
-                        // Motor: ~35 km/h agile urban traffic speed
                         durSecs = (distMeters / 35000) * 3600;
                     } else if (currentProfile === 'foot') {
-                        // Jalan Kaki: ~5 km/h walking speed
                         durSecs = (distMeters / 5000) * 3600;
                     } else if (currentProfile === 'driving') {
-                        // Mobil: ~22 km/h urban traffic speed
                         durSecs = (distMeters / 22000) * 3600;
                     }
 
@@ -318,11 +335,13 @@
             isRoutingActive = true;
             fetchRoute(currentLng, currentLat, destLng, destLat);
 
+            const targetBearing = calculateBearing(currentLng, currentLat, destLng, destLat);
+
             map.flyTo({
                 center: [currentLng, currentLat],
-                zoom: 16.5,
+                zoom: 16.8,
                 pitch: 60,
-                bearing: 0,
+                bearing: targetBearing, // <--- Rotates camera forward straight along route line!
                 speed: 1.5
             });
         }
@@ -331,7 +350,6 @@
         function stopNavigation() {
             isRoutingActive = false;
 
-            // Clear route line GeoJSON data
             if (map.getSource('route')) {
                 map.getSource('route').setData({
                     'type': 'Feature',
@@ -343,12 +361,12 @@
                 });
             }
 
-            // Reset camera back to standard top-down view
+            // Reset camera back to standard top-down view facing North
             map.flyTo({
                 center: [currentLng, currentLat],
                 zoom: 14.6,
                 pitch: 25,
-                bearing: 0,
+                bearing: 0, // <--- Resets camera back to North-Up
                 speed: 1.2
             });
         }
