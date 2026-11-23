@@ -41,6 +41,8 @@ class HomeFragment : Fragment() {
     private lateinit var carouselRecyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var filterHome: ImageView
+    private lateinit var btnCartHome: ImageView
+    private lateinit var btnNotifHome: ImageView
     private lateinit var filterRecyclerView: RecyclerView
     private lateinit var gridViewRecycler: RecyclerView
     private lateinit var textNoData: TextView
@@ -66,6 +68,7 @@ class HomeFragment : Fragment() {
         setupUserName()
         updateGreeting()
         setupCarousel()
+        setupHeaderButtons()
         setupFilterButton()
         // setupFilterRecyclerView()
         setupGridViewRecycler()
@@ -79,9 +82,25 @@ class HomeFragment : Fragment() {
         textGreeting = view.findViewById(R.id.textGreeting)
         carouselRecyclerView = view.findViewById(R.id.carouselRecyclerView)
         filterHome = view.findViewById(R.id.filterHome)
+        btnCartHome = view.findViewById(R.id.btnCartHome)
+        btnNotifHome = view.findViewById(R.id.btnNotifHome)
         // filterRecyclerView = view.findViewById(R.id.filterRecyclerView)
         gridViewRecycler = view.findViewById(R.id.gridViewRecycler)
         textNoData = view.findViewById(R.id.textNoData)
+    }
+
+    private fun setupHeaderButtons() {
+        val clickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
+
+        btnCartHome.setOnClickListener { button ->
+            button.startAnimation(clickAnimation)
+            val intent = Intent(requireContext(), KeranjangHome::class.java)
+            startActivity(intent)
+        }
+
+        btnNotifHome.setOnClickListener { button ->
+            button.startAnimation(clickAnimation)
+        }
     }
 
     private fun setupSwipeRefresh() {

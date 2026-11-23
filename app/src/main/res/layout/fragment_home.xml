@@ -66,6 +66,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/btnNotifHome"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginEnd="12dp"
@@ -74,9 +75,12 @@
                     android:src="@drawable/ic_notifications_black_24dp"
                     android:padding="10dp"
                     android:scaleType="fitCenter"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:tint="@color/white"/>
 
                 <ImageView
+                    android:id="@+id/btnCartHome"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/bg_circle_image"
@@ -84,6 +88,8 @@
                     android:src="@drawable/fi_rr_shopping_cart"
                     android:padding="10dp"
                     android:scaleType="fitCenter"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:tint="@color/white"/>
             </LinearLayout>
 
