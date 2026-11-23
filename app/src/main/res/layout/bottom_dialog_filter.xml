@@ -4,200 +4,348 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/dialog_bg"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="24dp"
     tools:context=".menuHome.BottomDialogFilter">
 
-    <ImageView
-        android:layout_width="83dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/round_remove"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center|top"
-        android:scaleType="centerCrop"/>
+    <!-- Drag Handle -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_chip_outline"
+        android:backgroundTint="@color/guppy_stroke"/>
 
+    <!-- Header Row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="34dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:fontFamily="@font/inter_bold"
+            android:text="Filter &amp; Urutkan"
+            android:textColor="@color/guppy_text_black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/btnResetFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semi_bold"
+            android:text="Reset"
+            android:textColor="@color/guppy_primary"
+            android:textSize="13sp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <ImageView
+            android:id="@+id/btnCloseDialog"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_circle_image"
+            android:backgroundTint="#F0F0F0"
+            android:src="@drawable/fi_rr_cross_small"
+            android:padding="6dp"
+            app:tint="@color/guppy_text_black"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:layout_marginTop="16dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- SECTION 1: SORT BY -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Filter"
-                android:fontFamily="@font/inter_medium"
-                android:textSize="22sp"
-                android:textColor="@color/black"/>
-        </LinearLayout>
+                android:fontFamily="@font/inter_bold"
+                android:text="Urutkan Harga"
+                android:textColor="@color/guppy_text_black"
+                android:textSize="14sp"/>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:gravity="end">
-            <ImageButton
-                android:id="@+id/btnCloseDialog"
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/chipSortLowToHigh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_filter_green"
+                        android:text="Termurah"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/chipSortHighToLow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="Termahal"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="@color/guppy_stroke"/>
+
+            <!-- SECTION 2: GRADE GUPPY -->
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/fi_rr_cross_small"/>
+                android:fontFamily="@font/inter_bold"
+                android:text="Grade Kualitas"
+                android:textColor="@color/guppy_text_black"
+                android:textSize="14sp"/>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/chipGradeAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_filter_green"
+                        android:text="Semua Grade"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/chipGradeAPlus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="Grade A+"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/chipGradeA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="Grade A"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="@color/guppy_stroke"/>
+
+            <!-- SECTION 3: LOKASI FARM -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="Lokasi Farm"
+                android:textColor="@color/guppy_text_black"
+                android:textSize="14sp"/>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/chipLocAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_filter_green"
+                        android:text="Semua Lokasi"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/chipLocMalang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="Malang"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/chipLocJakarta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="Jakarta"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/chipLocBogor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="Bogor"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="@color/guppy_stroke"/>
+
+            <!-- SECTION 4: RENTANG HARGA -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Rentang Harga"
+                    android:textColor="@color/guppy_text_black"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/priceRangeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Rp 50.000 - Rp 1.000.000"
+                    android:textColor="@color/guppy_primary"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/continuousRangeSlider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:valueFrom="50000.0"
+                android:valueTo="1000000.0"
+                android:stepSize="25000.0"
+                app:thumbColor="@color/guppy_primary"
+                app:trackColorActive="@color/guppy_primary"
+                app:trackColorInactive="@color/guppy_stroke"
+                app:values="@array/slider_values" />
+
         </LinearLayout>
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/line_botton_dialog" />
-
+    <!-- APPLY BUTTON -->
     <TextView
+        android:id="@+id/btnApplyFilter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginRight="20dp"
-        android:fontFamily="@font/inter_medium"
-        android:text="Sort By"
-        android:textColor="@color/black"
-        android:textSize="17sp"/>
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_btn_primary"
+        android:text="Terapkan Filter"
+        android:textColor="@color/white"
+        android:fontFamily="@font/inter_bold"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginRight="20dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/linearLayoutHighToLow"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/kotak_sort"
-            android:gravity="center_vertical"
-            android:layout_marginRight="8dp"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/textViewHighToLow"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Price: High - Low"
-                android:textColor="@color/guppy_text_black"
-                android:fontFamily="@font/inter_semi_bold"
-                android:textSize="13sp"
-                android:gravity="center"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayoutLowToHigh"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:background="@drawable/kotak_sort"
-            android:layout_gravity="center">
-            <TextView
-                android:id="@+id/textViewLowToHigh"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Price: Low - High"
-                android:textColor="@color/guppy_text_black"
-                android:fontFamily="@font/inter_semi_bold"
-                android:textSize="13sp"
-                android:gravity="center"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/line_botton_dialog" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginRight="20dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Price"
-                android:fontFamily="@font/inter_medium"
-                android:textSize="17dp"
-                android:textColor="@color/black"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:gravity="end">
-            <TextView
-                android:id="@+id/priceRangeValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Rp. 50.000 - Rp. 1.000.000"
-                android:fontFamily="@font/inter_medium"
-                android:textSize="11dp"
-                android:textColor="#808080"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <com.google.android.material.slider.RangeSlider
-        android:id="@+id/continuousRangeSlider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:valueFrom="50000.0"
-        android:valueTo="1000000.0"
-        android:stepSize="10000.0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/normalContinuousSlider"
-        app:values="@array/slider_values" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/line_botton_dialog" />
-
-    <ImageButton
-        android:id="@+id/applyFiltersButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_apply_filters"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginRight="20dp"
-        android:layout_gravity="center"/>
 </LinearLayout>

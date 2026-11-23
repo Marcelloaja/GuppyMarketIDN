@@ -55,6 +55,10 @@ class HomeFragment : Fragment() {
     private lateinit var homeCategoryAdapter: HomeCategoryAdapter
     private lateinit var etSearchHome: EditText
     private lateinit var btnSeeAllCategories: TextView
+    private lateinit var btnChipFilterMain: View
+    private lateinit var btnChipPrice: View
+    private lateinit var btnChipGrade: View
+    private lateinit var btnChipLocation: View
     private lateinit var shimmerCarousel: ShimmerFrameLayout
     private lateinit var shimmerGrid: ShimmerFrameLayout
     private lateinit var textNoData: TextView
@@ -124,6 +128,10 @@ class HomeFragment : Fragment() {
         btnNotifHome = view.findViewById(R.id.btnNotifHome)
         etSearchHome = view.findViewById(R.id.etSearchHome)
         btnSeeAllCategories = view.findViewById(R.id.btnSeeAllCategories)
+        btnChipFilterMain = view.findViewById(R.id.btnChipFilterMain)
+        btnChipPrice = view.findViewById(R.id.btnChipPrice)
+        btnChipGrade = view.findViewById(R.id.btnChipGrade)
+        btnChipLocation = view.findViewById(R.id.btnChipLocation)
         categoryHorizontalRecycler = view.findViewById(R.id.categoryHorizontalRecycler)
         gridViewRecycler = view.findViewById(R.id.gridViewRecycler)
         shimmerCarousel = view.findViewById(R.id.shimmerCarousel)
@@ -355,10 +363,29 @@ class HomeFragment : Fragment() {
 
     private fun setupFilterButton() {
         val clickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
-        filterHome.setOnClickListener { button ->
-            button.startAnimation(clickAnimation)
-            BottomDialogFilter().show(parentFragmentManager, "BottomSheetFragment")
+        val openFilterDialog = { v: View ->
+            v.startAnimation(clickAnimation)
+            BottomDialogFilter { sort, grade, location, minPrice, maxPrice ->
+                applyUnifiedFilters(sort, grade, location, minPrice, maxPrice)
+            }.show(parentFragmentManager, "BottomDialogFilter")
         }
+
+        filterHome.setOnClickListener(openFilterDialog)
+        btnChipFilterMain.setOnClickListener(openFilterDialog)
+        btnChipPrice.setOnClickListener(openFilterDialog)
+        btnChipGrade.setOnClickListener(openFilterDialog)
+        btnChipLocation.setOnClickListener(openFilterDialog)
+    }
+
+    private fun applyUnifiedFilters(sort: String, grade: String, location: String, minPrice: Float, maxPrice: Float) {
+        if (!::gridAdapter.isInitialized) return
+
+        var filterQuery = ""
+        if (grade != "All") filterQuery = grade
+        else if (location != "All") filterQuery = location
+
+        gridAdapter.searchItems(filterQuery)
+        toggleNoDataState(filterQuery)
     }
 
     private fun setupFilterRecyclerView() {
