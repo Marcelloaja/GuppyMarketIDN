@@ -2,14 +2,21 @@ package com.stiki.marcelloilham.guppymarketidn.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -18,7 +25,9 @@ import com.stiki.marcelloilham.guppymarketidn.R
 
 class Maps : Fragment() {
     private lateinit var webView: WebView
-    private val LOCATION_PERMISSION_REQUEST_CODE = 1
+    private lateinit var locationManager: LocationManager
+    private var locationListener: LocationListener? = null
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +37,7 @@ class Maps : Fragment() {
         webView = view.findViewById(R.id.webViewMaps)
         setupWebView()
         setupMapControls(view)
-        requestLocationPermission()
+        checkAndRequestLocationPermission()
         return view
     }
 
@@ -58,14 +67,99 @@ class Maps : Fragment() {
         }
     }
 
-    private fun requestLocationPermission() {
+    private fun checkAndRequestLocationPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
+        } else {
+            checkGpsAndStartTracking()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkGpsAndStartTracking()
+            }
+        }
+    }
+
+    private fun checkGpsAndStartTracking() {
+        locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+        if (!isGpsEnabled && !isNetworkEnabled) {
+            showEnableGpsDialog()
+        } else {
+            startRealtimeLocationTracking()
+        }
+    }
+
+    private fun showEnableGpsDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Aktifkan Lokasi (GPS)")
+            .setMessage("Untuk menampilkan titik lokasi Anda dan farm terdekat secara real-time pada peta, silakan aktifkan Lokasi (GPS) di HP Anda.")
+            .setPositiveButton("Buka Pengaturan") { _, _ ->
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            .setNegativeButton("Nanti", null)
+            .show()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun startRealtimeLocationTracking() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+
+            locationListener = object : LocationListener {
+                override fun onLocationChanged(location: Location) {
+                    val lat = location.latitude
+                    val lng = location.longitude
+                    webView.evaluateJavascript("javascript:updateUserLocation($lng, $lat)", null)
+                }
+
+                @Deprecated("Deprecated in Java")
+                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+                override fun onProviderEnabled(provider: String) {}
+                override fun onProviderDisabled(provider: String) {}
+            }
+
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    2000L,
+                    3f,
+                    locationListener!!
+                )
+            } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    2000L,
+                    3f,
+                    locationListener!!
+                )
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        locationListener?.let {
+            if (::locationManager.isInitialized) {
+                locationManager.removeUpdates(it)
+            }
         }
     }
 

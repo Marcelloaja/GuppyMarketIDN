@@ -88,11 +88,11 @@
     <div id="map"></div>
 
     <script>
-        // Initialize MapLibre GL JS Map with CartoDB Positron Vector Style (OpenStreetMap Data)
+        // Initialize MapLibre GL JS Map with CartoDB Positron Vector Style
         const map = new maplibregl.Map({
             container: 'map',
             style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-            center: [106.865421, -6.225014], // Jatinegara, Jakarta Timur
+            center: [106.865421, -6.225014], // Default: Jatinegara, Jakarta Timur
             zoom: 14.6,
             pitch: 25,
             attributionControl: false
@@ -102,7 +102,8 @@
         const userEl = document.createElement('div');
         userEl.className = 'user-pulse';
         userEl.innerHTML = '<div class="user-pulse-inner"></div>';
-        new maplibregl.Marker({ element: userEl })
+
+        let userMarker = new maplibregl.Marker({ element: userEl })
             .setLngLat([106.865421, -6.225014])
             .addTo(map);
 
@@ -141,7 +142,22 @@
         // Functions exposed for Android Kotlin
         function zoomIn() { map.zoomIn(); }
         function zoomOut() { map.zoomOut(); }
-        function centerLocation() { map.flyTo({ center: [106.865421, -6.225014], zoom: 15, speed: 1.2 }); }
+
+        let currentLat = -6.225014;
+        let currentLng = 106.865421;
+
+        function centerLocation() {
+            map.flyTo({ center: [currentLng, currentLat], zoom: 15, speed: 1.2 });
+        }
+
+        // Real-time Update User Location from Android GPS
+        function updateUserLocation(lng, lat) {
+            currentLng = lng;
+            currentLat = lat;
+            if (userMarker) {
+                userMarker.setLngLat([lng, lat]);
+            }
+        }
     </script>
 </body>
 </html>
