@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MapLibre OpenStreetMap</title>
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html, #map { width: 100vw; height: 100vh; overflow: hidden; background-color: #F5F5F5; }
+
+        /* Custom MapLibre Marker Styles */
+        .marker-badge {
+            background: #FFFFFF;
+            color: #1C1C1C;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 5px 12px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+            border: 1px solid #EBEBEB;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .marker-badge-green {
+            background: #225741;
+            color: #FFFFFF;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .verified-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 14px;
+            height: 14px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            font-size: 9px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        /* User Location Pulse Marker */
+        .user-pulse {
+            width: 36px;
+            height: 36px;
+            background: rgba(33, 150, 243, 0.25);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: pulse 2s infinite;
+        }
+        .user-pulse-inner {
+            width: 14px;
+            height: 14px;
+            background: #2196F3;
+            border: 2px solid #FFFFFF;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4); }
+            70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(33, 150, 243, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
+        }
+
+        /* Hide Attribution for clean view */
+        .maplibregl-ctrl-bottom-right, .maplibregl-ctrl-bottom-left {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script>
+        // Initialize MapLibre GL JS Map with CartoDB Positron Vector Style (OpenStreetMap Data)
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+            center: [106.865421, -6.225014], // Jatinegara, Jakarta Timur
+            zoom: 14.6,
+            pitch: 25,
+            attributionControl: false
+        });
+
+        // 1. User Location Pulse Marker
+        const userEl = document.createElement('div');
+        userEl.className = 'user-pulse';
+        userEl.innerHTML = '<div class="user-pulse-inner"></div>';
+        new maplibregl.Marker({ element: userEl })
+            .setLngLat([106.865421, -6.225014])
+            .addTo(map);
+
+        // 2. Guppy King Farm Marker
+        const farmEl = document.createElement('div');
+        farmEl.className = 'marker-badge';
+        farmEl.innerHTML = 'Guppy King Farm <span class="verified-icon">✓</span>';
+        new maplibregl.Marker({ element: farmEl })
+            .setLngLat([106.868500, -6.221500])
+            .addTo(map);
+
+        // 3. Pin 150+
+        const countEl = document.createElement('div');
+        countEl.className = 'marker-badge-green';
+        countEl.innerHTML = '150+';
+        new maplibregl.Marker({ element: countEl })
+            .setLngLat([106.869800, -6.223200])
+            .addTo(map);
+
+        // 4. Pin 85
+        const pin85El = document.createElement('div');
+        pin85El.className = 'marker-badge';
+        pin85El.innerHTML = '85';
+        new maplibregl.Marker({ element: pin85El })
+            .setLngLat([106.858000, -6.227500])
+            .addTo(map);
+
+        // 5. Pin 32
+        const pin32El = document.createElement('div');
+        pin32El.className = 'marker-badge';
+        pin32El.innerHTML = '32';
+        new maplibregl.Marker({ element: pin32El })
+            .setLngLat([106.871500, -6.218500])
+            .addTo(map);
+
+        // Functions exposed for Android Kotlin
+        function zoomIn() { map.zoomIn(); }
+        function zoomOut() { map.zoomOut(); }
+        function centerLocation() { map.flyTo({ center: [106.865421, -6.225014], zoom: 15, speed: 1.2 }); }
+    </script>
+</body>
+</html>

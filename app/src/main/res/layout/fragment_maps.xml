@@ -9,20 +9,20 @@
     android:background="#F5F5F5"
     tools:context=".ui.Maps">
 
-    <!-- 1. MAP BACKGROUND & FLOATING MARKERS -->
+    <!-- 1. MAPLIBRE GL + OPENSTREETMAP VECTOR MAP CONTAINER -->
     <FrameLayout
         android:id="@+id/mapContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottomSheetFarm">
 
-        <!-- Interactive Google Maps WebView -->
+        <!-- Interactive MapLibre GL Vector WebView -->
         <WebView
             android:id="@+id/webViewMaps"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <!-- Floating UI Elements on Map -->
+        <!-- Floating UI Overlays on Top of Map -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -73,95 +73,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Floating Map Pins / Badges -->
-            <!-- Pin 85 (Left) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|top"
-                android:layout_marginStart="60dp"
-                android:layout_marginTop="160dp"
-                android:background="@drawable/bg_border_card"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/guppy_primary"
-                android:text="85"
-                android:fontFamily="@font/inter_bold"
-                android:textSize="13sp"
-                android:elevation="4dp"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"/>
-
-            <!-- Pin 32 (Top Right) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                android:layout_marginTop="110dp"
-                android:layout_marginEnd="90dp"
-                android:background="@drawable/bg_border_card"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/guppy_primary"
-                android:text="32"
-                android:fontFamily="@font/inter_bold"
-                android:textSize="13sp"
-                android:elevation="4dp"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"/>
-
-            <!-- Pin Guppy King Farm -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                android:layout_marginTop="150dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/bg_border_card"
-                android:elevation="4dp"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Guppy King Farm"
-                    android:fontFamily="@font/inter_bold"
-                    android:textColor="@color/guppy_text_black"
-                    android:textSize="12sp"/>
-
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginStart="4dp"
-                    android:src="@drawable/ic_verified_badge"/>
-            </LinearLayout>
-
-            <!-- Pin 150+ -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                android:layout_marginTop="190dp"
-                android:layout_marginEnd="90dp"
-                android:background="@drawable/bg_btn_primary"
-                android:textColor="@color/white"
-                android:text="150+"
-                android:fontFamily="@font/inter_bold"
-                android:textSize="12sp"
-                android:elevation="4dp"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"/>
-
-            <!-- User Location Pulse Dot -->
-            <View
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_gravity="start|top"
-                android:layout_marginStart="180dp"
-                android:layout_marginTop="220dp"
-                android:background="@drawable/bg_user_location_pulse"
-                android:elevation="2dp"/>
-
             <!-- Floating Controls on Right Side -->
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -185,6 +96,7 @@
                         android:gravity="center">
 
                         <TextView
+                            android:id="@+id/btnZoomIn"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
@@ -202,6 +114,7 @@
                             android:background="@color/guppy_stroke"/>
 
                         <TextView
+                            android:id="@+id/btnZoomOut"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
@@ -217,12 +130,15 @@
 
                 <!-- My Location Button -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/btnMyLocation"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginTop="12dp"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="6dp"
-                    app:cardBackgroundColor="@color/white">
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
                         android:layout_width="20dp"
