@@ -238,7 +238,7 @@
                     android:src="@drawable/bg_image_grid"
                     android:scaleType="centerCrop"
                     app:cornerSize="8dp"
-                    app:strokeColor="@color/transparent"
+                    app:strokeColor="@android:color/transparent"
                     app:strokeWidth="0dp"
                     android:layout_marginEnd="12dp"/>
 
@@ -248,7 +248,7 @@
                     android:src="@drawable/bg_image_grid"
                     android:scaleType="centerCrop"
                     app:cornerSize="8dp"
-                    app:strokeColor="@color/transparent"
+                    app:strokeColor="@android:color/transparent"
                     app:strokeWidth="0dp"
                     android:layout_marginEnd="12dp"/>
 
@@ -258,7 +258,7 @@
                     android:src="@drawable/bg_image_grid"
                     android:scaleType="centerCrop"
                     app:cornerSize="8dp"
-                    app:strokeColor="@color/transparent"
+                    app:strokeColor="@android:color/transparent"
                     app:strokeWidth="0dp"
                     android:layout_marginEnd="12dp"/>
             </LinearLayout>
