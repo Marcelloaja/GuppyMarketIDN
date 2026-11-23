@@ -7,26 +7,23 @@
         android:title="Home"/>
 
     <item
-        android:id="@+id/navigation_map"
-        android:icon="@drawable/map"
-        android:title="Maps"/>
-
-<!--    <item-->
-<!--        android:id="@+id/navigation_blank"/>-->
-
-    <item
         android:id="@+id/navigation_bid"
         android:icon="@drawable/bid"
-        android:title=""/>
+        android:title="Lelang"/>
 
     <item
         android:id="@+id/navigation_community"
         android:icon="@drawable/comments"
-        android:title="Community"/>
+        android:title="Hub"/>
+
+    <item
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/map"
+        android:title="Maps"/>
 
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/user"
-        android:title="Profile"/>
+        android:title="Akun"/>
 
 </menu>

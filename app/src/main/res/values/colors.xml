@@ -8,4 +8,16 @@
     <color name="purple_700">#7B1FA2</color>
     <color name="teal_200">#03DAC5</color>
     <color name="purple_200">#BB86FC</color>
+
+    <color name="guppy_primary">#225741</color>
+    <color name="guppy_primary_light">#E7F3EE</color>
+    <color name="guppy_background">#F7F7F7</color>
+    <color name="guppy_text_black">#1C1C1C</color>
+    <color name="guppy_text_gray">#757575</color>
+    <color name="guppy_text_dark">#424242</color>
+    <color name="guppy_red">#E53935</color>
+    <color name="guppy_orange">#F06A38</color>
+    <color name="guppy_stroke">#EBEBEB</color>
+    <color name="guppy_star">#FFCA28</color>
+    <color name="guppy_card_bg">#FFFFFF</color>
 </resources>

@@ -29,10 +29,10 @@ class FilterAdapter(
 
         if (position == selectedPosition) {
             holder.filterText.setBackgroundResource(R.drawable.filter_selected)
-            holder.filterText.setTextColor(ContextCompat.getColor(context, R.color.black))
+            holder.filterText.setTextColor(ContextCompat.getColor(context, R.color.white))
         } else {
             holder.filterText.setBackgroundResource(R.drawable.filter_unselected)
-            holder.filterText.setTextColor(ContextCompat.getColor(context, R.color.gray))
+            holder.filterText.setTextColor(ContextCompat.getColor(context, R.color.black))
         }
 
         holder.filterText.setOnClickListener {
