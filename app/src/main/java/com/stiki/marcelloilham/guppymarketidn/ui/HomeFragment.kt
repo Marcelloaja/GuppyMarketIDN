@@ -28,6 +28,7 @@ import com.stiki.marcelloilham.guppymarketidn.adapter.BestSellerAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.FilterAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.GridAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.SpaceItemDecoration
+import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogCategories
 import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogFilter
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.Item
@@ -49,6 +50,7 @@ class HomeFragment : Fragment() {
     private lateinit var filterRecyclerView: RecyclerView
     private lateinit var gridViewRecycler: RecyclerView
     private lateinit var etSearchHome: EditText
+    private lateinit var btnSeeAllCategories: TextView
     private lateinit var shimmerCarousel: ShimmerFrameLayout
     private lateinit var shimmerGrid: ShimmerFrameLayout
     private lateinit var textNoData: TextView
@@ -76,6 +78,7 @@ class HomeFragment : Fragment() {
         setupCarousel()
         setupHeaderButtons()
         setupFilterButton()
+        setupCategoriesButton()
         setupSearchBar()
         setupGridViewRecycler()
 
@@ -91,6 +94,7 @@ class HomeFragment : Fragment() {
         btnCartHome = view.findViewById(R.id.btnCartHome)
         btnNotifHome = view.findViewById(R.id.btnNotifHome)
         etSearchHome = view.findViewById(R.id.etSearchHome)
+        btnSeeAllCategories = view.findViewById(R.id.btnSeeAllCategories)
         gridViewRecycler = view.findViewById(R.id.gridViewRecycler)
         shimmerCarousel = view.findViewById(R.id.shimmerCarousel)
         shimmerGrid = view.findViewById(R.id.shimmerGrid)
@@ -279,6 +283,17 @@ class HomeFragment : Fragment() {
         filterHome.setOnClickListener { button ->
             button.startAnimation(clickAnimation)
             BottomDialogFilter().show(parentFragmentManager, "BottomSheetFragment")
+        }
+    }
+
+    private fun setupCategoriesButton() {
+        btnSeeAllCategories.setOnClickListener {
+            val clickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
+            btnSeeAllCategories.startAnimation(clickAnimation)
+
+            BottomDialogCategories { selectedCategory ->
+                etSearchHome.setText(selectedCategory)
+            }.show(parentFragmentManager, "BottomDialogCategories")
         }
     }
 
