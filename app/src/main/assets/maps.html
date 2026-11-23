@@ -11,11 +11,48 @@
         body, html { width: 100vw; height: 100vh; overflow: hidden; background-color: #F5F5F5; }
         #map { position: absolute; top: 0; bottom: 0; width: 100%; height: 100%; }
 
-        /* Custom MapLibre Marker Styles - MUST BE position: absolute for MapLibre WebGL placement */
-        .marker-badge {
+        .user-pulse-marker {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .pulse-ring {
             position: absolute;
-            top: 0;
-            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(33, 150, 243, 0.4);
+            border-radius: 50%;
+            animation: pulse-ring-anim 2s infinite ease-out;
+        }
+
+        .pulse-dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: #2196F3;
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 4px rgba(0,0,0,0.4);
+        }
+
+        @keyframes pulse-ring-anim {
+            0% {
+                transform: scale(0.3);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Custom MapLibre Marker Styles */
+        .marker-badge {
             background: #FFFFFF;
             color: #1C1C1C;
             font-family: 'Segoe UI', Roboto, sans-serif;
@@ -29,12 +66,8 @@
             align-items: center;
             white-space: nowrap;
             cursor: pointer;
-            will-change: transform;
         }
         .marker-badge-green {
-            position: absolute;
-            top: 0;
-            left: 0;
             background: #225741;
             color: #FFFFFF;
             font-family: 'Segoe UI', Roboto, sans-serif;
@@ -45,7 +78,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.25);
             white-space: nowrap;
             cursor: pointer;
-            will-change: transform;
         }
         .verified-icon {
             display: inline-flex;
@@ -59,36 +91,6 @@
             font-size: 9px;
             margin-left: 5px;
             font-weight: bold;
-        }
-
-        /* User Location Pulse Marker */
-        .user-pulse {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 36px;
-            height: 36px;
-            background: rgba(33, 150, 243, 0.25);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: pulse 2s infinite;
-            will-change: transform;
-            pointer-events: none;
-        }
-        .user-pulse-inner {
-            width: 14px;
-            height: 14px;
-            background: #2196F3;
-            border: 2px solid #FFFFFF;
-            border-radius: 50%;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-        @keyframes pulse {
-            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4); }
-            70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(33, 150, 243, 0); }
-            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
         }
 
         /* Hide Attribution for clean view */
@@ -115,20 +117,13 @@
             attributionControl: false
         });
 
-        // 1. User Location Pulse Marker
-        const userEl = document.createElement('div');
-        userEl.className = 'user-pulse';
-        userEl.innerHTML = '<div class="user-pulse-inner"></div>';
-
-        let userMarker = new maplibregl.Marker({ element: userEl })
-            .setLngLat([currentLng, currentLat])
-            .addTo(map);
+        let userMarker = null;
 
         // 2. Guppy King Farm Marker
         const farmEl = document.createElement('div');
         farmEl.className = 'marker-badge';
         farmEl.innerHTML = 'Guppy King Farm <span class="verified-icon">✓</span>';
-        new maplibregl.Marker({ element: farmEl })
+        new maplibregl.Marker({ element: farmEl, anchor: 'center' })
             .setLngLat([106.868500, -6.221500])
             .addTo(map);
 
@@ -136,7 +131,7 @@
         const countEl = document.createElement('div');
         countEl.className = 'marker-badge-green';
         countEl.innerHTML = '150+';
-        new maplibregl.Marker({ element: countEl })
+        new maplibregl.Marker({ element: countEl, anchor: 'center' })
             .setLngLat([106.869800, -6.223200])
             .addTo(map);
 
@@ -144,7 +139,7 @@
         const pin85El = document.createElement('div');
         pin85El.className = 'marker-badge';
         pin85El.innerHTML = '85';
-        new maplibregl.Marker({ element: pin85El })
+        new maplibregl.Marker({ element: pin85El, anchor: 'center' })
             .setLngLat([106.858000, -6.227500])
             .addTo(map);
 
@@ -152,19 +147,15 @@
         const pin32El = document.createElement('div');
         pin32El.className = 'marker-badge';
         pin32El.innerHTML = '32';
-        new maplibregl.Marker({ element: pin32El })
+        new maplibregl.Marker({ element: pin32El, anchor: 'center' })
             .setLngLat([106.871500, -6.218500])
             .addTo(map);
 
         // Force MapLibre to recalculate bounds after layout renders
-        function resizeMap() {
+        map.on('load', () => {
             setTimeout(() => {
                 map.resize();
             }, 300);
-        }
-
-        map.on('load', () => {
-            resizeMap();
         });
 
         // Functions exposed for Android Kotlin
@@ -187,12 +178,18 @@
             if (userMarker) {
                 userMarker.setLngLat([currentLng, currentLat]);
             } else {
-                userMarker = new maplibregl.Marker({ element: userEl })
-                    .setLngLat([currentLng, currentLat])
-                    .addTo(map);
+                const userEl = document.createElement('div');
+                userEl.className = 'user-pulse-marker';
+                userEl.innerHTML = '<div class="pulse-ring"></div><div class="pulse-dot"></div>';
+
+                userMarker = new maplibregl.Marker({
+                    element: userEl,
+                    anchor: 'center'
+                })
+                .setLngLat([currentLng, currentLat])
+                .addTo(map);
             }
 
-            map.resize();
             map.flyTo({ center: [currentLng, currentLat], zoom: 15, speed: 1.2 });
         }
     </script>
