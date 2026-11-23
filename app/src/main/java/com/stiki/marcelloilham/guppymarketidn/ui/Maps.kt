@@ -14,6 +14,7 @@ import android.speech.tts.TextToSpeech
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
@@ -37,6 +38,7 @@ class Maps : Fragment() {
     private lateinit var bottomSheetFarm: View
     private lateinit var cardSearchContainer: View
     private lateinit var cardNavBanner: View
+    private lateinit var tvNavInfoSubtitle: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +49,7 @@ class Maps : Fragment() {
         bottomSheetFarm = view.findViewById(R.id.bottomSheetFarm)
         cardSearchContainer = view.findViewById(R.id.cardSearchContainer)
         cardNavBanner = view.findViewById(R.id.cardNavBanner)
+        tvNavInfoSubtitle = view.findViewById(R.id.tvNavInfoSubtitle)
 
         setupWebView()
         setupMapControls(view)
@@ -72,6 +75,19 @@ class Maps : Fragment() {
         webView.webViewClient = WebViewClient()
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
+
+        // Bridge JS for Dynamic Realtime Distance & ETA Updates
+        webView.addJavascriptInterface(object {
+            @JavascriptInterface
+            fun onRouteUpdated(distance: String, duration: String) {
+                activity?.runOnUiThread {
+                    if (isAdded && ::tvNavInfoSubtitle.isInitialized) {
+                        tvNavInfoSubtitle.text = "$distance · Estimasi $duration"
+                    }
+                }
+            }
+        }, "AndroidBridge")
+
         webView.loadUrl("file:///android_asset/maps.html")
     }
 
