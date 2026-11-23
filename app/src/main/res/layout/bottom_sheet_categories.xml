@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/inter_bold"
-            android:text="Semua Kategori Varian"
+            android:text="Semua Kategori Toko"
             android:textColor="@color/guppy_text_black"
             android:textSize="18sp" />
 
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:fontFamily="@font/inter_regular"
-        android:text="Pilih varian genetika ikan guppy favorit Anda"
+        android:text="Pilih kategori kebutuhan budidaya dan peralatan ikan guppy"
         android:textColor="@color/guppy_text_gray"
         android:textSize="12sp" />
 
