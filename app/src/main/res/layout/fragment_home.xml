@@ -27,7 +27,7 @@
             <!-- Decorative Ambient Glow Background -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="280dp"
                 android:background="@drawable/bg_home_header_glow"/>
 
             <LinearLayout
