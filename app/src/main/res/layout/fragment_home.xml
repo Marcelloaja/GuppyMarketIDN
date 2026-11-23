@@ -34,7 +34,7 @@
                     android:layout_height="48dp"
                     android:src="@drawable/marcello"
                     android:scaleType="centerCrop"
-                    app:cornerSize="50%"
+                    app:shapeAppearanceOverlay="@style/CircleImageStyle"
                     app:strokeColor="@color/guppy_primary"
                     app:strokeWidth="2dp"/>
 
@@ -196,7 +196,7 @@
                             android:layout_height="60dp"
                             android:src="@drawable/bg_image_grid"
                             android:scaleType="centerCrop"
-                            app:cornerSize="50%"
+                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
                             app:strokeColor="@color/guppy_primary"
                             app:strokeWidth="2dp"/>
                         <TextView
@@ -221,7 +221,7 @@
                             android:layout_height="60dp"
                             android:src="@drawable/bg_image_grid"
                             android:scaleType="centerCrop"
-                            app:cornerSize="50%"
+                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
                             app:strokeColor="@color/guppy_stroke"
                             app:strokeWidth="1dp"/>
                         <TextView
@@ -246,7 +246,7 @@
                             android:layout_height="60dp"
                             android:src="@drawable/bg_image_grid"
                             android:scaleType="centerCrop"
-                            app:cornerSize="50%"
+                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
                             app:strokeColor="@color/guppy_stroke"
                             app:strokeWidth="1dp"/>
                         <TextView
@@ -271,7 +271,7 @@
                             android:layout_height="60dp"
                             android:src="@drawable/bg_image_grid"
                             android:scaleType="centerCrop"
-                            app:cornerSize="50%"
+                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
                             app:strokeColor="@color/guppy_stroke"
                             app:strokeWidth="1dp"/>
                         <TextView
@@ -296,7 +296,7 @@
                             android:layout_height="60dp"
                             android:src="@drawable/bg_image_grid"
                             android:scaleType="centerCrop"
-                            app:cornerSize="50%"
+                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
                             app:strokeColor="@color/guppy_stroke"
                             app:strokeWidth="1dp"/>
                         <TextView
