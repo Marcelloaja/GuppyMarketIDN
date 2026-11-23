@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>MapLibre OpenStreetMap</title>
+    <title>MapLibre Routing Map</title>
     <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <!-- OSRM Turf.js for bounding box & line calculations (optional but helpful) -->
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { width: 100vw; height: 100vh; overflow: hidden; background-color: #F5F5F5; }
@@ -41,14 +43,8 @@
         }
 
         @keyframes pulse-ring-anim {
-            0% {
-                transform: scale(0.3);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 0;
-            }
+            0% { transform: scale(0.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 0; }
         }
 
         /* Custom MapLibre Marker Styles */
@@ -66,6 +62,7 @@
             align-items: center;
             white-space: nowrap;
             cursor: pointer;
+            will-change: transform;
         }
         .marker-badge-green {
             background: #225741;
@@ -78,6 +75,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.25);
             white-space: nowrap;
             cursor: pointer;
+            will-change: transform;
         }
         .verified-icon {
             display: inline-flex;
@@ -93,10 +91,7 @@
             font-weight: bold;
         }
 
-        /* Hide Attribution for clean view */
-        .maplibregl-ctrl-bottom-right, .maplibregl-ctrl-bottom-left {
-            display: none !important;
-        }
+        .maplibregl-ctrl-bottom-right, .maplibregl-ctrl-bottom-left { display: none !important; }
     </style>
 </head>
 <body>
@@ -107,11 +102,17 @@
         let currentLat = -6.225014;
         let currentLng = 106.865421;
 
+        // Destination: Guppy King Farm
+        const destLng = 106.868500;
+        const destLat = -6.221500;
+
+        let isRoutingActive = false;
+
         // Initialize MapLibre GL JS Map
         const map = new maplibregl.Map({
             container: 'map',
             style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-            center: [currentLng, currentLat], // Default: Jatinegara, Jakarta Timur
+            center: [currentLng, currentLat],
             zoom: 14.6,
             pitch: 25,
             attributionControl: false
@@ -119,43 +120,77 @@
 
         let userMarker = null;
 
-        // 2. Guppy King Farm Marker
+        // Guppy King Farm Marker
         const farmEl = document.createElement('div');
         farmEl.className = 'marker-badge';
         farmEl.innerHTML = 'Guppy King Farm <span class="verified-icon">✓</span>';
+
+        // Click listener on Farm Marker to start Routing
+        farmEl.addEventListener('click', () => {
+            startNavigation();
+        });
+
         new maplibregl.Marker({ element: farmEl, anchor: 'center' })
-            .setLngLat([106.868500, -6.221500])
+            .setLngLat([destLng, destLat])
             .addTo(map);
 
-        // 3. Pin 150+
-        const countEl = document.createElement('div');
-        countEl.className = 'marker-badge-green';
-        countEl.innerHTML = '150+';
-        new maplibregl.Marker({ element: countEl, anchor: 'center' })
-            .setLngLat([106.869800, -6.223200])
-            .addTo(map);
+        // Other Pins
+        const countEl = document.createElement('div'); countEl.className = 'marker-badge-green'; countEl.innerHTML = '150+';
+        new maplibregl.Marker({ element: countEl, anchor: 'center' }).setLngLat([106.869800, -6.223200]).addTo(map);
 
-        // 4. Pin 85
-        const pin85El = document.createElement('div');
-        pin85El.className = 'marker-badge';
-        pin85El.innerHTML = '85';
-        new maplibregl.Marker({ element: pin85El, anchor: 'center' })
-            .setLngLat([106.858000, -6.227500])
-            .addTo(map);
+        const pin85El = document.createElement('div'); pin85El.className = 'marker-badge'; pin85El.innerHTML = '85';
+        new maplibregl.Marker({ element: pin85El, anchor: 'center' }).setLngLat([106.858000, -6.227500]).addTo(map);
 
-        // 5. Pin 32
-        const pin32El = document.createElement('div');
-        pin32El.className = 'marker-badge';
-        pin32El.innerHTML = '32';
-        new maplibregl.Marker({ element: pin32El, anchor: 'center' })
-            .setLngLat([106.871500, -6.218500])
-            .addTo(map);
+        const pin32El = document.createElement('div'); pin32El.className = 'marker-badge'; pin32El.innerHTML = '32';
+        new maplibregl.Marker({ element: pin32El, anchor: 'center' }).setLngLat([106.871500, -6.218500]).addTo(map);
 
-        // Force MapLibre to recalculate bounds after layout renders
+        // Load map sources & layers for Routing Line
         map.on('load', () => {
-            setTimeout(() => {
-                map.resize();
-            }, 300);
+            // Source for the route line
+            map.addSource('route', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': []
+                    }
+                }
+            });
+
+            // Outer casing for the route line (creates a border effect)
+            map.addLayer({
+                'id': 'route-casing',
+                'type': 'line',
+                'source': 'route',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                'paint': {
+                    'line-color': '#112F21',
+                    'line-width': 8,
+                    'line-opacity': 0.8
+                }
+            });
+
+            // Inner color of the route line
+            map.addLayer({
+                'id': 'route-line',
+                'type': 'line',
+                'source': 'route',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                'paint': {
+                    'line-color': '#4CAF50',
+                    'line-width': 4
+                }
+            });
+
+            setTimeout(() => { map.resize(); }, 300);
         });
 
         // Functions exposed for Android Kotlin
@@ -163,7 +198,7 @@
         function zoomOut() { map.zoomOut(); }
 
         function centerLocation() {
-            map.flyTo({ center: [currentLng, currentLat], zoom: 15, speed: 1.2 });
+            map.flyTo({ center: [currentLng, currentLat], zoom: 15, pitch: 45, speed: 1.2 });
         }
 
         // Real-time Update User Location from Android GPS
@@ -190,7 +225,58 @@
                 .addTo(map);
             }
 
-            map.flyTo({ center: [currentLng, currentLat], zoom: 15, speed: 1.2 });
+            // If routing is active, update the route line dynamically!
+            if (isRoutingActive) {
+                fetchRoute(currentLng, currentLat, destLng, destLat);
+
+                // Track camera to user with a navigation tilt
+                map.flyTo({ center: [currentLng, currentLat], zoom: 16.5, pitch: 60, speed: 0.5 });
+            } else {
+                map.flyTo({ center: [currentLng, currentLat], zoom: 15, speed: 1.2 });
+            }
+        }
+
+        // OSRM Public API call to get road coordinates
+        async function fetchRoute(startLng, startLat, endLng, endLat) {
+            try {
+                // Using open OSRM routing machine API (Car Driving profile)
+                const url = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${endLng},${endLat}?overview=full&geometries=geojson`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.routes && data.routes.length > 0) {
+                    const coords = data.routes[0].geometry.coordinates;
+
+                    // Update MapLibre GeoJSON Source
+                    map.getSource('route').setData({
+                        'type': 'Feature',
+                        'properties': {},
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': coords
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Routing Error: ", error);
+            }
+        }
+
+        // Triggered via Android FAB button or clicking the Farm Marker
+        function startNavigation() {
+            isRoutingActive = true;
+
+            // Initial route fetch
+            fetchRoute(currentLng, currentLat, destLng, destLat);
+
+            // Adjust camera for turn-by-turn nav perspective
+            map.flyTo({
+                center: [currentLng, currentLat],
+                zoom: 16.5,
+                pitch: 60,
+                bearing: 0,
+                speed: 1.5
+            });
         }
     </script>
 </body>

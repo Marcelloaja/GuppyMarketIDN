@@ -433,6 +433,7 @@
 
                     <!-- Send / Navigation FAB Button -->
                     <ImageView
+                        android:id="@+id/btnStartNavigation"
                         android:layout_width="38dp"
                         android:layout_height="38dp"
                         android:background="@drawable/bg_circle_image"

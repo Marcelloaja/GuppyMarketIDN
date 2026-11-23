@@ -53,6 +53,7 @@ class Maps : Fragment() {
         val btnZoomIn = view.findViewById<TextView>(R.id.btnZoomIn)
         val btnZoomOut = view.findViewById<TextView>(R.id.btnZoomOut)
         val btnMyLocation = view.findViewById<CardView>(R.id.btnMyLocation)
+        val btnNavigationAction = view.findViewById<View>(R.id.btnStartNavigation)
 
         btnZoomIn?.setOnClickListener {
             webView.evaluateJavascript("javascript:zoomIn()", null)
@@ -64,6 +65,10 @@ class Maps : Fragment() {
 
         btnMyLocation?.setOnClickListener {
             webView.evaluateJavascript("javascript:centerLocation()", null)
+        }
+        
+        btnNavigationAction?.setOnClickListener {
+            webView.evaluateJavascript("javascript:startNavigation()", null)
         }
     }
 
