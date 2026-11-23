@@ -1,302 +1,395 @@
-<FrameLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F8F9FA"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:paddingBottom="120dp">
 
-        <ImageView
+        <!-- HEADER COVER & SETTINGS -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="#838383" />
+            android:layout_height="180dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-56dp"
-            android:background="@drawable/rectangle_border_profile"
-            android:gravity="center"
-            android:orientation="vertical">
+            <!-- Banner Background -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_promo_gradient"/>
 
-            <LinearLayout
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#20000000"/>
+
+            <!-- Header Top Bar -->
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="-120dp"
-                android:gravity="center">
+                android:paddingHorizontal="20dp"
+                android:paddingTop="36dp">
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="start"/>
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="end"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="150dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    android:gravity="start"/>
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
-
-                <ImageButton
-                    android:id="@+id/btnMenuProfile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    android:gravity="end"
-                    android:src="@drawable/menu_profile"
-                    android:background="?attr/selectableItemBackground"/>
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/namaProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="Name"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
-            <TextView
-                android:id="@+id/emailProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:textSize="16sp"
-                android:textColor="@color/black"/>
-            <TextView
-                android:id="@+id/descriptionProfile"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:minLines="2"
-                android:text="Description"
-                android:gravity="center_horizontal"
-                android:textSize="16sp"
-                android:textColor="@color/black"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginTop="15dp">
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_pesan" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="13dp"
-                    android:layout_marginRight="13dp"
-                    android:background="@drawable/btn_follow"
-                    android:fontFamily="@font/inter_semi_bold"
-                    android:gravity="center"
-                    android:text="Follow"
+                    android:text="Profil Saya"
                     android:textColor="@color/white"
-                    android:textSize="14dp" />
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_share" />
-            </LinearLayout>
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="20sp"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="-80dp">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="135"
-                        android:fontFamily="@font/inter_medium"
-                        android:textSize="20dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Following"
-                        android:textSize="17dp"
-                        android:fontFamily="@font/inter_light"/>
-                </LinearLayout>
-
+                <!-- Settings / Menu Profile Button -->
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/line_profile"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp" />
+                    android:id="@+id/btnMenuProfile"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_circle_icon_action"
+                    android:src="@drawable/ic_settings"
+                    android:padding="10dp"
+                    app:tint="@color/guppy_text_black"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </RelativeLayout>
+        </FrameLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="263"
-                        android:fontFamily="@font/inter_medium"
-                        android:textSize="20dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Followers"
-                        android:textSize="17dp"
-                        android:fontFamily="@font/inter_light"/>
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/line_profile"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp" />
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="7"
-                        android:fontFamily="@font/inter_medium"
-                        android:textSize="20dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Product's"
-                        android:textSize="17dp"
-                        android:fontFamily="@font/inter_light"/>
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
+        <!-- USER PROFILE CARD OVERLAY -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_our_product">
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="-50dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/white">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp" >
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:padding="20dp">
 
-                <!-- LinearLayout pertama -->
+                <!-- Avatar Circle -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgAvatarProfile"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:src="@drawable/marcello"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/CircleImageStyle"
+                    app:strokeColor="@color/guppy_primary"
+                    app:strokeWidth="2dp"/>
+
+                <!-- Name & Verified Badge -->
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_marginTop="12dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
+
                     <TextView
+                        android:id="@+id/namaProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Our Product's"
-                        android:fontFamily="@font/inter_medium"
-                        android:textSize="16dp"
-                        android:textColor="@color/black"/>
+                        android:text="Marcello Ilham"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="18sp"/>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="6dp"
+                        android:src="@drawable/ic_verified_badge"/>
                 </LinearLayout>
 
-                <!-- LinearLayout kedua -->
-                <LinearLayout
-                    android:layout_width="0dp"
+                <!-- Email -->
+                <TextView
+                    android:id="@+id/emailProfile"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center"
-                    android:gravity="end">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="See all"
-                        android:fontFamily="@font/inter_medium"
-                        android:textSize="13dp"
-                        android:textColor="@color/black"/>
-                </LinearLayout>
-            </LinearLayout>
+                    android:layout_marginTop="2dp"
+                    android:text="marcello@guppy.com"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="13sp"/>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="13dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:gravity="center"
-                android:layout_gravity="center">
+                <!-- Phone -->
                 <TextView
                     android:id="@+id/phoneProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phone"
-                    android:textSize="16sp" />
+                    android:layout_marginTop="2dp"
+                    android:text="+62 812-3456-7890"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_semi_bold"
+                    android:textSize="12sp"/>
+
+                <!-- Bio Description -->
+                <TextView
+                    android:id="@+id/descriptionProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Breeder Guppy Kualitas Grade A &amp; A+ | Lokasi Farm: Bogor, Jawa Barat"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="13sp"
+                    android:gravity="center"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="@color/guppy_stroke"/>
+
+                <!-- STATS COUNTER -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Stat 1 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="135"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Mengikuti"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/guppy_stroke"/>
+
+                    <!-- Stat 2 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="263"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Pengikut"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/guppy_stroke"/>
+
+                    <!-- Stat 3 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12"
+                            android:textColor="@color/guppy_primary"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Produk Saya"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- MENU OPTIONS LIST CARD -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/white"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/guppy_stroke">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Item 1: Produk Saya -->
+                <LinearLayout
+                    android:id="@+id/menuMyProducts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_box"
+                        app:tint="@color/guppy_primary"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:text="Kelola Produk Saya"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:textSize="14sp"/>
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/fi_rr_angle_small_right"
+                        app:tint="@color/guppy_text_gray"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:background="@color/guppy_stroke"/>
+
+                <!-- Item 2: Riwayat Lelang Saya -->
+                <LinearLayout
+                    android:id="@+id/menuAuctionHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_nav_auction"
+                        app:tint="@color/guppy_primary"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:text="Riwayat Lelang Saya"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:textSize="14sp"/>
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/fi_rr_angle_small_right"
+                        app:tint="@color/guppy_text_gray"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:background="@color/guppy_stroke"/>
+
+                <!-- Item 3: Favorit / Whislist -->
+                <LinearLayout
+                    android:id="@+id/menuFavorites"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/fi_ss_heart_full"
+                        app:tint="@color/guppy_primary"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:text="Produk Favorit Saya"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:textSize="14sp"/>
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/fi_rr_angle_small_right"
+                        app:tint="@color/guppy_text_gray"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
     </LinearLayout>
 
-    <!-- ImageView marcello -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="100dp"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="45dp"
-        app:cardElevation="5dp"
-        android:elevation="5dp">
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/fi_rs_man_head"
-            android:padding="15dp"
-            android:layout_gravity="center"
-            android:background="#CDCBCB"
-            android:scaleType="centerCrop"/>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/ellipse8"/>
-    </androidx.cardview.widget.CardView>
-
-</FrameLayout>
+</androidx.core.widget.NestedScrollView>
