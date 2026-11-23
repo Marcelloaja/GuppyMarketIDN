@@ -25,15 +25,4 @@
     <style name="App.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@android:color/transparent</item>
     </style>
-
-    <!-- Compact Modern Typography for Floating Nav Labels -->
-    <style name="NavTextActive">
-        <item name="android:textSize">10.5sp</item>
-        <item name="android:fontFamily">@font/inter_bold</item>
-    </style>
-
-    <style name="NavTextInactive">
-        <item name="android:textSize">10.5sp</item>
-        <item name="android:fontFamily">@font/inter_medium</item>
-    </style>
 </resources>
