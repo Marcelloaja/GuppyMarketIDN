@@ -6,28 +6,43 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="#F5F5F5"
     tools:context=".MainActivity">
 
+    <!-- Konten dibiarkan memenuhi layar (match_parent)
+         sehingga Bottom Navigation benar-benar melayang (floating) di atasnya -->
     <FrameLayout
         android:id="@+id/navhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/nav_view"/>
+        android:layout_height="match_parent" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardBottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:elevation="12dp"
-        app:elevation="12dp"
-        app:menu="@menu/menu"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:itemRippleColor="@color/guppy_primary_light"
-        app:itemActiveIndicatorStyle="@style/App.BottomNavigationView.ActiveIndicator"
-        app:labelVisibilityMode="labeled"/>
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="16dp"
+        app:cardBackgroundColor="@color/white"
+        app:strokeWidth="0dp">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:elevation="0dp"
+            app:menu="@menu/menu"
+            app:itemIconTint="@color/bottom_nav_color"
+            app:itemTextColor="@color/bottom_nav_color"
+            app:itemRippleColor="@color/guppy_primary_light"
+            app:itemActiveIndicatorStyle="@style/App.BottomNavigationView.ActiveIndicator"
+            app:labelVisibilityMode="labeled"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </RelativeLayout>
