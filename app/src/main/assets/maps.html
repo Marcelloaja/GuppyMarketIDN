@@ -105,6 +105,7 @@
         const destLat = -6.221500;
 
         let isRoutingActive = false;
+        let currentProfile = 'driving'; // 'driving' (Mobil), 'bike' (Motor), 'foot' (Jalan Kaki)
 
         // Initialize MapLibre GL JS Map
         const map = new maplibregl.Map({
@@ -191,6 +192,26 @@
             setTimeout(() => { map.resize(); }, 300);
         });
 
+        // Switch Vehicle Profile & dynamically change line colors + ETAs
+        function setRouteProfile(profile) {
+            currentProfile = profile;
+
+            // Change route line color dynamically based on mode
+            if (map.getLayer('route-line')) {
+                if (profile === 'bike') {
+                    map.setPaintProperty('route-line', 'line-color', '#00BCD4'); // Motor: Vibrant Cyan
+                } else if (profile === 'foot') {
+                    map.setPaintProperty('route-line', 'line-color', '#FF9800'); // Jalan Kaki: Bright Orange
+                } else {
+                    map.setPaintProperty('route-line', 'line-color', '#4CAF50'); // Mobil: Emerald Green
+                }
+            }
+
+            if (isRoutingActive) {
+                fetchRoute(currentLng, currentLat, destLng, destLat);
+            }
+        }
+
         // Functions exposed for Android Kotlin
         function zoomIn() { map.zoomIn(); }
         function zoomOut() { map.zoomOut(); }
@@ -232,19 +253,14 @@
             }
         }
 
-        let currentProfile = 'driving'; // 'driving' (Mobil), 'bike' (Motor), 'foot' (Jalan Kaki)
-
-        function setRouteProfile(profile) {
-            currentProfile = profile;
-            if (isRoutingActive) {
-                fetchRoute(currentLng, currentLat, destLng, destLat);
-            }
-        }
-
-        // Realtime OSRM Public API call to get road coordinates, distance, and duration
+        // Realtime OSRM Public API call + Dynamic Urban Speed Profile Calculation
         async function fetchRoute(startLng, startLat, endLng, endLat) {
             try {
-                const url = `https://router.project-osrm.org/route/v1/${currentProfile}/${startLng},${startLat};${endLng},${endLat}?overview=full&geometries=geojson`;
+                let profileEndpoint = 'driving';
+                if (currentProfile === 'foot') profileEndpoint = 'foot';
+                if (currentProfile === 'bike') profileEndpoint = 'bike';
+
+                const url = `https://router.project-osrm.org/route/v1/${profileEndpoint}/${startLng},${startLat};${endLng},${endLat}?overview=full&geometries=geojson`;
                 const response = await fetch(url);
                 const data = await response.json();
 
@@ -262,15 +278,27 @@
                         }
                     });
 
-                    // Calculate Real-time Distance & ETA
+                    // Distance in meters
                     const distMeters = route.distance;
-                    const durSecs = route.duration;
+                    let durSecs = route.duration;
+
+                    // Apply Realistic Indonesia Urban Speed Profiles:
+                    if (currentProfile === 'bike') {
+                        // Motor: ~35 km/h agile urban traffic speed
+                        durSecs = (distMeters / 35000) * 3600;
+                    } else if (currentProfile === 'foot') {
+                        // Jalan Kaki: ~5 km/h walking speed
+                        durSecs = (distMeters / 5000) * 3600;
+                    } else if (currentProfile === 'driving') {
+                        // Mobil: ~22 km/h urban traffic speed
+                        durSecs = (distMeters / 22000) * 3600;
+                    }
 
                     let distText = distMeters >= 1000
                         ? (distMeters / 1000).toFixed(1).replace('.', ',') + ' km'
                         : Math.round(distMeters) + ' m';
 
-                    let mins = Math.ceil(durSecs / 60);
+                    let mins = Math.max(1, Math.ceil(durSecs / 60));
                     let durText = mins >= 60
                         ? Math.floor(mins / 60) + ' jam ' + (mins % 60) + ' mnt'
                         : mins + ' menit';
