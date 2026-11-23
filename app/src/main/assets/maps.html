@@ -232,10 +232,19 @@
             }
         }
 
+        let currentProfile = 'driving'; // 'driving' (Mobil), 'bike' (Motor), 'foot' (Jalan Kaki)
+
+        function setRouteProfile(profile) {
+            currentProfile = profile;
+            if (isRoutingActive) {
+                fetchRoute(currentLng, currentLat, destLng, destLat);
+            }
+        }
+
         // Realtime OSRM Public API call to get road coordinates, distance, and duration
         async function fetchRoute(startLng, startLat, endLng, endLat) {
             try {
-                const url = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${endLng},${endLat}?overview=full&geometries=geojson`;
+                const url = `https://router.project-osrm.org/route/v1/${currentProfile}/${startLng},${startLat};${endLng},${endLat}?overview=full&geometries=geojson`;
                 const response = await fetch(url);
                 const data = await response.json();
 

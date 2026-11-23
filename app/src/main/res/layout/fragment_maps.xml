@@ -88,63 +88,127 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="12dp"
-                    android:gravity="center_vertical">
-
-                    <!-- Back / End Nav Button -->
-                    <ImageView
-                        android:id="@+id/btnEndNav"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/bg_circle_icon_action"
-                        android:src="@drawable/ic_chevron_left"
-                        android:padding="8dp"
-                        app:tint="@color/guppy_text_black"
-                        android:clickable="true"
-                        android:focusable="true"/>
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <!-- Back / End Nav Button -->
+                        <ImageView
+                            android:id="@+id/btnEndNav"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/bg_circle_icon_action"
+                            android:src="@drawable/ic_chevron_left"
+                            android:padding="8dp"
+                            app:tint="@color/guppy_text_black"
+                            android:clickable="true"
+                            android:focusable="true"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvNavInfoTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Menuju Guppy King Farm"
+                                android:textColor="@color/white"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:id="@+id/tvNavInfoSubtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Mengkalkulasi rute..."
+                                android:textColor="#E0F2F1"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/tvNavInfoTitle"
+                            android:id="@+id/btnStopNavText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Menuju Guppy King Farm"
+                            android:background="@drawable/bg_tag_photo_count"
+                            android:backgroundTint="@color/guppy_red"
+                            android:text="Akhiri"
                             android:textColor="@color/white"
                             android:fontFamily="@font/inter_bold"
-                            android:textSize="14sp"/>
-
-                        <TextView
-                            android:id="@+id/tvNavInfoSubtitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Mengkalkulasi rute..."
-                            android:textColor="#E0F2F1"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="11sp"/>
+                            android:textSize="12sp"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp"
+                            android:clickable="true"
+                            android:focusable="true"/>
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/btnStopNavText"
-                        android:layout_width="wrap_content"
+                    <!-- VEHICLE MODE SELECTOR CHIPS (Mobil, Motor, Jalan Kaki) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_tag_photo_count"
-                        android:backgroundTint="@color/guppy_red"
-                        android:text="Akhiri"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="12sp"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp"
-                        android:clickable="true"
-                        android:focusable="true"/>
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <!-- Mobil Chip (Selected) -->
+                        <TextView
+                            android:id="@+id/chipModeCar"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_filter_green"
+                            android:text="🚗 Mobil"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/inter_semi_bold"
+                            android:textSize="11sp"
+                            android:gravity="center"
+                            android:paddingVertical="6dp"
+                            android:layout_marginEnd="6dp"
+                            android:clickable="true"
+                            android:focusable="true"/>
+
+                        <!-- Motor Chip -->
+                        <TextView
+                            android:id="@+id/chipModeMotor"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_chip_outline"
+                            android:text="🛵 Motor"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="11sp"
+                            android:gravity="center"
+                            android:paddingVertical="6dp"
+                            android:layout_marginEnd="6dp"
+                            android:clickable="true"
+                            android:focusable="true"/>
+
+                        <!-- Jalan Kaki Chip -->
+                        <TextView
+                            android:id="@+id/chipModeWalk"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_chip_outline"
+                            android:text="🚶 Jalan Kaki"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="11sp"
+                            android:gravity="center"
+                            android:paddingVertical="6dp"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

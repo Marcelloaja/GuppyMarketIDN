@@ -99,6 +99,10 @@ class Maps : Fragment() {
         val btnEndNav = view.findViewById<ImageView>(R.id.btnEndNav)
         val btnStopNavText = view.findViewById<TextView>(R.id.btnStopNavText)
 
+        val chipCar = view.findViewById<TextView>(R.id.chipModeCar)
+        val chipMotor = view.findViewById<TextView>(R.id.chipModeMotor)
+        val chipWalk = view.findViewById<TextView>(R.id.chipModeWalk)
+
         btnZoomIn?.setOnClickListener {
             webView.evaluateJavascript("javascript:zoomIn()", null)
         }
@@ -122,6 +126,31 @@ class Maps : Fragment() {
         btnStopNavText?.setOnClickListener {
             exitNavigationMode()
         }
+
+        chipCar?.setOnClickListener {
+            selectVehicleMode("driving", chipCar, listOf(chipMotor, chipWalk))
+            speakText("Rute mobil diaktifkan.")
+        }
+
+        chipMotor?.setOnClickListener {
+            selectVehicleMode("bike", chipMotor, listOf(chipCar, chipWalk))
+            speakText("Rute motor diaktifkan.")
+        }
+
+        chipWalk?.setOnClickListener {
+            selectVehicleMode("foot", chipWalk, listOf(chipCar, chipMotor))
+            speakText("Rute jalan kaki diaktifkan.")
+        }
+    }
+
+    private fun selectVehicleMode(profile: String, selected: TextView?, unselectedList: List<TextView?>) {
+        selected?.setBackgroundResource(R.drawable.bg_filter_green)
+
+        unselectedList.forEach { unselected ->
+            unselected?.setBackgroundResource(R.drawable.bg_chip_outline)
+        }
+
+        webView.evaluateJavascript("javascript:setRouteProfile('$profile')", null)
     }
 
     private fun toggleFullNavigationMode() {
