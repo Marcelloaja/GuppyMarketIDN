@@ -27,6 +27,7 @@
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:itemRippleColor="@color/guppy_primary_light"
+        app:itemActiveIndicatorStyle="@style/App.BottomNavigationView.ActiveIndicator"
         app:labelVisibilityMode="labeled"/>
 
 </RelativeLayout>
