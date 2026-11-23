@@ -39,7 +39,9 @@ class Maps : Fragment() {
     private fun setupWebView() {
         webView.webViewClient = WebViewClient()
         webView.settings.javaScriptEnabled = true
-        webView.loadUrl("https://www.google.com/maps")
+        webView.settings.domStorageEnabled = true
+        webView.settings.userAgentString = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+        webView.loadUrl("https://www.google.com/maps/@-6.225014,106.865421,15z")
     }
 
     private fun requestLocationPermission() {
