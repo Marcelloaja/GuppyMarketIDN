@@ -31,8 +31,9 @@
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
+            style="@style/Widget.MaterialComponents.BottomNavigationView"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="62dp"
             android:background="@android:color/transparent"
             app:elevation="0dp"
             app:menu="@menu/menu"
@@ -40,7 +41,9 @@
             app:itemIconTint="@color/bottom_nav_color"
             app:itemTextColor="@color/bottom_nav_color"
             app:itemRippleColor="@color/guppy_primary_light"
-            app:itemActiveIndicatorStyle="@style/App.BottomNavigationView.ActiveIndicator"
+            app:itemPaddingTop="8dp"
+            app:itemPaddingBottom="6dp"
+            app:itemIconPadding="4dp"
             app:labelVisibilityMode="labeled"/>
 
     </com.google.android.material.card.MaterialCardView>
