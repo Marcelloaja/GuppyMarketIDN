@@ -13,7 +13,7 @@
         body {
             width: 100vw;
             height: 100vh;
-            background: radial-gradient(circle at center, #2E6F54 0%, #173E2E 100%);
+            background: #FFFFFF;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -23,45 +23,43 @@
         }
         #canvas-container {
             width: 100%;
-            height: 60vh;
+            height: 50vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
         .text-container {
             text-align: center;
-            color: #FFFFFF;
-            margin-top: -20px;
+            color: #1C1C1C;
+            margin-top: -10px;
         }
         .title {
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #FFFFFF;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #225741;
+            margin-bottom: 6px;
         }
         .subtitle {
-            font-size: 13px;
-            color: #E7F3EE;
-            opacity: 0.8;
-            margin-top: 6px;
-            letter-spacing: 0.5px;
+            font-size: 14px;
+            color: #555555;
+            font-weight: 500;
         }
         .loading-bar-container {
             width: 180px;
             height: 4px;
-            background: rgba(255, 255, 255, 0.2);
+            background: #EEEEEE;
             border-radius: 2px;
-            margin: 24px auto 0;
+            margin: 32px auto 0;
             overflow: hidden;
             position: relative;
         }
         .loading-bar-progress {
             width: 100%;
             height: 100%;
-            background: #FFCA28;
+            background: #4CAF50;
             border-radius: 2px;
-            animation: loadingProgress 2.8s ease-in-out infinite;
+            animation: loadingProgress 2.2s ease-in-out infinite;
             transform-origin: left;
         }
         @keyframes loadingProgress {
@@ -78,8 +76,8 @@
     <div id="canvas-container"></div>
 
     <div class="text-container">
-        <div class="title">Guppy Market IDN</div>
-        <div class="subtitle">Platform Lelang & Jual Beli Guppy Terpercaya</div>
+        <div class="title">Guppy Market</div>
+        <div class="subtitle">Aplikasi Lelang & Jual Beli Guppy</div>
         <div class="loading-bar-container">
             <div class="loading-bar-progress"></div>
         </div>
@@ -92,83 +90,72 @@
         const scene = new THREE.Scene();
 
         // Camera
-        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-        camera.position.z = 4.5;
+        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.z = 5;
 
-        // Renderer
+        // Renderer (Transparent Background for White Theme)
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
         // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         scene.add(ambientLight);
 
-        const pointLight1 = new THREE.PointLight(0xFFCA28, 2, 50);
+        const pointLight1 = new THREE.PointLight(0xFFFFFF, 1.5, 50);
         pointLight1.position.set(5, 5, 5);
         scene.add(pointLight1);
 
-        const pointLight2 = new THREE.PointLight(0x4CAF50, 1.5, 50);
+        const pointLight2 = new THREE.PointLight(0x4CAF50, 1.2, 50);
         pointLight2.position.set(-5, -5, 2);
         scene.add(pointLight2);
 
-        // 3D Object Group (Floating Badge)
+        // 3D Object Group
         const group = new THREE.Group();
 
-        // Outer Ring / Diamond Shape
-        const geometry = new THREE.IcosahedronGeometry(1.2, 1);
+        // Torus / Fish-like Water Ring Shape
+        const geometry = new THREE.TorusGeometry(1.2, 0.4, 16, 100);
         const material = new THREE.MeshPhongMaterial({
-            color: 0x225741,
-            emissive: 0x0f2b1f,
-            specular: 0xFFCA28,
-            shininess: 90,
-            flatShading: true,
+            color: 0x4CAF50,
+            emissive: 0x113322,
+            specular: 0xFFFFFF,
+            shininess: 100,
+            flatShading: false,
             wireframe: false
         });
         const mesh = new THREE.Mesh(geometry, material);
         group.add(mesh);
 
-        // Inner Core (Gold Star / Gem)
-        const coreGeo = new THREE.OctahedronGeometry(0.65, 0);
+        // Inner Sphere (Pearl / Gem)
+        const coreGeo = new THREE.SphereGeometry(0.5, 32, 32);
         const coreMat = new THREE.MeshStandardMaterial({
             color: 0xFFCA28,
-            roughness: 0.2,
+            roughness: 0.1,
             metalness: 0.8
         });
         const coreMesh = new THREE.Mesh(coreGeo, coreMat);
         group.add(coreMesh);
 
-        // Outer Wireframe Halo
-        const haloGeo = new THREE.IcosahedronGeometry(1.6, 1);
-        const haloMat = new THREE.MeshBasicMaterial({
-            color: 0xFFCA28,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.25
-        });
-        const haloMesh = new THREE.Mesh(haloGeo, haloMat);
-        group.add(haloMesh);
-
         scene.add(group);
 
-        // Particles System
+        // Particles System (Water Bubbles)
         const particlesGeo = new THREE.BufferGeometry();
-        const count = 60;
+        const count = 40;
         const positions = new Float32Array(count * 3);
 
         for(let i=0; i<count*3; i+=3) {
-            positions[i] = (Math.random() - 0.5) * 8;
-            positions[i+1] = (Math.random() - 0.5) * 8;
-            positions[i+2] = (Math.random() - 0.5) * 8;
+            positions[i] = (Math.random() - 0.5) * 6;
+            positions[i+1] = (Math.random() - 0.5) * 6;
+            positions[i+2] = (Math.random() - 0.5) * 6;
         }
 
         particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         const particlesMat = new THREE.PointsMaterial({
-            color: 0xFFCA28,
-            size: 0.05,
+            color: 0x4CAF50,
+            size: 0.08,
             transparent: true,
-            opacity: 0.6
+            opacity: 0.4
         });
         const particleSystem = new THREE.Points(particlesGeo, particlesMat);
         scene.add(particleSystem);
@@ -181,22 +168,25 @@
 
             const elapsedTime = clock.getElapsedTime();
 
-            // Rotate group
-            group.rotation.y = elapsedTime * 0.8;
-            group.rotation.x = Math.sin(elapsedTime * 0.5) * 0.3;
+            // Rotate main ring
+            mesh.rotation.y = elapsedTime * 0.8;
+            mesh.rotation.x = Math.sin(elapsedTime * 0.5) * 0.5;
 
-            // Inner core counter rotation
-            coreMesh.rotation.y = -elapsedTime * 1.2;
-            coreMesh.rotation.z = elapsedTime * 0.6;
-
-            // Halo pulse
-            haloMesh.rotation.y = -elapsedTime * 0.3;
+            // Inner core gentle rotation
+            coreMesh.rotation.y = -elapsedTime * 0.5;
 
             // Floating movement
-            group.position.y = Math.sin(elapsedTime * 1.5) * 0.15;
+            group.position.y = Math.sin(elapsedTime * 2.0) * 0.15;
 
-            // Particles slow rotation
-            particleSystem.rotation.y = elapsedTime * 0.05;
+            // Water bubbles moving up slowly
+            const positions = particleSystem.geometry.attributes.position.array;
+            for(let i=1; i<count*3; i+=3) {
+                positions[i] += 0.01;
+                if(positions[i] > 3) positions[i] = -3;
+            }
+            particleSystem.geometry.attributes.position.needsUpdate = true;
+
+            particleSystem.rotation.y = elapsedTime * 0.1;
 
             renderer.render(scene, camera);
         }
