@@ -31,6 +31,7 @@ import com.stiki.marcelloilham.guppymarketidn.adapter.HomeCategoryAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.SpaceItemDecoration
 import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogCategories
 import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogFilter
+import com.stiki.marcelloilham.guppymarketidn.menuHome.CategoryProductsActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.CategoryItem
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.Item
@@ -126,12 +127,10 @@ class HomeFragment : Fragment() {
     private fun setupHorizontalCategories() {
         homeCategoryAdapter = HomeCategoryAdapter(requireContext(), categoriesList) { item, pos ->
             currentSelectedCategoryName = item.name
-            val query = if (item.name == "Semua") "" else item.name
-
-            if (::gridAdapter.isInitialized) {
-                gridAdapter.searchItems(query)
-                toggleNoDataState(query)
+            val intent = Intent(requireContext(), CategoryProductsActivity::class.java).apply {
+                putExtra("EXTRA_CATEGORY_NAME", item.name)
             }
+            startActivity(intent)
         }
 
         categoryHorizontalRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -151,12 +150,10 @@ class HomeFragment : Fragment() {
                 val selectedPos = homeCategoryAdapter.getSelectedPosition()
                 categoryHorizontalRecycler.smoothScrollToPosition(selectedPos)
 
-                val query = if (currentSelectedCategoryName == "Semua") "" else currentSelectedCategoryName
-
-                if (::gridAdapter.isInitialized) {
-                    gridAdapter.searchItems(query)
-                    toggleNoDataState(query)
+                val intent = Intent(requireContext(), CategoryProductsActivity::class.java).apply {
+                    putExtra("EXTRA_CATEGORY_NAME", currentSelectedCategoryName)
                 }
+                startActivity(intent)
             }.show(parentFragmentManager, "BottomDialogCategories")
         }
     }
