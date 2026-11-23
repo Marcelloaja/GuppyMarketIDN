@@ -432,12 +432,13 @@
                     app:tint="@color/guppy_primary"/>
 
                 <TextView
+                    android:id="@+id/tvUserLocationAddress"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:fontFamily="@font/inter_medium"
-                    android:text="Lokasi Anda · Jatinegara, Jakarta Timur"
+                    android:text="Mencari lokasi Anda..."
                     android:textColor="@color/guppy_text_black"
                     android:textSize="13sp" />
 

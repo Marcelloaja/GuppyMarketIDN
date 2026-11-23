@@ -5,9 +5,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
@@ -40,6 +42,10 @@ class Maps : Fragment() {
     private lateinit var cardSearchContainer: View
     private lateinit var cardNavBanner: View
     private lateinit var tvNavInfoSubtitle: TextView
+    private lateinit var tvUserLocationAddress: TextView
+
+    private var lastGeocodedLat: Double = 0.0
+    private var lastGeocodedLng: Double = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +57,7 @@ class Maps : Fragment() {
         cardSearchContainer = view.findViewById(R.id.cardSearchContainer)
         cardNavBanner = view.findViewById(R.id.cardNavBanner)
         tvNavInfoSubtitle = view.findViewById(R.id.tvNavInfoSubtitle)
+        tvUserLocationAddress = view.findViewById(R.id.tvUserLocationAddress)
 
         setupWebView()
         setupMapControls(view)
@@ -366,6 +373,53 @@ class Maps : Fragment() {
         webView.post {
             webView.evaluateJavascript("javascript:updateUserLocation($lng, $lat)", null)
         }
+        updateAddressFromCoordinates(lat, lng)
+    }
+
+    private fun updateAddressFromCoordinates(lat: Double, lng: Double) {
+        // Run geocoder only if moved > ~50 meters to save resources
+        if (Math.abs(lat - lastGeocodedLat) < 0.0005 && Math.abs(lng - lastGeocodedLng) < 0.0005) return
+
+        lastGeocodedLat = lat
+        lastGeocodedLng = lng
+
+        Thread {
+            try {
+                val safeContext = context ?: return@Thread
+                val geocoder = Geocoder(safeContext, Locale("id", "ID"))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    geocoder.getFromLocation(lat, lng, 1) { addresses ->
+                        if (addresses.isNotEmpty()) {
+                            val addr = addresses[0]
+                            val subLoc = addr.subLocality ?: addr.locality ?: addr.subAdminArea ?: "Lokasi Anda"
+                            val city = addr.subAdminArea ?: addr.adminArea ?: ""
+                            val formattedText = "Lokasi Anda · $subLoc, $city"
+                            activity?.runOnUiThread {
+                                if (isAdded && ::tvUserLocationAddress.isInitialized) {
+                                    tvUserLocationAddress.text = formattedText
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    @Suppress("DEPRECATION")
+                    val addresses = geocoder.getFromLocation(lat, lng, 1)
+                    if (!addresses.isNullOrEmpty()) {
+                        val addr = addresses[0]
+                        val subLoc = addr.subLocality ?: addr.locality ?: addr.subAdminArea ?: "Lokasi Anda"
+                        val city = addr.subAdminArea ?: addr.adminArea ?: ""
+                        val formattedText = "Lokasi Anda · $subLoc, $city"
+                        activity?.runOnUiThread {
+                            if (isAdded && ::tvUserLocationAddress.isInitialized) {
+                                tvUserLocationAddress.text = formattedText
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
     }
 
     override fun onDestroyView() {
