@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,15 +60,33 @@ class Maps : Fragment() {
     }
 
     private fun setupTTS() {
-        tts = TextToSpeech(requireContext()) { status ->
+        val appContext = context?.applicationContext ?: return
+        tts = TextToSpeech(appContext) { status ->
             if (status == TextToSpeech.SUCCESS) {
-                tts?.language = Locale("id", "ID")
+                val idLocale = Locale("id", "ID")
+                val langResult = tts?.setLanguage(idLocale)
+
+                if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.w("MapsTTS", "Indonesian voice data missing, falling back to default locale.")
+                    tts?.language = Locale.getDefault()
+                }
+
+                val audioAttributes = android.media.AudioAttributes.Builder()
+                    .setUsage(android.media.AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                    .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+
+                tts?.setAudioAttributes(audioAttributes)
+            } else {
+                Log.e("MapsTTS", "TextToSpeech init failed with code: $status")
             }
         }
     }
 
     private fun speakText(text: String) {
-        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "GuppyNavTTS")
+        if (tts != null) {
+            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "GuppyNavTTS")
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
