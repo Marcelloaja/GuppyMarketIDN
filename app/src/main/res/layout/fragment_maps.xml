@@ -68,7 +68,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/user"
+                        android:src="@drawable/ic_mic"
                         app:tint="@color/guppy_text_black"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -218,7 +218,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/map"
+                        android:src="@drawable/ic_my_location"
                         app:tint="@color/guppy_primary"/>
                 </androidx.cardview.widget.CardView>
 
@@ -235,7 +235,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/fi_rr_folder"
+                        android:src="@drawable/ic_map_layers"
                         app:tint="@color/guppy_text_black"/>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
@@ -309,7 +309,7 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/map"
+                    android:src="@drawable/ic_map_folded"
                     app:tint="@color/guppy_primary"/>
 
                 <TextView
