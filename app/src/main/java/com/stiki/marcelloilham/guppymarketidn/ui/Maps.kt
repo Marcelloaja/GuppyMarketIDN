@@ -26,6 +26,7 @@ class Maps : Fragment() {
     private lateinit var webView: WebView
     private lateinit var locationManager: LocationManager
     private var locationListener: LocationListener? = null
+    private var gpsDialog: AlertDialog? = null
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
     override fun onCreateView(
@@ -67,8 +68,7 @@ class Maps : Fragment() {
     }
 
     private fun checkAndRequestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+        if (!hasLocationPermission()) {
             @Suppress("DEPRECATION")
             requestPermissions(
                 arrayOf(
@@ -80,6 +80,13 @@ class Maps : Fragment() {
         } else {
             checkGpsAndStartTracking()
         }
+    }
+
+    private fun hasLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     @Deprecated("Deprecated in Java")
@@ -97,35 +104,44 @@ class Maps : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (hasLocationPermission()) {
+            checkGpsAndStartTracking()
+        }
+    }
+
     private fun checkGpsAndStartTracking() {
         locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
         if (!isGpsEnabled && !isNetworkEnabled) {
-            showEnableGpsDialog()
+            showForceEnableGpsDialog()
         } else {
+            gpsDialog?.dismiss()
             startRealtimeLocationTracking()
         }
     }
 
-    private fun showEnableGpsDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Aktifkan Lokasi (GPS)")
-            .setMessage("Untuk menampilkan titik lokasi Anda dan farm terdekat secara real-time pada peta, silakan aktifkan Lokasi (GPS) di HP Anda.")
-            .setPositiveButton("Buka Pengaturan") { _, _ ->
+    private fun showForceEnableGpsDialog() {
+        if (gpsDialog?.isShowing == true) return
+
+        gpsDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Lokasi (GPS) Wajib Aktif")
+            .setMessage("Untuk mengakses fitur Maps dan menemukan lokasi farm terdekat di sekitar Anda, Anda wajib mengaktifkan Pengaturan Lokasi (GPS) di HP Anda.")
+            .setCancelable(false)
+            .setPositiveButton("Buka Pengaturan HP") { _, _ ->
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
-            .setNegativeButton("Nanti", null)
             .show()
     }
 
     @SuppressLint("MissingPermission")
     private fun startRealtimeLocationTracking() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
+        if (hasLocationPermission()) {
 
-            // 1. Instantly get last known location so user marker moves immediately
+            // 1. Instantly get last known location
             val lastGps = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             val lastNet = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
             val bestLocation = lastGps ?: lastNet
@@ -134,16 +150,18 @@ class Maps : Fragment() {
                 sendLocationToMap(it.longitude, it.latitude)
             }
 
-            // 2. Real-time updates listener
-            locationListener = object : LocationListener {
-                override fun onLocationChanged(location: Location) {
-                    sendLocationToMap(location.longitude, location.latitude)
-                }
+            // 2. Continuous Real-Time Updates
+            if (locationListener == null) {
+                locationListener = object : LocationListener {
+                    override fun onLocationChanged(location: Location) {
+                        sendLocationToMap(location.longitude, location.latitude)
+                    }
 
-                @Deprecated("Deprecated in Java")
-                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-                override fun onProviderEnabled(provider: String) {}
-                override fun onProviderDisabled(provider: String) {}
+                    @Deprecated("Deprecated in Java")
+                    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+                    override fun onProviderEnabled(provider: String) {}
+                    override fun onProviderDisabled(provider: String) {}
+                }
             }
 
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -172,6 +190,7 @@ class Maps : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        gpsDialog?.dismiss()
         locationListener?.let {
             if (::locationManager.isInitialized) {
                 locationManager.removeUpdates(it)
