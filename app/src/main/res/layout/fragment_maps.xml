@@ -152,62 +152,105 @@
                             android:focusable="true"/>
                     </LinearLayout>
 
-                    <!-- VEHICLE MODE SELECTOR CHIPS (Mobil, Motor, Jalan Kaki) -->
+                    <!-- VEHICLE MODE SEGMENTED CONTROL BAR -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_height="36dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_vehicle_segment_container"
+                        android:padding="3dp"
                         android:orientation="horizontal">
 
-                        <!-- Mobil Chip (Selected) -->
-                        <TextView
+                        <!-- Mobil Option (Active Default) -->
+                        <LinearLayout
                             android:id="@+id/chipModeCar"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_filter_green"
-                            android:text="🚗 Mobil"
-                            android:textColor="@color/white"
-                            android:fontFamily="@font/inter_semi_bold"
-                            android:textSize="11sp"
+                            android:background="@drawable/bg_vehicle_active_pill"
                             android:gravity="center"
-                            android:paddingVertical="6dp"
-                            android:layout_marginEnd="6dp"
+                            android:orientation="horizontal"
                             android:clickable="true"
-                            android:focusable="true"/>
+                            android:focusable="true">
 
-                        <!-- Motor Chip -->
-                        <TextView
+                            <ImageView
+                                android:id="@+id/icModeCar"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_mode_car"
+                                app:tint="@color/guppy_primary"/>
+
+                            <TextView
+                                android:id="@+id/tvModeCar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:text="Mobil"
+                                android:textColor="@color/guppy_primary"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!-- Motor Option (Inactive) -->
+                        <LinearLayout
                             android:id="@+id/chipModeMotor"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_chip_outline"
-                            android:text="🛵 Motor"
-                            android:textColor="@color/white"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="11sp"
+                            android:background="@android:color/transparent"
                             android:gravity="center"
-                            android:paddingVertical="6dp"
-                            android:layout_marginEnd="6dp"
+                            android:orientation="horizontal"
                             android:clickable="true"
-                            android:focusable="true"/>
+                            android:focusable="true">
 
-                        <!-- Jalan Kaki Chip -->
-                        <TextView
+                            <ImageView
+                                android:id="@+id/icModeMotor"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_mode_motor"
+                                app:tint="#D0E8DD"/>
+
+                            <TextView
+                                android:id="@+id/tvModeMotor"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:text="Motor"
+                                android:textColor="#D0E8DD"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!-- Jalan Kaki Option (Inactive) -->
+                        <LinearLayout
                             android:id="@+id/chipModeWalk"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_chip_outline"
-                            android:text="🚶 Jalan Kaki"
-                            android:textColor="@color/white"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="11sp"
+                            android:background="@android:color/transparent"
                             android:gravity="center"
-                            android:paddingVertical="6dp"
+                            android:orientation="horizontal"
                             android:clickable="true"
-                            android:focusable="true"/>
+                            android:focusable="true">
+
+                            <ImageView
+                                android:id="@+id/icModeWalk"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_mode_walk"
+                                app:tint="#D0E8DD"/>
+
+                            <TextView
+                                android:id="@+id/tvModeWalk"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:text="Jalan Kaki"
+                                android:textColor="#D0E8DD"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

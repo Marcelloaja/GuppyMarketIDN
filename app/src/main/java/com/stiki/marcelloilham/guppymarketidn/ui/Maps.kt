@@ -99,9 +99,17 @@ class Maps : Fragment() {
         val btnEndNav = view.findViewById<ImageView>(R.id.btnEndNav)
         val btnStopNavText = view.findViewById<TextView>(R.id.btnStopNavText)
 
-        val chipCar = view.findViewById<TextView>(R.id.chipModeCar)
-        val chipMotor = view.findViewById<TextView>(R.id.chipModeMotor)
-        val chipWalk = view.findViewById<TextView>(R.id.chipModeWalk)
+        val chipCar = view.findViewById<View>(R.id.chipModeCar)
+        val icCar = view.findViewById<ImageView>(R.id.icModeCar)
+        val tvCar = view.findViewById<TextView>(R.id.tvModeCar)
+
+        val chipMotor = view.findViewById<View>(R.id.chipModeMotor)
+        val icMotor = view.findViewById<ImageView>(R.id.icModeMotor)
+        val tvMotor = view.findViewById<TextView>(R.id.tvModeMotor)
+
+        val chipWalk = view.findViewById<View>(R.id.chipModeWalk)
+        val icWalk = view.findViewById<ImageView>(R.id.icModeWalk)
+        val tvWalk = view.findViewById<TextView>(R.id.tvModeWalk)
 
         btnZoomIn?.setOnClickListener {
             webView.evaluateJavascript("javascript:zoomIn()", null)
@@ -128,26 +136,48 @@ class Maps : Fragment() {
         }
 
         chipCar?.setOnClickListener {
-            selectVehicleMode("driving", chipCar, listOf(chipMotor, chipWalk))
+            selectVehicleMode(
+                "driving",
+                chipCar, icCar, tvCar,
+                listOf(Triple(chipMotor, icMotor, tvMotor), Triple(chipWalk, icWalk, tvWalk))
+            )
             speakText("Rute mobil diaktifkan.")
         }
 
         chipMotor?.setOnClickListener {
-            selectVehicleMode("bike", chipMotor, listOf(chipCar, chipWalk))
+            selectVehicleMode(
+                "bike",
+                chipMotor, icMotor, tvMotor,
+                listOf(Triple(chipCar, icCar, tvCar), Triple(chipWalk, icWalk, tvWalk))
+            )
             speakText("Rute motor diaktifkan.")
         }
 
         chipWalk?.setOnClickListener {
-            selectVehicleMode("foot", chipWalk, listOf(chipCar, chipMotor))
+            selectVehicleMode(
+                "foot",
+                chipWalk, icWalk, tvWalk,
+                listOf(Triple(chipCar, icCar, tvCar), Triple(chipMotor, icMotor, tvMotor))
+            )
             speakText("Rute jalan kaki diaktifkan.")
         }
     }
 
-    private fun selectVehicleMode(profile: String, selected: TextView?, unselectedList: List<TextView?>) {
-        selected?.setBackgroundResource(R.drawable.bg_filter_green)
+    private fun selectVehicleMode(
+        profile: String,
+        selectedLayout: View?,
+        selectedIcon: ImageView?,
+        selectedText: TextView?,
+        otherItems: List<Triple<View?, ImageView?, TextView?>>
+    ) {
+        selectedLayout?.setBackgroundResource(R.drawable.bg_vehicle_active_pill)
+        selectedIcon?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.guppy_primary))
+        selectedText?.setTextColor(ContextCompat.getColor(requireContext(), R.color.guppy_primary))
 
-        unselectedList.forEach { unselected ->
-            unselected?.setBackgroundResource(R.drawable.bg_chip_outline)
+        otherItems.forEach { (layout, icon, text) ->
+            layout?.setBackgroundResource(android.R.color.transparent)
+            icon?.setColorFilter(android.graphics.Color.parseColor("#D0E8DD"))
+            text?.setTextColor(android.graphics.Color.parseColor("#D0E8DD"))
         }
 
         webView.evaluateJavascript("javascript:setRouteProfile('$profile')", null)
