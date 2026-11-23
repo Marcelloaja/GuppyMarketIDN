@@ -85,10 +85,24 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSwipeRefresh() {
+        swipeRefreshLayout.setColorSchemeResources(R.color.guppy_primary)
         swipeRefreshLayout.setOnRefreshListener {
+            val content = swipeRefreshLayout.getChildAt(0)
+            content?.animate()?.alpha(0.6f)?.setDuration(200)?.start()
+
             Handler(Looper.getMainLooper()).postDelayed({
                 swipeRefreshLayout.isRefreshing = false
-            }, 2000)
+
+                runLayoutAnimation(gridViewRecycler)
+
+                content?.translationY = 30f
+                content?.animate()
+                    ?.alpha(1.0f)
+                    ?.translationY(0f)
+                    ?.setDuration(400)
+                    ?.setInterpolator(android.view.animation.DecelerateInterpolator())
+                    ?.start()
+            }, 1200)
         }
     }
 
@@ -187,6 +201,8 @@ class HomeFragment : Fragment() {
         gridViewRecycler.layoutManager = layoutManager
         gridViewRecycler.isNestedScrollingEnabled = false
 
+        runLayoutAnimation(gridViewRecycler)
+
         gridAdapter.setOnItemClickListener(object : GridAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 val item = gridAdapter.getItem(position)
@@ -197,6 +213,14 @@ class HomeFragment : Fragment() {
                 startActivity(intent)
             }
         })
+    }
+
+    private fun runLayoutAnimation(recyclerView: RecyclerView) {
+        val context = recyclerView.context
+        val controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+        recyclerView.layoutAnimation = controller
+        recyclerView.adapter?.notifyDataSetChanged()
+        recyclerView.scheduleLayoutAnimation()
     }
 
     private fun applyFilter(filter: String) {
