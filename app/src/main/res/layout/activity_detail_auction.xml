@@ -126,13 +126,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp">
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/black">
 
-                    <ImageView
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/bg_image_grid"
-                        android:scaleType="centerCrop"/>
+                        android:layout_height="match_parent">
+
+                        <!-- Main Image View -->
+                        <ImageView
+                            android:id="@+id/ivMainGallery"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/bg_image_grid"
+                            android:scaleType="centerCrop"/>
+
+                        <!-- Video View (Hidden by Default) -->
+                        <VideoView
+                            android:id="@+id/vvMainGallery"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:visibility="gone"/>
+
+                        <!-- Play Button Overlay for Video -->
+                        <ImageView
+                            android:id="@+id/btnPlayVideoOverlay"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_circle_image"
+                            android:backgroundTint="#99000000"
+                            android:src="@drawable/ic_play"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            app:tint="@color/white"
+                            android:visibility="gone"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </FrameLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Live Tag -->
@@ -219,20 +251,50 @@
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal">
 
-                <!-- Selected Thumbnail -->
+                <!-- Video Thumbnail (with play icon overlay) -->
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="12dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/thumbVideo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/bg_image_grid"
+                        android:scaleType="centerCrop"
+                        app:cornerSize="8dp"
+                        app:strokeColor="@color/guppy_primary"
+                        app:strokeWidth="2dp"
+                        android:padding="2dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_play"
+                        app:tint="@color/white"
+                        android:elevation="2dp"/>
+                </FrameLayout>
+
+                <!-- Unselected Image Thumbnails -->
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/thumbImg1"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/bg_image_grid"
                     android:scaleType="centerCrop"
                     app:cornerSize="8dp"
-                    app:strokeColor="@color/guppy_primary"
-                    app:strokeWidth="2dp"
+                    app:strokeColor="@android:color/transparent"
+                    app:strokeWidth="0dp"
                     android:layout_marginEnd="12dp"
-                    android:padding="2dp"/>
+                    android:clickable="true"
+                    android:focusable="true"/>
 
-                <!-- Unselected Thumbnails -->
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/thumbImg2"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/bg_image_grid"
@@ -240,9 +302,12 @@
                     app:cornerSize="8dp"
                     app:strokeColor="@android:color/transparent"
                     app:strokeWidth="0dp"
-                    android:layout_marginEnd="12dp"/>
+                    android:layout_marginEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/thumbImg3"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/bg_image_grid"
@@ -250,17 +315,9 @@
                     app:cornerSize="8dp"
                     app:strokeColor="@android:color/transparent"
                     app:strokeWidth="0dp"
-                    android:layout_marginEnd="12dp"/>
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/bg_image_grid"
-                    android:scaleType="centerCrop"
-                    app:cornerSize="8dp"
-                    app:strokeColor="@android:color/transparent"
-                    app:strokeWidth="0dp"
-                    android:layout_marginEnd="12dp"/>
+                    android:layout_marginEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
             </LinearLayout>
 
             <!-- TITLES & INFO -->
