@@ -137,28 +137,33 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUserName() {
-        val userId = auth.currentUser?.uid
+        val safeContext = context ?: return
+        val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
+        // 1. INSTANT LOCAL CACHE DISPLAY (0ms Lag)
+        val cachedName = prefs.getString("name", null)
+        if (!cachedName.isNullOrEmpty()) {
+            textUserName.text = "Hi, $cachedName!"
+        } else {
+            textUserName.text = "Hi, User!"
+        }
+
+        // 2. ASYNC BACKGROUND REFRESH FROM FIRESTORE
+        val userId = auth.currentUser?.uid
         if (userId != null) {
             db.collection("user").document(userId).get()
                 .addOnSuccessListener { document ->
                     if (!isAdded) return@addOnSuccessListener
-                    val safeContext = context ?: return@addOnSuccessListener
-                    val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                    val userName = document.getString("name")
-                    textUserName.text = if (!userName.isNullOrEmpty()) {
-                        "Hi, $userName!"
-                    } else {
-                        "Hi, ${prefs.getString("name", "User")}!"
+                    val freshName = document.getString("name")
+                    if (!freshName.isNullOrEmpty()) {
+                        textUserName.text = "Hi, $freshName!"
+                        prefs.edit().putString("name", freshName).apply()
                     }
                 }
                 .addOnFailureListener { exception ->
                     if (!isAdded) return@addOnFailureListener
                     println("Error getting documents: $exception")
-                    textUserName.text = "Hi, User!"
                 }
-        } else {
-            textUserName.text = "Hi, User!"
         }
     }
 

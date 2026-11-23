@@ -142,27 +142,51 @@ class Login : AppCompatActivity() {
 
         progressDialog.show()
         firebaseAuth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
+            .addOnSuccessListener { authResult ->
                 if (rememberMeCheckbox.isChecked) {
                     saveLoginData(email, password)
-                    println("Login_data : Remember Me enabled, data saved.")
                 } else {
                     clearLoginData()
-                    println("Login_data : Remember Me disabled, data not saved.")
                 }
 
-                // Add an extra to the intent
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("navigate_to", "HomeFragment")
-                startActivity(intent)
-                finish()
+                val userId = authResult.user?.uid
+                if (userId != null) {
+                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("user").document(userId).get()
+                        .addOnSuccessListener { doc ->
+                            val name = doc.getString("name").orEmpty()
+                            val phone = doc.getString("phone").orEmpty()
+                            val desc = doc.getString("description").orEmpty()
+
+                            userprefs.edit().apply {
+                                putString("name", name)
+                                putString("email", email)
+                                putString("phone", phone)
+                                putString("description", desc)
+                                apply()
+                            }
+
+                            navigateToHome()
+                        }
+                        .addOnFailureListener {
+                            navigateToHome()
+                        }
+                } else {
+                    navigateToHome()
+                }
             }
             .addOnFailureListener { error ->
                 Toast.makeText(this, error.localizedMessage, LENGTH_SHORT).show()
-            }
-            .addOnCompleteListener {
                 progressDialog.dismiss()
             }
+    }
+
+    private fun navigateToHome() {
+        progressDialog.dismiss()
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("navigate_to", "HomeFragment")
+        startActivity(intent)
+        finish()
     }
 
     private fun saveLoginData(email: String, password: String) {
