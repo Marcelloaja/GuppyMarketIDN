@@ -145,6 +145,10 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private val carouselHandler = Handler(Looper.getMainLooper())
+    private var carouselRunnable: Runnable? = null
+    private var currentCarouselPosition = 0
+
     private fun setupCarousel() {
         val images = listOf(
             R.drawable.bestseller1,
@@ -159,8 +163,44 @@ class HomeFragment : Fragment() {
         carouselRecyclerView.layoutManager = layoutManager
         carouselRecyclerView.isNestedScrollingEnabled = false
 
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(carouselRecyclerView)
+        if (carouselRecyclerView.onFlingListener == null) {
+            val snapHelper = PagerSnapHelper()
+            snapHelper.attachToRecyclerView(carouselRecyclerView)
+        }
+
+        carouselRunnable = Runnable {
+            val itemCount = adapter.itemCount
+            if (itemCount > 0) {
+                currentCarouselPosition = (currentCarouselPosition + 1) % itemCount
+                carouselRecyclerView.smoothScrollToPosition(currentCarouselPosition)
+                carouselHandler.postDelayed(carouselRunnable!!, 3500)
+            }
+        }
+
+        startAutoSlide()
+    }
+
+    private fun startAutoSlide() {
+        carouselRunnable?.let {
+            carouselHandler.removeCallbacks(it)
+            carouselHandler.postDelayed(it, 3500)
+        }
+    }
+
+    private fun stopAutoSlide() {
+        carouselRunnable?.let {
+            carouselHandler.removeCallbacks(it)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startAutoSlide()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopAutoSlide()
     }
 
     private fun setupFilterButton() {
