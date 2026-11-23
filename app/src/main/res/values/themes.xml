@@ -7,7 +7,7 @@
 
     <style name="Theme.GuppyMarketIDN" parent="Base.Theme.GuppyMarketIDN" />
 
-    <style name="CircleImageStyle">
+    <style name="CircleImageStyle" parent="ShapeAppearance.Material3.Corner.Full">
         <item name="cornerSize">50%</item>
     </style>
 </resources>
