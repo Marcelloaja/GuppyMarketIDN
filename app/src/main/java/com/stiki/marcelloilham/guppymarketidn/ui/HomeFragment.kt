@@ -67,7 +67,7 @@ class HomeFragment : Fragment() {
         updateGreeting()
         setupCarousel()
         setupFilterButton()
-        setupFilterRecyclerView()
+        // setupFilterRecyclerView()
         setupGridViewRecycler()
 
         return view
@@ -79,7 +79,7 @@ class HomeFragment : Fragment() {
         textGreeting = view.findViewById(R.id.textGreeting)
         carouselRecyclerView = view.findViewById(R.id.carouselRecyclerView)
         filterHome = view.findViewById(R.id.filterHome)
-        filterRecyclerView = view.findViewById(R.id.filterRecyclerView)
+        // filterRecyclerView = view.findViewById(R.id.filterRecyclerView)
         gridViewRecycler = view.findViewById(R.id.gridViewRecycler)
         textNoData = view.findViewById(R.id.textNoData)
     }
