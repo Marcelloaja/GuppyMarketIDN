@@ -383,7 +383,7 @@
                     </LinearLayout>
 
                     <!-- ACTION BUTTON -->
-                    <Button
+                    <TextView
                         android:id="@+id/btnDetails1"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
@@ -391,9 +391,11 @@
                         android:background="@drawable/bg_btn_primary"
                         android:fontFamily="@font/inter_semi_bold"
                         android:text="Ikut Bid / Lihat Detail"
-                        android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -705,7 +707,7 @@
                     </LinearLayout>
 
                     <!-- ACTION BUTTON -->
-                    <Button
+                    <TextView
                         android:id="@+id/btnDetails2"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
@@ -713,9 +715,11 @@
                         android:background="@drawable/bg_btn_primary"
                         android:fontFamily="@font/inter_semi_bold"
                         android:text="Ikut Bid / Lihat Detail"
-                        android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

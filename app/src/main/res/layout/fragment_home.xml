@@ -649,7 +649,7 @@
                                         android:paddingVertical="4dp"/>
                                 </LinearLayout>
 
-                                <Button
+                                <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="38dp"
                                     android:layout_marginTop="14dp"
@@ -658,9 +658,9 @@
                                     android:textColor="@color/white"
                                     android:textSize="12sp"
                                     android:fontFamily="@font/inter_semi_bold"
-                                    android:textAllCaps="false"
-                                    android:minHeight="0dp"
-                                    android:minWidth="0dp"/>
+                                    android:gravity="center"
+                                    android:clickable="true"
+                                    android:focusable="true"/>
                             </LinearLayout>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -816,7 +816,7 @@
                                         android:paddingVertical="4dp"/>
                                 </LinearLayout>
 
-                                <Button
+                                <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="38dp"
                                     android:layout_marginTop="14dp"
@@ -825,9 +825,9 @@
                                     android:textColor="@color/white"
                                     android:textSize="12sp"
                                     android:fontFamily="@font/inter_semi_bold"
-                                    android:textAllCaps="false"
-                                    android:minHeight="0dp"
-                                    android:minWidth="0dp"/>
+                                    android:gravity="center"
+                                    android:clickable="true"
+                                    android:focusable="true"/>
                             </LinearLayout>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -937,14 +937,18 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <Button
+                    <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
+                        android:layout_height="34dp"
                         android:background="@drawable/bg_kunjungi_btn"
                         android:text="Kunjungi"
                         android:textColor="@color/guppy_primary"
                         android:textSize="12sp"
-                        android:textAllCaps="false"/>
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:gravity="center"
+                        android:paddingHorizontal="16dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
                 </LinearLayout>
 
                 <View
@@ -1035,14 +1039,18 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <Button
+                    <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
+                        android:layout_height="34dp"
                         android:background="@drawable/bg_kunjungi_btn"
                         android:text="Kunjungi"
                         android:textColor="@color/guppy_primary"
                         android:textSize="12sp"
-                        android:textAllCaps="false"/>
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:gravity="center"
+                        android:paddingHorizontal="16dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
                 </LinearLayout>
 
             </LinearLayout>
