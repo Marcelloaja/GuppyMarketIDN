@@ -8,7 +8,8 @@
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html, #map { width: 100vw; height: 100vh; overflow: hidden; background-color: #F5F5F5; }
+        body, html { width: 100vw; height: 100vh; overflow: hidden; background-color: #F5F5F5; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; height: 100%; }
 
         /* Custom MapLibre Marker Styles */
         .marker-badge {
@@ -88,30 +89,33 @@
     <div id="map"></div>
 
     <script>
+        let currentLat = -6.225014;
+        let currentLng = 106.865421;
+
         // Initialize MapLibre GL JS Map with CartoDB Positron Vector Style
         const map = new maplibregl.Map({
             container: 'map',
             style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-            center: [106.865421, -6.225014], // Default: Jatinegara, Jakarta Timur
+            center: [currentLng, currentLat], // Default: Jatinegara, Jakarta Timur
             zoom: 14.6,
             pitch: 25,
             attributionControl: false
         });
 
-        // 1. User Location Pulse Marker
+        // 1. User Location Pulse Marker (Centered Anchor)
         const userEl = document.createElement('div');
         userEl.className = 'user-pulse';
         userEl.innerHTML = '<div class="user-pulse-inner"></div>';
 
-        let userMarker = new maplibregl.Marker({ element: userEl })
-            .setLngLat([106.865421, -6.225014])
+        let userMarker = new maplibregl.Marker({ element: userEl, anchor: 'center' })
+            .setLngLat([currentLng, currentLat])
             .addTo(map);
 
         // 2. Guppy King Farm Marker
         const farmEl = document.createElement('div');
         farmEl.className = 'marker-badge';
         farmEl.innerHTML = 'Guppy King Farm <span class="verified-icon">✓</span>';
-        new maplibregl.Marker({ element: farmEl })
+        new maplibregl.Marker({ element: farmEl, anchor: 'center' })
             .setLngLat([106.868500, -6.221500])
             .addTo(map);
 
@@ -119,7 +123,7 @@
         const countEl = document.createElement('div');
         countEl.className = 'marker-badge-green';
         countEl.innerHTML = '150+';
-        new maplibregl.Marker({ element: countEl })
+        new maplibregl.Marker({ element: countEl, anchor: 'center' })
             .setLngLat([106.869800, -6.223200])
             .addTo(map);
 
@@ -127,7 +131,7 @@
         const pin85El = document.createElement('div');
         pin85El.className = 'marker-badge';
         pin85El.innerHTML = '85';
-        new maplibregl.Marker({ element: pin85El })
+        new maplibregl.Marker({ element: pin85El, anchor: 'center' })
             .setLngLat([106.858000, -6.227500])
             .addTo(map);
 
@@ -135,16 +139,24 @@
         const pin32El = document.createElement('div');
         pin32El.className = 'marker-badge';
         pin32El.innerHTML = '32';
-        new maplibregl.Marker({ element: pin32El })
+        new maplibregl.Marker({ element: pin32El, anchor: 'center' })
             .setLngLat([106.871500, -6.218500])
             .addTo(map);
+
+        // Force MapLibre to recalculate container bounds after WebView layout completes
+        function resizeMap() {
+            setTimeout(() => {
+                map.resize();
+            }, 300);
+        }
+
+        map.on('load', () => {
+            resizeMap();
+        });
 
         // Functions exposed for Android Kotlin
         function zoomIn() { map.zoomIn(); }
         function zoomOut() { map.zoomOut(); }
-
-        let currentLat = -6.225014;
-        let currentLng = 106.865421;
 
         function centerLocation() {
             map.flyTo({ center: [currentLng, currentLat], zoom: 15, speed: 1.2 });
@@ -152,11 +164,12 @@
 
         // Real-time Update User Location from Android GPS
         function updateUserLocation(lng, lat) {
-            currentLng = lng;
-            currentLat = lat;
+            currentLng = parseFloat(lng);
+            currentLat = parseFloat(lat);
             if (userMarker) {
-                userMarker.setLngLat([lng, lat]);
+                userMarker.setLngLat([currentLng, currentLat]);
             }
+            map.resize();
         }
     </script>
 </body>

@@ -18,7 +18,6 @@ import android.webkit.WebViewClient
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.stiki.marcelloilham.guppymarketidn.R
@@ -70,6 +69,7 @@ class Maps : Fragment() {
     private fun checkAndRequestLocationPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) {
+            @Suppress("DEPRECATION")
             requestPermissions(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -82,11 +82,13 @@ class Maps : Fragment() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        @Suppress("DEPRECATION")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -123,11 +125,19 @@ class Maps : Fragment() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
 
+            // 1. Instantly get last known location so user marker moves immediately
+            val lastGps = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            val lastNet = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            val bestLocation = lastGps ?: lastNet
+
+            bestLocation?.let {
+                sendLocationToMap(it.longitude, it.latitude)
+            }
+
+            // 2. Real-time updates listener
             locationListener = object : LocationListener {
                 override fun onLocationChanged(location: Location) {
-                    val lat = location.latitude
-                    val lng = location.longitude
-                    webView.evaluateJavascript("javascript:updateUserLocation($lng, $lat)", null)
+                    sendLocationToMap(location.longitude, location.latitude)
                 }
 
                 @Deprecated("Deprecated in Java")
@@ -151,6 +161,12 @@ class Maps : Fragment() {
                     locationListener!!
                 )
             }
+        }
+    }
+
+    private fun sendLocationToMap(lng: Double, lat: Double) {
+        webView.post {
+            webView.evaluateJavascript("javascript:updateUserLocation($lng, $lat)", null)
         }
     }
 
