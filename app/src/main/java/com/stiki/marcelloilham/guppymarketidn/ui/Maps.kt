@@ -183,6 +183,7 @@ class Maps : Fragment() {
     }
 
     private fun sendLocationToMap(lng: Double, lat: Double) {
+        if (lat == 0.0 || lng == 0.0) return
         webView.post {
             webView.evaluateJavascript("javascript:updateUserLocation($lng, $lat)", null)
         }
