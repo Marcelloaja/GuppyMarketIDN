@@ -64,23 +64,23 @@
                         android:textSize="16sp" />
                 </LinearLayout>
 
-                <ImageButton
+                <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginEnd="12dp"
                     android:background="@drawable/bg_circle_image"
                     android:backgroundTint="@color/guppy_primary"
-                    android:src="@drawable/notification"
+                    android:src="@drawable/ic_notifications_black_24dp"
                     android:padding="10dp"
                     android:scaleType="fitCenter"
                     app:tint="@color/white"/>
 
-                <ImageButton
+                <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/bg_circle_image"
                     android:backgroundTint="@color/guppy_primary"
-                    android:src="@drawable/bag"
+                    android:src="@drawable/fi_rr_shopping_cart"
                     android:padding="10dp"
                     android:scaleType="fitCenter"
                     app:tint="@color/white"/>

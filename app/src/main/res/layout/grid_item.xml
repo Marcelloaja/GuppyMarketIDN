@@ -28,7 +28,7 @@
                 android:src="@drawable/bg_image_grid" />
         </androidx.cardview.widget.CardView>
 
-        <ImageButton
+        <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="top|end"
