@@ -1,252 +1,601 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="20dp"
-    android:orientation="vertical">
+    android:background="#F5F5F5"
+    tools:context=".ui.Maps">
 
-    <!-- Kotak untuk Pencarian -->
-    <LinearLayout
+    <!-- 1. MAP BACKGROUND & FLOATING MARKERS -->
+    <FrameLayout
+        android:id="@+id/mapContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomSheetFarm">
+
+        <!-- Interactive Google Maps WebView -->
+        <WebView
+            android:id="@+id/webViewMaps"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Floating UI Elements on Map -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Floating Search Bar -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="40dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:id="@+id/iconSearch"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/search"
+                        app:tint="#66BB6A"/>
+
+                    <EditText
+                        android:id="@+id/etSearchHome"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/inter_regular"
+                        android:hint="Cari farm atau varian guppy..."
+                        android:textColor="@color/guppy_text_black"
+                        android:textColorHint="@color/guppy_text_gray"
+                        android:paddingStart="12dp"
+                        android:singleLine="true"
+                        android:textSize="13sp"/>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/user"
+                        app:tint="@color/guppy_text_black"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Floating Map Pins / Badges -->
+            <!-- Pin 85 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="80dp"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/bg_border_card"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/guppy_primary"
+                android:text="85"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="13sp"
+                android:elevation="4dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"/>
+
+            <!-- Pin 32 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top"
+                android:layout_marginTop="110dp"
+                android:layout_marginEnd="100dp"
+                android:background="@drawable/bg_border_card"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/guppy_primary"
+                android:text="32"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="13sp"
+                android:elevation="4dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"/>
+
+            <!-- Pin Guppy King Farm -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top"
+                android:layout_marginTop="150dp"
+                android:layout_marginEnd="70dp"
+                android:background="@drawable/bg_border_card"
+                android:elevation="4dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Guppy King Farm"
+                    android:fontFamily="@font/inter_bold"
+                    android:textColor="@color/guppy_text_black"
+                    android:textSize="12sp"/>
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_verified_badge"/>
+            </LinearLayout>
+
+            <!-- Pin 150+ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top"
+                android:layout_marginTop="190dp"
+                android:layout_marginEnd="120dp"
+                android:background="@drawable/bg_btn_primary"
+                android:textColor="@color/white"
+                android:text="150+"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="12sp"
+                android:elevation="4dp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"/>
+
+            <!-- Floating Controls on Right Side -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
+
+                <!-- Zoom In / Out Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="40dp"
+                    android:layout_height="80dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="6dp"
+                    app:cardBackgroundColor="@color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:text="+"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/inter_bold"
+                            android:textColor="@color/guppy_text_black"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/guppy_stroke"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:text="−"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/inter_bold"
+                            android:textColor="@color/guppy_text_black"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- My Location Button -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp"
+                    app:cardBackgroundColor="@color/white">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/map"
+                        app:tint="@color/guppy_primary"/>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Map Layers Button -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp"
+                    app:cardBackgroundColor="@color/white">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/fi_rr_folder"
+                        app:tint="@color/guppy_text_black"/>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+        </FrameLayout>
+    </FrameLayout>
+
+    <!-- 2. BOTTOM SHEET ("FARM TERDEKAT") -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/bottomSheetFarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border_search"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:layout_marginTop="31dp"
-        android:paddingRight="10dp">
-
-        <ImageView
-            android:id="@+id/iconSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:padding="8dp"
-            android:src="@drawable/search" />
-
-        <EditText
-            android:id="@+id/etSearchHome"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/inter_semi_bold"
-            android:hint="Search City..."
-            android:maxLines="1"
-            android:paddingLeft="10dp"
-            android:singleLine="true"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-<!--    <ImageView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="15dp"-->
-<!--        android:background="@drawable/bg_google_maps" />-->
-
-    <!-- WebView for Google Maps -->
-    <WebView
-        android:id="@+id/webViewMaps"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="15dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:fontFamily="@font/inter_semi_bold"
-        android:text="Recent"
-        android:textColor="@color/black"
-        android:textSize="17sp" />
-
-    <!-- Tambahkan ScrollView untuk bagian Recent -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true">
+        android:layout_alignParentBottom="true"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="16dp"
+        app:cardBackgroundColor="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="100dp"> <!-- Padding for bottom nav -->
 
-            <!-- Contoh satu item recent -->
+            <!-- Drag Handle -->
+            <View
+                android:layout_width="36dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_chip_outline"
+                android:backgroundTint="@color/guppy_stroke"/>
+
+            <!-- Header Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <ImageView
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Farm Terdekat"
+                    android:textColor="@color/guppy_text_black"
+                    android:textSize="20sp" />
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/recent_maps" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="FinFantasy Farm"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="Malang"
-                        android:textSize="16sp" />
-                </LinearLayout>
+                    android:background="@drawable/bg_tag_grade"
+                    android:text="12 farm"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_semi_bold"
+                    android:textSize="12sp"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="5dp"/>
             </LinearLayout>
 
+            <!-- Location Info Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/map"
+                    app:tint="@color/guppy_primary"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Lokasi Anda · Jatinegara, Jakarta Timur"
+                    android:textColor="@color/guppy_text_black"
+                    android:textSize="13sp" />
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/recent_maps" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="FinFantasy Farm"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="Malang"
-                        android:textSize="16sp" />
-                </LinearLayout>
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Ubah"
+                    android:textColor="@color/guppy_primary"
+                    android:textSize="13sp"
+                    android:clickable="true"
+                    android:focusable="true"/>
             </LinearLayout>
 
-            <LinearLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/inter_regular"
+                android:text="Diperbarui 5 menit lalu"
+                android:textColor="@color/guppy_text_gray"
+                android:textSize="11sp"/>
+
+            <!-- Filter Chips -->
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/recent_maps" />
+                android:scrollbars="none">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
+                    <!-- Selected: Terdekat -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="FinFantasy Farm"
-                        android:textSize="16sp" />
+                        android:background="@drawable/bg_filter_green"
+                        android:text="📍 Terdekat"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"/>
 
+                    <!-- Unselected: Rating Tertinggi -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="⭐ Rating tertinggi"
+                        android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_medium"
-                        android:text="Malang"
-                        android:textSize="16sp" />
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"/>
+
+                    <!-- Unselected: Buka sekarang -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="Buka sekarang"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"/>
                 </LinearLayout>
-            </LinearLayout>
+            </HorizontalScrollView>
 
-            <LinearLayout
+            <!-- FARM ITEM 1 (Highlighted) -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/recent_maps" />
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="@color/guppy_primary"
+                app:strokeWidth="1.5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="FinFantasy Farm"
-                        android:textSize="16sp" />
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/skyblue"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font(inter_medium"
-                        android:text="Malang"
-                        android:textSize="16sp" />
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_bold"
+                                android:text="Guppy King Farm"
+                                android:textColor="@color/guppy_text_black"
+                                android:textSize="15sp"/>
+
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:layout_marginStart="4dp"
+                                android:src="@drawable/ic_verified_badge"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/inter_medium"
+                            android:text="● Buka · tutup 21.00"
+                            android:textColor="#2E7D32"
+                            android:textSize="11sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="⭐ 4.9 (318) · 0,8 km · Jatinegara"
+                            android:textColor="@color/guppy_text_black"
+                            android:textSize="11sp"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_tag_grade"
+                                android:text="150+ varian"
+                                android:textColor="@color/guppy_primary"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="10sp"
+                                android:paddingHorizontal="6dp"
+                                android:paddingVertical="2dp"
+                                android:layout_marginEnd="6dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_rounded_unselected"
+                                android:text="Breeder"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="10sp"
+                                android:paddingHorizontal="6dp"
+                                android:paddingVertical="2dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Send / Navigation FAB -->
+                    <ImageView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/bg_circle_image"
+                        android:backgroundTint="@color/guppy_primary"
+                        android:src="@drawable/icon_share"
+                        android:padding="10dp"
+                        app:tint="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"/>
                 </LinearLayout>
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
+            <!-- FARM ITEM 2 -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="70dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/recent_maps" />
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="@color/guppy_stroke"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="FinFantasy Farm"
-                        android:textSize="16sp" />
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/platinumrd"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="Malang"
-                        android:textSize="16sp" />
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_bold"
+                            android:text="Aquatic Indo"
+                            android:textColor="@color/guppy_text_black"
+                            android:textSize="15sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/inter_medium"
+                            android:text="Tutup · buka besok 08.00"
+                            android:textColor="@color/guppy_text_gray"
+                            android:textSize="11sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="⭐ 4.7 (96) · 2,4 km · Tebet"
+                            android:textColor="@color/guppy_text_black"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+
+                    <!-- Chevron Right Button -->
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_circle_image"
+                        android:backgroundTint="#F0F0F0"
+                        android:src="@drawable/fi_rr_angle_small_right"
+                        android:padding="6dp"
+                        app:tint="@color/guppy_text_black"
+                        android:clickable="true"
+                        android:focusable="true"/>
                 </LinearLayout>
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.cardview.widget.CardView>
 
-</LinearLayout>
+</RelativeLayout>
