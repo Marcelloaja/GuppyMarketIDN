@@ -12,6 +12,7 @@ import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.adapter.CategoryAdapter
 
 class BottomDialogCategories(
+    private val currentSelectedName: String = "",
     private val onCategorySelected: ((String) -> Unit)? = null
 ) : BottomSheetDialogFragment() {
 
@@ -60,6 +61,7 @@ class BottomDialogCategories(
             dismiss()
         }
 
+        adapter.setSelectedCategoryName(currentSelectedName)
         recycler.layoutManager = GridLayoutManager(requireContext(), 3)
         recycler.adapter = adapter
 

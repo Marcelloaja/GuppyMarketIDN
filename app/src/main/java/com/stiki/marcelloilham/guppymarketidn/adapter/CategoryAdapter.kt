@@ -22,6 +22,20 @@ class CategoryAdapter(
 
     private var selectedPosition = -1
 
+    fun setSelectedCategoryName(name: String) {
+        val index = categories.indexOfFirst {
+            if (name.isEmpty() || name.equals("Semua", ignoreCase = true)) {
+                it.name.equals("Semua", ignoreCase = true)
+            } else {
+                it.name.equals(name, ignoreCase = true)
+            }
+        }
+        if (index != -1) {
+            selectedPosition = index
+            notifyDataSetChanged()
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.category_grid_item, parent, false)
         return CategoryViewHolder(view)

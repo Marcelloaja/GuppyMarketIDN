@@ -218,151 +218,15 @@
                     android:focusable="true"/>
             </LinearLayout>
 
-            <!-- KATEGORI VARIAN ITEMS (STATIC) -->
-            <HorizontalScrollView
+            <!-- KATEGORI VARIAN RECYCLERVIEW (DYNAMIC & SYNCED) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoryHorizontalRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:scrollbars="none"
                 android:clipToPadding="false"
-                android:paddingHorizontal="20dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Mosaic -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_marginEnd="16dp">
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:src="@drawable/bg_image_grid"
-                            android:scaleType="centerCrop"
-                            android:padding="3dp"
-                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
-                            app:strokeColor="@color/guppy_primary"
-                            app:strokeWidth="2dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Mosaic"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/inter_medium"
-                            android:textColor="@color/guppy_primary"
-                            android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-
-                    <!-- Albino -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_marginEnd="16dp">
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:src="@drawable/bg_image_grid"
-                            android:scaleType="centerCrop"
-                            android:padding="3dp"
-                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
-                            app:strokeColor="@color/guppy_stroke"
-                            app:strokeWidth="1dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Albino"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/inter_medium"
-                            android:textColor="@color/guppy_text_gray"
-                            android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-
-                    <!-- Tuxedo -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_marginEnd="16dp">
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:src="@drawable/bg_image_grid"
-                            android:scaleType="centerCrop"
-                            android:padding="3dp"
-                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
-                            app:strokeColor="@color/guppy_stroke"
-                            app:strokeWidth="1dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tuxedo"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/inter_medium"
-                            android:textColor="@color/guppy_text_gray"
-                            android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-
-                    <!-- Snakeskin -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_marginEnd="16dp">
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:src="@drawable/bg_image_grid"
-                            android:scaleType="centerCrop"
-                            android:padding="3dp"
-                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
-                            app:strokeColor="@color/guppy_stroke"
-                            app:strokeWidth="1dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Snakeskin"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/inter_medium"
-                            android:textColor="@color/guppy_text_gray"
-                            android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-
-                    <!-- Blue Grass -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_marginEnd="16dp">
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:src="@drawable/bg_image_grid"
-                            android:scaleType="centerCrop"
-                            android:padding="3dp"
-                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
-                            app:strokeColor="@color/guppy_stroke"
-                            app:strokeWidth="1dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Blue Grass"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/inter_medium"
-                            android:textColor="@color/guppy_text_gray"
-                            android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:paddingHorizontal="20dp"
+                android:scrollbars="none"/>
 
             <!-- CHIPS / FILTERS -->
             <HorizontalScrollView

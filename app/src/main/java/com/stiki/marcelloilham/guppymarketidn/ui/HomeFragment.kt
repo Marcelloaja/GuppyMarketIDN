@@ -27,9 +27,11 @@ import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.adapter.BestSellerAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.FilterAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.GridAdapter
+import com.stiki.marcelloilham.guppymarketidn.adapter.HomeCategoryAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.SpaceItemDecoration
 import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogCategories
 import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogFilter
+import com.stiki.marcelloilham.guppymarketidn.menuHome.CategoryItem
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.Item
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -49,12 +51,38 @@ class HomeFragment : Fragment() {
     private lateinit var btnNotifHome: ImageView
     private lateinit var filterRecyclerView: RecyclerView
     private lateinit var gridViewRecycler: RecyclerView
+    private lateinit var categoryHorizontalRecycler: RecyclerView
+    private lateinit var homeCategoryAdapter: HomeCategoryAdapter
     private lateinit var etSearchHome: EditText
     private lateinit var btnSeeAllCategories: TextView
     private lateinit var shimmerCarousel: ShimmerFrameLayout
     private lateinit var shimmerGrid: ShimmerFrameLayout
     private lateinit var textNoData: TextView
     private lateinit var gridAdapter: GridAdapter
+
+    private var currentSelectedCategoryName = "Semua"
+
+    private val categoriesList = listOf(
+        CategoryItem("Semua", R.drawable.skyblue, "Semua varian"),
+        CategoryItem("Albino", R.drawable.skyblue, "32 varian"),
+        CategoryItem("Solid", R.drawable.gsrts, "28 varian"),
+        CategoryItem("Tuxedo", R.drawable.platinumrd, "24 varian"),
+        CategoryItem("Grass", R.drawable.mssrl, "20 varian"),
+        CategoryItem("Lace", R.drawable.skyblue, "18 varian"),
+        CategoryItem("Cobra", R.drawable.gsrts, "16 varian"),
+        CategoryItem("Mozaik", R.drawable.platinumrd, "22 varian"),
+        CategoryItem("Metal Head", R.drawable.mssrl, "14 varian"),
+        CategoryItem("Sword Tail", R.drawable.skyblue, "12 varian"),
+        CategoryItem("Round Tail", R.drawable.gsrts, "15 varian"),
+        CategoryItem("Halfmoon", R.drawable.platinumrd, "26 varian"),
+        CategoryItem("Crown Tail", R.drawable.mssrl, "10 varian"),
+        CategoryItem("Koi", R.drawable.skyblue, "19 varian"),
+        CategoryItem("Big Ear", R.drawable.gsrts, "21 varian"),
+        CategoryItem("Dumbo Ear", R.drawable.platinumrd, "25 varian"),
+        CategoryItem("Short Body", R.drawable.mssrl, "11 varian"),
+        CategoryItem("Female", R.drawable.skyblue, "30 varian"),
+        CategoryItem("Grade A+", R.drawable.platinumrd, "40 varian")
+    )
 
     private val filters = listOf(
         "All", "Solid", "Albino", "Tuxedo", "Grass",
@@ -79,6 +107,7 @@ class HomeFragment : Fragment() {
         setupHeaderButtons()
         setupFilterButton()
         setupCategoriesButton()
+        setupHorizontalCategories()
         setupSearchBar()
         setupGridViewRecycler()
 
@@ -95,10 +124,49 @@ class HomeFragment : Fragment() {
         btnNotifHome = view.findViewById(R.id.btnNotifHome)
         etSearchHome = view.findViewById(R.id.etSearchHome)
         btnSeeAllCategories = view.findViewById(R.id.btnSeeAllCategories)
+        categoryHorizontalRecycler = view.findViewById(R.id.categoryHorizontalRecycler)
         gridViewRecycler = view.findViewById(R.id.gridViewRecycler)
         shimmerCarousel = view.findViewById(R.id.shimmerCarousel)
         shimmerGrid = view.findViewById(R.id.shimmerGrid)
         textNoData = view.findViewById(R.id.textNoData)
+    }
+
+    private fun setupHorizontalCategories() {
+        homeCategoryAdapter = HomeCategoryAdapter(requireContext(), categoriesList) { item, pos ->
+            currentSelectedCategoryName = item.name
+            val query = if (item.name == "Semua") "" else item.name
+
+            if (::gridAdapter.isInitialized) {
+                gridAdapter.searchItems(query)
+                toggleNoDataState(query)
+            }
+        }
+
+        categoryHorizontalRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        categoryHorizontalRecycler.adapter = homeCategoryAdapter
+    }
+
+    private fun setupCategoriesButton() {
+        btnSeeAllCategories.setOnClickListener {
+            val clickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
+            btnSeeAllCategories.startAnimation(clickAnimation)
+
+            BottomDialogCategories(currentSelectedCategoryName) { selectedCategory ->
+                currentSelectedCategoryName = if (selectedCategory.isEmpty()) "Semua" else selectedCategory
+
+                homeCategoryAdapter.setSelectedCategoryName(currentSelectedCategoryName)
+
+                val selectedPos = homeCategoryAdapter.getSelectedPosition()
+                categoryHorizontalRecycler.smoothScrollToPosition(selectedPos)
+
+                val query = if (currentSelectedCategoryName == "Semua") "" else currentSelectedCategoryName
+
+                if (::gridAdapter.isInitialized) {
+                    gridAdapter.searchItems(query)
+                    toggleNoDataState(query)
+                }
+            }.show(parentFragmentManager, "BottomDialogCategories")
+        }
     }
 
     private fun setupSearchBar() {
@@ -108,18 +176,25 @@ class HomeFragment : Fragment() {
                 val query = s.toString()
                 if (::gridAdapter.isInitialized) {
                     gridAdapter.searchItems(query)
-                    if (gridAdapter.itemCount == 0) {
-                        gridViewRecycler.visibility = View.GONE
-                        textNoData.text = "Produk '$query' tidak ditemukan"
-                        textNoData.visibility = View.VISIBLE
-                    } else {
-                        gridViewRecycler.visibility = View.VISIBLE
-                        textNoData.visibility = View.GONE
+                    toggleNoDataState(query)
+                    if (::homeCategoryAdapter.isInitialized) {
+                        homeCategoryAdapter.setSelectedCategoryName(query)
                     }
                 }
             }
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
+
+    private fun toggleNoDataState(query: String = "") {
+        if (gridAdapter.itemCount == 0) {
+            gridViewRecycler.visibility = View.GONE
+            textNoData.text = if (query.isNotEmpty()) "Produk '$query' tidak ditemukan" else "Data tidak ditemukan"
+            textNoData.visibility = View.VISIBLE
+        } else {
+            gridViewRecycler.visibility = View.VISIBLE
+            textNoData.visibility = View.GONE
+        }
     }
 
     private fun setupHeaderButtons() {
@@ -283,17 +358,6 @@ class HomeFragment : Fragment() {
         filterHome.setOnClickListener { button ->
             button.startAnimation(clickAnimation)
             BottomDialogFilter().show(parentFragmentManager, "BottomSheetFragment")
-        }
-    }
-
-    private fun setupCategoriesButton() {
-        btnSeeAllCategories.setOnClickListener {
-            val clickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
-            btnSeeAllCategories.startAnimation(clickAnimation)
-
-            BottomDialogCategories { selectedCategory ->
-                etSearchHome.setText(selectedCategory)
-            }.show(parentFragmentManager, "BottomDialogCategories")
         }
     }
 
