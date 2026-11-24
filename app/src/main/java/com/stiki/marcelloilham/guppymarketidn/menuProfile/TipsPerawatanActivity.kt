@@ -71,8 +71,10 @@ class TipsPerawatanActivity : AppCompatActivity() {
             Toast.makeText(this, "Artikel disimpan ke favorit", Toast.LENGTH_SHORT).show()
         }
         cardHero?.setOnClickListener {
-            val intent = Intent(this, WebViewActivity::class.java).apply {
-                putExtra("url", "https://drive.google.com/file/d/1AwopxNnAjbdJPYIPj43WU6jLmaz2ExpL/view?usp=drive_link")
+            val intent = Intent(this, DetailArticleActivity::class.java).apply {
+                putExtra("EXTRA_ARTICLE_TITLE", "Cara menjaga kualitas air untuk guppy kontes")
+                putExtra("EXTRA_ARTICLE_CATEGORY", "KUALITAS AIR")
+                putExtra("EXTRA_ARTICLE_IMAGE", R.drawable.skyblue)
             }
             startActivity(intent)
         }

@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8F9FA"
+    tools:context=".menuProfile.DetailArticleActivity">
+
+    <!-- TOP BAR HEADER -->
+    <LinearLayout
+        android:id="@+id/topBarDetailArticle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#F8F9FA"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/btnBackDetailArticle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_white_stroke"
+            android:src="@drawable/ic_chevron_left"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/inter_bold"
+            android:text="Tips Perawatan"
+            android:textColor="@color/guppy_text_black"
+            android:textSize="18sp"
+            android:gravity="center"/>
+
+        <ImageView
+            android:id="@+id/btnBookmarkTopArticle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_white_stroke"
+            android:src="@drawable/ic_bookmark_outline"
+            android:padding="10dp"
+            app:tint="@color/guppy_text_black"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBarDetailArticle"
+        android:layout_above="@id/bottomBarArticle"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="40dp">
+
+            <!-- HERO IMAGE BANNER -->
+            <ImageView
+                android:id="@+id/imgArticleHero"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/skyblue"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="8dp"
+                android:text="Guppy jantan kontes, foto: dokumentasi Guppy Market"
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_regular"
+                android:textStyle="italic"
+                android:textSize="12sp"/>
+
+            <!-- ARTICLE HEADER CONTENT -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="20dp">
+
+                <TextView
+                    android:id="@+id/tvArticleCategoryTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="KUALITAS AIR"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.05"/>
+
+                <TextView
+                    android:id="@+id/tvArticleTitleHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Cara menjaga kualitas air untuk guppy kontes"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="22sp"
+                    android:lineSpacingExtra="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvArticleMetaHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="🕒 4 mnt  •  12 Okt 2025  •  Tim Guppy Market"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="12sp"/>
+
+                <!-- ARTICLE PARAGRAPHS -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Dalam dunia hobi ikan hias, air adalah &quot;nyawa&quot; bagi penghuninya. Ikan guppy, apalagi untuk standar panggung kontes, punya kepekaan tinggi terhadap perubahan mendadak di lingkungannya. Sedikit saja parameter meleset, penampilan ekor dan sirip bisa drop seketika."
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="14.5sp"
+                    android:lineSpacingExtra="6dp"/>
+
+                <!-- HEADING 1 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="1. Pantau parameter air secara rutin"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Selalu sedia alat ukur pH dan tester amonia. Untuk guppy kontes, usahakan pH tetap stabil di angka netral (sekitar 7.0 - 7.5). pH yang terlalu asam akan merusak lapisan lendir pelindung tubuh ikan, sementara amonia tinggi adalah racun yang paling sering memicu kematian mendadak."
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="14.5sp"
+                    android:lineSpacingExtra="6dp"/>
+
+                <!-- HEADING 2 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="2. Jaga suhu di kisaran 24–26°C"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Suhu yang fluktuatif bikin ikan stres. Jika suhu terlalu panas, metabolisme ikan dipaksa kerja lebih keras namun kadar oksigen dalam air justru menipis. Sebaliknya, suhu di bawah 23°C seringkali mengundang datangnya penyakit &quot;white spot&quot; atau jamur kulit."
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="14.5sp"
+                    android:lineSpacingExtra="6dp"/>
+
+                <!-- HEADING 3 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="3. Pergantian air bertahap"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Jangan pernah menguras habis air akuarium sekaligus (total water change). Ini akan mengejutkan sistem imun ikan. Ikuti jadwal rutin berikut ini agar kualitas air tetap terjaga:"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="14.5sp"
+                    android:lineSpacingExtra="6dp"/>
+
+                <!-- BULLET POINTS -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• Lakukan penggantian sebanyak 10-20% dari total volume air setiap dua hari sekali secara disiplin."
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="5dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="• Gunakan air yang sudah melalui proses pengendapan (aerasi) minimal selama 24 jam penuh sebelum masuk ke akuarium."
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="5dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="• Tambahkan garam ikan kualitas ekspor sekitar 1 sendok teh per 10 liter air untuk proses mineralisasi natural."
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="5dp"/>
+                </LinearLayout>
+
+                <!-- CALLOUT BOX: CATATAN REDAKSI -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
+                    android:background="#F0F4F1"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/guppy_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="CATATAN REDAKSI"
+                            android:textColor="@color/guppy_primary"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="11sp"
+                            android:letterSpacing="0.05"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Kunci utama adalah stabilitas. Ikan lebih nyaman hidup di air dengan parameter &quot;biasa saja&quot; namun konstan, daripada air yang &quot;sempurna&quot; tapi berayun drastis setiap hari karena campur tangan manusia yang berlebihan."
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="13sp"
+                            android:lineSpacingExtra="4dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- RELATED ARTICLES SECTION -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="32dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Artikel Terkait"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/btnViewAllRelated"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lihat semua"
+                        android:textColor="@color/guppy_primary"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="13sp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerRelatedArticles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- STICKY BOTTOM ACTION BAR -->
+    <LinearLayout
+        android:id="@+id/bottomBarArticle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:elevation="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/btnBookmarkBottom"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_btn_outline"
+            android:src="@drawable/ic_bookmark_outline"
+            android:padding="12dp"
+            app:tint="@color/guppy_text_black"
+            android:layout_marginEnd="12dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <LinearLayout
+            android:id="@+id/btnShareArticle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_btn_primary"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_share"
+                app:tint="@color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Bagikan Artikel"
+                android:textColor="@color/white"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="14sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/bottomBarArticle"
+        android:background="@color/guppy_stroke"/>
+</RelativeLayout>

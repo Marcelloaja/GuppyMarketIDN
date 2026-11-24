@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
-import com.stiki.marcelloilham.guppymarketidn.menuProfile.WebViewActivity
+import com.stiki.marcelloilham.guppymarketidn.menuProfile.DetailArticleActivity
 
 class ArticleAdapter(
     private val context: Context,
@@ -48,8 +48,10 @@ class ArticleAdapter(
         holder.tvDuration.text = "🕒 ${article.duration}"
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(context, WebViewActivity::class.java).apply {
-                putExtra("url", "https://drive.google.com/file/d/1AwopxNnAjbdJPYIPj43WU6jLmaz2ExpL/view?usp=drive_link")
+            val intent = Intent(context, DetailArticleActivity::class.java).apply {
+                putExtra("EXTRA_ARTICLE_TITLE", article.title)
+                putExtra("EXTRA_ARTICLE_CATEGORY", article.category)
+                putExtra("EXTRA_ARTICLE_IMAGE", article.imageRes)
             }
             context.startActivity(intent)
         }
