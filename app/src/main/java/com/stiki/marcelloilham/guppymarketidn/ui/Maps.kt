@@ -187,7 +187,12 @@ class Maps : Fragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
-        webView.webViewClient = WebViewClient()
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                checkAndFocusFarmQuery()
+            }
+        }
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
 
@@ -204,6 +209,14 @@ class Maps : Fragment() {
         }, "AndroidBridge")
 
         webView.loadUrl("file:///android_asset/maps.html")
+    }
+
+    private fun checkAndFocusFarmQuery() {
+        val farmQuery = activity?.intent?.getStringExtra("SEARCH_FARM_QUERY")
+        if (!farmQuery.isNullOrEmpty()) {
+            webView.evaluateJavascript("javascript:focusFarmByName('$farmQuery')", null)
+            activity?.intent?.removeExtra("SEARCH_FARM_QUERY")
+        }
     }
 
     private fun setupMapControls(view: View) {
@@ -384,6 +397,7 @@ class Maps : Fragment() {
         if (hasLocationPermission()) {
             checkGpsAndStartTracking()
         }
+        checkAndFocusFarmQuery()
     }
 
     private fun checkGpsAndStartTracking() {

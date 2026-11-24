@@ -228,6 +228,32 @@
         function zoomIn() { map.zoomIn(); }
         function zoomOut() { map.zoomOut(); }
 
+        function focusFarmByName(name) {
+            if (!name) return;
+            let targetLng = destLng;
+            let targetLat = destLat;
+
+            if (name.toLowerCase().includes('jakarta')) {
+                targetLng = 106.8060;
+                targetLat = -6.2921;
+            } else if (name.toLowerCase().includes('bekasi')) {
+                targetLng = 106.9896;
+                targetLat = -6.2383;
+            } else if (name.toLowerCase().includes('fin') || name.toLowerCase().includes('fantasy')) {
+                targetLng = 106.8685;
+                targetLat = -6.2215;
+            }
+
+            isRoutingActive = true;
+            fetchRoute(currentLng, currentLat, targetLng, targetLat);
+            map.flyTo({
+                center: [targetLng, targetLat],
+                zoom: 16,
+                pitch: 45,
+                speed: 1.5
+            });
+        }
+
         function centerLocation() {
             const targetBearing = isRoutingActive ? calculateBearing(currentLng, currentLat, destLng, destLat) : 0;
             map.flyTo({ center: [currentLng, currentLat], zoom: 15.5, pitch: isRoutingActive ? 60 : 25, bearing: targetBearing, speed: 1.2 });
