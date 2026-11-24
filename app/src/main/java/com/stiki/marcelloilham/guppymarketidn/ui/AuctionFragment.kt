@@ -2,23 +2,29 @@ package com.stiki.marcelloilham.guppymarketidn.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.stiki.marcelloilham.guppymarketidn.R
-import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.adapter.AuctionGridAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.HomeCategoryAdapter
 import com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity
+import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogFilter
 import com.stiki.marcelloilham.guppymarketidn.menuHome.CategoryItem
 import com.stiki.marcelloilham.guppymarketidn.menuHome.KeranjangHome
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 
 class AuctionFragment : Fragment() {
 
@@ -27,7 +33,19 @@ class AuctionFragment : Fragment() {
     private lateinit var categoryAdapter: HomeCategoryAdapter
     private lateinit var auctionAdapter: AuctionGridAdapter
 
+    private lateinit var tabLive: TextView
+    private lateinit var tabUpcoming: TextView
+    private lateinit var tabFinished: TextView
+    private lateinit var etSearch: EditText
+
+    private var activeStatus: String = "LIVE"
+    private var activeCategory: String = "Semua"
+    private var activeQuery: String = ""
+    private var activeGrade: String = "All"
+    private var activeLocation: String = "All"
+
     private val categoriesList = listOf(
+        CategoryItem("Semua", R.drawable.bg_image_grid, "61 lot"),
         CategoryItem("Mosaic", R.drawable.bg_image_grid, "24 lot"),
         CategoryItem("Albino", R.drawable.skyblue, "15 lot"),
         CategoryItem("Tuxedo", R.drawable.gsrts, "10 lot"),
@@ -42,28 +60,24 @@ class AuctionFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_auction, container, false)
 
         initViews(view)
+        setupTopBar(view)
+        setupStatusTabs()
         setupCategories()
         setupAuctions()
-        setupTopBar(view)
+        setupSearchAndFilter(view)
         setupSwipeRefresh(view)
 
         return view
     }
 
-    private fun setupSwipeRefresh(view: View) {
-        val swipeRefresh = view.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipeRefreshLayout)
-        swipeRefresh?.setColorSchemeResources(R.color.guppy_primary)
-        swipeRefresh?.setOnRefreshListener {
-            setupAuctions()
-            swipeRefresh.postDelayed({
-                swipeRefresh.isRefreshing = false
-            }, 1000)
-        }
-    }
-
     private fun initViews(view: View) {
         recyclerCategories = view.findViewById(R.id.recyclerAuctionCategories)
         recyclerAuctions = view.findViewById(R.id.recyclerAuctionGrid)
+
+        tabLive = view.findViewById(R.id.tabAuctionLive)
+        tabUpcoming = view.findViewById(R.id.tabAuctionUpcoming)
+        tabFinished = view.findViewById(R.id.tabAuctionFinished)
+        etSearch = view.findViewById(R.id.etSearchAuction)
     }
 
     private fun setupTopBar(view: View) {
@@ -81,41 +95,86 @@ class AuctionFragment : Fragment() {
         }
     }
 
+    private fun setupStatusTabs() {
+        fun selectTab(selected: TextView, status: String) {
+            activeStatus = status
+            val activeBg = R.drawable.bg_vehicle_active_pill
+            val transparentBg = android.R.color.transparent
+
+            val blackColor = ContextCompat.getColor(requireContext(), R.color.guppy_text_black)
+            val grayColor = ContextCompat.getColor(requireContext(), R.color.guppy_text_gray)
+
+            tabLive.setBackgroundResource(if (selected == tabLive) activeBg else transparentBg)
+            tabLive.setTextColor(if (selected == tabLive) blackColor else grayColor)
+            tabLive.typeface = androidx.core.content.res.ResourcesCompat.getFont(requireContext(), if (selected == tabLive) R.font.inter_bold else R.font.inter_medium)
+
+            tabUpcoming.setBackgroundResource(if (selected == tabUpcoming) activeBg else transparentBg)
+            tabUpcoming.setTextColor(if (selected == tabUpcoming) blackColor else grayColor)
+            tabUpcoming.typeface = androidx.core.content.res.ResourcesCompat.getFont(requireContext(), if (selected == tabUpcoming) R.font.inter_bold else R.font.inter_medium)
+
+            tabFinished.setBackgroundResource(if (selected == tabFinished) activeBg else transparentBg)
+            tabFinished.setTextColor(if (selected == tabFinished) blackColor else grayColor)
+            tabFinished.typeface = androidx.core.content.res.ResourcesCompat.getFont(requireContext(), if (selected == tabFinished) R.font.inter_bold else R.font.inter_medium)
+
+            applyFilters()
+        }
+
+        tabLive.setOnClickListener { selectTab(tabLive, "LIVE") }
+        tabUpcoming.setOnClickListener { selectTab(tabUpcoming, "UPCOMING") }
+        tabFinished.setOnClickListener { selectTab(tabFinished, "FINISHED") }
+    }
+
     private fun setupCategories() {
         categoryAdapter = HomeCategoryAdapter(requireContext(), categoriesList) { item, pos ->
             categoryAdapter.setSelectedPosition(pos)
+            activeCategory = item.name
+            applyFilters()
         }
         recyclerCategories.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         recyclerCategories.adapter = categoryAdapter
     }
 
+    private fun setupSearchAndFilter(view: View) {
+        val btnFilter = view.findViewById<ImageView>(R.id.filterAuction)
+
+        btnFilter?.setOnClickListener {
+            BottomDialogFilter { _, grade, location, _, _ ->
+                activeGrade = grade
+                activeLocation = location
+                applyFilters()
+            }.show(childFragmentManager, "BottomDialogFilter")
+        }
+
+        etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                activeQuery = s.toString().trim()
+                applyFilters()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
     private fun setupAuctions() {
         FirestoreRepository.fetchAuctions { firebaseAuctions ->
-            val finalItems = if (firebaseAuctions.isNotEmpty()) {
-                firebaseAuctions.mapIndexed { idx, a ->
-                    AuctionGridAdapter.AuctionItem(
-                        id = idx + 1,
-                        title = a.title,
-                        seller = a.seller,
-                        location = a.location,
-                        price = a.currentBid,
-                        bids = a.bidsCount,
-                        timeLeft = "02:14:35",
-                        imageRes = a.imageRes,
-                        grade = a.grade
-                    )
-                }
-            } else {
-                listOf(
-                    AuctionGridAdapter.AuctionItem(1, "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 12, "00:42:10", R.drawable.bg_image_grid, "Grade A+"),
-                    AuctionGridAdapter.AuctionItem(2, "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 9, "01:05:33", R.drawable.platinumrd, "Grade S"),
-                    AuctionGridAdapter.AuctionItem(3, "Sky Blue Albino", "FinFantasy Farm", "Malang", "Rp 550.000", 24, "03:15:00", R.drawable.skyblue, "Grade A"),
-                    AuctionGridAdapter.AuctionItem(4, "Golden Tuxedo", "Breeder Lokal", "Surabaya", "Rp 320.000", 5, "05:12:00", R.drawable.gsrts, "Grade B")
-                )
-            }
+            val initialItems = listOf(
+                // Live Auctions
+                AuctionGridAdapter.AuctionItem(1, "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 12, 2530L, R.drawable.bg_image_grid, "Grade A+", "Mosaic", "LIVE"),
+                AuctionGridAdapter.AuctionItem(2, "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 9, 3933L, R.drawable.platinumrd, "Grade S", "Koi", "LIVE"),
+                AuctionGridAdapter.AuctionItem(3, "Sky Blue Albino", "FinFantasy Farm", "Malang", "Rp 550.000", 24, 11700L, R.drawable.skyblue, "Grade A", "Albino", "LIVE"),
+                AuctionGridAdapter.AuctionItem(4, "Golden Tuxedo", "Breeder Lokal", "Surabaya", "Rp 320.000", 5, 18720L, R.drawable.gsrts, "Grade B", "Tuxedo", "LIVE"),
+
+                // Upcoming Auctions
+                AuctionGridAdapter.AuctionItem(5, "Snakeskin King Blue", "Bekasi Aqua Farm", "Bekasi", "Rp 400.000 (Start)", 0, 0L, R.drawable.mssrl, "Grade A", "Snakeskin", "UPCOMING"),
+                AuctionGridAdapter.AuctionItem(6, "Full Red Albino Pair", "Depok Tail Studio", "Depok", "Rp 600.000 (Start)", 0, 0L, R.drawable.platinumrd, "Grade A+", "Albino", "UPCOMING"),
+
+                // Finished Auctions
+                AuctionGridAdapter.AuctionItem(7, "Mosaic Dragon Champion", "Guppy Malang", "Malang", "Rp 2.100.000", 38, 0L, R.drawable.bg_image_grid, "Grade S", "Mosaic", "FINISHED"),
+                AuctionGridAdapter.AuctionItem(8, "Black Moscow High Tail", "Bogor Guppy Lab", "Bogor", "Rp 950.000", 19, 0L, R.drawable.gsrts, "Grade A", "Moscow", "FINISHED")
+            )
 
             if (isAdded) {
-                auctionAdapter = AuctionGridAdapter(requireContext(), finalItems) { item ->
+                auctionAdapter = AuctionGridAdapter(requireContext(), initialItems) { item ->
                     val intent = Intent(requireContext(), DetailAuctionActivity::class.java)
                     intent.putExtra("auction_title", item.title)
                     startActivity(intent)
@@ -124,7 +183,39 @@ class AuctionFragment : Fragment() {
                 recyclerAuctions.layoutManager = GridLayoutManager(requireContext(), 2)
                 recyclerAuctions.adapter = auctionAdapter
                 recyclerAuctions.isNestedScrollingEnabled = false
+
+                applyFilters()
             }
+        }
+    }
+
+    private fun applyFilters() {
+        if (::auctionAdapter.isInitialized) {
+            auctionAdapter.filterItems(
+                status = activeStatus,
+                category = activeCategory,
+                query = activeQuery,
+                grade = activeGrade,
+                location = activeLocation
+            )
+        }
+    }
+
+    private fun setupSwipeRefresh(view: View) {
+        val swipeRefresh = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
+        swipeRefresh?.setColorSchemeResources(R.color.guppy_primary)
+        swipeRefresh?.setOnRefreshListener {
+            setupAuctions()
+            swipeRefresh.postDelayed({
+                swipeRefresh.isRefreshing = false
+            }, 1000)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (::auctionAdapter.isInitialized) {
+            auctionAdapter.stopTimer()
         }
     }
 }
