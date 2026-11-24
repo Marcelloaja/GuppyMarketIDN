@@ -141,112 +141,6 @@
                     app:tint="@color/guppy_primary"/>
             </LinearLayout>
 
-            <!-- AUCTION QUICK FILTER BAR -->
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:scrollbars="none"
-                android:clipToPadding="false"
-                android:paddingHorizontal="20dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <!-- 1. Filter Button with Active Badge -->
-                    <LinearLayout
-                        android:id="@+id/btnAuctionFilterDialog"
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:background="@drawable/bg_chip_selected"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:src="@drawable/filter"
-                            app:tint="@color/guppy_primary"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="Filter"
-                            android:textColor="@color/guppy_primary"
-                            android:fontFamily="@font/inter_bold"
-                            android:textSize="12.5sp"/>
-
-                        <TextView
-                            android:id="@+id/tvAuctionFilterBadge"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_marginStart="6dp"
-                            android:background="@drawable/bg_circle_image"
-                            android:backgroundTint="@color/guppy_primary"
-                            android:text="2"
-                            android:textColor="@color/white"
-                            android:fontFamily="@font/inter_bold"
-                            android:textSize="10sp"
-                            android:gravity="center"/>
-                    </LinearLayout>
-
-                    <!-- 2. Harga Dropdown -->
-                    <TextView
-                        android:id="@+id/chipAuctionPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:background="@drawable/bg_chip_outline"
-                        android:text="Harga ∨"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_medium"
-                        android:textSize="12.5sp"
-                        android:gravity="center"
-                        android:paddingHorizontal="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:clickable="true"
-                        android:focusable="true"/>
-
-                    <!-- 3. Grade Dropdown -->
-                    <TextView
-                        android:id="@+id/chipAuctionGrade"
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:background="@drawable/bg_chip_outline"
-                        android:text="Grade ∨"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_medium"
-                        android:textSize="12.5sp"
-                        android:gravity="center"
-                        android:paddingHorizontal="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:clickable="true"
-                        android:focusable="true"/>
-
-                    <!-- 4. Lokasi Dropdown -->
-                    <TextView
-                        android:id="@+id/chipAuctionLocation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:background="@drawable/bg_chip_outline"
-                        android:text="Lokasi ∨"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_medium"
-                        android:textSize="12.5sp"
-                        android:gravity="center"
-                        android:paddingHorizontal="16dp"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                </LinearLayout>
-            </HorizontalScrollView>
-
             <!-- TABS SEGMENTED -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -430,11 +324,11 @@
                 android:paddingHorizontal="20dp"
                 android:scrollbars="none"/>
 
-            <!-- FILTERS CHIPS -->
+            <!-- FILTERS CHIPS (SINGLE LIVE FILTER BAR) -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:scrollbars="none"
                 android:clipToPadding="false"
                 android:paddingHorizontal="20dp">
@@ -442,21 +336,21 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <!-- Filter with Badge -->
                     <LinearLayout
+                        android:id="@+id/btnAuctionFilterDialog"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_chip_outline"
-                        android:backgroundTint="@color/white"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_chip_selected"
                         android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:layout_marginEnd="12dp"
+                        android:layout_marginEnd="8dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        app:strokeColor="@color/guppy_primary"
-                        app:strokeWidth="1dp">
+                        android:clickable="true"
+                        android:focusable="true">
                         <ImageView
                             android:layout_width="14dp"
                             android:layout_height="14dp"
@@ -468,12 +362,13 @@
                             android:layout_marginStart="6dp"
                             android:text="Filter"
                             android:textColor="@color/guppy_primary"
-                            android:fontFamily="@font/inter_semi_bold"
-                            android:textSize="12sp"/>
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="12.5sp"/>
                         <!-- Badge -->
                         <TextView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
+                            android:id="@+id/tvAuctionFilterBadge"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
                             android:background="@drawable/bg_circle_image"
                             android:backgroundTint="@color/guppy_primary"
                             android:text="2"
@@ -485,79 +380,51 @@
                     </LinearLayout>
 
                     <!-- Harga -->
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/chipAuctionPrice"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="36dp"
                         android:background="@drawable/bg_chip_outline"
-                        android:backgroundTint="@color/white"
+                        android:text="Harga ∨"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12.5sp"
+                        android:gravity="center"
                         android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:layout_marginEnd="12dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Harga"
-                            android:textColor="@color/guppy_text_black"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="12sp"/>
-                        <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_marginStart="4dp"
-                            android:src="@drawable/ic_chevron_down" />
-                    </LinearLayout>
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
 
                     <!-- Grade -->
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/chipAuctionGrade"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="36dp"
                         android:background="@drawable/bg_chip_outline"
-                        android:backgroundTint="@color/white"
+                        android:text="Grade ∨"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12.5sp"
+                        android:gravity="center"
                         android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:layout_marginEnd="12dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Grade"
-                            android:textColor="@color/guppy_text_black"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="12sp"/>
-                        <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_marginStart="4dp"
-                            android:src="@drawable/ic_chevron_down" />
-                    </LinearLayout>
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
 
                     <!-- Lokasi -->
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/chipAuctionLocation"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="36dp"
                         android:background="@drawable/bg_chip_outline"
-                        android:backgroundTint="@color/white"
+                        android:text="Lokasi ∨"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12.5sp"
+                        android:gravity="center"
                         android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:layout_marginEnd="12dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Lokasi"
-                            android:textColor="@color/guppy_text_black"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="12sp"/>
-                        <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_marginStart="4dp"
-                            android:src="@drawable/ic_chevron_down" />
-                    </LinearLayout>
+                        android:clickable="true"
+                        android:focusable="true"/>
                 </LinearLayout>
             </HorizontalScrollView>
 
