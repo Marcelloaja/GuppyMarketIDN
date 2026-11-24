@@ -25,6 +25,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.adapter.BestSellerAdapter
+import com.stiki.marcelloilham.guppymarketidn.adapter.AuctionGridAdapter
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.adapter.FilterAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.GridAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.HomeCategoryAdapter
@@ -64,6 +66,8 @@ class HomeFragment : Fragment() {
     private lateinit var shimmerGrid: ShimmerFrameLayout
     private lateinit var textNoData: TextView
     private lateinit var gridAdapter: GridAdapter
+    private lateinit var recyclerHomeAuctions: RecyclerView
+    private lateinit var homeAuctionAdapter: AuctionGridAdapter
 
     private var currentSelectedCategoryName = "Semua"
 
@@ -138,26 +142,46 @@ class HomeFragment : Fragment() {
 
     private fun setupAuctionIntegration(view: View) {
         val btnSeeAllAuctions = view.findViewById<TextView>(R.id.btnSeeAllHomeAuctions)
-        val btnJoinAuction1 = view.findViewById<TextView>(R.id.btnJoinAuction1)
-        val btnJoinAuction2 = view.findViewById<TextView>(R.id.btnJoinAuction2)
+        recyclerHomeAuctions = view.findViewById(R.id.recyclerHomeAuctions)
 
         btnSeeAllAuctions?.setOnClickListener {
             val bottomNav = activity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.nav_view)
             bottomNav?.selectedItemId = R.id.navigation_bid
         }
 
-        btnJoinAuction1?.setOnClickListener {
-            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java).apply {
-                putExtra("auction_title", "Blue Gold Mosaic")
+        FirestoreRepository.fetchAuctions { firebaseAuctions ->
+            val liveItems = if (firebaseAuctions.isNotEmpty()) {
+                firebaseAuctions.mapIndexed { idx, a ->
+                    AuctionGridAdapter.AuctionItem(
+                        id = idx + 1,
+                        title = a.title,
+                        seller = a.seller,
+                        location = a.location,
+                        price = a.currentBid,
+                        bids = a.bidsCount,
+                        endTimeMillis = a.endTimeMillis,
+                        imageRes = a.imageRes,
+                        grade = a.grade,
+                        status = "LIVE"
+                    )
+                }
+            } else {
+                listOf(
+                    AuctionGridAdapter.AuctionItem(1, "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 12, System.currentTimeMillis() + 2530000L, R.drawable.bg_image_grid, "Grade A+"),
+                    AuctionGridAdapter.AuctionItem(2, "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 9, System.currentTimeMillis() + 3933000L, R.drawable.platinumrd, "Grade S")
+                )
             }
-            startActivity(intent)
-        }
 
-        btnJoinAuction2?.setOnClickListener {
-            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java).apply {
-                putExtra("auction_title", "Red Koi Grade S")
+            if (isAdded && ::recyclerHomeAuctions.isInitialized) {
+                homeAuctionAdapter = AuctionGridAdapter(requireContext(), liveItems) { item ->
+                    val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java)
+                    intent.putExtra("auction_title", item.title)
+                    startActivity(intent)
+                }
+
+                recyclerHomeAuctions.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                recyclerHomeAuctions.adapter = homeAuctionAdapter
             }
-            startActivity(intent)
         }
     }
 
