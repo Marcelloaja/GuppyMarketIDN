@@ -98,12 +98,10 @@ class CategoryProductsActivity : AppCompatActivity() {
             activeSort = sortType
             sortChips.forEach { chip ->
                 if (chip == selected) {
-                    chip.setBackgroundResource(R.drawable.bg_chip_outline)
-                    chip.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.guppy_primary))
+                    chip.setBackgroundResource(R.drawable.bg_chip_selected)
                     chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_primary))
                 } else {
                     chip.setBackgroundResource(R.drawable.bg_chip_outline)
-                    chip.backgroundTintList = null
                     chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
                 }
             }
