@@ -74,6 +74,14 @@ class DetailFarmActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val btnSeeAllVariants = findViewById<View>(R.id.btnSeeAllFarmVariants)
+        btnSeeAllVariants?.setOnClickListener {
+            val intent = Intent(this, CategoryProductsActivity::class.java).apply {
+                putExtra("EXTRA_CATEGORY_NAME", "Jakarta Guppy House")
+            }
+            startActivity(intent)
+        }
+
         initTabViews()
         setupTabClickListeners()
         setupFarmProductsRecyclerView()
