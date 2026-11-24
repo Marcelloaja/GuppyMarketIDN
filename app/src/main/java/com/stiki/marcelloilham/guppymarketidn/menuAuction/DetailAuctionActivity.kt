@@ -43,9 +43,29 @@ class DetailAuctionActivity : AppCompatActivity() {
     private lateinit var thumbImg3: View
 
     private lateinit var tvUserBidAmount: TextView
+    private var tvDetailAuctionTimeLeft: TextView? = null
+
     private var baseCurrentBid: Long = 1275000L
     private var userBidAmount: Long = 1300000L
     private var isFollowing: Boolean = false
+
+    private var detailAuctionEndTimeMillis: Long = System.currentTimeMillis() + 765000L
+    private val auctionTimerHandler = Handler(Looper.getMainLooper())
+    private val auctionTimerRunnable = object : Runnable {
+        override fun run() {
+            val remainingSecs = maxOf(0L, (detailAuctionEndTimeMillis - System.currentTimeMillis()) / 1000L)
+            if (remainingSecs > 0) {
+                val h = remainingSecs / 3600
+                val m = (remainingSecs % 3600) / 60
+                val s = remainingSecs % 60
+                tvDetailAuctionTimeLeft?.text = String.format("%02d : %02d : %02d", h, m, s)
+                auctionTimerHandler.postDelayed(this, 1000L)
+            } else {
+                tvDetailAuctionTimeLeft?.text = "Selesai"
+                tvDetailAuctionTimeLeft?.setTextColor(getColor(R.color.guppy_text_gray))
+            }
+        }
+    }
 
     private val slideHandler = Handler(Looper.getMainLooper())
     private var slideRunnable: Runnable? = null
@@ -64,11 +84,13 @@ class DetailAuctionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_auction)
 
-        // Fitur Tombol Back (Kembali)
         val btnBack = findViewById<ImageView>(R.id.btnBackDetail)
         btnBack?.setOnClickListener {
             finish()
         }
+
+        tvDetailAuctionTimeLeft = findViewById(R.id.tvDetailAuctionTimeLeft)
+        auctionTimerHandler.postDelayed(auctionTimerRunnable, 1000L)
 
         initGalleryViews()
         setupGalleryClickListeners()
@@ -314,5 +336,10 @@ class DetailAuctionActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         stopAutoSlide()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        auctionTimerHandler.removeCallbacks(auctionTimerRunnable)
     }
 }
