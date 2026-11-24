@@ -212,11 +212,28 @@ class Profile : Fragment() {
                     val tvSaldo = view?.findViewById<TextView>(R.id.tvProfileSaldoAktif)
                     val tvTertahan = view?.findViewById<TextView>(R.id.tvProfileDanaTertahan)
 
+                    val tvFollowers = view?.findViewById<TextView>(R.id.tvProfileFollowersCount)
+                    val tvSoldItems = view?.findViewById<TextView>(R.id.tvProfileSoldItemsCount)
+                    val tvReviewCountMain = view?.findViewById<TextView>(R.id.tvProfileReviewCountMain)
+                    val tvRating = view?.findViewById<TextView>(R.id.tvProfileRating)
+                    val tvReviewsLabel = view?.findViewById<TextView>(R.id.tvProfileReviewsLabel)
+
+                    val followers = document.getLong("followers_count") ?: 0L
+                    val totalSold = document.getLong("total_sold_count") ?: 0L
+                    val totalReviews = document.getLong("total_reviews_count") ?: 0L
+                    val ratingVal = document.getDouble("average_rating") ?: 0.0
+
                     tvSaldo?.text = formatter.format(activeBalance).replace("Rp", "Rp ").replace(",00", "")
                     tvTertahan?.text = "Dana tertahan ${formatter.format(pendingBalance).replace("Rp", "Rp ").replace(",00", "")} ($pendingOrdersCount pesanan dikirim)"
 
                     tvAvgResponseTime?.text = "$avgMin menit"
                     tvOnTimeDeliveryRate?.text = "$deliveryRate%"
+
+                    tvFollowers?.text = followers.toString()
+                    tvSoldItems?.text = totalSold.toString()
+                    tvReviewCountMain?.text = totalReviews.toString()
+                    tvRating?.text = ratingVal.toString()
+                    tvReviewsLabel?.text = "dari $totalReviews ulasan"
 
                     saveUserDataLocally(name, description)
                     Log.d("Profile", "Data retrieved: Name=$name, Description=$description")
