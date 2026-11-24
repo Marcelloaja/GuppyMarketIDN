@@ -34,7 +34,8 @@ object FirestoreRepository {
         val bidsCount: Int = 14,
         val endTimeMillis: Long = System.currentTimeMillis() + 8000000L,
         val imageRes: Int = R.drawable.bg_image_grid,
-        val grade: String = "Grade A+"
+        val grade: String = "Grade A+",
+        val description: String = "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes. Memiliki corak ekor lincah, bebas penyakit, dan sudah melewati masa karantina."
     )
 
     data class OrderModel(
@@ -156,6 +157,13 @@ object FirestoreRepository {
             .addOnFailureListener {
                 onComplete(false)
             }
+    }
+
+    // DELETE AUCTION
+    fun deleteAuction(auctionId: String, onComplete: (Boolean) -> Unit) {
+        db.collection("auctions").document(auctionId).delete()
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
     }
 
     // 3. FETCH FARM PROFILE

@@ -329,6 +329,9 @@ class CreateAuctionActivity : AppCompatActivity() {
 
         val endTimeMillis = System.currentTimeMillis() + (selectedDurationHours * 3600000L)
 
+        val descriptionText = etDescription.text.toString().trim()
+        val finalDesc = if (descriptionText.isNotEmpty()) descriptionText else "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes. Memiliki corak ekor lincah, bebas penyakit, dan sudah melewati masa karantina."
+
         val newAuction = FirestoreRepository.AuctionModel(
             id = "auction_${System.currentTimeMillis()}",
             title = titleText,
@@ -339,7 +342,8 @@ class CreateAuctionActivity : AppCompatActivity() {
             bidsCount = 0,
             endTimeMillis = endTimeMillis,
             imageRes = R.drawable.bg_image_grid,
-            grade = "Grade A+"
+            grade = "Grade A+",
+            description = finalDesc
         )
 
         val btnPublishBottom = findViewById<TextView>(R.id.btnPublishBottom)

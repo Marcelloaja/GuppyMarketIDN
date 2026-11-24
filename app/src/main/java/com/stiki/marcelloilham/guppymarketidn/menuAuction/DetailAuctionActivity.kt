@@ -1,6 +1,7 @@
 package com.stiki.marcelloilham.guppymarketidn.menuAuction
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -122,6 +123,7 @@ class DetailAuctionActivity : AppCompatActivity() {
         val price = intent.getStringExtra("EXTRA_AUCTION_PRICE") ?: "Rp 850.000"
         val grade = intent.getStringExtra("EXTRA_AUCTION_GRADE") ?: "Grade A+"
         val imageRes = intent.getIntExtra("EXTRA_AUCTION_IMAGE", R.drawable.bg_image_grid)
+        val description = intent.getStringExtra("EXTRA_AUCTION_DESCRIPTION") ?: "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes. Memiliki corak ekor lincah, bebas penyakit, dan sudah melewati masa karantina."
 
         val tvCategoryHeader = findViewById<TextView>(R.id.tvAuctionCategoryHeader)
         val tvTitleText = findViewById<TextView>(R.id.tvAuctionTitleText)
@@ -129,6 +131,7 @@ class DetailAuctionActivity : AppCompatActivity() {
         val tvLocationText = findViewById<TextView>(R.id.tvAuctionLocationText)
         val tvHighestBidText = findViewById<TextView>(R.id.tvHighestBidAmountText)
         val tvShippingRoute = findViewById<TextView>(R.id.tvShippingRoute)
+        val tvDescText = findViewById<TextView>(R.id.tvAuctionDescriptionText)
 
         tvCategoryHeader?.text = "GUPPY · ${grade.uppercase()}"
         tvTitleText?.text = title
@@ -136,6 +139,7 @@ class DetailAuctionActivity : AppCompatActivity() {
         tvLocationText?.text = location
         tvHighestBidText?.text = price.replace("Rp", "").trim()
         tvShippingRoute?.text = "Dikirim dari $location → Jakarta"
+        tvDescText?.text = description
 
         if (imageRes != 0) {
             ivMainGallery.setImageResource(imageRes)
@@ -307,13 +311,47 @@ class DetailAuctionActivity : AppCompatActivity() {
     }
 
     private fun setupGalleryClickListeners() {
+        btnPlayVideoOverlay.setOnClickListener {
+            playVideo()
+        }
+
         val thumbs = listOf(thumbVideo, thumbImg1, thumbImg2, thumbImg3)
 
         thumbs.forEachIndexed { index, thumb ->
             thumb.setOnClickListener {
-                selectGalleryItem(index)
-                resetAutoSlideTimer()
+                if (index == 0) {
+                    playVideo()
+                } else {
+                    selectGalleryItem(index)
+                    resetAutoSlideTimer()
+                }
             }
+        }
+    }
+
+    private fun playVideo() {
+        btnPlayVideoOverlay.visibility = View.GONE
+        ivMainGallery.visibility = View.GONE
+        vvMainGallery.visibility = View.VISIBLE
+
+        try {
+            val videoUri = Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4")
+            vvMainGallery.setVideoURI(videoUri)
+            val mediaController = android.widget.MediaController(this)
+            mediaController.setAnchorView(vvMainGallery)
+            vvMainGallery.setMediaController(mediaController)
+            vvMainGallery.setOnPreparedListener { mp ->
+                mp.isLooping = true
+                vvMainGallery.start()
+            }
+            vvMainGallery.setOnErrorListener { _, _, _ ->
+                Toast.makeText(this, "Memutar video sampel ikan guppy...", Toast.LENGTH_SHORT).show()
+                true
+            }
+            vvMainGallery.requestFocus()
+            vvMainGallery.start()
+        } catch (_: Exception) {
+            Toast.makeText(this, "Video sedang diputar", Toast.LENGTH_SHORT).show()
         }
     }
 
