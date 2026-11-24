@@ -21,7 +21,7 @@ class Profile : Fragment() {
 
     private lateinit var textName: TextView
     private lateinit var textDescription: TextView
-    private lateinit var btnMenuProfile: View
+    private var btnMenuProfile: View? = null
 
     private var tvAvgResponseTime: TextView? = null
     private var tvOnTimeDeliveryRate: TextView? = null
@@ -85,11 +85,11 @@ class Profile : Fragment() {
 
         fetchUserData()
 
-        btnMenuProfile.setOnClickListener {
+        btnMenuProfile?.setOnClickListener {
             val animContext = context ?: return@setOnClickListener
             val animation = AnimationUtils.loadAnimation(animContext, R.anim.button_click)
-            btnMenuProfile.startAnimation(animation)
-            btnMenuProfile.postDelayed({
+            btnMenuProfile?.startAnimation(animation)
+            btnMenuProfile?.postDelayed({
                 if (isAdded) {
                     startActivity(Intent(activity, MenuProfile::class.java))
                 }
