@@ -766,6 +766,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:nestedScrollingEnabled="false"/>
+
+                <TextView
+                    android:id="@+id/tvEmptyProfileAuctions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="Anda belum menerbitkan lelang. Ketuk '+ Buat Lelang Baru' untuk mulai menerbitkan."
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="13sp"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <!-- TAB CONTENT 3: PESANAN TERAKHIR (Default Hidden) -->

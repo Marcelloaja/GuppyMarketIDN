@@ -264,6 +264,15 @@ class AuctionFragment : Fragment() {
                 location = activeLocation,
                 sortType = activeSortType
             )
+
+            val tvEmptyState = view?.findViewById<TextView>(R.id.tvEmptyAuctionState)
+            if (auctionAdapter.itemCount == 0) {
+                recyclerAuctions.visibility = View.GONE
+                tvEmptyState?.visibility = View.VISIBLE
+            } else {
+                recyclerAuctions.visibility = View.VISIBLE
+                tvEmptyState?.visibility = View.GONE
+            }
         }
     }
 

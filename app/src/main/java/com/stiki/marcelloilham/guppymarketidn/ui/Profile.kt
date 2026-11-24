@@ -266,6 +266,15 @@ class Profile : Fragment() {
                     }
                 }
                 recyclerProfileAuctions.adapter = myAuctionListAdapter
+
+                val tvEmpty = view?.findViewById<TextView>(R.id.tvEmptyProfileAuctions)
+                if (myAuctions.isEmpty()) {
+                    recyclerProfileAuctions.visibility = View.GONE
+                    tvEmpty?.visibility = View.VISIBLE
+                } else {
+                    recyclerProfileAuctions.visibility = View.VISIBLE
+                    tvEmpty?.visibility = View.GONE
+                }
             }
         }
     }
