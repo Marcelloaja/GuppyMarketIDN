@@ -1,11 +1,13 @@
 package com.stiki.marcelloilham.guppymarketidn.menuAuction
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -15,6 +17,8 @@ import com.stiki.marcelloilham.guppymarketidn.api.BiteshipClient
 import com.stiki.marcelloilham.guppymarketidn.api.RateItem
 import com.stiki.marcelloilham.guppymarketidn.api.RatesRequest
 import com.stiki.marcelloilham.guppymarketidn.api.RatesResponse
+import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogMapChoice
+import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailFarmActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,6 +41,11 @@ class DetailAuctionActivity : AppCompatActivity() {
     private lateinit var thumbImg1: View
     private lateinit var thumbImg2: View
     private lateinit var thumbImg3: View
+
+    private lateinit var tvUserBidAmount: TextView
+    private var baseCurrentBid: Long = 1275000L
+    private var userBidAmount: Long = 1300000L
+    private var isFollowing: Boolean = false
 
     private val slideHandler = Handler(Looper.getMainLooper())
     private var slideRunnable: Runnable? = null
@@ -64,6 +73,11 @@ class DetailAuctionActivity : AppCompatActivity() {
         initGalleryViews()
         setupGalleryClickListeners()
         selectGalleryItem(0)
+
+        setupTopBarActions()
+        setupStoreNavigation()
+        setupBiddingControls()
+
         fetchBiteshipShippingRates()
     }
 
@@ -84,8 +98,103 @@ class DetailAuctionActivity : AppCompatActivity() {
         thumbImg3 = findViewById(R.id.thumbImg3)
     }
 
+    private fun setupTopBarActions() {
+        val btnFollowTop = findViewById<View>(R.id.btnFollowAuctionTop)
+        val tvFollowTopText = findViewById<TextView>(R.id.tvFollowAuctionTopText)
+
+        btnFollowTop?.setOnClickListener {
+            isFollowing = !isFollowing
+            if (isFollowing) {
+                tvFollowTopText?.text = "Mengikuti ✓"
+                btnFollowTop.setBackgroundResource(R.drawable.bg_chip_selected)
+                Toast.makeText(this, "Berhasil mengikuti sesi lelang ini", Toast.LENGTH_SHORT).show()
+            } else {
+                tvFollowTopText?.text = "Ikuti"
+                btnFollowTop.setBackgroundResource(R.drawable.bg_chip_ikuti)
+                Toast.makeText(this, "Batal mengikuti sesi lelang ini", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun setupStoreNavigation() {
+        val btnVisitStore = findViewById<View>(R.id.btnVisitStoreDetail)
+        btnVisitStore?.setOnClickListener {
+            val intent = Intent(this, DetailFarmActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun setupBiddingControls() {
+        tvUserBidAmount = findViewById(R.id.tvUserBidAmount)
+        val btnPreset25k = findViewById<View>(R.id.btnPreset25k)
+        val btnPreset50k = findViewById<View>(R.id.btnPreset50k)
+        val btnPreset100k = findViewById<View>(R.id.btnPreset100k)
+
+        val btnMinBid = findViewById<View>(R.id.btnMinBidAmount)
+        val btnPlusBid = findViewById<View>(R.id.btnPlusBidAmount)
+        val btnSubmitBid = findViewById<View>(R.id.btnSubmitBidNow)
+
+        updateUserBidUI()
+
+        btnPreset25k?.setOnClickListener {
+            userBidAmount += 25000L
+            updateUserBidUI()
+        }
+
+        btnPreset50k?.setOnClickListener {
+            userBidAmount += 50000L
+            updateUserBidUI()
+        }
+
+        btnPreset100k?.setOnClickListener {
+            userBidAmount += 100000L
+            updateUserBidUI()
+        }
+
+        btnMinBid?.setOnClickListener {
+            val minAllowed = baseCurrentBid + 25000L
+            if (userBidAmount > minAllowed) {
+                userBidAmount -= 25000L
+                updateUserBidUI()
+            } else {
+                Toast.makeText(this, "Minimal penawaran adalah ${formatCurrency(minAllowed)}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnPlusBid?.setOnClickListener {
+            userBidAmount += 25000L
+            updateUserBidUI()
+        }
+
+        btnSubmitBid?.setOnClickListener {
+            baseCurrentBid = userBidAmount
+            Toast.makeText(this, "Penawaran ${formatCurrency(userBidAmount)} Berhasil Pasang!", Toast.LENGTH_LONG).show()
+            userBidAmount += 25000L
+            updateUserBidUI()
+        }
+    }
+
+    private fun updateUserBidUI() {
+        tvUserBidAmount.text = formatCurrency(userBidAmount)
+    }
+
+    private fun formatCurrency(amount: Long): String {
+        return NumberFormat.getCurrencyInstance(Locale("in", "ID"))
+            .format(amount).replace("Rp", "Rp ").replace(",00", "")
+    }
+
     private fun fetchBiteshipShippingRates() {
+        val tvCourierName = findViewById<TextView>(R.id.tvCourierName)
+        val tvCourierEtd = findViewById<TextView>(R.id.tvCourierEtd)
         val tvJntShippingCost = findViewById<TextView>(R.id.tvJntShippingCost) ?: return
+        val btnChangeShippingLoc = findViewById<View>(R.id.btnChangeShippingLoc)
+
+        btnChangeShippingLoc?.setOnClickListener {
+            BottomDialogMapChoice(
+                farmName = "Bogor Guppy Lab",
+                address = "Jl. Raya Bogor No. 88, Bogor → Jatinegara, Jakarta"
+            ).show(supportFragmentManager, "BottomDialogMapChoice")
+        }
 
         val request = RatesRequest(
             originLatitude = -6.5971,
@@ -120,6 +229,8 @@ class DetailAuctionActivity : AppCompatActivity() {
                             val priceFormatted = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
                                 .format(it.price).replace("Rp", "Rp ").replace(",00", "")
                             tvJntShippingCost.text = priceFormatted
+                            tvCourierName?.text = "${it.courierName.uppercase()} ${it.courierServiceCode.uppercase()}"
+                            tvCourierEtd?.text = "Estimasi ${it.duration}"
                         }
                     }
                 }

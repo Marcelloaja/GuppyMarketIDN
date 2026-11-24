@@ -59,6 +59,7 @@
 
         <!-- Ikuti Button -->
         <LinearLayout
+            android:id="@+id/btnFollowAuctionTop"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:background="@drawable/bg_chip_ikuti"
@@ -67,6 +68,7 @@
             android:clickable="true"
             android:focusable="true">
             <TextView
+                android:id="@+id/tvFollowAuctionTopText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ikuti"
@@ -851,7 +853,7 @@
                         android:layout_marginVertical="12dp"
                         android:background="@color/guppy_stroke"/>
 
-                    <!-- J&T Express Option -->
+                    <!-- Courier Shipping Rate Option -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -859,6 +861,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tvCourierName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_tag_grade"
@@ -870,6 +873,7 @@
                             android:paddingVertical="4dp"/>
 
                         <TextView
+                            android:id="@+id/tvCourierEtd"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1226,6 +1230,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/btnVisitStoreDetail"
                         android:layout_width="match_parent"
                         android:layout_height="38dp"
                         android:layout_marginTop="16dp"
@@ -1267,6 +1272,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/btnPreset25k"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_pill_transparent"
@@ -1276,9 +1282,12 @@
                 android:textSize="12sp"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="6dp"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
 
             <TextView
+                android:id="@+id/btnPreset50k"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_pill_transparent"
@@ -1288,9 +1297,12 @@
                 android:textSize="12sp"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="6dp"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
 
             <TextView
+                android:id="@+id/btnPreset100k"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_pill_transparent"
@@ -1299,7 +1311,9 @@
                 android:fontFamily="@font/inter_bold"
                 android:textSize="12sp"
                 android:paddingHorizontal="12dp"
-                android:paddingVertical="6dp"/>
+                android:paddingVertical="6dp"
+                android:clickable="true"
+                android:focusable="true"/>
         </LinearLayout>
 
         <!-- Bid Input Control -->
@@ -1313,6 +1327,7 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/btnMinBidAmount"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="@drawable/bg_circle_image"
@@ -1340,6 +1355,7 @@
                     android:letterSpacing="0.05"/>
 
                 <TextView
+                    android:id="@+id/tvUserBidAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
@@ -1359,6 +1375,7 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/btnPlusBidAmount"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="@drawable/bg_circle_image"
@@ -1372,6 +1389,7 @@
 
         <!-- Primary Action Button -->
         <TextView
+            android:id="@+id/btnSubmitBidNow"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="12dp"
