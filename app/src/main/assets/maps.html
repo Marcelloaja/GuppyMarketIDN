@@ -121,10 +121,12 @@
 
         // Add predefined markers for all 3 farms
         const farmsList = [
-            { name: "Jakarta Guppy House", lng: 106.8060, lat: -6.2921 },
-            { name: "Bekasi Aqua Farm", lng: 106.9896, lat: -6.2383 },
-            { name: "FinFantasy Farm", lng: 106.8685, lat: -6.2215 }
+            { name: "Jakarta Guppy House", key: "jakarta", lng: 106.8060, lat: -6.2921 },
+            { name: "Bekasi Aqua Farm", key: "bekasi", lng: 106.9896, lat: -6.2383 },
+            { name: "FinFantasy Farm", key: "finfantasy", lng: 106.8685, lat: -6.2215 }
         ];
+
+        const farmElementsMap = {};
 
         farmsList.forEach(f => {
             const fEl = document.createElement('div');
@@ -136,6 +138,8 @@
             new maplibregl.Marker({ element: fEl, anchor: 'center' })
                 .setLngLat([f.lng, f.lat])
                 .addTo(map);
+
+            farmElementsMap[f.key] = fEl;
         });
 
         // Load map sources & layers for Routing Line
@@ -223,48 +227,44 @@
         function zoomIn() { map.zoomIn(); }
         function zoomOut() { map.zoomOut(); }
 
-        let activeFarmMarker = null;
         let isNavigatingMode = false;
 
         function focusFarmByName(name) {
             if (!name) return;
             let targetLng = 106.8685;
             let targetLat = -6.2215;
-            let displayName = name;
+            let selectedKey = "finfantasy";
 
             if (name.toLowerCase().includes('jakarta')) {
                 targetLng = 106.8060;
                 targetLat = -6.2921;
-                displayName = "Jakarta Guppy House";
+                selectedKey = "jakarta";
             } else if (name.toLowerCase().includes('bekasi')) {
                 targetLng = 106.9896;
                 targetLat = -6.2383;
-                displayName = "Bekasi Aqua Farm";
+                selectedKey = "bekasi";
             } else if (name.toLowerCase().includes('fin') || name.toLowerCase().includes('fantasy')) {
                 targetLng = 106.8685;
                 targetLat = -6.2215;
-                displayName = "FinFantasy Farm";
+                selectedKey = "finfantasy";
             }
 
             activeDestLng = targetLng;
             activeDestLat = targetLat;
 
-            // Remove previous active marker if exists
-            if (activeFarmMarker) {
-                activeFarmMarker.remove();
-            }
-
-            // Create prominent green farm pin marker
-            const activeEl = document.createElement('div');
-            activeEl.className = 'marker-badge-green';
-            activeEl.style.padding = '8px 14px';
-            activeEl.style.fontSize = '13px';
-            activeEl.style.boxShadow = '0 6px 18px rgba(34,87,65,0.4)';
-            activeEl.innerHTML = '📍 ' + displayName + ' <span class="verified-icon">✓</span>';
-
-            activeFarmMarker = new maplibregl.Marker({ element: activeEl, anchor: 'bottom' })
-                .setLngLat([activeDestLng, activeDestLat])
-                .addTo(map);
+            // Highlight selected farm marker & reset others (NO duplicate markers!)
+            Object.keys(farmElementsMap).forEach(key => {
+                const el = farmElementsMap[key];
+                if (el) {
+                    if (key === selectedKey) {
+                        el.className = 'marker-badge-green';
+                        el.style.zIndex = '99';
+                    } else {
+                        el.className = 'marker-badge';
+                        el.style.zIndex = '1';
+                    }
+                }
+            });
 
             isRoutingActive = true;
             isNavigatingMode = false;
