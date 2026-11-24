@@ -103,6 +103,7 @@ class HomeFragment : Fragment() {
         setupHorizontalCategories()
         setupSearchBar()
         setupGridViewRecycler()
+        setupAuctionIntegration(view)
 
         return view
     }
@@ -128,6 +129,31 @@ class HomeFragment : Fragment() {
         val btnKunjungiFarm1 = view.findViewById<TextView>(R.id.btnKunjungiFarm1)
         btnKunjungiFarm1?.setOnClickListener {
             val intent = Intent(requireContext(), DetailFarmActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun setupAuctionIntegration(view: View) {
+        val btnSeeAllAuctions = view.findViewById<TextView>(R.id.btnSeeAllHomeAuctions)
+        val btnJoinAuction1 = view.findViewById<TextView>(R.id.btnJoinAuction1)
+        val btnJoinAuction2 = view.findViewById<TextView>(R.id.btnJoinAuction2)
+
+        btnSeeAllAuctions?.setOnClickListener {
+            val bottomNav = activity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.nav_view)
+            bottomNav?.selectedItemId = R.id.navigation_bid
+        }
+
+        btnJoinAuction1?.setOnClickListener {
+            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java).apply {
+                putExtra("auction_title", "Blue Gold Mosaic")
+            }
+            startActivity(intent)
+        }
+
+        btnJoinAuction2?.setOnClickListener {
+            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java).apply {
+                putExtra("auction_title", "Red Koi Grade S")
+            }
             startActivity(intent)
         }
     }

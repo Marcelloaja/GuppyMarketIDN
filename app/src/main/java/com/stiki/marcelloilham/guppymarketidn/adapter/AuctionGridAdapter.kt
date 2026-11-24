@@ -24,27 +24,22 @@ class AuctionGridAdapter(
         val location: String,
         val price: String,
         val bids: Int,
-        var secondsRemaining: Long,
+        val endTimeMillis: Long,
         val imageRes: Int,
         val grade: String,
         val category: String = "Semua",
         val status: String = "LIVE"
-    )
+    ) {
+        fun getSecondsRemaining(): Long {
+            return maxOf(0L, (endTimeMillis - System.currentTimeMillis()) / 1000L)
+        }
+    }
 
     private var filteredList: MutableList<AuctionItem> = rawItems.toMutableList()
     private val handler = Handler(Looper.getMainLooper())
     private val timerRunnable = object : Runnable {
         override fun run() {
-            var updated = false
-            for (item in filteredList) {
-                if (item.status == "LIVE" && item.secondsRemaining > 0) {
-                    item.secondsRemaining--
-                    updated = true
-                }
-            }
-            if (updated) {
-                notifyDataSetChanged()
-            }
+            notifyDataSetChanged()
             handler.postDelayed(this, 1000L)
         }
     }
@@ -78,8 +73,14 @@ class AuctionGridAdapter(
             holder.tvTime.text = "Akan Datang"
             holder.tvTime.setTextColor(context.getColor(R.color.guppy_primary))
         } else {
-            holder.tvTime.text = formatTimeLeft(item.secondsRemaining)
-            holder.tvTime.setTextColor(context.getColor(R.color.guppy_red))
+            val remaining = item.getSecondsRemaining()
+            if (remaining > 0) {
+                holder.tvTime.text = formatTimeLeft(remaining)
+                holder.tvTime.setTextColor(context.getColor(R.color.guppy_red))
+            } else {
+                holder.tvTime.text = "Selesai"
+                holder.tvTime.setTextColor(context.getColor(R.color.guppy_text_gray))
+            }
         }
 
         holder.itemView.setOnClickListener {

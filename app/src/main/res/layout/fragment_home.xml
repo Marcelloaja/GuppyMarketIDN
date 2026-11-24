@@ -274,12 +274,15 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/btnSeeAllHomeAuctions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_medium"
                     android:text="Lihat Semua"
                     android:textColor="@color/guppy_primary"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:clickable="true"
+                    android:focusable="true" />
             </LinearLayout>
 
             <HorizontalScrollView
@@ -448,6 +451,7 @@
                                 </LinearLayout>
 
                                 <TextView
+                                    android:id="@+id/btnJoinAuction1"
                                     android:layout_width="match_parent"
                                     android:layout_height="38dp"
                                     android:layout_marginTop="14dp"
@@ -616,6 +620,7 @@
                                 </LinearLayout>
 
                                 <TextView
+                                    android:id="@+id/btnJoinAuction2"
                                     android:layout_width="match_parent"
                                     android:layout_height="38dp"
                                     android:layout_marginTop="14dp"
