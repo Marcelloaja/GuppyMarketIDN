@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.animation.AnimationUtils
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +14,8 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var btnBackDetail: ImageView
     private lateinit var imageView: ImageView
     private lateinit var textView: TextView
-    private lateinit var btnMin: ImageButton
-    private lateinit var btnPlus: ImageButton
+    private lateinit var btnMin: ImageView
+    private lateinit var btnPlus: ImageView
     private lateinit var editTextNumber: EditText
 
     @SuppressLint("MissingInflatedId")
