@@ -266,10 +266,15 @@ class CreateAuctionActivity : AppCompatActivity() {
 
         val endTimeMillis = System.currentTimeMillis() + (selectedDurationHours * 3600000L)
 
+        val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: "user_default"
+        val currentUserName = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.displayName
+            ?.ifEmpty { "Toko Saya" } ?: "Toko Saya"
+
         val newAuction = FirestoreRepository.AuctionModel(
             id = "auction_${System.currentTimeMillis()}",
+            sellerId = currentUserId,
             title = titleText,
-            seller = "Toko Saya",
+            seller = currentUserName,
             location = "Bekasi",
             currentBid = formattedPrice,
             currentBidNumeric = obAmount,

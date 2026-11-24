@@ -255,9 +255,11 @@ class Profile : Fragment() {
     }
 
     private fun loadUserAuctions() {
-        FirestoreRepository.fetchAuctions { allAuctions ->
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+
+        FirestoreRepository.fetchUserAuctions(currentUserId) { myAuctions ->
             if (isAdded && ::recyclerProfileAuctions.isInitialized) {
-                myAuctionListAdapter = MyAuctionListAdapter(requireContext(), allAuctions) { auctionToDelete ->
+                myAuctionListAdapter = MyAuctionListAdapter(requireContext(), myAuctions) { auctionToDelete ->
                     FirestoreRepository.deleteAuction(auctionToDelete.id) { _ ->
                         Toast.makeText(requireContext(), "Lelang '${auctionToDelete.title}' Berhasil Dihapus", Toast.LENGTH_SHORT).show()
                         loadUserAuctions()

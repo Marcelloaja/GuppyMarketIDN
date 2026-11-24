@@ -26,6 +26,7 @@ object FirestoreRepository {
 
     data class AuctionModel(
         val id: String = "",
+        val sellerId: String = "",
         val title: String = "",
         val seller: String = "",
         val location: String = "Bekasi",
@@ -108,10 +109,10 @@ object FirestoreRepository {
         db.collection("auctions").get().addOnSuccessListener { snapshot ->
             if (snapshot.isEmpty) {
                 val initialAuctions = listOf(
-                    AuctionModel("a1", "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 850000L, 12, System.currentTimeMillis() + 7200000L, R.drawable.bg_image_grid, "Grade A+"),
-                    AuctionModel("a2", "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 1250000L, 9, System.currentTimeMillis() + 10800000L, R.drawable.platinumrd, "Grade S"),
-                    AuctionModel("a3", "Sky Blue Albino", "FinFantasy Farm", "Malang", "Rp 550.000", 550000L, 24, System.currentTimeMillis() + 14400000L, R.drawable.skyblue, "Grade A"),
-                    AuctionModel("a4", "Golden Tuxedo", "Breeder Lokal", "Surabaya", "Rp 320.000", 320000L, 5, System.currentTimeMillis() + 18000000L, R.drawable.gsrts, "Grade B")
+                    AuctionModel("a1", "seller_gn", "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 850000L, 12, System.currentTimeMillis() + 7200000L, R.drawable.bg_image_grid, "Grade A+"),
+                    AuctionModel("a2", "seller_al", "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 1250000L, 9, System.currentTimeMillis() + 10800000L, R.drawable.platinumrd, "Grade S"),
+                    AuctionModel("a3", "seller_ff", "Sky Blue Albino", "FinFantasy Farm", "Malang", "Rp 550.000", 550000L, 24, System.currentTimeMillis() + 14400000L, R.drawable.skyblue, "Grade A"),
+                    AuctionModel("a4", "seller_bl", "Golden Tuxedo", "Breeder Lokal", "Surabaya", "Rp 320.000", 320000L, 5, System.currentTimeMillis() + 18000000L, R.drawable.gsrts, "Grade B")
                 )
 
                 for (a in initialAuctions) {
@@ -141,6 +142,20 @@ object FirestoreRepository {
     fun fetchAuctions(onResult: (List<AuctionModel>) -> Unit) {
         db.collection("auctions")
             .orderBy("endTimeMillis", Query.Direction.ASCENDING)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val list = snapshot.toObjects(AuctionModel::class.java)
+                onResult(list)
+            }
+            .addOnFailureListener {
+                onResult(emptyList())
+            }
+    }
+
+    // FETCH AUCTIONS CREATED BY SPECIFIC USER
+    fun fetchUserAuctions(userId: String, onResult: (List<AuctionModel>) -> Unit) {
+        db.collection("auctions")
+            .whereEqualTo("sellerId", userId)
             .get()
             .addOnSuccessListener { snapshot ->
                 val list = snapshot.toObjects(AuctionModel::class.java)
