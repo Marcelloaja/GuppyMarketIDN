@@ -1,5 +1,7 @@
 package com.stiki.marcelloilham.guppymarketidn.menuHome
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -53,6 +55,13 @@ class DetailFarmActivity : AppCompatActivity() {
         val btnBack = findViewById<ImageView>(R.id.btnBackDetails)
         btnBack.setOnClickListener {
             finish()
+        }
+
+        val btnOpenMaps = findViewById<View>(R.id.btnOpenMaps)
+        btnOpenMaps?.setOnClickListener {
+            val mapUri = Uri.parse("https://www.google.com/maps/search/?api=1&query=Jl.+Lebak+Bulus+Raya+No.+42,+Cilandak,+Jakarta+Selatan")
+            val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+            startActivity(mapIntent)
         }
 
         initTabViews()
