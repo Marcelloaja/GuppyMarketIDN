@@ -89,6 +89,11 @@ class DetailAuctionActivity : AppCompatActivity() {
             finish()
         }
 
+        val passedEndTime = intent.getLongExtra("EXTRA_AUCTION_END_TIME_MILLIS", 0L)
+        if (passedEndTime > 0L) {
+            detailAuctionEndTimeMillis = passedEndTime
+        }
+
         tvDetailAuctionTimeLeft = findViewById(R.id.tvDetailAuctionTimeLeft)
         auctionTimerHandler.postDelayed(auctionTimerRunnable, 1000L)
 

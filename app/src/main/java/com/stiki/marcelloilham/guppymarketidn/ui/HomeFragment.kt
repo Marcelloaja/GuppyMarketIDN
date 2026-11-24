@@ -178,8 +178,10 @@ class HomeFragment : Fragment() {
                     rawItems = liveItems,
                     itemLayoutResId = R.layout.item_home_auction_card
                 ) { item ->
-                    val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java)
-                    intent.putExtra("auction_title", item.title)
+                    val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java).apply {
+                        putExtra("auction_title", item.title)
+                        putExtra("EXTRA_AUCTION_END_TIME_MILLIS", item.endTimeMillis)
+                    }
                     startActivity(intent)
                 }
 
