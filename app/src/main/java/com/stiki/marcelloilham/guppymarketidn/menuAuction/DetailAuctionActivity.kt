@@ -101,11 +101,44 @@ class DetailAuctionActivity : AppCompatActivity() {
         setupGalleryClickListeners()
         selectGalleryItem(0)
 
+        bindAuctionData()
         setupTopBarActions()
         setupStoreNavigation()
         setupBiddingControls()
 
         fetchBiteshipShippingRates()
+    }
+
+    private fun bindAuctionData() {
+        val title = intent.getStringExtra("auction_title") ?: "Blue Gold Mosaic"
+        val seller = intent.getStringExtra("EXTRA_AUCTION_SELLER") ?: "Guppy Nusantara"
+        val location = intent.getStringExtra("EXTRA_AUCTION_LOCATION") ?: "Bandung, Jawa Barat"
+        val price = intent.getStringExtra("EXTRA_AUCTION_PRICE") ?: "Rp 850.000"
+        val grade = intent.getStringExtra("EXTRA_AUCTION_GRADE") ?: "Grade A+"
+        val imageRes = intent.getIntExtra("EXTRA_AUCTION_IMAGE", R.drawable.bg_image_grid)
+
+        val tvCategoryHeader = findViewById<TextView>(R.id.tvAuctionCategoryHeader)
+        val tvTitleText = findViewById<TextView>(R.id.tvAuctionTitleText)
+        val tvSellerText = findViewById<TextView>(R.id.tvAuctionSellerText)
+        val tvLocationText = findViewById<TextView>(R.id.tvAuctionLocationText)
+        val tvHighestBidText = findViewById<TextView>(R.id.tvHighestBidAmountText)
+        val tvShippingRoute = findViewById<TextView>(R.id.tvShippingRoute)
+
+        tvCategoryHeader?.text = "GUPPY · ${grade.uppercase()}"
+        tvTitleText?.text = title
+        tvSellerText?.text = seller
+        tvLocationText?.text = location
+        tvHighestBidText?.text = price.replace("Rp", "").trim()
+        tvShippingRoute?.text = "Dikirim dari $location → Jakarta"
+
+        if (imageRes != 0) {
+            ivMainGallery.setImageResource(imageRes)
+        }
+
+        val numericPrice = price.replace("Rp", "").replace(".", "").replace(" ", "").trim().toLongOrNull() ?: 850000L
+        baseCurrentBid = numericPrice
+        userBidAmount = numericPrice + 25000L
+        updateUserBidUI()
     }
 
     private fun initGalleryViews() {

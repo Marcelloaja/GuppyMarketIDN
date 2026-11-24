@@ -157,38 +157,29 @@
                         </FrameLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Live Tag -->
+                    <!-- Live Tag Overlay -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="12dp"
-                        android:background="@drawable/bg_tag_live_timer"
+                        android:background="@drawable/bg_tag_live"
                         android:paddingHorizontal="10dp"
                         android:paddingVertical="5dp"
                         android:gravity="center_vertical">
 
                         <View
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
+                            android:layout_width="6dp"
+                            android:layout_height="6dp"
                             android:background="@drawable/bg_circle_image"
-                            android:backgroundTint="@color/guppy_red"
+                            android:backgroundTint="@color/white"
                             android:layout_marginEnd="6dp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="LIVE"
-                            android:textColor="@color/guppy_red"
+                            android:textColor="@color/white"
                             android:fontFamily="@font/inter_bold"
-                            android:textSize="10sp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="00:12:45"
-                            android:textColor="@color/guppy_text_black"
-                            android:fontFamily="@font/inter_semi_bold"
                             android:textSize="10sp"/>
                     </LinearLayout>
 
@@ -347,6 +338,7 @@
             </LinearLayout>
 
             <!-- TITLES & INFO -->
+            <!-- TITLE & FARM HEADER SECTION -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -355,6 +347,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tvAuctionCategoryHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="GUPPY MOSAIC · GRADE A+"
@@ -364,6 +357,7 @@
                     android:letterSpacing="0.05"/>
 
                 <TextView
+                    android:id="@+id/tvAuctionTitleText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
@@ -390,6 +384,7 @@
                         app:shapeAppearanceOverlay="@style/CircleImageStyle"/>
 
                     <TextView
+                        android:id="@+id/tvAuctionSellerText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -437,6 +432,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tvAuctionLocationText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
@@ -503,6 +499,7 @@
                                     android:layout_marginBottom="3dp"/>
 
                                 <TextView
+                                    android:id="@+id/tvHighestBidAmountText"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="1.275.000"

@@ -221,6 +221,11 @@ class AuctionFragment : Fragment() {
                 auctionAdapter = AuctionGridAdapter(requireContext(), initialItems) { item ->
                     val intent = Intent(requireContext(), DetailAuctionActivity::class.java).apply {
                         putExtra("auction_title", item.title)
+                        putExtra("EXTRA_AUCTION_SELLER", item.seller)
+                        putExtra("EXTRA_AUCTION_LOCATION", item.location)
+                        putExtra("EXTRA_AUCTION_PRICE", item.price)
+                        putExtra("EXTRA_AUCTION_GRADE", item.grade)
+                        putExtra("EXTRA_AUCTION_IMAGE", item.imageRes)
                         putExtra("EXTRA_AUCTION_END_TIME_MILLIS", item.endTimeMillis)
                     }
                     startActivity(intent)
