@@ -185,15 +185,10 @@ class CreateAuctionActivity : AppCompatActivity() {
         chip24h.setOnClickListener { selectDuration(chip24h, 24) }
         chip48h.setOnClickListener { selectDuration(chip48h, 48) }
 
-        val btnPublishTop = findViewById<TextView>(R.id.btnPublishTop)
         val btnPublishBottom = findViewById<TextView>(R.id.btnPublishBottom)
-
-        val publishAction = {
+        btnPublishBottom?.setOnClickListener {
             publishAuction()
         }
-
-        btnPublishTop?.setOnClickListener { publishAction() }
-        btnPublishBottom?.setOnClickListener { publishAction() }
     }
 
     private fun setupCurrencyTextWatchers() {
@@ -278,7 +273,16 @@ class CreateAuctionActivity : AppCompatActivity() {
             grade = "Grade A+"
         )
 
-        Toast.makeText(this, "Sesi Lelang '$titleText' ($selectedGender, $selectedStrain) Berhasil Diterbitkan!", Toast.LENGTH_LONG).show()
-        finish()
+        val btnPublishBottom = findViewById<TextView>(R.id.btnPublishBottom)
+        btnPublishBottom?.isEnabled = false
+        btnPublishBottom?.text = "Menerbitkan Lelang..."
+
+        FirestoreRepository.createAuction(newAuction) { success ->
+            btnPublishBottom?.isEnabled = true
+            btnPublishBottom?.text = "Terbitkan Lelang Sekarang"
+
+            Toast.makeText(this, "Sesi Lelang '$titleText' ($selectedGender, $selectedStrain) Berhasil Diterbitkan ke Cloud!", Toast.LENGTH_LONG).show()
+            finish()
+        }
     }
 }

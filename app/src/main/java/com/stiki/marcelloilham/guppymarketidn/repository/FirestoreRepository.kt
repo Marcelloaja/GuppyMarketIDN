@@ -144,6 +144,20 @@ object FirestoreRepository {
             }
     }
 
+    // CREATE NEW AUCTION
+    fun createAuction(auction: AuctionModel, onComplete: (Boolean) -> Unit) {
+        val docRef = db.collection("auctions").document()
+        val finalAuction = auction.copy(id = docRef.id)
+
+        docRef.set(finalAuction)
+            .addOnSuccessListener {
+                onComplete(true)
+            }
+            .addOnFailureListener {
+                onComplete(false)
+            }
+    }
+
     // 3. FETCH FARM PROFILE
     fun fetchFarmProfile(farmId: String, onResult: (FarmProfileModel) -> Unit) {
         db.collection("farms").document(farmId).get()
