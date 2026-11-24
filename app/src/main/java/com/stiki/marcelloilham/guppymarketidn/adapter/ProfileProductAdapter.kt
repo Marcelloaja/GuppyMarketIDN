@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
@@ -22,6 +23,8 @@ class ProfileProductAdapter(
         val tvTitle: TextView = view.findViewById(R.id.tvProfileProductTitle)
         val tvStockInfo: TextView = view.findViewById(R.id.tvProfileProductStockInfo)
         val tvPrice: TextView = view.findViewById(R.id.tvProfileProductPrice)
+        val btnManage: TextView = view.findViewById(R.id.btnManageProfileProduct)
+        val btnDelete: TextView = view.findViewById(R.id.btnDeleteProfileProduct)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,6 +38,14 @@ class ProfileProductAdapter(
         holder.tvTitle.text = item.title
         holder.tvStockInfo.text = "${item.unit} · Stok ${item.sold} terjual"
         holder.tvPrice.text = item.price
+
+        holder.btnManage.setOnClickListener {
+            Toast.makeText(context, "Membuka modul kelola stok untuk varian ${item.title}...", Toast.LENGTH_SHORT).show()
+        }
+
+        holder.btnDelete.setOnClickListener {
+            Toast.makeText(context, "Hapus varian ${item.title} (segera hadir)", Toast.LENGTH_SHORT).show()
+        }
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DetailActivity::class.java).apply {
