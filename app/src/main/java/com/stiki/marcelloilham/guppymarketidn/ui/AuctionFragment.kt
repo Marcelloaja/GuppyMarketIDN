@@ -240,6 +240,42 @@ class AuctionFragment : Fragment() {
                 tabUpcoming.text = "Akan Datang ($upcomingCount)"
                 tabFinished.text = "Selesai ($finishedCount)"
 
+                // Sync "Lelang Berakhir Terdekat" Banner with real Firestore data
+                val liveItems = finalItems.filter { it.status == "LIVE" && it.endTimeMillis > now }
+                    .sortedBy { it.endTimeMillis }
+
+                val cardNearest = view?.findViewById<View>(R.id.cardNearestBanner)
+                val tvNearestLotCount = view?.findViewById<TextView>(R.id.tvNearestLotCount)
+
+                if (liveItems.isNotEmpty()) {
+                    val nearest = liveItems.first()
+                    nearestSecs = maxOf(0L, (nearest.endTimeMillis - now) / 1000L)
+                    tvNearestLotCount?.text = "${liveItems.size} lot akan ditutup hari ini"
+
+                    cardNearest?.setOnClickListener {
+                        val intent = Intent(requireContext(), DetailAuctionActivity::class.java).apply {
+                            putExtra("auction_title", nearest.title)
+                            putExtra("EXTRA_AUCTION_SELLER", nearest.seller)
+                            putExtra("EXTRA_AUCTION_LOCATION", nearest.location)
+                            putExtra("EXTRA_AUCTION_PRICE", nearest.price)
+                            putExtra("EXTRA_AUCTION_GRADE", nearest.grade)
+                            putExtra("EXTRA_AUCTION_IMAGE", nearest.imageRes)
+                            putExtra("EXTRA_AUCTION_END_TIME_MILLIS", nearest.endTimeMillis)
+                            putExtra("EXTRA_AUCTION_DESCRIPTION", nearest.rawModel?.description ?: "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes.")
+                            putExtra("EXTRA_AUCTION_STRAIN", nearest.rawModel?.strain ?: "Mosaic")
+                            putExtra("EXTRA_AUCTION_GENDER", nearest.rawModel?.gender ?: "1 Pasang (Pair)")
+                            putExtra("EXTRA_AUCTION_AGE", nearest.rawModel?.age ?: "3.5 Bulan")
+                            putExtra("EXTRA_AUCTION_QUANTITY", nearest.rawModel?.quantity ?: "1 Pasang")
+                            putExtra("EXTRA_AUCTION_CONDITION", nearest.rawModel?.condition ?: "Sangat Lincah, Bebas Jamur")
+                            putExtra("EXTRA_AUCTION_QUARANTINE", nearest.rawModel?.quarantine ?: "14 hari di farm")
+                        }
+                        startActivity(intent)
+                    }
+                } else {
+                    tvNearestLotCount?.text = "Belum ada lot ditutup hari ini"
+                    nearestSecs = 0L
+                }
+
                 auctionAdapter = AuctionGridAdapter(requireContext(), finalItems) { item ->
                     val intent = Intent(requireContext(), DetailAuctionActivity::class.java).apply {
                         putExtra("auction_title", item.title)
