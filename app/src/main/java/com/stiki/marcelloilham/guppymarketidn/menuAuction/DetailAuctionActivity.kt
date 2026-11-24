@@ -125,6 +125,13 @@ class DetailAuctionActivity : AppCompatActivity() {
         val imageRes = intent.getIntExtra("EXTRA_AUCTION_IMAGE", R.drawable.bg_image_grid)
         val description = intent.getStringExtra("EXTRA_AUCTION_DESCRIPTION") ?: "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes. Memiliki corak ekor lincah, bebas penyakit, dan sudah melewati masa karantina."
 
+        val strain = intent.getStringExtra("EXTRA_AUCTION_STRAIN") ?: "Mosaic"
+        val gender = intent.getStringExtra("EXTRA_AUCTION_GENDER") ?: "1 Pasang (Pair)"
+        val age = intent.getStringExtra("EXTRA_AUCTION_AGE") ?: "3.5 Bulan"
+        val quantity = intent.getStringExtra("EXTRA_AUCTION_QUANTITY") ?: "1 Pasang"
+        val condition = intent.getStringExtra("EXTRA_AUCTION_CONDITION") ?: "Sangat Lincah, Bebas Jamur"
+        val quarantine = intent.getStringExtra("EXTRA_AUCTION_QUARANTINE") ?: "14 hari di farm"
+
         val tvCategoryHeader = findViewById<TextView>(R.id.tvAuctionCategoryHeader)
         val tvTitleText = findViewById<TextView>(R.id.tvAuctionTitleText)
         val tvSellerText = findViewById<TextView>(R.id.tvAuctionSellerText)
@@ -132,14 +139,30 @@ class DetailAuctionActivity : AppCompatActivity() {
         val tvHighestBidText = findViewById<TextView>(R.id.tvHighestBidAmountText)
         val tvShippingRoute = findViewById<TextView>(R.id.tvShippingRoute)
         val tvDescText = findViewById<TextView>(R.id.tvAuctionDescriptionText)
+        val tvFarmStoreNameBox = findViewById<TextView>(R.id.tvFarmStoreNameBox)
+
+        val tvTableStrain = findViewById<TextView>(R.id.tvDetailTableStrain)
+        val tvTableGender = findViewById<TextView>(R.id.tvDetailTableGender)
+        val tvTableAge = findViewById<TextView>(R.id.tvDetailTableAge)
+        val tvTableQuantity = findViewById<TextView>(R.id.tvDetailTableQuantity)
+        val tvTableCondition = findViewById<TextView>(R.id.tvDetailTableCondition)
+        val tvTableQuarantine = findViewById<TextView>(R.id.tvDetailTableQuarantine)
 
         tvCategoryHeader?.text = "GUPPY · ${grade.uppercase()}"
         tvTitleText?.text = title
         tvSellerText?.text = seller
+        tvFarmStoreNameBox?.text = seller
         tvLocationText?.text = location
         tvHighestBidText?.text = price.replace("Rp", "").trim()
         tvShippingRoute?.text = "Dikirim dari $location → Jakarta"
         tvDescText?.text = description
+
+        tvTableStrain?.text = strain
+        tvTableGender?.text = gender
+        tvTableAge?.text = age
+        tvTableQuantity?.text = quantity
+        tvTableCondition?.text = condition
+        tvTableQuarantine?.text = quarantine
 
         if (imageRes != 0) {
             ivMainGallery.setImageResource(imageRes)
