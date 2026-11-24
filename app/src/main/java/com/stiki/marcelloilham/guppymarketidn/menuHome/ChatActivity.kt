@@ -137,7 +137,7 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun appendMessageToUI(text: String, timeTextStr: String, isOutgoing: Boolean) {
+    private fun appendMessageToUI(msgText: String, timeTextStr: String, isOutgoing: Boolean) {
         val density = resources.displayMetrics.density
         val margin12 = (12 * density).toInt()
         val margin4 = (4 * density).toInt()
@@ -164,7 +164,7 @@ class ChatActivity : AppCompatActivity() {
             maxWidth = maxPx
             setBackgroundResource(if (isOutgoing) R.drawable.bg_chat_bubble_outgoing else R.drawable.bg_chat_bubble_incoming)
             setPadding(padding14, padding10, padding14, padding10)
-            this.text = text
+            setText(msgText)
             setTextColor(if (isOutgoing) getColor(R.color.white) else getColor(R.color.guppy_text_black))
             typeface = androidx.core.content.res.ResourcesCompat.getFont(this@ChatActivity, R.font.inter_regular)
             textSize = 13f
