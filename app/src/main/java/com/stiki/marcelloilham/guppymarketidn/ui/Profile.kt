@@ -97,12 +97,20 @@ class Profile : Fragment() {
         swipeRefresh?.setColorSchemeResources(R.color.guppy_primary)
         swipeRefresh?.setOnRefreshListener {
             fetchUserData()
+            loadUserAuctions()
             swipeRefresh.postDelayed({
                 swipeRefresh.isRefreshing = false
             }, 1000)
         }
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::recyclerProfileAuctions.isInitialized) {
+            loadUserAuctions()
+        }
     }
 
     private fun initTabs(view: View) {
