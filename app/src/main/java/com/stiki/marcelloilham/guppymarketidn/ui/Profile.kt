@@ -72,6 +72,12 @@ class Profile : Fragment() {
             startActivity(Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuProfile.TipsPerawatanActivity::class.java))
         }
 
+        val btnCreateAuction = view.findViewById<View>(R.id.btnCreateAuctionProfile)
+        btnCreateAuction?.setOnClickListener {
+            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.CreateAuctionActivity::class.java)
+            startActivity(intent)
+        }
+
         btnLogout?.setOnClickListener {
             firebaseAuth.signOut()
             Toast.makeText(requireContext(), "Berhasil keluar dari akun", Toast.LENGTH_SHORT).show()

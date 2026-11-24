@@ -49,6 +49,9 @@
             android:name=".menuAuction.DetailAuctionActivity"
             android:exported="false" />
         <activity
+            android:name=".menuAuction.CreateAuctionActivity"
+            android:exported="false" />
+        <activity
             android:name=".menuProfile.Information"
             android:exported="false" />
         <activity

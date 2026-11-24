@@ -95,6 +95,12 @@ class AuctionFragment : Fragment() {
         setupNearestBanner(view)
         setupSwipeRefresh(view)
 
+        val fabCreateAuction = view.findViewById<View>(R.id.fabCreateAuction)
+        fabCreateAuction?.setOnClickListener {
+            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.CreateAuctionActivity::class.java)
+            startActivity(intent)
+        }
+
         return view
     }
 
