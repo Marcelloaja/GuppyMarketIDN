@@ -1,8 +1,14 @@
 package com.stiki.marcelloilham.guppymarketidn.menuHome
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
@@ -10,15 +16,120 @@ import com.stiki.marcelloilham.guppymarketidn.adapter.FarmProductAdapter
 
 class DetailFarmActivity : AppCompatActivity() {
 
+    private lateinit var tabVarian: View
+    private lateinit var tabLelang: View
+    private lateinit var tabUlasan: View
+    private lateinit var tabTentang: View
+
+    private lateinit var tvTabVarian: TextView
+    private lateinit var tvTabLelang: TextView
+    private lateinit var tvTabUlasan: TextView
+    private lateinit var tvTabTentang: TextView
+
+    private lateinit var indicatorVarian: View
+    private lateinit var indicatorLelang: View
+    private lateinit var indicatorUlasan: View
+    private lateinit var indicatorTentang: View
+
+    private lateinit var contentVarian: View
+    private lateinit var contentLelang: View
+    private lateinit var contentUlasan: View
+    private lateinit var contentTentang: View
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_farm)
+
+        // Top Bar Spacing & Insets Adjustment
+        val topBarDetail = findViewById<View>(R.id.topBarDetail)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            topBarDetail.updatePadding(
+                top = systemBars.top + (12 * resources.displayMetrics.density).toInt()
+            )
+            insets
+        }
 
         val btnBack = findViewById<ImageView>(R.id.btnBackDetails)
         btnBack.setOnClickListener {
             finish()
         }
 
+        initTabViews()
+        setupTabClickListeners()
+        setupFarmProductsRecyclerView()
+
+        // Select Varian Tab by Default
+        selectTab(0)
+    }
+
+    private fun initTabViews() {
+        tabVarian = findViewById(R.id.tabVarian)
+        tabLelang = findViewById(R.id.tabLelang)
+        tabUlasan = findViewById(R.id.tabUlasan)
+        tabTentang = findViewById(R.id.tabTentang)
+
+        tvTabVarian = findViewById(R.id.tvTabVarian)
+        tvTabLelang = findViewById(R.id.tvTabLelang)
+        tvTabUlasan = findViewById(R.id.tvTabUlasan)
+        tvTabTentang = findViewById(R.id.tvTabTentang)
+
+        indicatorVarian = findViewById(R.id.indicatorVarian)
+        indicatorLelang = findViewById(R.id.indicatorLelang)
+        indicatorUlasan = findViewById(R.id.indicatorUlasan)
+        indicatorTentang = findViewById(R.id.indicatorTentang)
+
+        contentVarian = findViewById(R.id.contentVarian)
+        contentLelang = findViewById(R.id.contentLelang)
+        contentUlasan = findViewById(R.id.contentUlasan)
+        contentTentang = findViewById(R.id.contentTentang)
+    }
+
+    private fun setupTabClickListeners() {
+        tabVarian.setOnClickListener { selectTab(0) }
+        tabLelang.setOnClickListener { selectTab(1) }
+        tabUlasan.setOnClickListener { selectTab(2) }
+        tabTentang.setOnClickListener { selectTab(3) }
+    }
+
+    private fun selectTab(index: Int) {
+        val primaryColor = ContextCompat.getColor(this, R.color.guppy_primary)
+        val grayColor = ContextCompat.getColor(this, R.color.guppy_text_gray)
+        val strokeColor = ContextCompat.getColor(this, R.color.guppy_stroke)
+        val density = resources.displayMetrics.density
+
+        val textViews = listOf(tvTabVarian, tvTabLelang, tvTabUlasan, tvTabTentang)
+        val indicators = listOf(indicatorVarian, indicatorLelang, indicatorUlasan, indicatorTentang)
+        val contents = listOf(contentVarian, contentLelang, contentUlasan, contentTentang)
+
+        textViews.forEachIndexed { i, tv ->
+            if (i == index) {
+                tv.setTextColor(primaryColor)
+                tv.typeface = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.inter_bold)
+            } else {
+                tv.setTextColor(grayColor)
+                tv.typeface = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.inter_medium)
+            }
+        }
+
+        indicators.forEachIndexed { i, view ->
+            val lp = view.layoutParams
+            if (i == index) {
+                view.setBackgroundColor(primaryColor)
+                lp.height = (2.5f * density).toInt()
+            } else {
+                view.setBackgroundColor(strokeColor)
+                lp.height = (1f * density).toInt()
+            }
+            view.layoutParams = lp
+        }
+
+        contents.forEachIndexed { i, view ->
+            view.visibility = if (i == index) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun setupFarmProductsRecyclerView() {
         val recyclerFarmProducts = findViewById<RecyclerView>(R.id.recyclerFarmProducts)
         recyclerFarmProducts.layoutManager = GridLayoutManager(this, 2)
 
