@@ -119,29 +119,24 @@
 
         let userMarker = null;
 
-        // Guppy King Farm Marker
-        const farmEl = document.createElement('div');
-        farmEl.className = 'marker-badge';
-        farmEl.innerHTML = 'Guppy King Farm <span class="verified-icon">✓</span>';
+        // Add predefined markers for all 3 farms
+        const farmsList = [
+            { name: "Jakarta Guppy House", lng: 106.8060, lat: -6.2921 },
+            { name: "Bekasi Aqua Farm", lng: 106.9896, lat: -6.2383 },
+            { name: "FinFantasy Farm", lng: 106.8685, lat: -6.2215 }
+        ];
 
-        // Click listener on Farm Marker to toggle Navigation
-        farmEl.addEventListener('click', () => {
-            toggleNavigation();
+        farmsList.forEach(f => {
+            const fEl = document.createElement('div');
+            fEl.className = 'marker-badge';
+            fEl.innerHTML = '📍 ' + f.name + ' <span class="verified-icon">✓</span>';
+            fEl.addEventListener('click', () => {
+                focusFarmByName(f.name);
+            });
+            new maplibregl.Marker({ element: fEl, anchor: 'center' })
+                .setLngLat([f.lng, f.lat])
+                .addTo(map);
         });
-
-        new maplibregl.Marker({ element: farmEl, anchor: 'center' })
-            .setLngLat([destLng, destLat])
-            .addTo(map);
-
-        // Other Pins
-        const countEl = document.createElement('div'); countEl.className = 'marker-badge-green'; countEl.innerHTML = '150+';
-        new maplibregl.Marker({ element: countEl, anchor: 'center' }).setLngLat([106.869800, -6.223200]).addTo(map);
-
-        const pin85El = document.createElement('div'); pin85El.className = 'marker-badge'; pin85El.innerHTML = '85';
-        new maplibregl.Marker({ element: pin85El, anchor: 'center' }).setLngLat([106.858000, -6.227500]).addTo(map);
-
-        const pin32El = document.createElement('div'); pin32El.className = 'marker-badge'; pin32El.innerHTML = '32';
-        new maplibregl.Marker({ element: pin32El, anchor: 'center' }).setLngLat([106.871500, -6.218500]).addTo(map);
 
         // Load map sources & layers for Routing Line
         map.on('load', () => {
@@ -229,6 +224,7 @@
         function zoomOut() { map.zoomOut(); }
 
         let activeFarmMarker = null;
+        let isNavigatingMode = false;
 
         function focusFarmByName(name) {
             if (!name) return;
@@ -271,18 +267,19 @@
                 .addTo(map);
 
             isRoutingActive = true;
+            isNavigatingMode = false;
             fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
-            map.flyTo({
-                center: [activeDestLng, activeDestLat],
-                zoom: 15.8,
-                pitch: 45,
-                speed: 1.5
-            });
+
+            // Fit bounds to show BOTH user location and farm pin together
+            const bounds = new maplibregl.LngLatBounds();
+            bounds.extend([currentLng, currentLat]);
+            bounds.extend([activeDestLng, activeDestLat]);
+            map.fitBounds(bounds, { padding: 90, maxZoom: 15.5 });
         }
 
         function centerLocation() {
-            const targetBearing = isRoutingActive ? calculateBearing(currentLng, currentLat, activeDestLng, activeDestLat) : 0;
-            map.flyTo({ center: [currentLng, currentLat], zoom: 15.5, pitch: isRoutingActive ? 60 : 25, bearing: targetBearing, speed: 1.2 });
+            const targetBearing = isNavigatingMode ? calculateBearing(currentLng, currentLat, activeDestLng, activeDestLat) : 0;
+            map.flyTo({ center: [currentLng, currentLat], zoom: 15.5, pitch: isNavigatingMode ? 60 : 25, bearing: targetBearing, speed: 1.2 });
         }
 
         // Real-time Update User Location from Android GPS
@@ -309,19 +306,19 @@
                 .addTo(map);
             }
 
-            // If routing is active, dynamically update line, ETA, AND ROTATE CAMERA FORWARD
+            // If routing is active, dynamically update line, ETA, AND ROTATE CAMERA FORWARD (only when navigating)
             if (isRoutingActive) {
                 fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
-                const targetBearing = calculateBearing(currentLng, currentLat, activeDestLng, activeDestLat);
-                map.flyTo({
-                    center: [currentLng, currentLat],
-                    zoom: 16.8,
-                    pitch: 60,
-                    bearing: targetBearing, // <--- Camera automatically turns forward along the route line!
-                    speed: 0.5
-                });
-            } else {
-                map.flyTo({ center: [currentLng, currentLat], zoom: 15, pitch: 25, bearing: 0, speed: 1.2 });
+                if (isNavigatingMode) {
+                    const targetBearing = calculateBearing(currentLng, currentLat, activeDestLng, activeDestLat);
+                    map.flyTo({
+                        center: [currentLng, currentLat],
+                        zoom: 16.8,
+                        pitch: 60,
+                        bearing: targetBearing,
+                        speed: 0.5
+                    });
+                }
             }
         }
 
