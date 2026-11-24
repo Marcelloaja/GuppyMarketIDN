@@ -130,12 +130,14 @@
                     android:layout_marginEnd="12dp">
 
                     <!-- Main Media Card -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                        app:cardBackgroundColor="@color/black">
+                        app:cardBackgroundColor="@color/black"
+                        app:strokeWidth="0dp"
+                        app:cardPreventCornerOverlap="false">
 
                         <FrameLayout
                             android:layout_width="match_parent"
@@ -173,7 +175,7 @@
                                 android:clickable="true"
                                 android:focusable="true"/>
                         </FrameLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                     <!-- Live Tag -->
                     <LinearLayout
@@ -237,6 +239,7 @@
 
                     <!-- Photo Count Badge -->
                     <TextView
+                        android:id="@+id/tvPhotoCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|end"
