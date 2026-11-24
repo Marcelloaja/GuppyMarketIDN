@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.slider.RangeSlider
@@ -113,6 +114,9 @@ class BottomDialogFilter(
 
             rangeSlider.setValues(50000f, 1000000f)
             priceRangeValue.text = "${formatRupiah(50000f)} - ${formatRupiah(1000000f)}"
+
+            onFilterApplied?.invoke("LowToHigh", "All", "All", 50000f, 1000000f)
+            Toast.makeText(requireContext(), "Filter berhasil di-reset", Toast.LENGTH_SHORT).show()
         }
 
         // Apply Listener
