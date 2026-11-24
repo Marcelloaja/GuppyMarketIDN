@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.stiki.marcelloilham.guppymarketidn.MainActivity
 import com.stiki.marcelloilham.guppymarketidn.R
 
 class BottomDialogMapChoice(
@@ -29,12 +28,11 @@ class BottomDialogMapChoice(
 
         btnClose.setOnClickListener { dismiss() }
 
-        // Option 1: In-App MapLibre OpenStreetMap
+        // Option 1: In-App MapLibre OpenStreetMap Standalone Farm Map
         btnInAppMap.setOnClickListener {
-            val intent = Intent(requireContext(), MainActivity::class.java).apply {
-                putExtra("NAVIGATE_TO_TAB", "MAPS")
-                putExtra("SEARCH_FARM_QUERY", farmName)
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            val intent = Intent(requireContext(), FarmMapActivity::class.java).apply {
+                putExtra("EXTRA_FARM_NAME", farmName)
+                putExtra("EXTRA_FARM_ADDRESS", address)
             }
             startActivity(intent)
             dismiss()

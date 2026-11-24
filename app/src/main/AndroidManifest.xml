@@ -25,6 +25,9 @@
             android:name=".menuHome.DetailFarmActivity"
             android:exported="false" />
         <activity
+            android:name=".menuHome.FarmMapActivity"
+            android:exported="false" />
+        <activity
             android:name=".menuHome.CategoryProductsActivity"
             android:exported="false" />
         <activity
