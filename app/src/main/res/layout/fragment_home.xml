@@ -737,6 +737,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/btnKunjungiFarm1"
                         android:layout_width="wrap_content"
                         android:layout_height="34dp"
                         android:background="@drawable/bg_kunjungi_btn"

@@ -22,6 +22,9 @@
             android:name=".menuHome.KeranjangHome"
             android:exported="false" />
         <activity
+            android:name=".menuHome.DetailFarmActivity"
+            android:exported="false" />
+        <activity
             android:name=".menuHome.CategoryProductsActivity"
             android:exported="false" />
         <activity

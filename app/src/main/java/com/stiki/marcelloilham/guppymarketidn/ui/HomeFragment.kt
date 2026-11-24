@@ -34,6 +34,7 @@ import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogFilter
 import com.stiki.marcelloilham.guppymarketidn.menuHome.CategoryProductsActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.CategoryItem
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
+import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailFarmActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.Item
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -122,6 +123,13 @@ class HomeFragment : Fragment() {
         shimmerCarousel = view.findViewById(R.id.shimmerCarousel)
         shimmerGrid = view.findViewById(R.id.shimmerGrid)
         textNoData = view.findViewById(R.id.textNoData)
+
+        // Setup the new "Kunjungi" button
+        val btnKunjungiFarm1 = view.findViewById<TextView>(R.id.btnKunjungiFarm1)
+        btnKunjungiFarm1?.setOnClickListener {
+            val intent = Intent(requireContext(), DetailFarmActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setupHorizontalCategories() {
