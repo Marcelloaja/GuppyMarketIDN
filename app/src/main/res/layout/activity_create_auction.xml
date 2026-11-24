@@ -97,28 +97,42 @@
                     android:clickable="true"
                     android:focusable="true">
 
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="6dp">
+                        android:layout_height="match_parent">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_video_camera"
-                            app:tint="@color/guppy_primary"/>
+                            android:id="@+id/ivVideoPreview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="+ Video"
-                            android:textColor="@color/guppy_primary"
-                            android:fontFamily="@font/inter_bold"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/layoutVideoPlaceholder"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="6dp">
+
+                            <ImageView
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:src="@drawable/ic_video_camera"
+                                app:tint="@color/guppy_primary"/>
+
+                            <TextView
+                                android:id="@+id/tvVideoSizeLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="+ Video"
+                                android:textColor="@color/guppy_primary"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+                    </FrameLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Photo Slot 1 -->
@@ -136,27 +150,41 @@
                     android:clickable="true"
                     android:focusable="true">
 
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_image_gallery"
-                            app:tint="@color/guppy_text_gray"/>
+                            android:id="@+id/ivPhotoPreview1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Foto 1"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/layoutPhotoPlaceholder1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_image_gallery"
+                                app:tint="@color/guppy_text_gray"/>
+
+                            <TextView
+                                android:id="@+id/tvPhotoSizeLabel1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Foto 1"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+                    </FrameLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Photo Slot 2 -->
@@ -174,27 +202,41 @@
                     android:clickable="true"
                     android:focusable="true">
 
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_image_gallery"
-                            app:tint="@color/guppy_text_gray"/>
+                            android:id="@+id/ivPhotoPreview2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Foto 2"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/layoutPhotoPlaceholder2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_image_gallery"
+                                app:tint="@color/guppy_text_gray"/>
+
+                            <TextView
+                                android:id="@+id/tvPhotoSizeLabel2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Foto 2"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+                    </FrameLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Photo Slot 3 -->
@@ -212,27 +254,41 @@
                     android:clickable="true"
                     android:focusable="true">
 
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_image_gallery"
-                            app:tint="@color/guppy_text_gray"/>
+                            android:id="@+id/ivPhotoPreview3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Foto 3"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/layoutPhotoPlaceholder3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_image_gallery"
+                                app:tint="@color/guppy_text_gray"/>
+
+                            <TextView
+                                android:id="@+id/tvPhotoSizeLabel3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Foto 3"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+                    </FrameLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
