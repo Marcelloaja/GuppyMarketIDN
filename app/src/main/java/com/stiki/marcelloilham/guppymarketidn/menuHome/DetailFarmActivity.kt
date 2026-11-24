@@ -47,7 +47,7 @@ class DetailFarmActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             topBarDetail.updatePadding(
-                top = systemBars.top + (12 * resources.displayMetrics.density).toInt()
+                top = systemBars.top + (8 * resources.displayMetrics.density).toInt()
             )
             insets
         }
