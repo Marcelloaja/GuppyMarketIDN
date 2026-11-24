@@ -207,7 +207,14 @@ class AuctionFragment : Fragment() {
 
     private fun setupAuctions() {
         FirestoreRepository.fetchAuctions { firebaseAuctions ->
+            val now = System.currentTimeMillis()
             val finalItems = firebaseAuctions.mapIndexed { idx, a ->
+                val calculatedStatus = when {
+                    a.endTimeMillis == 0L -> "UPCOMING"
+                    a.endTimeMillis <= now -> "FINISHED"
+                    else -> "LIVE"
+                }
+
                 AuctionGridAdapter.AuctionItem(
                     id = idx + 1,
                     title = a.title,
@@ -219,12 +226,20 @@ class AuctionFragment : Fragment() {
                     imageRes = a.imageRes,
                     grade = a.grade,
                     category = a.strain,
-                    status = "LIVE",
+                    status = calculatedStatus,
                     rawModel = a
                 )
             }
 
             if (isAdded) {
+                val liveCount = finalItems.count { it.status == "LIVE" }
+                val upcomingCount = finalItems.count { it.status == "UPCOMING" }
+                val finishedCount = finalItems.count { it.status == "FINISHED" }
+
+                tabLive.text = "Live ($liveCount)"
+                tabUpcoming.text = "Akan Datang ($upcomingCount)"
+                tabFinished.text = "Selesai ($finishedCount)"
+
                 auctionAdapter = AuctionGridAdapter(requireContext(), finalItems) { item ->
                     val intent = Intent(requireContext(), DetailAuctionActivity::class.java).apply {
                         putExtra("auction_title", item.title)
