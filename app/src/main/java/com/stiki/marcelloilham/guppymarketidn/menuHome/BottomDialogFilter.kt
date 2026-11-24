@@ -125,8 +125,8 @@ class BottomDialogFilter(
     }
 
     private fun setChipSelected(selected: TextView, unselectedList: List<TextView>) {
-        selected.setBackgroundResource(R.drawable.bg_filter_green)
-        selected.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        selected.setBackgroundResource(R.drawable.bg_chip_selected)
+        selected.setTextColor(ContextCompat.getColor(requireContext(), R.color.guppy_primary))
 
         unselectedList.forEach { unselected ->
             unselected.setBackgroundResource(R.drawable.bg_chip_outline)
