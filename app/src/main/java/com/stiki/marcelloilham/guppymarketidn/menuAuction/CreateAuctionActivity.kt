@@ -1,6 +1,7 @@
 package com.stiki.marcelloilham.guppymarketidn.menuAuction
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -77,14 +78,19 @@ class CreateAuctionActivity : AppCompatActivity() {
         pickGalleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK && result.data != null) {
                 val selectedUri = result.data?.data
-                handleSelectedMedia(selectedUri)
+                handleSelectedMedia(uri = selectedUri, bitmap = null)
             }
         }
 
         takeCameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                val capturedUri = result.data?.data
-                handleSelectedMedia(capturedUri)
+                val dataIntent = result.data
+                val videoUri = dataIntent?.data
+                @Suppress("DEPRECATION")
+                val photoBitmap = (dataIntent?.extras?.get("data") as? Bitmap)
+                    ?: (dataIntent?.getParcelableExtra("data") as? Bitmap)
+
+                handleSelectedMedia(uri = videoUri, bitmap = photoBitmap)
             }
         }
     }
@@ -110,7 +116,11 @@ class CreateAuctionActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun getFileSizeInMB(uri: Uri?): Float {
+    private fun getFileSizeInMB(uri: Uri?, bitmap: Bitmap?): Float {
+        if (bitmap != null) {
+            val bytes = bitmap.byteCount.toLong()
+            return if (bytes > 0L) bytes / (1024f * 1024f) else 1.5f
+        }
         if (uri == null) return 2.4f
         return try {
             val cursor = contentResolver.query(uri, null, null, null, null)
@@ -125,13 +135,13 @@ class CreateAuctionActivity : AppCompatActivity() {
                 pfd?.close()
             }
             if (bytes > 0L) bytes / (1024f * 1024f) else 3.2f
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             3.2f
         }
     }
 
-    private fun handleSelectedMedia(uri: Uri?) {
-        val realSizeMB = getFileSizeInMB(uri)
+    private fun handleSelectedMedia(uri: Uri?, bitmap: Bitmap?) {
+        val realSizeMB = getFileSizeInMB(uri, bitmap)
         val formattedRealSize = String.format(java.util.Locale.US, "%.1f", realSizeMB)
 
         if (isSelectingVideo) {
@@ -140,11 +150,13 @@ class CreateAuctionActivity : AppCompatActivity() {
 
             if (uri != null) {
                 ivPreview?.setImageURI(uri)
-            } else {
-                ivPreview?.setImageResource(R.drawable.bg_image_grid)
+                ivPreview?.visibility = View.VISIBLE
+                layoutPlaceholder?.visibility = View.GONE
+            } else if (bitmap != null) {
+                ivPreview?.setImageBitmap(bitmap)
+                ivPreview?.visibility = View.VISIBLE
+                layoutPlaceholder?.visibility = View.GONE
             }
-            ivPreview?.visibility = View.VISIBLE
-            layoutPlaceholder?.visibility = View.GONE
 
             if (realSizeMB > 10.0f) {
                 val targetCompressedSizeMB = realSizeMB * 0.35f
@@ -170,15 +182,17 @@ class CreateAuctionActivity : AppCompatActivity() {
                 else -> Pair(findViewById<ImageView>(R.id.ivPhotoPreview1), findViewById<View>(R.id.layoutPhotoPlaceholder1))
             }
 
-            if (uri != null) {
+            if (bitmap != null) {
+                ivPreview?.setImageBitmap(bitmap)
+                ivPreview?.visibility = View.VISIBLE
+                layoutPlaceholder?.visibility = View.GONE
+            } else if (uri != null) {
                 ivPreview?.setImageURI(uri)
-            } else {
-                ivPreview?.setImageResource(R.drawable.skyblue)
+                ivPreview?.visibility = View.VISIBLE
+                layoutPlaceholder?.visibility = View.GONE
             }
-            ivPreview?.visibility = View.VISIBLE
-            layoutPlaceholder?.visibility = View.GONE
 
-            Toast.makeText(this, "$currentMediaSlot ($formattedRealSize MB) Berhasil Diupload & Tampil Preview! ✓", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "$currentMediaSlot ($formattedRealSize MB) Berhasil Diupload & Tampil Preview Asli! ✓", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -332,7 +346,7 @@ class CreateAuctionActivity : AppCompatActivity() {
         btnPublishBottom?.isEnabled = false
         btnPublishBottom?.text = "Menerbitkan Lelang..."
 
-        FirestoreRepository.createAuction(newAuction) { success ->
+        FirestoreRepository.createAuction(newAuction) { _ ->
             btnPublishBottom?.isEnabled = true
             btnPublishBottom?.text = "Terbitkan Lelang Sekarang"
 
