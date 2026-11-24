@@ -33,6 +33,7 @@ import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogCategories
 import com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogFilter
 import com.stiki.marcelloilham.guppymarketidn.menuHome.CategoryProductsActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.CategoryItem
+import com.stiki.marcelloilham.guppymarketidn.menuHome.ChatListActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailFarmActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.Item
@@ -51,6 +52,7 @@ class HomeFragment : Fragment() {
     private lateinit var filterHome: ImageView
     private lateinit var btnCartHome: ImageView
     private lateinit var btnNotifHome: ImageView
+    private lateinit var btnChatHome: View
     private lateinit var filterRecyclerView: RecyclerView
     private lateinit var gridViewRecycler: RecyclerView
     private lateinit var categoryHorizontalRecycler: RecyclerView
@@ -116,6 +118,7 @@ class HomeFragment : Fragment() {
         filterHome = view.findViewById(R.id.filterHome)
         btnCartHome = view.findViewById(R.id.btnCartHome)
         btnNotifHome = view.findViewById(R.id.btnNotifHome)
+        btnChatHome = view.findViewById(R.id.btnChatHome)
         etSearchHome = view.findViewById(R.id.etSearchHome)
         btnSeeAllCategories = view.findViewById(R.id.btnSeeAllCategories)
         categoryHorizontalRecycler = view.findViewById(R.id.categoryHorizontalRecycler)
@@ -231,10 +234,9 @@ class HomeFragment : Fragment() {
     private fun setupHeaderButtons() {
         val clickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
 
-        val btnChatHome = view?.findViewById<View>(R.id.btnChatHome)
-        btnChatHome?.setOnClickListener { button ->
+        btnChatHome.setOnClickListener { button ->
             button.startAnimation(clickAnimation)
-            startActivity(Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuHome.ChatListActivity::class.java))
+            startActivity(Intent(requireContext(), ChatListActivity::class.java))
         }
 
         btnCartHome.setOnClickListener { button ->
