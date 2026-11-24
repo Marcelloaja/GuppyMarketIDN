@@ -228,27 +228,50 @@
         function zoomIn() { map.zoomIn(); }
         function zoomOut() { map.zoomOut(); }
 
+        let activeFarmMarker = null;
+
         function focusFarmByName(name) {
             if (!name) return;
             let targetLng = destLng;
             let targetLat = destLat;
+            let displayName = name;
 
             if (name.toLowerCase().includes('jakarta')) {
                 targetLng = 106.8060;
                 targetLat = -6.2921;
+                displayName = "Jakarta Guppy House";
             } else if (name.toLowerCase().includes('bekasi')) {
                 targetLng = 106.9896;
                 targetLat = -6.2383;
+                displayName = "Bekasi Aqua Farm";
             } else if (name.toLowerCase().includes('fin') || name.toLowerCase().includes('fantasy')) {
                 targetLng = 106.8685;
                 targetLat = -6.2215;
+                displayName = "FinFantasy Farm";
             }
+
+            // Remove previous active marker if exists
+            if (activeFarmMarker) {
+                activeFarmMarker.remove();
+            }
+
+            // Create prominent green farm pin marker
+            const activeEl = document.createElement('div');
+            activeEl.className = 'marker-badge-green';
+            activeEl.style.padding = '8px 14px';
+            activeEl.style.fontSize = '13px';
+            activeEl.style.boxShadow = '0 6px 18px rgba(34,87,65,0.4)';
+            activeEl.innerHTML = '📍 ' + displayName + ' <span class="verified-icon">✓</span>';
+
+            activeFarmMarker = new maplibregl.Marker({ element: activeEl, anchor: 'bottom' })
+                .setLngLat([targetLng, targetLat])
+                .addTo(map);
 
             isRoutingActive = true;
             fetchRoute(currentLng, currentLat, targetLng, targetLat);
             map.flyTo({
                 center: [targetLng, targetLat],
-                zoom: 16,
+                zoom: 15.8,
                 pitch: 45,
                 speed: 1.5
             });
