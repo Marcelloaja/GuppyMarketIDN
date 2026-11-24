@@ -106,6 +106,11 @@ class DetailAuctionActivity : AppCompatActivity() {
         setupTopBarActions()
         setupStoreNavigation()
 
+        val btnViewAllBids = findViewById<View>(R.id.btnViewAllBidHistory)
+        btnViewAllBids?.setOnClickListener {
+            BottomDialogBidHistory().show(supportFragmentManager, "BottomDialogBidHistory")
+        }
+
         auctionTimerRunnable.run()
         fetchBiteshipShippingRates()
     }
