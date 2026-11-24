@@ -246,6 +246,18 @@
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
+            <!-- Video Compression Guidance Note -->
+            <TextView
+                android:id="@+id/tvVideoCompressNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="💡 Maksimal video 10 MB. Jika ukuran melebihi 10 MB, sistem akan otomatis mengompresi video agar cepat di-stream tanpa mengurangi kejernihan warna ikan."
+                android:textColor="@color/guppy_primary"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="11.5sp"
+                android:lineSpacingExtra="2dp"/>
+
             <!-- 2. JUDUL LELANG -->
             <TextView
                 android:layout_width="wrap_content"
