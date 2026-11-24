@@ -11,6 +11,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.card.MaterialCardView
 import com.stiki.marcelloilham.guppymarketidn.R
+import com.stiki.marcelloilham.guppymarketidn.api.BiteshipClient
+import com.stiki.marcelloilham.guppymarketidn.api.RateItem
+import com.stiki.marcelloilham.guppymarketidn.api.RatesRequest
+import com.stiki.marcelloilham.guppymarketidn.api.RatesResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.NumberFormat
+import java.util.Locale
 
 class DetailAuctionActivity : AppCompatActivity() {
 
@@ -55,6 +64,7 @@ class DetailAuctionActivity : AppCompatActivity() {
         initGalleryViews()
         setupGalleryClickListeners()
         selectGalleryItem(0)
+        fetchBiteshipShippingRates()
     }
 
     private fun initGalleryViews() {
@@ -72,6 +82,52 @@ class DetailAuctionActivity : AppCompatActivity() {
         thumbImg1 = findViewById(R.id.thumbImg1)
         thumbImg2 = findViewById(R.id.thumbImg2)
         thumbImg3 = findViewById(R.id.thumbImg3)
+    }
+
+    private fun fetchBiteshipShippingRates() {
+        val tvJntShippingCost = findViewById<TextView>(R.id.tvJntShippingCost) ?: return
+
+        val request = RatesRequest(
+            originLatitude = -6.5971,
+            originLongitude = 106.8060,
+            destinationLatitude = -6.2250,
+            destinationLongitude = 106.8654,
+            couriers = "jnt,jne,sicepat",
+            items = listOf(
+                RateItem(
+                    name = "Ikan Guppy Mosaic Grade A+",
+                    value = 1275000L,
+                    weight = 500
+                )
+            )
+        )
+
+        val authHeader = "Bearer ${BiteshipClient.API_KEY}"
+
+        BiteshipClient.instance.getShippingRates(authHeader, request)
+            .enqueue(object : Callback<RatesResponse> {
+                override fun onResponse(
+                    call: Call<RatesResponse>,
+                    response: Response<RatesResponse>
+                ) {
+                    if (response.isSuccessful && response.body()?.success == true) {
+                        val pricingList = response.body()?.pricing
+                        val jntOption = pricingList?.firstOrNull {
+                            it.courierCode.equals("jnt", ignoreCase = true)
+                        } ?: pricingList?.firstOrNull()
+
+                        jntOption?.let {
+                            val priceFormatted = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
+                                .format(it.price).replace("Rp", "Rp ").replace(",00", "")
+                            tvJntShippingCost.text = priceFormatted
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<RatesResponse>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
     }
 
     private fun setupGalleryClickListeners() {
