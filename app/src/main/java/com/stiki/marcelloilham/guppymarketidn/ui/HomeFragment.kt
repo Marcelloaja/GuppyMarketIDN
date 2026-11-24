@@ -162,7 +162,8 @@ class HomeFragment : Fragment() {
                         endTimeMillis = a.endTimeMillis,
                         imageRes = a.imageRes,
                         grade = a.grade,
-                        status = "LIVE"
+                        status = "LIVE",
+                        rawModel = a
                     )
                 }
             } else {
@@ -186,6 +187,13 @@ class HomeFragment : Fragment() {
                         putExtra("EXTRA_AUCTION_GRADE", item.grade)
                         putExtra("EXTRA_AUCTION_IMAGE", item.imageRes)
                         putExtra("EXTRA_AUCTION_END_TIME_MILLIS", item.endTimeMillis)
+                        putExtra("EXTRA_AUCTION_DESCRIPTION", item.rawModel?.description ?: "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes.")
+                        putExtra("EXTRA_AUCTION_STRAIN", item.rawModel?.strain ?: "Mosaic")
+                        putExtra("EXTRA_AUCTION_GENDER", item.rawModel?.gender ?: "1 Pasang (Pair)")
+                        putExtra("EXTRA_AUCTION_AGE", item.rawModel?.age ?: "3.5 Bulan")
+                        putExtra("EXTRA_AUCTION_QUANTITY", item.rawModel?.quantity ?: "1 Pasang")
+                        putExtra("EXTRA_AUCTION_CONDITION", item.rawModel?.condition ?: "Sangat Lincah, Bebas Jamur")
+                        putExtra("EXTRA_AUCTION_QUARANTINE", item.rawModel?.quarantine ?: "14 hari di farm")
                     }
                     startActivity(intent)
                 }

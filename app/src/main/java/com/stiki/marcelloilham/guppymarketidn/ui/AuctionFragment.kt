@@ -207,24 +207,34 @@ class AuctionFragment : Fragment() {
 
     private fun setupAuctions() {
         FirestoreRepository.fetchAuctions { firebaseAuctions ->
-            val initialItems = listOf(
-                // Live Auctions
-                AuctionGridAdapter.AuctionItem(1, "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 12, System.currentTimeMillis() + 2530000L, R.drawable.bg_image_grid, "Grade A+", "Mosaic", "LIVE"),
-                AuctionGridAdapter.AuctionItem(2, "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 9, System.currentTimeMillis() + 3933000L, R.drawable.platinumrd, "Grade S", "Koi", "LIVE"),
-                AuctionGridAdapter.AuctionItem(3, "Sky Blue Albino", "FinFantasy Farm", "Malang", "Rp 550.000", 24, System.currentTimeMillis() + 11700000L, R.drawable.skyblue, "Grade A", "Albino", "LIVE"),
-                AuctionGridAdapter.AuctionItem(4, "Golden Tuxedo", "Breeder Lokal", "Surabaya", "Rp 320.000", 5, System.currentTimeMillis() + 18720000L, R.drawable.gsrts, "Grade B", "Tuxedo", "LIVE"),
-
-                // Upcoming Auctions
-                AuctionGridAdapter.AuctionItem(5, "Snakeskin King Blue", "Bekasi Aqua Farm", "Bekasi", "Rp 400.000 (Start)", 0, 0L, R.drawable.mssrl, "Grade A", "Snakeskin", "UPCOMING"),
-                AuctionGridAdapter.AuctionItem(6, "Full Red Albino Pair", "Depok Tail Studio", "Depok", "Rp 600.000 (Start)", 0, 0L, R.drawable.platinumrd, "Grade A+", "Albino", "UPCOMING"),
-
-                // Finished Auctions
-                AuctionGridAdapter.AuctionItem(7, "Mosaic Dragon Champion", "Guppy Malang", "Malang", "Rp 2.100.000", 38, 0L, R.drawable.bg_image_grid, "Grade S", "Mosaic", "FINISHED"),
-                AuctionGridAdapter.AuctionItem(8, "Black Moscow High Tail", "Bogor Guppy Lab", "Bogor", "Rp 950.000", 19, 0L, R.drawable.gsrts, "Grade A", "Moscow", "FINISHED")
-            )
+            val finalItems = if (firebaseAuctions.isNotEmpty()) {
+                firebaseAuctions.mapIndexed { idx, a ->
+                    AuctionGridAdapter.AuctionItem(
+                        id = idx + 1,
+                        title = a.title,
+                        seller = a.seller,
+                        location = a.location,
+                        price = a.currentBid,
+                        bids = a.bidsCount,
+                        endTimeMillis = a.endTimeMillis,
+                        imageRes = a.imageRes,
+                        grade = a.grade,
+                        category = a.strain,
+                        status = "LIVE",
+                        rawModel = a
+                    )
+                }
+            } else {
+                listOf(
+                    AuctionGridAdapter.AuctionItem(1, "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 12, System.currentTimeMillis() + 2530000L, R.drawable.bg_image_grid, "Grade A+"),
+                    AuctionGridAdapter.AuctionItem(2, "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 9, System.currentTimeMillis() + 3933000L, R.drawable.platinumrd, "Grade S"),
+                    AuctionGridAdapter.AuctionItem(3, "Sky Blue Albino", "FinFantasy Farm", "Malang", "Rp 550.000", 24, System.currentTimeMillis() + 11700000L, R.drawable.skyblue, "Grade A"),
+                    AuctionGridAdapter.AuctionItem(4, "Golden Tuxedo", "Breeder Lokal", "Surabaya", "Rp 320.000", 5, System.currentTimeMillis() + 18720000L, R.drawable.gsrts, "Grade B")
+                )
+            }
 
             if (isAdded) {
-                auctionAdapter = AuctionGridAdapter(requireContext(), initialItems) { item ->
+                auctionAdapter = AuctionGridAdapter(requireContext(), finalItems) { item ->
                     val intent = Intent(requireContext(), DetailAuctionActivity::class.java).apply {
                         putExtra("auction_title", item.title)
                         putExtra("EXTRA_AUCTION_SELLER", item.seller)
@@ -233,6 +243,13 @@ class AuctionFragment : Fragment() {
                         putExtra("EXTRA_AUCTION_GRADE", item.grade)
                         putExtra("EXTRA_AUCTION_IMAGE", item.imageRes)
                         putExtra("EXTRA_AUCTION_END_TIME_MILLIS", item.endTimeMillis)
+                        putExtra("EXTRA_AUCTION_DESCRIPTION", item.rawModel?.description ?: "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes.")
+                        putExtra("EXTRA_AUCTION_STRAIN", item.rawModel?.strain ?: "Mosaic")
+                        putExtra("EXTRA_AUCTION_GENDER", item.rawModel?.gender ?: "1 Pasang (Pair)")
+                        putExtra("EXTRA_AUCTION_AGE", item.rawModel?.age ?: "3.5 Bulan")
+                        putExtra("EXTRA_AUCTION_QUANTITY", item.rawModel?.quantity ?: "1 Pasang")
+                        putExtra("EXTRA_AUCTION_CONDITION", item.rawModel?.condition ?: "Sangat Lincah, Bebas Jamur")
+                        putExtra("EXTRA_AUCTION_QUARANTINE", item.rawModel?.quarantine ?: "14 hari di farm")
                     }
                     startActivity(intent)
                 }

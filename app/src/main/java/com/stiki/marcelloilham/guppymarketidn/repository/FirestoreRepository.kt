@@ -35,7 +35,13 @@ object FirestoreRepository {
         val endTimeMillis: Long = System.currentTimeMillis() + 8000000L,
         val imageRes: Int = R.drawable.bg_image_grid,
         val grade: String = "Grade A+",
-        val description: String = "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes. Memiliki corak ekor lincah, bebas penyakit, dan sudah melewati masa karantina."
+        val description: String = "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes. Memiliki corak ekor lincah, bebas penyakit, dan sudah melewati masa karantina.",
+        val strain: String = "Mosaic",
+        val gender: String = "1 Pasang (Pair)",
+        val age: String = "3.5 Bulan",
+        val quantity: String = "1 Pasang",
+        val condition: String = "Sangat Lincah, Bebas Jamur",
+        val quarantine: String = "14 hari di farm"
     )
 
     data class OrderModel(

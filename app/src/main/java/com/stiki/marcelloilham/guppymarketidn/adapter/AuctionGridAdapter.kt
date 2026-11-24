@@ -29,7 +29,8 @@ class AuctionGridAdapter(
         val imageRes: Int,
         val grade: String,
         val category: String = "Semua",
-        val status: String = "LIVE"
+        val status: String = "LIVE",
+        val rawModel: com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository.AuctionModel? = null
     ) {
         fun getSecondsRemaining(): Long {
             return maxOf(0L, (endTimeMillis - System.currentTimeMillis()) / 1000L)

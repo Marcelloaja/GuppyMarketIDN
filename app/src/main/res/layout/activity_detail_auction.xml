@@ -623,7 +623,6 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
-                            android:id="@+id/tvDetailTableStrain"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -649,7 +648,6 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
-                            android:id="@+id/tvDetailTableGender"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -682,7 +680,6 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
-                            android:id="@+id/tvDetailTableAge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -708,7 +705,6 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
-                            android:id="@+id/tvDetailTableQuantity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -741,7 +737,6 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
-                            android:id="@+id/tvDetailTableCondition"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -767,7 +762,6 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
-                            android:id="@+id/tvDetailTableQuarantine"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -1144,7 +1138,6 @@
                 android:textSize="16sp"/>
 
             <TextView
-                android:id="@+id/tvAuctionDescriptionText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -1211,7 +1204,6 @@
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical">
                                 <TextView
-                                    android:id="@+id/tvFarmStoreNameBox"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Indo Guppy Farm"
