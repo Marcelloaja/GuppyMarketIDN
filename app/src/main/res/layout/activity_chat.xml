@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8F9FA"
+    tools:context=".menuHome.ChatActivity">
+
+    <!-- TOP BAR HEADER -->
+    <LinearLayout
+        android:id="@+id/topBarChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#F8F9FA"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/btnBackChat"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_white_stroke"
+            android:src="@drawable/ic_chevron_left"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvChatStoreName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="Bekasi Aqua Farm"
+                android:textColor="@color/guppy_text_black"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_semi_bold"
+                    android:text="Online"
+                    android:textColor="#2E7D32"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_regular"
+                    android:text=" · Membalas dlm 1 jam"
+                    android:textColor="@color/guppy_text_gray"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btnMoreOptions"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_white_stroke"
+            android:src="@drawable/ic_notifications_black_24dp"
+            android:padding="10dp"
+            app:tint="@color/guppy_text_black"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dividerChatHeader"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/topBarChat"
+        android:background="@color/guppy_stroke"/>
+
+    <!-- CHAT MESSAGES SCROLL CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollChatMessages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dividerChatHeader"
+        android:layout_above="@id/bottomInputBarChat"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="24dp">
+
+            <!-- STORE OVERLAY CARD -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="@color/guppy_stroke"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/bg_circle_image"
+                        android:backgroundTint="#D85C42"
+                        android:text="BA"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:textSize="13sp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bekasi Aqua Farm"
+                                android:fontFamily="@font/inter_bold"
+                                android:textColor="@color/guppy_text_black"
+                                android:textSize="13sp"
+                                android:layout_marginEnd="4dp"/>
+                            <ImageView
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:src="@drawable/ic_verified_badge"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="3dp"
+                                android:text="VERIFIED"
+                                android:textColor="@color/guppy_primary"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="8sp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="2dp">
+                            <ImageView
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:src="@drawable/star"
+                                app:tint="@color/guppy_star"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="2dp"
+                                android:text="4,8"
+                                android:fontFamily="@font/inter_semi_bold"
+                                android:textSize="11sp"
+                                android:textColor="@color/guppy_text_black"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="2dp"
+                                android:text="(126)"
+                                android:textSize="11sp"
+                                android:textColor="@color/guppy_text_gray"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/btnViewStore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="Lihat toko"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:paddingHorizontal="14dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- ATTACHED PRODUCT CARD -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="@color/guppy_stroke"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/bg_image_grid"
+                        android:scaleType="centerCrop"
+                        app:cornerSize="10dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Red Dragon Delta"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Jantan &amp; betina · 3–4 cm"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="11sp"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="4dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Rp 275.000"
+                                android:textColor="@color/guppy_primary"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="13sp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" / pasang"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_tag_photo_count"
+                            android:backgroundTint="#E8F5E9"
+                            android:text="Pasang × 2 · Stok 4"
+                            android:textColor="@color/guppy_primary"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="10sp"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp"/>
+
+                        <TextView
+                            android:id="@+id/btnChangeAttachedProduct"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Ganti"
+                            android:textColor="@color/guppy_primary"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="12sp"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- DATE CHIP (HARI INI) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_chip_outline"
+                android:backgroundTint="#EDEDED"
+                android:text="HARI INI"
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="10sp"
+                android:letterSpacing="0.05"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="4dp"/>
+
+            <!-- BUBBLE 1: INCOMING (SELLER) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical"
+                android:gravity="start">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="280dp"
+                    android:background="@drawable/bg_chat_bubble_incoming"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="10dp"
+                    android:text="Halo kak, selamat datang! Ada yang bisa kami bantu tentang Red Dragon Delta?"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="3dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="09:12"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="10sp"/>
+            </LinearLayout>
+
+            <!-- BUBBLE 2: OUTGOING (BUYER) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="280dp"
+                    android:background="@drawable/bg_chat_bubble_outgoing"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="10dp"
+                    android:text="Pagi kak, apakah ikan ini sudah sehat dan siap kirim ke Jakarta?"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="3dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="09:14 ✓"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="10sp"/>
+            </LinearLayout>
+
+            <!-- BUBBLE 3: INCOMING (SELLER) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical"
+                android:gravity="start">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="280dp"
+                    android:background="@drawable/bg_chat_bubble_incoming"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="10dp"
+                    android:text="Sehat kak, sudah dikarantina 3 hari dan dikemas oksigen murni. Untuk pengiriman ke Jakarta biasanya 1–2 hari."
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="3dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="09:15"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="10sp"/>
+            </LinearLayout>
+
+            <!-- BUBBLE 4: OUTGOING (BUYER) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="280dp"
+                    android:background="@drawable/bg_chat_bubble_outgoing"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="10dp"
+                    android:text="Oke, saya mau pesan 2 pasang. Apakah bisa kirim hari ini?"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="3dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="09:17 ✓"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="10sp"/>
+            </LinearLayout>
+
+            <!-- BUBBLE 5: ORDER PROPOSAL CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical"
+                android:gravity="start">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:strokeColor="@color/guppy_stroke"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_box_check"
+                                app:tint="@color/guppy_primary"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="Pesanan diusulkan"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="13sp"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/guppy_stroke"
+                            android:layout_marginVertical="10dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pasang × 2 · 4 ekor"
+                                    android:textColor="@color/guppy_text_gray"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:textSize="11sp"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="Rp 550.000"
+                                    android:textColor="@color/guppy_primary"
+                                    android:fontFamily="@font/inter_bold"
+                                    android:textSize="15sp"/>
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/btnViewProposalOrder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:background="@drawable/bg_chip_outline"
+                                android:text="Lihat pesanan"
+                                android:textColor="@color/guppy_primary"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="11sp"
+                                android:gravity="center"
+                                android:paddingHorizontal="10dp"
+                                android:clickable="true"
+                                android:focusable="true"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="09:18"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="10sp"/>
+            </LinearLayout>
+
+            <!-- DYNAMIC MESSAGES CONTAINER -->
+            <LinearLayout
+                android:id="@+id/layoutDynamicChatMessages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- BOTTOM INPUT BAR & QUICK REPLIES (STICKY) -->
+    <LinearLayout
+        android:id="@+id/bottomInputBarChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#F8F9FA"
+        android:elevation="12dp"
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp">
+
+        <!-- Quick Reply Chips Horizontal Scroll -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:clipToPadding="false"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/chipQuickReply1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_chip_outline"
+                    android:text="Kirim hari ini?"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_semi_bold"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:paddingHorizontal="14dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:id="@+id/chipQuickReply2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_chip_outline"
+                    android:text="Garansi sehat 24 jam"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_semi_bold"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:paddingHorizontal="14dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:id="@+id/chipQuickReply3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_chip_outline"
+                    android:text="Lokasi farm"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_semi_bold"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:paddingHorizontal="14dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- Message Input Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Attachment Clip Button -->
+            <ImageView
+                android:id="@+id/btnAttachFile"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_circle_white_stroke"
+                android:src="@drawable/ic_share"
+                android:padding="10dp"
+                app:tint="@color/guppy_text_gray"
+                android:layout_marginEnd="10dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <!-- Input Box Container -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_chip_outline"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="14dp">
+
+                <EditText
+                    android:id="@+id/etChatMessage"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="Tulis pesan..."
+                    android:textColorHint="@color/guppy_text_gray"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="13sp"
+                    android:inputType="textShortMessage"
+                    android:imeOptions="actionSend"/>
+
+                <ImageView
+                    android:id="@+id/btnEmoji"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/star"
+                    app:tint="@color/guppy_text_gray"
+                    android:layout_marginEnd="10dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <ImageView
+                    android:id="@+id/btnGallery"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_map_folded"
+                    app:tint="@color/guppy_text_gray"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
+
+            <!-- Send Button -->
+            <ImageView
+                android:id="@+id/btnSendMessage"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/bg_circle_image"
+                android:backgroundTint="@color/guppy_primary"
+                android:src="@drawable/ic_send_plane"
+                app:tint="@color/white"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

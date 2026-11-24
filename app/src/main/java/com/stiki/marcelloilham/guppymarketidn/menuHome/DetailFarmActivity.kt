@@ -65,6 +65,14 @@ class DetailFarmActivity : AppCompatActivity() {
             ).show(supportFragmentManager, "BottomDialogMapChoice")
         }
 
+        val btnChatFarm = findViewById<View>(R.id.btnChatFarm)
+        btnChatFarm?.setOnClickListener {
+            val intent = Intent(this, ChatActivity::class.java).apply {
+                putExtra("EXTRA_STORE_NAME", "Jakarta Guppy House")
+            }
+            startActivity(intent)
+        }
+
         initTabViews()
         setupTabClickListeners()
         setupFarmProductsRecyclerView()

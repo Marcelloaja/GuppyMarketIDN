@@ -927,6 +927,7 @@
 
         <!-- Chat Button -->
         <LinearLayout
+            android:id="@+id/btnChatFarm"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:background="@drawable/bg_btn_outline"
