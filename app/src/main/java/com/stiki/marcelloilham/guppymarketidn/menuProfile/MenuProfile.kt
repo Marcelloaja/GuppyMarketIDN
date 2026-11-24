@@ -21,7 +21,6 @@ import com.stiki.marcelloilham.guppymarketidn.R
 class MenuProfile : AppCompatActivity() {
 
     private lateinit var btnBackProfile: ImageView
-    private lateinit var btnSaveTop: TextView
     private lateinit var btnSaveBottom: TextView
     private lateinit var btnCancel: TextView
 
@@ -62,7 +61,6 @@ class MenuProfile : AppCompatActivity() {
 
     private fun initViews() {
         btnBackProfile = findViewById(R.id.btnBackProfile)
-        btnSaveTop = findViewById(R.id.btnSaveTop)
         btnSaveBottom = findViewById(R.id.btnSaveBottom)
         btnCancel = findViewById(R.id.btnCancel)
 
@@ -83,7 +81,6 @@ class MenuProfile : AppCompatActivity() {
         btnBackProfile.setOnClickListener { finish() }
         btnCancel.setOnClickListener { finish() }
 
-        btnSaveTop.setOnClickListener { saveProfileData() }
         btnSaveBottom.setOnClickListener { saveProfileData() }
 
         // Character counter for farm description
