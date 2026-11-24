@@ -53,15 +53,9 @@ class AuctionFragment : Fragment() {
     }
 
     private fun setupTopBar(view: View) {
-        val btnBack = view.findViewById<ImageView>(R.id.btnBackAuction)
         val btnCart = view.findViewById<ImageView>(R.id.btnCartAuction)
         val btnNotif = view.findViewById<ImageView>(R.id.btnNotifAuction)
         val clickAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
-
-        btnBack?.setOnClickListener {
-            it.startAnimation(clickAnim)
-            requireActivity().onBackPressed()
-        }
 
         btnCart?.setOnClickListener {
             it.startAnimation(clickAnim)
