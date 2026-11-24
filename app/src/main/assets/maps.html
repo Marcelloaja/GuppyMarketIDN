@@ -45,48 +45,29 @@
             100% { transform: scale(1); opacity: 0; }
         }
 
-        /* Custom MapLibre Marker Styles */
-        .marker-badge {
-            background: #FFFFFF;
-            color: #1C1C1C;
+        /* Clean SVG Pin Marker Styles */
+        .pin-marker {
+            width: 32px;
+            height: 38px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            filter: drop-shadow(0px 3px 6px rgba(0,0,0,0.3));
+        }
+        .pin-marker:hover {
+            transform: scale(1.15);
+        }
+        .pin-marker.active-pin {
+            transform: scale(1.25);
+            filter: drop-shadow(0px 4px 10px rgba(34,87,65,0.5));
+        }
+
+        .maplibregl-popup-content {
+            padding: 6px 12px;
+            border-radius: 12px;
             font-family: 'Segoe UI', Roboto, sans-serif;
             font-weight: 700;
             font-size: 12px;
-            padding: 5px 12px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.18);
-            border: 1px solid #EBEBEB;
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-            cursor: pointer;
-            will-change: transform;
-        }
-        .marker-badge-green {
-            background: #225741;
-            color: #FFFFFF;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            font-weight: 700;
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-            white-space: nowrap;
-            cursor: pointer;
-            will-change: transform;
-        }
-        .verified-icon {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 14px;
-            height: 14px;
-            background: #4CAF50;
-            color: white;
-            border-radius: 50%;
-            font-size: 9px;
-            margin-left: 5px;
-            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .maplibregl-ctrl-bottom-right, .maplibregl-ctrl-bottom-left { display: none !important; }
@@ -101,25 +82,38 @@
         let currentLng = 106.865421;
 
         // Destination default
-        let activeDestLng = 106.868500;
-        let activeDestLat = -6.221500;
+        let activeDestLng = 106.8060;
+        let activeDestLat = -6.2921;
 
         let isRoutingActive = false;
-        let currentProfile = 'driving'; // 'driving' (Mobil), 'bike' (Motor), 'foot' (Jalan Kaki)
+        let currentProfile = 'driving';
 
         // Initialize MapLibre GL JS Map
         const map = new maplibregl.Map({
             container: 'map',
             style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-            center: [currentLng, currentLat],
-            zoom: 14.6,
+            center: [activeDestLng, activeDestLat],
+            zoom: 15.0,
             pitch: 25,
             attributionControl: false
         });
 
         let userMarker = null;
 
-        // Add predefined markers for all 3 farms
+        // SVG Red & Green Pin Icons
+        const redPinSvg = `
+        <svg width="32" height="38" viewBox="0 0 32 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 0C7.16 0 0 7.16 0 16C0 27.5 16 38 16 38C16 38 32 27.5 32 16C32 7.16 24.84 0 16 0ZM16 22C12.69 22 10 19.31 10 16C10 12.69 12.69 10 16 10C19.31 10 22 12.69 22 16C22 19.31 19.31 22 16 22Z" fill="#E53935"/>
+          <circle cx="16" cy="16" r="6" fill="#FFFFFF"/>
+        </svg>`;
+
+        const greenPinSvg = `
+        <svg width="36" height="42" viewBox="0 0 32 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 0C7.16 0 0 7.16 0 16C0 27.5 16 38 16 38C16 38 32 27.5 32 16C32 7.16 24.84 0 16 0ZM16 22C12.69 22 10 19.31 10 16C10 12.69 12.69 10 16 10C19.31 10 22 12.69 22 16C22 19.31 19.31 22 16 22Z" fill="#225741"/>
+          <circle cx="16" cy="16" r="6" fill="#FFFFFF"/>
+        </svg>`;
+
+        // Add predefined pin markers for all 3 farms
         const farmsList = [
             { name: "Jakarta Guppy House", key: "jakarta", lng: 106.8060, lat: -6.2921 },
             { name: "Bekasi Aqua Farm", key: "bekasi", lng: 106.9896, lat: -6.2383 },
@@ -130,12 +124,12 @@
 
         farmsList.forEach(f => {
             const fEl = document.createElement('div');
-            fEl.className = 'marker-badge';
-            fEl.innerHTML = '📍 ' + f.name + ' <span class="verified-icon">✓</span>';
+            fEl.className = 'pin-marker';
+            fEl.innerHTML = redPinSvg;
             fEl.addEventListener('click', () => {
                 focusFarmByName(f.name);
             });
-            new maplibregl.Marker({ element: fEl, anchor: 'center' })
+            new maplibregl.Marker({ element: fEl, anchor: 'bottom' })
                 .setLngLat([f.lng, f.lat])
                 .addTo(map);
 
@@ -144,7 +138,6 @@
 
         // Load map sources & layers for Routing Line
         map.on('load', () => {
-            // Source for the route line
             map.addSource('route', {
                 'type': 'geojson',
                 'data': {
@@ -157,41 +150,25 @@
                 }
             });
 
-            // Outer casing for the route line
             map.addLayer({
                 'id': 'route-casing',
                 'type': 'line',
                 'source': 'route',
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                'paint': {
-                    'line-color': '#112F21',
-                    'line-width': 8,
-                    'line-opacity': 0.8
-                }
+                'layout': { 'line-join': 'round', 'line-cap': 'round' },
+                'paint': { 'line-color': '#112F21', 'line-width': 8, 'line-opacity': 0.8 }
             });
 
-            // Inner color of the route line
             map.addLayer({
                 'id': 'route-line',
                 'type': 'line',
                 'source': 'route',
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                'paint': {
-                    'line-color': '#4CAF50',
-                    'line-width': 4
-                }
+                'layout': { 'line-join': 'round', 'line-cap': 'round' },
+                'paint': { 'line-color': '#4CAF50', 'line-width': 4 }
             });
 
             setTimeout(() => { map.resize(); }, 300);
         });
 
-        // Calculate forward-facing bearing angle towards target coordinate
         function calculateBearing(startLng, startLat, endLng, endLat) {
             const rad = Math.PI / 180;
             const lat1 = startLat * rad;
@@ -204,17 +181,27 @@
             return (brng + 360) % 360;
         }
 
-        // Switch Vehicle Profile & dynamically change line colors + ETAs
+        function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
         function setRouteProfile(profile) {
             currentProfile = profile;
 
             if (map.getLayer('route-line')) {
                 if (profile === 'bike') {
-                    map.setPaintProperty('route-line', 'line-color', '#00BCD4'); // Motor: Vibrant Cyan
+                    map.setPaintProperty('route-line', 'line-color', '#00BCD4');
                 } else if (profile === 'foot') {
-                    map.setPaintProperty('route-line', 'line-color', '#FF9800'); // Jalan Kaki: Bright Orange
+                    map.setPaintProperty('route-line', 'line-color', '#FF9800');
                 } else {
-                    map.setPaintProperty('route-line', 'line-color', '#4CAF50'); // Mobil: Emerald Green
+                    map.setPaintProperty('route-line', 'line-color', '#4CAF50');
                 }
             }
 
@@ -223,7 +210,6 @@
             }
         }
 
-        // Functions exposed for Android Kotlin
         function zoomIn() { map.zoomIn(); }
         function zoomOut() { map.zoomOut(); }
 
@@ -252,16 +238,16 @@
             activeDestLng = targetLng;
             activeDestLat = targetLat;
 
-            // Highlight selected farm marker & reset others (NO duplicate markers!)
+            // Highlight selected pin green, reset others to red pin
             Object.keys(farmElementsMap).forEach(key => {
                 const el = farmElementsMap[key];
                 if (el) {
                     if (key === selectedKey) {
-                        el.className = 'marker-badge-green';
-                        el.style.zIndex = '99';
+                        el.innerHTML = greenPinSvg;
+                        el.classList.add('active-pin');
                     } else {
-                        el.className = 'marker-badge';
-                        el.style.zIndex = '1';
+                        el.innerHTML = redPinSvg;
+                        el.classList.remove('active-pin');
                     }
                 }
             });
@@ -270,11 +256,23 @@
             isNavigatingMode = false;
             fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
 
-            // Fit bounds to show BOTH user location and farm pin together
-            const bounds = new maplibregl.LngLatBounds();
-            bounds.extend([currentLng, currentLat]);
-            bounds.extend([activeDestLng, activeDestLat]);
-            map.fitBounds(bounds, { padding: 90, maxZoom: 15.5 });
+            const distKm = getDistanceFromLatLonInKm(currentLat, currentLng, activeDestLat, activeDestLng);
+
+            // If user GPS is nearby (< 60km), fit bounds to show both user and farm pin
+            if (distKm < 60 && currentLat !== 0 && currentLng !== 0) {
+                const bounds = new maplibregl.LngLatBounds();
+                bounds.extend([currentLng, currentLat]);
+                bounds.extend([activeDestLng, activeDestLat]);
+                map.fitBounds(bounds, { padding: 80, maxZoom: 15.5 });
+            } else {
+                // If user GPS is far away or not locked, focus directly on the Farm
+                map.flyTo({
+                    center: [activeDestLng, activeDestLat],
+                    zoom: 15.5,
+                    pitch: 30,
+                    speed: 1.5
+                });
+            }
         }
 
         function centerLocation() {
@@ -282,7 +280,6 @@
             map.flyTo({ center: [currentLng, currentLat], zoom: 15.5, pitch: isNavigatingMode ? 60 : 25, bearing: targetBearing, speed: 1.2 });
         }
 
-        // Real-time Update User Location from Android GPS
         function updateUserLocation(lng, lat) {
             let nLng = parseFloat(lng);
             let nLat = parseFloat(lat);
@@ -306,7 +303,6 @@
                 .addTo(map);
             }
 
-            // If routing is active, dynamically update line, ETA, AND ROTATE CAMERA FORWARD (only when navigating)
             if (isRoutingActive) {
                 fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
                 if (isNavigatingMode) {
@@ -322,7 +318,6 @@
             }
         }
 
-        // Realtime OSRM Public API call + Dynamic Urban Speed Profile Calculation
         async function fetchRoute(startLng, startLat, endLng, endLat) {
             try {
                 let profileEndpoint = 'driving';
@@ -337,7 +332,6 @@
                     const route = data.routes[0];
                     const coords = route.geometry.coordinates;
 
-                    // Update Route Line on Map
                     map.getSource('route').setData({
                         'type': 'Feature',
                         'properties': {},
@@ -347,11 +341,9 @@
                         }
                     });
 
-                    // Distance in meters
                     const distMeters = route.distance;
                     let durSecs = route.duration;
 
-                    // Apply Realistic Indonesia Urban Speed Profiles:
                     if (currentProfile === 'bike') {
                         durSecs = (distMeters / 35000) * 3600;
                     } else if (currentProfile === 'foot') {
@@ -369,7 +361,6 @@
                         ? Math.floor(mins / 60) + ' jam ' + (mins % 60) + ' mnt'
                         : mins + ' menit';
 
-                    // Bridge to Native Android Kotlin UI
                     if (window.AndroidBridge && window.AndroidBridge.onRouteUpdated) {
                         window.AndroidBridge.onRouteUpdated(distText, durText);
                     }
@@ -379,9 +370,9 @@
             }
         }
 
-        // Triggered via Android FAB button or clicking the Farm Marker
         function startNavigation() {
             isRoutingActive = true;
+            isNavigatingMode = true;
             fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
 
             const targetBearing = calculateBearing(currentLng, currentLat, activeDestLng, activeDestLat);
@@ -390,14 +381,14 @@
                 center: [currentLng, currentLat],
                 zoom: 16.8,
                 pitch: 60,
-                bearing: targetBearing, // <--- Rotates camera forward straight along route line!
+                bearing: targetBearing,
                 speed: 1.5
             });
         }
 
-        // Stop / Cancel active navigation route
         function stopNavigation() {
             isRoutingActive = false;
+            isNavigatingMode = false;
 
             if (map.getSource('route')) {
                 map.getSource('route').setData({
@@ -410,23 +401,13 @@
                 });
             }
 
-            // Reset camera back to standard top-down view facing North
             map.flyTo({
-                center: [currentLng, currentLat],
-                zoom: 14.6,
+                center: [activeDestLng, activeDestLat],
+                zoom: 15.5,
                 pitch: 25,
-                bearing: 0, // <--- Resets camera back to North-Up
+                bearing: 0,
                 speed: 1.2
             });
-        }
-
-        // Toggle navigation state on/off
-        function toggleNavigation() {
-            if (isRoutingActive) {
-                stopNavigation();
-            } else {
-                startNavigation();
-            }
         }
     </script>
 </body>
