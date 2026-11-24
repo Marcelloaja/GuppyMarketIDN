@@ -80,10 +80,11 @@
 
                     <CheckBox
                         android:id="@+id/cbSelectAll"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:checked="true"
-                        android:buttonTint="@color/guppy_primary"/>
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:background="@null"
+                        android:button="@drawable/bg_checkbox_custom"
+                        android:checked="true"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -245,10 +246,11 @@
 
                             <CheckBox
                                 android:id="@+id/cbItem1"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:background="@null"
+                                android:button="@drawable/bg_checkbox_custom"
                                 android:checked="true"
-                                android:buttonTint="@color/guppy_primary"
                                 android:layout_gravity="center_vertical"/>
 
                             <com.google.android.material.imageview.ShapeableImageView
@@ -425,10 +427,11 @@
 
                             <CheckBox
                                 android:id="@+id/cbItem2"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:background="@null"
+                                android:button="@drawable/bg_checkbox_custom"
                                 android:checked="true"
-                                android:buttonTint="@color/guppy_primary"
                                 android:layout_gravity="center_vertical"/>
 
                             <com.google.android.material.imageview.ShapeableImageView
