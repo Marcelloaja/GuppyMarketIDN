@@ -2,22 +2,22 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="lavender">#8692f7</color>
+    <color name="lavender">#80CBC4</color>
     <color name="gray">#C5C5C5</color>
-    <color name="purple_500">#6B5CF0</color>
-    <color name="purple_700">#5345D6</color>
-    <color name="teal_200">#03DAC5</color>
-    <color name="purple_200">#BB86FC</color>
+    <color name="purple_500">#00897B</color>
+    <color name="purple_700">#00695C</color>
+    <color name="teal_200">#80CBC4</color>
+    <color name="purple_200">#B2DFDB</color>
 
-    <color name="guppy_primary">#6B5CF0</color>
-    <color name="guppy_primary_light">#F0EEFE</color>
-    <color name="guppy_background">#F7F7F7</color>
+    <color name="guppy_primary">#00897B</color>
+    <color name="guppy_primary_light">#E0F2F1</color>
+    <color name="guppy_background">#F8F9FA</color>
     <color name="guppy_text_black">#1C1C1C</color>
     <color name="guppy_text_gray">#757575</color>
     <color name="guppy_text_dark">#424242</color>
     <color name="guppy_red">#E53935</color>
-    <color name="guppy_orange">#F06A38</color>
+    <color name="guppy_orange">#FF6D00</color>
     <color name="guppy_stroke">#EBEBEB</color>
-    <color name="guppy_star">#FFCA28</color>
+    <color name="guppy_star">#FFB300</color>
     <color name="guppy_card_bg">#FFFFFF</color>
 </resources>
