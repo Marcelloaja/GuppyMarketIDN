@@ -1,8 +1,6 @@
 package com.stiki.marcelloilham.guppymarketidn.menuHome
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
@@ -21,6 +19,8 @@ class FarmMapActivity : AppCompatActivity() {
     private lateinit var tvTitle: TextView
     private lateinit var tvCardName: TextView
     private lateinit var tvCardAddress: TextView
+    private lateinit var btnStartNav: TextView
+    private var isNavigating = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +30,7 @@ class FarmMapActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             topBar.updatePadding(
-                top = systemBars.top + (12 * resources.displayMetrics.density).toInt()
+                top = systemBars.top + (8 * resources.displayMetrics.density).toInt()
             )
             insets
         }
@@ -44,7 +44,7 @@ class FarmMapActivity : AppCompatActivity() {
         webView = findViewById(R.id.webViewFarmMap)
 
         val btnBack = findViewById<ImageView>(R.id.btnBackFarmMap)
-        val btnGoogleNav = findViewById<TextView>(R.id.btnFarmMapGoogleNav)
+        btnStartNav = findViewById(R.id.btnFarmMapStartNav)
 
         tvTitle.text = farmName
         tvCardName.text = farmName
@@ -52,10 +52,16 @@ class FarmMapActivity : AppCompatActivity() {
 
         btnBack.setOnClickListener { finish() }
 
-        btnGoogleNav.setOnClickListener {
-            val mapUri = Uri.parse("https://www.google.com/maps/search/?api=1&query=${Uri.encode("$farmName, $farmAddress")}")
-            val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
-            startActivity(mapIntent)
+        btnStartNav.setOnClickListener {
+            if (isNavigating) {
+                webView.evaluateJavascript("javascript:stopNavigation()", null)
+                btnStartNav.text = "Mulai Navigasi Rute"
+                isNavigating = false
+            } else {
+                webView.evaluateJavascript("javascript:startNavigation()", null)
+                btnStartNav.text = "Hentikan Navigasi"
+                isNavigating = true
+            }
         }
 
         setupWebView(farmName)
