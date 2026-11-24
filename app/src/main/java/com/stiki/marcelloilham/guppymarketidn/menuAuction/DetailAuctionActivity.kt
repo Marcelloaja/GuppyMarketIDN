@@ -42,7 +42,7 @@ class DetailAuctionActivity : AppCompatActivity() {
     private lateinit var thumbImg2: View
     private lateinit var thumbImg3: View
 
-    private lateinit var tvUserBidAmount: TextView
+    private var tvUserBidAmount: TextView? = null
     private var tvDetailAuctionTimeLeft: TextView? = null
 
     private var baseCurrentBid: Long = 1275000L
@@ -95,17 +95,18 @@ class DetailAuctionActivity : AppCompatActivity() {
         }
 
         tvDetailAuctionTimeLeft = findViewById(R.id.tvDetailAuctionTimeLeft)
-        auctionTimerRunnable.run()
+        tvUserBidAmount = findViewById(R.id.tvUserBidAmount)
 
         initGalleryViews()
         setupGalleryClickListeners()
         selectGalleryItem(0)
 
+        setupBiddingControls()
         bindAuctionData()
         setupTopBarActions()
         setupStoreNavigation()
-        setupBiddingControls()
 
+        auctionTimerRunnable.run()
         fetchBiteshipShippingRates()
     }
 
@@ -185,7 +186,6 @@ class DetailAuctionActivity : AppCompatActivity() {
     }
 
     private fun setupBiddingControls() {
-        tvUserBidAmount = findViewById(R.id.tvUserBidAmount)
         val btnPreset25k = findViewById<View>(R.id.btnPreset25k)
         val btnPreset50k = findViewById<View>(R.id.btnPreset50k)
         val btnPreset100k = findViewById<View>(R.id.btnPreset100k)
@@ -235,7 +235,7 @@ class DetailAuctionActivity : AppCompatActivity() {
     }
 
     private fun updateUserBidUI() {
-        tvUserBidAmount.text = formatCurrency(userBidAmount)
+        tvUserBidAmount?.text = formatCurrency(userBidAmount)
     }
 
     private fun formatCurrency(amount: Long): String {
