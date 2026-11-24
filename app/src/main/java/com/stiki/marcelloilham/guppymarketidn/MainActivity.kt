@@ -1,6 +1,7 @@
 package com.stiki.marcelloilham.guppymarketidn
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -46,15 +47,16 @@ class MainActivity : AppCompatActivity() {
 
         // Check for extras in the intent
         val navigateTo = intent.getStringExtra("navigate_to")
-        if (navigateTo != null) {
+        val navigateToTab = intent.getStringExtra("NAVIGATE_TO_TAB")
+
+        if (navigateToTab == "MAPS" || navigateTo == "MapsFragment") {
+            navview.selectedItemId = R.id.navigation_map
+            replaceFragment(Maps(), "MapsFragment", false)
+        } else if (navigateTo != null) {
             when (navigateTo) {
                 "HomeFragment" -> {
                     navview.selectedItemId = R.id.navigation_home
                     replaceFragment(HomeFragment(), "HomeFragment", false)
-                }
-                "MapsFragment" -> {
-                    navview.selectedItemId = R.id.navigation_map
-                    replaceFragment(Maps(), "MapsFragment", false)
                 }
                 "BidFragment" -> {
                     navview.selectedItemId = R.id.navigation_bid
@@ -102,6 +104,16 @@ class MainActivity : AppCompatActivity() {
 
         fragmentTransaction.commit()
         currentFragmentTag = tag
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        val navigateToTab = intent.getStringExtra("NAVIGATE_TO_TAB")
+        if (navigateToTab == "MAPS") {
+            navview.selectedItemId = R.id.navigation_map
+            replaceFragment(Maps(), "MapsFragment", false)
+        }
     }
 
     override fun onBackPressed() {

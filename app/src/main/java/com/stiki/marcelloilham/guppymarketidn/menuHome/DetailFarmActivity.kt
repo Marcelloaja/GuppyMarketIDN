@@ -59,9 +59,10 @@ class DetailFarmActivity : AppCompatActivity() {
 
         val btnOpenMaps = findViewById<View>(R.id.btnOpenMaps)
         btnOpenMaps?.setOnClickListener {
-            val mapUri = Uri.parse("https://www.google.com/maps/search/?api=1&query=Jl.+Lebak+Bulus+Raya+No.+42,+Cilandak,+Jakarta+Selatan")
-            val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
-            startActivity(mapIntent)
+            BottomDialogMapChoice(
+                farmName = "Jakarta Guppy House",
+                address = "Jl. Lebak Bulus Raya No. 42, Cilandak, Jakarta Selatan"
+            ).show(supportFragmentManager, "BottomDialogMapChoice")
         }
 
         initTabViews()
