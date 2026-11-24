@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,10 +20,8 @@ import com.stiki.marcelloilham.guppymarketidn.menuProfile.MenuProfile
 class Profile : Fragment() {
 
     private lateinit var textName: TextView
-    private lateinit var textEmail: TextView
-    private lateinit var textPhone: TextView
     private lateinit var textDescription: TextView
-    private lateinit var btnMenuProfile: ImageView
+    private lateinit var btnMenuProfile: View
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
@@ -34,10 +33,20 @@ class Profile : Fragment() {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         textName = view.findViewById(R.id.namaProfile)
-        textEmail = view.findViewById(R.id.emailProfile)
-        textPhone = view.findViewById(R.id.phoneProfile)
         textDescription = view.findViewById(R.id.descriptionProfile)
         btnMenuProfile = view.findViewById(R.id.btnMenuProfile)
+
+        val btnEditProfile = view.findViewById<TextView>(R.id.btnEditProfile)
+        val btnLogout = view.findViewById<TextView>(R.id.btnLogout)
+
+        btnEditProfile?.setOnClickListener {
+            startActivity(Intent(requireContext(), MenuProfile::class.java))
+        }
+
+        btnLogout?.setOnClickListener {
+            firebaseAuth.signOut()
+            Toast.makeText(requireContext(), "Berhasil keluar dari akun", Toast.LENGTH_SHORT).show()
+        }
 
         val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser != null) {
@@ -47,17 +56,13 @@ class Profile : Fragment() {
             userDocRef.get().addOnSuccessListener { document ->
                 if (isAdded && document != null && document.exists()) {
                     val name = document.getString("name").orEmpty()
-                    val email = document.getString("email").orEmpty()
-                    val phone = document.getString("phone").orEmpty()
                     val description = document.getString("description").orEmpty()
 
-                    textName.text = if (name.isNotEmpty()) name else textName.text
-                    textEmail.text = if (email.isNotEmpty()) email else textEmail.text
-                    textPhone.text = if (phone.isNotEmpty()) phone else textPhone.text
-                    textDescription.text = if (description.isNotEmpty()) description else textDescription.text
+                    if (name.isNotEmpty()) textName.text = name
+                    if (description.isNotEmpty()) textDescription.text = description
 
-                    saveUserDataLocally(name, email, phone, description)
-                    Log.d("Profile", "Data retrieved: Name=$name, Email=$email, Phone=$phone, Description=$description")
+                    saveUserDataLocally(name, description)
+                    Log.d("Profile", "Data retrieved: Name=$name, Description=$description")
                 } else {
                     Log.e("Profile", "No document exists for user.")
                     loadUserDataLocally()
@@ -84,13 +89,11 @@ class Profile : Fragment() {
         return view
     }
 
-    private fun saveUserDataLocally(name: String, email: String, phone: String, description: String) {
+    private fun saveUserDataLocally(name: String, description: String) {
         val safeContext = context ?: return
         val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         prefs.edit().apply {
             putString("name", name)
-            putString("email", email)
-            putString("phone", phone)
             putString("description", description)
             apply()
         }
@@ -100,13 +103,9 @@ class Profile : Fragment() {
         val safeContext = context ?: return
         val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         val savedName = prefs.getString("name", "")
-        val savedEmail = prefs.getString("email", "")
-        val savedPhone = prefs.getString("phone", "")
         val savedDesc = prefs.getString("description", "")
 
         if (!savedName.isNullOrEmpty()) textName.text = savedName
-        if (!savedEmail.isNullOrEmpty()) textEmail.text = savedEmail
-        if (!savedPhone.isNullOrEmpty()) textPhone.text = savedPhone
         if (!savedDesc.isNullOrEmpty()) textDescription.text = savedDesc
     }
 }

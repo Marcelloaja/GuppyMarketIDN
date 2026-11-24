@@ -12,384 +12,1163 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="36dp"
         android:paddingBottom="120dp">
 
-        <!-- HEADER COVER & SETTINGS -->
-        <FrameLayout
+        <!-- TOP USER ROW -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="180dp">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <!-- Banner Background -->
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/bg_promo_gradient"/>
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#20000000"/>
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgAvatarProfile"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/marcello"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/CircleImageStyle"/>
 
-            <!-- Header Top Bar -->
-            <RelativeLayout
-                android:layout_width="match_parent"
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="bottom|end"
+                    android:background="@drawable/bg_circle_image"
+                    android:backgroundTint="#00E676"
+                    app:strokeColor="@color/white"
+                    app:strokeWidth="2dp"/>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="20dp"
-                android:paddingTop="36dp">
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Profil Saya"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/inter_bold"
-                    android:textSize="20sp"/>
+                    android:text="Farm Saya"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
 
-                <!-- Settings / Menu Profile Button -->
-                <ImageView
-                    android:id="@+id/btnMenuProfile"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:background="@drawable/bg_circle_icon_action"
-                    android:src="@drawable/ic_settings"
-                    android:padding="10dp"
-                    app:tint="@color/guppy_text_black"
-                    android:clickable="true"
-                    android:focusable="true"/>
-            </RelativeLayout>
-        </FrameLayout>
-
-        <!-- USER PROFILE CARD OVERLAY -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="-50dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="8dp"
-            app:cardBackgroundColor="@color/white">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:padding="20dp">
-
-                <!-- Avatar Circle -->
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imgAvatarProfile"
-                    android:layout_width="88dp"
-                    android:layout_height="88dp"
-                    android:src="@drawable/marcello"
-                    android:scaleType="centerCrop"
-                    app:shapeAppearanceOverlay="@style/CircleImageStyle"
-                    app:strokeColor="@color/guppy_primary"
-                    app:strokeWidth="2dp"/>
-
-                <!-- Name & Verified Badge -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="2dp">
 
                     <TextView
                         android:id="@+id/namaProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Marcello Ilham"
+                        android:text="Marcello Aja"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
-                        android:textSize="18sp"/>
+                        android:textSize="16sp"/>
 
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="6dp"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginStart="4dp"
                         android:src="@drawable/ic_verified_badge"/>
                 </LinearLayout>
-
-                <!-- Email -->
-                <TextView
-                    android:id="@+id/emailProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="marcello@guppy.com"
-                    android:textColor="@color/guppy_text_gray"
-                    android:fontFamily="@font/inter_regular"
-                    android:textSize="13sp"/>
-
-                <!-- Phone -->
-                <TextView
-                    android:id="@+id/phoneProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="+62 812-3456-7890"
-                    android:textColor="@color/guppy_primary"
-                    android:fontFamily="@font/inter_semi_bold"
-                    android:textSize="12sp"/>
-
-                <!-- Bio Description -->
-                <TextView
-                    android:id="@+id/descriptionProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Breeder Guppy Kualitas Grade A &amp; A+ | Lokasi Farm: Bogor, Jawa Barat"
-                    android:textColor="@color/guppy_text_black"
-                    android:fontFamily="@font/inter_medium"
-                    android:textSize="13sp"
-                    android:gravity="center"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="16dp"
-                    android:background="@color/guppy_stroke"/>
-
-                <!-- STATS COUNTER -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Stat 1 -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="135"
-                            android:textColor="@color/guppy_text_black"
-                            android:fontFamily="@font/inter_bold"
-                            android:textSize="16sp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Mengikuti"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_regular"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@color/guppy_stroke"/>
-
-                    <!-- Stat 2 -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="263"
-                            android:textColor="@color/guppy_text_black"
-                            android:fontFamily="@font/inter_bold"
-                            android:textSize="16sp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Pengikut"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_regular"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@color/guppy_stroke"/>
-
-                    <!-- Stat 3 -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="12"
-                            android:textColor="@color/guppy_primary"
-                            android:fontFamily="@font/inter_bold"
-                            android:textSize="16sp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Produk Saya"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_regular"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
-
-                </LinearLayout>
-
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+            <FrameLayout
+                android:layout_width="38dp"
+                android:layout_height="38dp">
+                <ImageView
+                    android:id="@+id/btnMenuProfile"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:background="@drawable/bg_circle_image"
+                    android:backgroundTint="#F0F0F0"
+                    android:src="@drawable/ic_notifications_black_24dp"
+                    app:tint="@color/guppy_text_black"
+                    android:padding="8dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/bg_circle_image"
+                    android:backgroundTint="@color/guppy_red"/>
+            </FrameLayout>
+        </LinearLayout>
 
-        <!-- MENU OPTIONS LIST CARD -->
-        <androidx.cardview.widget.CardView
+        <!-- FARM NAME & DETAILS -->
+        <TextView
+            android:id="@+id/tvFarmTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/white"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/guppy_stroke">
+            android:layout_marginTop="20dp"
+            android:text="Marcello Guppy Farm"
+            android:textColor="@color/guppy_text_black"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="22sp"/>
+
+        <TextView
+            android:id="@+id/descriptionProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Bekasi, Jawa Barat · Bergabung sejak Maret 2022"
+            android:textColor="@color/guppy_text_gray"
+            android:fontFamily="@font/inter_regular"
+            android:textSize="13sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="6dp">
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/star"
+                app:tint="@color/guppy_star"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="4,9"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="13sp"
+                android:textColor="@color/guppy_text_black"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="dari 312 ulasan"
+                android:fontFamily="@font/inter_regular"
+                android:textSize="13sp"
+                android:textColor="@color/guppy_text_gray"/>
+        </LinearLayout>
+
+        <!-- EDIT PROFIL & BAGIKAN BUTTONS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/btnEditProfile"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="42dp"
+                android:background="@drawable/bg_btn_primary"
+                android:text="Edit Profil"
+                android:textColor="@color/white"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <TextView
+                android:id="@+id/btnShareProfile"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="42dp"
+                android:background="@drawable/bg_btn_outline"
+                android:text="Bagikan"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
+        </LinearLayout>
+
+        <!-- STATS BAR -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2,4rb"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Pengikut"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="32dp"
+                android:background="@color/guppy_stroke"
+                android:layout_gravity="center_vertical"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="856"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Terjual"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="32dp"
+                android:background="@color/guppy_stroke"
+                android:layout_gravity="center_vertical"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="124"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Ulasan"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- PERFORMANCE STATS (Respon & Pengiriman) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- Item 1: Produk Saya -->
-                <LinearLayout
-                    android:id="@+id/menuMyProducts"
-                    android:layout_width="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_box"
-                        app:tint="@color/guppy_primary"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:text="Kelola Produk Saya"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:textSize="14sp"/>
-
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@drawable/fi_rr_angle_small_right"
-                        app:tint="@color/guppy_text_gray"/>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="16dp"
-                    android:background="@color/guppy_stroke"/>
-
-                <!-- Item 2: Riwayat Lelang Saya -->
-                <LinearLayout
-                    android:id="@+id/menuAuctionHistory"
-                    android:layout_width="match_parent"
+                    android:text="Respon rata-rata"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="13sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_nav_auction"
-                        app:tint="@color/guppy_primary"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:text="Riwayat Lelang Saya"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:textSize="14sp"/>
-
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@drawable/fi_rr_angle_small_right"
-                        app:tint="@color/guppy_text_gray"/>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="16dp"
-                    android:background="@color/guppy_stroke"/>
-
-                <!-- Item 3: Favorit / Whislist -->
-                <LinearLayout
-                    android:id="@+id/menuFavorites"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/fi_ss_heart_full"
-                        app:tint="@color/guppy_primary"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:text="Produk Favorit Saya"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:textSize="14sp"/>
-
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@drawable/fi_rr_angle_small_right"
-                        app:tint="@color/guppy_text_gray"/>
-                </LinearLayout>
-
+                    android:text="10 menit"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="13sp"/>
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Pengiriman tepat waktu"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="13sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="98%"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="13sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/guppy_stroke"
+            android:layout_marginVertical="20dp"/>
+
+        <!-- SALDO AKTIF CARD -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Saldo aktif"
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_regular"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Rp 1.250.000"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="22sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Dana tertahan Rp 577.000 (1 pesanan dikirim)"
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_regular"
+                android:textSize="12sp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+                <TextView
+                    android:id="@+id/btnWithdraw"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tarik"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:id="@+id/btnTopUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:text="Top Up"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- TABS SEGMENTED -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Varian"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="12dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/guppy_primary"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lelang"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="12dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/guppy_stroke"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pesanan"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="12dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/guppy_stroke"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ulasan"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="12dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/guppy_stroke"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- VARIAN SAYA SECTION -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Varian Saya"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="16sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24 varian"
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_regular"
+                android:textSize="13sp"/>
+        </LinearLayout>
+
+        <!-- Varian Item 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/bg_image_grid"
+                android:scaleType="centerCrop"
+                app:cornerSize="10dp"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Red Dragon Delta"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Pasang · Stok 12 pasang"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 275.000"
+                android:textColor="@color/guppy_primary"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <!-- Varian Item 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/skyblue"
+                android:scaleType="centerCrop"
+                app:cornerSize="10dp"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sky Blue High Dorsal"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Ekor · Stok 20"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 150.000"
+                android:textColor="@color/guppy_primary"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <!-- Varian Item 3 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/gsrts"
+                android:scaleType="centerCrop"
+                app:cornerSize="10dp"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Blue Moscow Full"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Ekor · Stok menipis, 8"
+                    android:textColor="@color/guppy_red"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 180.000"
+                android:textColor="@color/guppy_primary"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <!-- Varian Item 4 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/platinumrd"
+                android:scaleType="centerCrop"
+                app:cornerSize="10dp"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Albino Full White"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Ekor · Stok menipis, 5"
+                    android:textColor="@color/guppy_red"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 210.000"
+                android:textColor="@color/guppy_primary"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Lihat semua 24 varian"
+            android:textColor="@color/guppy_primary"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="13sp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <!-- LELANG AKTIF SECTION -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Lelang Aktif"
+            android:textColor="@color/guppy_text_black"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="16sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/bg_image_grid"
+                android:scaleType="centerCrop"
+                app:cornerSize="10dp"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Blue Grass Full Red"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Bid Rp 450.000 · 14 penawar"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Sisa 02:14:35"
+                    android:textColor="@color/guppy_red"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kelola"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="13sp"
+                android:clickable="true"
+                android:focusable="true"/>
+        </LinearLayout>
+
+        <!-- PESANAN TERAKHIR SECTION -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Pesanan Terakhir"
+            android:textColor="@color/guppy_text_black"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="16sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/bg_image_grid"
+                android:scaleType="centerCrop"
+                app:cornerSize="10dp"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Red Dragon Delta"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="2 pasang (4 ekor) · Rp 577.000"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Dikirim · JNE Express JP8841"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lacak"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="13sp"
+                android:clickable="true"
+                android:focusable="true"/>
+        </LinearLayout>
+
+        <!-- PENGATURAN TOKO SECTION -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Pengaturan Toko"
+            android:textColor="@color/guppy_text_black"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="16sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical">
+
+            <!-- Item 1: Alamat -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alamat pengiriman"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:id="@+id/phoneProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Rumah, Bekasi Selatan"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/guppy_text_gray"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+            <!-- Item 2: Kurir -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kurir"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Instan, Reguler"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/guppy_text_gray"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+            <!-- Item 3: Metode Pembayaran -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Metode pembayaran"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:id="@+id/textPayMethod"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="BCA Virtual Account •••• 4821"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/guppy_text_gray"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+            <!-- Item 4: Jaminan farm -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Jaminan farm"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Garansi sehat 24 jam, karantina 3 hari, kemasan oksigen"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/guppy_text_gray"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+            <!-- Item 5: Tips perawatan tersimpan -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tips perawatan tersimpan"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="2 artikel"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/guppy_text_gray"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+            <!-- Item 6: Notifikasi -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Notifikasi"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Pesanan, lelang, dan pesan aktif"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/guppy_text_gray"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+            <!-- Item 7: Keamanan -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Keamanan"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Kata sandi dan verifikasi dua langkah"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/guppy_text_gray"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+            <!-- Item 8: Bantuan & Syarat -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bantuan &amp; Syarat"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Pusat bantuan dan ketentuan penjual"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/guppy_text_gray"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+            <!-- Logout -->
+            <TextView
+                android:id="@+id/btnLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Keluar"
+                android:textColor="@color/guppy_red"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="14sp"
+                android:clickable="true"
+                android:focusable="true"/>
+        </LinearLayout>
 
     </LinearLayout>
-
 </androidx.core.widget.NestedScrollView>
