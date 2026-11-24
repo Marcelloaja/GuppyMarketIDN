@@ -207,29 +207,20 @@ class AuctionFragment : Fragment() {
 
     private fun setupAuctions() {
         FirestoreRepository.fetchAuctions { firebaseAuctions ->
-            val finalItems = if (firebaseAuctions.isNotEmpty()) {
-                firebaseAuctions.mapIndexed { idx, a ->
-                    AuctionGridAdapter.AuctionItem(
-                        id = idx + 1,
-                        title = a.title,
-                        seller = a.seller,
-                        location = a.location,
-                        price = a.currentBid,
-                        bids = a.bidsCount,
-                        endTimeMillis = a.endTimeMillis,
-                        imageRes = a.imageRes,
-                        grade = a.grade,
-                        category = a.strain,
-                        status = "LIVE",
-                        rawModel = a
-                    )
-                }
-            } else {
-                listOf(
-                    AuctionGridAdapter.AuctionItem(1, "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 12, System.currentTimeMillis() + 2530000L, R.drawable.bg_image_grid, "Grade A+"),
-                    AuctionGridAdapter.AuctionItem(2, "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 9, System.currentTimeMillis() + 3933000L, R.drawable.platinumrd, "Grade S"),
-                    AuctionGridAdapter.AuctionItem(3, "Sky Blue Albino", "FinFantasy Farm", "Malang", "Rp 550.000", 24, System.currentTimeMillis() + 11700000L, R.drawable.skyblue, "Grade A"),
-                    AuctionGridAdapter.AuctionItem(4, "Golden Tuxedo", "Breeder Lokal", "Surabaya", "Rp 320.000", 5, System.currentTimeMillis() + 18720000L, R.drawable.gsrts, "Grade B")
+            val finalItems = firebaseAuctions.mapIndexed { idx, a ->
+                AuctionGridAdapter.AuctionItem(
+                    id = idx + 1,
+                    title = a.title,
+                    seller = a.seller,
+                    location = a.location,
+                    price = a.currentBid,
+                    bids = a.bidsCount,
+                    endTimeMillis = a.endTimeMillis,
+                    imageRes = a.imageRes,
+                    grade = a.grade,
+                    category = a.strain,
+                    status = "LIVE",
+                    rawModel = a
                 )
             }
 
