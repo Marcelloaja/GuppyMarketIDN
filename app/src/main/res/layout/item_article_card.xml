@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="12dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgArticleThumb"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@drawable/bg_image_grid"
+        android:scaleType="centerCrop"
+        app:cornerSize="12dp"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvArticleCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NUTRISI"
+            android:textColor="#E65100"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="10.5sp"
+            android:letterSpacing="0.05"/>
+
+        <TextView
+            android:id="@+id/tvArticleTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Pakan terbaik agar warna ekor makin tajam"
+            android:textColor="@color/guppy_text_black"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="14sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:lineSpacingExtra="2dp"/>
+
+        <TextView
+            android:id="@+id/tvArticleDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="🕒 3 menit baca"
+            android:textColor="@color/guppy_text_gray"
+            android:fontFamily="@font/inter_regular"
+            android:textSize="11.5sp"/>
+    </LinearLayout>
+</LinearLayout>

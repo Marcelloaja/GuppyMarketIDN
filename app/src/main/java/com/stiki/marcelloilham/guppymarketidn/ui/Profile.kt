@@ -64,9 +64,14 @@ class Profile : Fragment() {
 
         val btnEditProfile = view.findViewById<TextView>(R.id.btnEditProfile)
         val btnLogout = view.findViewById<TextView>(R.id.btnLogout)
+        val btnTipsPerawatan = view.findViewById<View>(R.id.btnTipsPerawatanProfile)
 
         btnEditProfile?.setOnClickListener {
             startActivity(Intent(requireContext(), MenuProfile::class.java))
+        }
+
+        btnTipsPerawatan?.setOnClickListener {
+            startActivity(Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuProfile.TipsPerawatanActivity::class.java))
         }
 
         btnLogout?.setOnClickListener {

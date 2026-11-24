@@ -49,6 +49,9 @@
             android:name=".menuProfile.Information"
             android:exported="false" />
         <activity
+            android:name=".menuProfile.TipsPerawatanActivity"
+            android:exported="false" />
+        <activity
             android:name=".menuHome.DetailActivity"
             android:exported="false" />
         <activity
