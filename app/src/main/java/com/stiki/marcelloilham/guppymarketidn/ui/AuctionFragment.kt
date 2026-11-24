@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.stiki.marcelloilham.guppymarketidn.R
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.adapter.AuctionGridAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.HomeCategoryAdapter
 import com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity
@@ -89,61 +90,41 @@ class AuctionFragment : Fragment() {
     }
 
     private fun setupAuctions() {
-        val auctionItems = listOf(
-            AuctionGridAdapter.AuctionItem(
-                id = 1,
-                title = "Blue Gold Mosaic",
-                seller = "Guppy Nusantara",
-                location = "Bandung",
-                price = "Rp 850.000",
-                bids = 12,
-                timeLeft = "00:42:10",
-                imageRes = R.drawable.bg_image_grid,
-                grade = "Grade A+"
-            ),
-            AuctionGridAdapter.AuctionItem(
-                id = 2,
-                title = "Red Koi Grade S",
-                seller = "Aquatic Lab",
-                location = "Jakarta",
-                price = "Rp 1.250.000",
-                bids = 9,
-                timeLeft = "01:05:33",
-                imageRes = R.drawable.platinumrd,
-                grade = "Grade S"
-            ),
-            AuctionGridAdapter.AuctionItem(
-                id = 3,
-                title = "Sky Blue Albino",
-                seller = "FinFantasy Farm",
-                location = "Malang",
-                price = "Rp 550.000",
-                bids = 24,
-                timeLeft = "03:15:00",
-                imageRes = R.drawable.skyblue,
-                grade = "Grade A"
-            ),
-            AuctionGridAdapter.AuctionItem(
-                id = 4,
-                title = "Golden Tuxedo",
-                seller = "Breeder Lokal",
-                location = "Surabaya",
-                price = "Rp 320.000",
-                bids = 5,
-                timeLeft = "05:12:00",
-                imageRes = R.drawable.gsrts,
-                grade = "Grade B"
-            )
-        )
+        FirestoreRepository.fetchAuctions { firebaseAuctions ->
+            val finalItems = if (firebaseAuctions.isNotEmpty()) {
+                firebaseAuctions.mapIndexed { idx, a ->
+                    AuctionGridAdapter.AuctionItem(
+                        id = idx + 1,
+                        title = a.title,
+                        seller = a.seller,
+                        location = a.location,
+                        price = a.currentBid,
+                        bids = a.bidsCount,
+                        timeLeft = "02:14:35",
+                        imageRes = a.imageRes,
+                        grade = a.grade
+                    )
+                }
+            } else {
+                listOf(
+                    AuctionGridAdapter.AuctionItem(1, "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 12, "00:42:10", R.drawable.bg_image_grid, "Grade A+"),
+                    AuctionGridAdapter.AuctionItem(2, "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 9, "01:05:33", R.drawable.platinumrd, "Grade S"),
+                    AuctionGridAdapter.AuctionItem(3, "Sky Blue Albino", "FinFantasy Farm", "Malang", "Rp 550.000", 24, "03:15:00", R.drawable.skyblue, "Grade A"),
+                    AuctionGridAdapter.AuctionItem(4, "Golden Tuxedo", "Breeder Lokal", "Surabaya", "Rp 320.000", 5, "05:12:00", R.drawable.gsrts, "Grade B")
+                )
+            }
 
-        auctionAdapter = AuctionGridAdapter(requireContext(), auctionItems) { item ->
-            val intent = Intent(requireContext(), DetailAuctionActivity::class.java)
-            intent.putExtra("auction_title", item.title)
-            startActivity(intent)
+            if (isAdded) {
+                auctionAdapter = AuctionGridAdapter(requireContext(), finalItems) { item ->
+                    val intent = Intent(requireContext(), DetailAuctionActivity::class.java)
+                    intent.putExtra("auction_title", item.title)
+                    startActivity(intent)
+                }
+
+                recyclerAuctions.layoutManager = GridLayoutManager(requireContext(), 2)
+                recyclerAuctions.adapter = auctionAdapter
+                recyclerAuctions.isNestedScrollingEnabled = false
+            }
         }
-
-        recyclerAuctions.layoutManager = GridLayoutManager(requireContext(), 2)
-        recyclerAuctions.adapter = auctionAdapter
-        recyclerAuctions.isNestedScrollingEnabled = false
     }
 }

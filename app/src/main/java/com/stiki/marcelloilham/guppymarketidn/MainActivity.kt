@@ -14,6 +14,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.ui.AuctionFragment
 import com.stiki.marcelloilham.guppymarketidn.ui.Community
 import com.stiki.marcelloilham.guppymarketidn.ui.HomeFragment
@@ -31,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        FirestoreRepository.seedInitialDataIfEmpty()
 
         navview = findViewById(R.id.nav_view)
         val cardBottomNav = findViewById<View>(R.id.cardBottomNav)

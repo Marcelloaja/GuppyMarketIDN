@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.stiki.marcelloilham.guppymarketidn.R
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.api.BiteshipClient
 import com.stiki.marcelloilham.guppymarketidn.api.PricingOption
 import com.stiki.marcelloilham.guppymarketidn.api.RateItem
@@ -228,12 +229,35 @@ class CheckoutActivity : AppCompatActivity() {
         val btnPay = findViewById<TextView>(R.id.btnPayNow)
         btnPay.setOnClickListener {
             val total = (unitPrice * quantity) + shippingCost + serviceFee
-            Toast.makeText(
-                this,
-                "Pembayaran ${formatCurrency(total)} Berhasil Diproses!",
-                Toast.LENGTH_LONG
-            ).show()
-            finish()
+            val courierText = if (isInstantShipping) "Kurir Instan" else "Reguler"
+            val paymentText = if (isPayVA) "Transfer Bank (VA)" else "E-wallet"
+
+            val order = FirestoreRepository.OrderModel(
+                productName = "Red Dragon Delta",
+                sellerName = "Bekasi Aqua Farm",
+                quantity = quantity,
+                totalAmount = total,
+                shippingCost = shippingCost,
+                courier = courierText,
+                paymentMethod = paymentText,
+                status = "Dikirim"
+            )
+
+            btnPay.isEnabled = false
+            btnPay.text = "Memproses..."
+
+            FirestoreRepository.createOrder(order) { success ->
+                btnPay.isEnabled = true
+                btnPay.text = "Bayar sekarang"
+
+                Toast.makeText(
+                    this,
+                    "Pembayaran ${formatCurrency(total)} Berhasil! Pesanan Dicatat ke Sistem.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                finish()
+            }
         }
     }
 

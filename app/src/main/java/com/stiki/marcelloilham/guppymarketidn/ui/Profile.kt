@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.menuProfile.MenuProfile
 
@@ -188,6 +189,10 @@ class Profile : Fragment() {
 
                     saveUserDataLocally(name, description)
                     Log.d("Profile", "Data retrieved: Name=$name, Description=$description")
+
+                    FirestoreRepository.fetchUserOrders { userOrders ->
+                        Log.d("ProfileOrders", "Fetched ${userOrders.size} user orders from Firestore")
+                    }
                 } else {
                     Log.e("Profile", "No document exists for user.")
                     loadUserDataLocally()

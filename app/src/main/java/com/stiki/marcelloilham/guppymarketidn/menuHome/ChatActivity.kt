@@ -9,13 +9,13 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.core.widget.NestedScrollView
 import com.stiki.marcelloilham.guppymarketidn.R
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -26,6 +26,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var btnSendMessage: ImageView
     private lateinit var layoutDynamicMessages: LinearLayout
     private lateinit var scrollChatMessages: NestedScrollView
+
+    private val chatRoomId = "chat_bekasi_farm"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,7 @@ class ChatActivity : AppCompatActivity() {
         initViews()
         setupButtons()
         setupQuickReplies()
+        setupRealtimeChatListener()
     }
 
     private fun initViews() {
@@ -106,11 +109,35 @@ class ChatActivity : AppCompatActivity() {
         sendUserMessage()
     }
 
+    private fun setupRealtimeChatListener() {
+        FirestoreRepository.listenToChatMessages(chatRoomId) { messages ->
+            layoutDynamicMessages.removeAllViews()
+            for (msg in messages) {
+                appendMessageToUI(msg.messageText, msg.formattedTime, !msg.isSeller)
+            }
+            scrollChatMessages.post {
+                scrollChatMessages.fullScroll(View.FOCUS_DOWN)
+            }
+        }
+    }
+
     private fun sendUserMessage() {
         val messageText = etChatMessage.text.toString().trim()
         if (messageText.isEmpty()) return
 
-        // Create container for outgoing message
+        etChatMessage.setText("")
+
+        // Send to Firestore in real-time
+        FirestoreRepository.sendChatMessage(chatRoomId, messageText) { success ->
+            if (!success) {
+                // Local UI fallback if offline
+                val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                appendMessageToUI(messageText, timeFormat.format(Date()) + " ✓", true)
+            }
+        }
+    }
+
+    private fun appendMessageToUI(text: String, timeTextStr: String, isOutgoing: Boolean) {
         val density = resources.displayMetrics.density
         val margin12 = (12 * density).toInt()
         val margin4 = (4 * density).toInt()
@@ -126,7 +153,7 @@ class ChatActivity : AppCompatActivity() {
                 bottomMargin = margin12
             }
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.END
+            gravity = if (isOutgoing) Gravity.END else Gravity.START
         }
 
         val bubbleText = TextView(this).apply {
@@ -135,16 +162,13 @@ class ChatActivity : AppCompatActivity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
             maxWidth = maxPx
-            setBackgroundResource(R.drawable.bg_chat_bubble_outgoing)
+            setBackgroundResource(if (isOutgoing) R.drawable.bg_chat_bubble_outgoing else R.drawable.bg_chat_bubble_incoming)
             setPadding(padding14, padding10, padding14, padding10)
-            text = messageText
-            setTextColor(getColor(R.color.white))
+            this.text = text
+            setTextColor(if (isOutgoing) getColor(R.color.white) else getColor(R.color.guppy_text_black))
             typeface = androidx.core.content.res.ResourcesCompat.getFont(this@ChatActivity, R.font.inter_regular)
             textSize = 13f
         }
-
-        val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val currentTime = timeFormatter.format(Date()) + " ✓"
 
         val timeText = TextView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
@@ -153,7 +177,7 @@ class ChatActivity : AppCompatActivity() {
             ).apply {
                 topMargin = margin4
             }
-            text = currentTime
+            text = timeTextStr
             setTextColor(getColor(R.color.guppy_text_gray))
             typeface = androidx.core.content.res.ResourcesCompat.getFont(this@ChatActivity, R.font.inter_regular)
             textSize = 10f
@@ -164,10 +188,6 @@ class ChatActivity : AppCompatActivity() {
 
         layoutDynamicMessages.addView(container)
 
-        // Clear input box
-        etChatMessage.setText("")
-
-        // Scroll to bottom
         scrollChatMessages.post {
             scrollChatMessages.fullScroll(View.FOCUS_DOWN)
         }

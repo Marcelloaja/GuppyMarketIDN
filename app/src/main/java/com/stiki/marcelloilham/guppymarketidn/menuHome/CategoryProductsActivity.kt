@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.adapter.CategoryProductAdapter
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 
 class CategoryProductsActivity : AppCompatActivity() {
 
@@ -148,68 +149,36 @@ class CategoryProductsActivity : AppCompatActivity() {
     }
 
     private fun setupProductsGrid() {
-        val productList = listOf(
-            CategoryProductAdapter.CategoryProduct(
-                title = "Red Dragon Delta",
-                seller = "Bekasi Aqua Farm",
-                price = "Rp 275.000",
-                unit = "per pasang",
-                sold = "120",
-                imageRes = R.drawable.bg_image_grid,
-                strain = "Dragon"
-            ),
-            CategoryProductAdapter.CategoryProduct(
-                title = "Sky Blue High Dorsal",
-                seller = "Jakarta Guppy House",
-                price = "Rp 150.000",
-                unit = "per ekor",
-                sold = "86",
-                imageRes = R.drawable.skyblue,
-                strain = "Blue"
-            ),
-            CategoryProductAdapter.CategoryProduct(
-                title = "Blue Moscow Full",
-                seller = "Depok Tail Studio",
-                price = "Rp 90.000",
-                unit = "per ekor",
-                sold = "54",
-                imageRes = R.drawable.gsrts,
-                strain = "Moscow"
-            ),
-            CategoryProductAdapter.CategoryProduct(
-                title = "Albino Full White",
-                seller = "Bogor Guppy Lab",
-                price = "Rp 320.000",
-                unit = "per pasang",
-                sold = "33",
-                imageRes = R.drawable.platinumrd,
-                strain = "Albino"
-            ),
-            CategoryProductAdapter.CategoryProduct(
-                title = "Blue Grass Full Red",
-                seller = "Jakarta Guppy House",
-                price = "Rp 450.000",
-                unit = "per ekor",
-                sold = "21",
-                imageRes = R.drawable.bg_image_grid,
-                strain = "Grass"
-            ),
-            CategoryProductAdapter.CategoryProduct(
-                title = "Mosaic Premium",
-                seller = "Bekasi Aqua Farm",
-                price = "Rp 380.000",
-                unit = "per pasang",
-                sold = "17",
-                imageRes = R.drawable.mssrl,
-                strain = "Mosaic"
-            )
-        )
+        FirestoreRepository.fetchProducts { firebaseList ->
+            val finalItems = if (firebaseList.isNotEmpty()) {
+                firebaseList.map { p ->
+                    CategoryProductAdapter.CategoryProduct(
+                        title = p.title,
+                        seller = p.seller,
+                        price = p.price,
+                        unit = p.unit,
+                        sold = p.sold,
+                        imageRes = p.imageRes,
+                        strain = p.strain
+                    )
+                }
+            } else {
+                listOf(
+                    CategoryProductAdapter.CategoryProduct("Red Dragon Delta", "Bekasi Aqua Farm", "Rp 275.000", "per pasang", "120", R.drawable.bg_image_grid, "Dragon"),
+                    CategoryProductAdapter.CategoryProduct("Sky Blue High Dorsal", "Jakarta Guppy House", "Rp 150.000", "per ekor", "86", R.drawable.skyblue, "Blue"),
+                    CategoryProductAdapter.CategoryProduct("Blue Moscow Full", "Depok Tail Studio", "Rp 90.000", "per ekor", "54", R.drawable.gsrts, "Moscow"),
+                    CategoryProductAdapter.CategoryProduct("Albino Full White", "Bogor Guppy Lab", "Rp 320.000", "per pasang", "33", R.drawable.platinumrd, "Albino"),
+                    CategoryProductAdapter.CategoryProduct("Blue Grass Full Red", "Jakarta Guppy House", "Rp 450.000", "per ekor", "21", R.drawable.bg_image_grid, "Grass"),
+                    CategoryProductAdapter.CategoryProduct("Mosaic Premium", "Bekasi Aqua Farm", "Rp 380.000", "per pasang", "17", R.drawable.mssrl, "Mosaic")
+                )
+            }
 
-        adapter = CategoryProductAdapter(this, productList)
-        recycler.layoutManager = GridLayoutManager(this, 2)
-        recycler.adapter = adapter
-
-        updateCountAndEmptyState()
+            adapter = CategoryProductAdapter(this, finalItems)
+            recycler.layoutManager = GridLayoutManager(this, 2)
+            recycler.adapter = adapter
+            adapter.applyAdvancedFilterAndSort(activeQuery, activeStrain, activeSort)
+            updateCountAndEmptyState()
+        }
     }
 
     private fun updateCountAndEmptyState() {
