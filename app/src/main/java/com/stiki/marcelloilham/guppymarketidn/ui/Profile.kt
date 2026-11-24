@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -21,7 +20,6 @@ class Profile : Fragment() {
 
     private lateinit var textName: TextView
     private lateinit var textDescription: TextView
-    private var btnMenuProfile: View? = null
 
     private var tvAvgResponseTime: TextView? = null
     private var tvOnTimeDeliveryRate: TextView? = null
@@ -57,7 +55,6 @@ class Profile : Fragment() {
 
         textName = view.findViewById(R.id.namaProfile)
         textDescription = view.findViewById(R.id.descriptionProfile)
-        btnMenuProfile = view.findViewById(R.id.btnMenuProfile)
 
         tvAvgResponseTime = view.findViewById(R.id.tvAvgResponseTime)
         tvOnTimeDeliveryRate = view.findViewById(R.id.tvOnTimeDeliveryRate)
@@ -84,17 +81,6 @@ class Profile : Fragment() {
         selectTab(0)
 
         fetchUserData()
-
-        btnMenuProfile?.setOnClickListener {
-            val animContext = context ?: return@setOnClickListener
-            val animation = AnimationUtils.loadAnimation(animContext, R.anim.button_click)
-            btnMenuProfile?.startAnimation(animation)
-            btnMenuProfile?.postDelayed({
-                if (isAdded) {
-                    startActivity(Intent(activity, MenuProfile::class.java))
-                }
-            }, animation.duration)
-        }
 
         return view
     }
