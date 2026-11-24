@@ -1,6 +1,5 @@
 package com.stiki.marcelloilham.guppymarketidn.repository
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -63,6 +62,23 @@ object FirestoreRepository {
         val formattedTime: String = "09:00"
     )
 
+    data class FarmProfileModel(
+        val farmId: String = "farm_jakarta",
+        val farmName: String = "Jakarta Guppy House",
+        val ownerName: String = "Marcello Aja",
+        val location: String = "Jakarta Selatan · 2,4 km",
+        val rating: Double = 4.9,
+        val totalReviewsCount: Int = 186,
+        val totalVariantsCount: Int = 18,
+        val totalSoldsCount: Int = 1240,
+        val followersCount: Int = 2400,
+        val establishedYearsText: String = "4 thn",
+        val responseTimeText: String = "10 menit",
+        val onTimeDeliveryRateText: String = "98%",
+        val guaranteeText: String = "AMAN",
+        val description: String = "Spesialis guppy kontes berkualitas tinggi sejak 2021. Fokus pada pemurnian galur murni (pure line) dengan standar penilaian nasional. Melayani pengiriman ke seluruh Indonesia dengan garansi ikan hidup sampai tujuan."
+    )
+
     // Seed initial data if collections are empty
     fun seedInitialDataIfEmpty() {
         db.collection("products").get().addOnSuccessListener { snapshot ->
@@ -96,6 +112,8 @@ object FirestoreRepository {
                 }
             }
         }
+
+        db.collection("farms").document("farm_jakarta").set(FarmProfileModel())
     }
 
     // 1. FETCH PRODUCTS
@@ -126,7 +144,25 @@ object FirestoreRepository {
             }
     }
 
-    // 3. CREATE ORDER IN FIRESTORE
+    // 3. FETCH FARM PROFILE
+    fun fetchFarmProfile(farmId: String, onResult: (FarmProfileModel) -> Unit) {
+        db.collection("farms").document(farmId).get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    val farm = doc.toObject(FarmProfileModel::class.java)
+                    if (farm != null) {
+                        onResult(farm)
+                        return@addOnSuccessListener
+                    }
+                }
+                onResult(FarmProfileModel())
+            }
+            .addOnFailureListener {
+                onResult(FarmProfileModel())
+            }
+    }
+
+    // 4. CREATE ORDER IN FIRESTORE
     fun createOrder(order: OrderModel, onComplete: (Boolean) -> Unit) {
         val currentUserId = auth.currentUser?.uid ?: "guest"
         val orderWithUser = order.copy(userId = currentUserId)
@@ -135,7 +171,6 @@ object FirestoreRepository {
 
         docRef.set(finalOrder)
             .addOnSuccessListener {
-                // Also update user's total_orders count
                 if (currentUserId != "guest") {
                     db.collection("user").document(currentUserId)
                         .update("total_orders", com.google.firebase.firestore.FieldValue.increment(1))
@@ -147,7 +182,7 @@ object FirestoreRepository {
             }
     }
 
-    // 4. FETCH USER ORDERS
+    // 5. FETCH USER ORDERS
     fun fetchUserOrders(onResult: (List<OrderModel>) -> Unit) {
         val currentUserId = auth.currentUser?.uid ?: "guest"
         db.collection("orders")
@@ -163,7 +198,7 @@ object FirestoreRepository {
             }
     }
 
-    // 5. LIVE CHAT FIRESTORE REALTIME LISTENER
+    // 6. LIVE CHAT FIRESTORE REALTIME LISTENER
     fun listenToChatMessages(chatRoomId: String, onUpdate: (List<ChatMessageModel>) -> Unit) {
         db.collection("chats")
             .document(chatRoomId)
@@ -178,7 +213,7 @@ object FirestoreRepository {
             }
     }
 
-    // 6. SEND CHAT MESSAGE
+    // 7. SEND CHAT MESSAGE
     fun sendChatMessage(chatRoomId: String, messageText: String, onComplete: (Boolean) -> Unit) {
         val currentUserId = auth.currentUser?.uid ?: "buyer1"
         val timeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
