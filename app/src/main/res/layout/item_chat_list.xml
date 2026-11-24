@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/white"
+    app:strokeColor="@color/guppy_stroke"
+    app:strokeWidth="1dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="14dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!-- Avatar Circle with Online Dot -->
+        <FrameLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp">
+
+            <TextView
+                android:id="@+id/tvChatAvatarText"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_circle_image"
+                android:backgroundTint="#D85C42"
+                android:text="BA"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="15sp"/>
+
+            <View
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/bg_circle_image"
+                android:backgroundTint="#00E676"
+                app:strokeColor="@color/white"
+                app:strokeWidth="2dp"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvChatStoreName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bekasi Aqua Farm"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"/>
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_verified_badge"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvChatLastMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Sehat kak, sudah dikarantina 3 hari dan dikemas oksigen murni..."
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_regular"
+                android:textSize="12.5sp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvChatTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="09:18"
+                android:textColor="@color/guppy_primary"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="11sp"/>
+
+            <TextView
+                android:id="@+id/tvUnreadBadge"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_circle_image"
+                android:backgroundTint="@color/guppy_primary"
+                android:text="1"
+                android:textColor="@color/white"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="10.5sp"
+                android:gravity="center"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

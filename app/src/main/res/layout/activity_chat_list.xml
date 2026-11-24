@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8F9FA"
+    tools:context=".menuHome.ChatListActivity">
+
+    <!-- TOP BAR HEADER -->
+    <LinearLayout
+        android:id="@+id/topBarChatList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#F8F9FA"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/btnBackChatList"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_white_stroke"
+            android:src="@drawable/ic_chevron_left"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/inter_bold"
+            android:text="Pesan &amp; Chat Toko"
+            android:textColor="@color/guppy_text_black"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_marginEnd="40dp"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dividerHeader"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/topBarChatList"
+        android:background="@color/guppy_stroke"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dividerHeader"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="40dp">
+
+            <!-- SEARCH BAR IN CHAT LIST -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_search_bar"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="14dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/search"
+                    app:tint="@color/guppy_text_gray"/>
+
+                <EditText
+                    android:id="@+id/etSearchChatList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="@font/inter_regular"
+                    android:hint="Cari percakapan atau nama farm..."
+                    android:textColorHint="@color/guppy_text_gray"
+                    android:textColor="@color/guppy_text_black"
+                    android:paddingStart="10dp"
+                    android:singleLine="true"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- CHAT FILTER CHIPS ROW -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="16dp"
+                android:scrollbars="none"
+                android:clipToPadding="false">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/chipChatAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_chip_selected"
+                        android:text="Semua (3)"
+                        android:textColor="@color/guppy_primary"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:paddingHorizontal="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/chipChatUnread"
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="Belum Dibaca (1)"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:paddingHorizontal="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/chipChatOrder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_chip_outline"
+                        android:text="Transaksi"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:paddingHorizontal="16dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- CHAT RECYCLERVIEW -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerChatList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"/>
+
+            <!-- EMPTY STATE -->
+            <TextView
+                android:id="@+id/tvEmptyChatList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:gravity="center"
+                android:text="Belum ada percakapan"
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

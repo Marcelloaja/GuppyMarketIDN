@@ -28,6 +28,9 @@
             android:name=".menuHome.ChatActivity"
             android:exported="false" />
         <activity
+            android:name=".menuHome.ChatListActivity"
+            android:exported="false" />
+        <activity
             android:name=".menuHome.DetailFarmActivity"
             android:exported="false" />
         <activity

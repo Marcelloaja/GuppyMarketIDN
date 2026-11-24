@@ -231,6 +231,12 @@ class HomeFragment : Fragment() {
     private fun setupHeaderButtons() {
         val clickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click)
 
+        val btnChatHome = view?.findViewById<View>(R.id.btnChatHome)
+        btnChatHome?.setOnClickListener { button ->
+            button.startAnimation(clickAnimation)
+            startActivity(Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuHome.ChatListActivity::class.java))
+        }
+
         btnCartHome.setOnClickListener { button ->
             button.startAnimation(clickAnimation)
             val intent = Intent(requireContext(), KeranjangHome::class.java)
