@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.stiki.marcelloilham.guppymarketidn.adapter.ProfileAuctionAdapter
+import com.stiki.marcelloilham.guppymarketidn.adapter.MyAuctionListAdapter
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.menuProfile.MenuProfile
@@ -91,6 +91,7 @@ class Profile : Fragment() {
         selectTab(0)
 
         fetchUserData()
+        setupProfileAuctions(view)
 
         val swipeRefresh = view.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipeRefreshProfile)
         swipeRefresh?.setColorSchemeResources(R.color.guppy_primary)
@@ -233,5 +234,29 @@ class Profile : Fragment() {
 
         if (!savedName.isNullOrEmpty()) textName.text = savedName
         if (!savedDesc.isNullOrEmpty()) textDescription.text = savedDesc
+    }
+
+    private lateinit var recyclerProfileAuctions: RecyclerView
+    private lateinit var myAuctionListAdapter: MyAuctionListAdapter
+
+    private fun setupProfileAuctions(view: View) {
+        recyclerProfileAuctions = view.findViewById(R.id.recyclerProfileAuctions)
+        recyclerProfileAuctions.layoutManager = LinearLayoutManager(requireContext())
+
+        loadUserAuctions()
+    }
+
+    private fun loadUserAuctions() {
+        FirestoreRepository.fetchAuctions { allAuctions ->
+            if (isAdded && ::recyclerProfileAuctions.isInitialized) {
+                myAuctionListAdapter = MyAuctionListAdapter(requireContext(), allAuctions) { auctionToDelete ->
+                    FirestoreRepository.deleteAuction(auctionToDelete.id) { _ ->
+                        Toast.makeText(requireContext(), "Lelang '${auctionToDelete.title}' Berhasil Dihapus", Toast.LENGTH_SHORT).show()
+                        loadUserAuctions()
+                    }
+                }
+                recyclerProfileAuctions.adapter = myAuctionListAdapter
+            }
+        }
     }
 }
