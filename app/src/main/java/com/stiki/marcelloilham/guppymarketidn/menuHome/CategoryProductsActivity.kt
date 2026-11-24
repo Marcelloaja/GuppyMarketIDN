@@ -17,7 +17,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
-import com.stiki.marcelloilham.guppymarketidn.adapter.GridAdapter
+import com.stiki.marcelloilham.guppymarketidn.adapter.CategoryProductAdapter
 
 class CategoryProductsActivity : AppCompatActivity() {
 
@@ -26,7 +26,10 @@ class CategoryProductsActivity : AppCompatActivity() {
     private lateinit var etSearch: EditText
     private lateinit var recycler: RecyclerView
     private lateinit var tvEmpty: TextView
-    private lateinit var gridAdapter: GridAdapter
+    private lateinit var adapter: CategoryProductAdapter
+
+    private var activeStrain: String = "Semua"
+    private var activeQuery: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +50,7 @@ class CategoryProductsActivity : AppCompatActivity() {
             insets
         }
 
-        val categoryName = intent.getStringExtra("EXTRA_CATEGORY_NAME") ?: "Kategori"
+        val categoryName = intent.getStringExtra("EXTRA_CATEGORY_NAME") ?: "Kontes"
 
         tvTitle = findViewById(R.id.tvCategoryPageTitle)
         tvCount = findViewById(R.id.tvCategoryPageCount)
@@ -56,88 +59,160 @@ class CategoryProductsActivity : AppCompatActivity() {
         tvEmpty = findViewById(R.id.tvEmptyCategoryProducts)
 
         val btnBack = findViewById<ImageView>(R.id.btnBackCategory)
-        val btnCart = findViewById<ImageView>(R.id.btnCartCategoryPage)
+        val btnCart = findViewById<View>(R.id.btnCartCategoryPage)
 
-        val chipPopular = findViewById<TextView>(R.id.chipCategoryPopular)
-        val chipLatest = findViewById<TextView>(R.id.chipCategoryLatest)
-        val chipPrice = findViewById<TextView>(R.id.chipCategoryPrice)
-
-        val selectChip = { active: TextView, inactives: List<TextView> ->
-            active.setBackgroundResource(R.drawable.bg_filter_green)
-            active.setTextColor(ContextCompat.getColor(this, R.color.white))
-
-            inactives.forEach { inactive ->
-                inactive.setBackgroundResource(R.drawable.bg_chip_outline)
-                inactive.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
-            }
-        }
-
-        chipPopular.setOnClickListener { selectChip(chipPopular, listOf(chipLatest, chipPrice)) }
-        chipLatest.setOnClickListener { selectChip(chipLatest, listOf(chipPopular, chipPrice)) }
-        chipPrice.setOnClickListener { selectChip(chipPrice, listOf(chipPopular, chipLatest)) }
+        tvTitle.text = categoryName
+        etSearch.hint = "Cari di $categoryName"
 
         btnBack.setOnClickListener { finish() }
         btnCart.setOnClickListener {
             startActivity(Intent(this, KeranjangHome::class.java))
         }
 
-        tvTitle.text = categoryName
-
-        setupProductsGrid(categoryName)
+        setupStrainFilterChips()
+        setupSortAndFilterButtons()
+        setupProductsGrid()
 
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (::gridAdapter.isInitialized) {
-                    gridAdapter.searchItems(s.toString())
-                    updateCountAndEmptyState()
-                }
+                activeQuery = s.toString().trim()
+                adapter.filterByQueryAndStrain(activeQuery, activeStrain)
+                updateCountAndEmptyState()
             }
             override fun afterTextChanged(s: Editable?) {}
         })
     }
 
-    private fun setupProductsGrid(categoryName: String) {
-        val allItems = listOf(
-            Item(R.drawable.skyblue, "Sky Blue", "Ikan Kontes", "Rp. 75.000"),
-            Item(R.drawable.gsrts, "GSRTS", "Indukan Breeder", "Rp. 100.000"),
-            Item(R.drawable.platinumrd, "Platinum RD", "Ikan Kontes", "Rp. 125.000"),
-            Item(R.drawable.mssrl, "MSSRL", "Indukan Breeder", "Rp. 95.000"),
-            Item(R.drawable.bestseller1, "Pelet Artemia High Protein", "Pakan Ikan", "Rp. 35.000"),
-            Item(R.drawable.skyblue, "Obat Biru & Anti Jamur", "Obat & Vitamin", "Rp. 25.000"),
-            Item(R.drawable.gsrts, "Solak Aquarium 12cm", "Sol & Akrilik", "Rp. 45.000"),
-            Item(R.drawable.platinumrd, "Serokan Halus Guppy", "Aksesoris", "Rp. 15.000")
-        )
+    private fun setupStrainFilterChips() {
+        val chipAll = findViewById<TextView>(R.id.chipStrainAll)
+        val chipMosaic = findViewById<TextView>(R.id.chipStrainMosaic)
+        val chipAlbino = findViewById<TextView>(R.id.chipStrainAlbino)
+        val chipTuxedo = findViewById<TextView>(R.id.chipStrainTuxedo)
 
-        val filteredList = if (categoryName.equals("Semua", ignoreCase = true)) {
-            allItems
-        } else {
-            allItems.filter {
-                it.type.lowercase().contains(categoryName.lowercase()) ||
-                it.name.lowercase().contains(categoryName.lowercase())
+        val strainChips = listOf(chipAll, chipMosaic, chipAlbino, chipTuxedo)
+
+        fun selectStrain(selected: TextView, strainName: String) {
+            activeStrain = strainName
+
+            strainChips.forEach { chip ->
+                if (chip == selected) {
+                    chip.setBackgroundResource(R.drawable.bg_filter_green)
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.white))
+                } else {
+                    chip.setBackgroundResource(R.drawable.bg_chip_outline)
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
+                }
+            }
+
+            adapter.filterByQueryAndStrain(activeQuery, activeStrain)
+            updateCountAndEmptyState()
+        }
+
+        chipAll.setOnClickListener { selectStrain(chipAll, "Semua") }
+        chipMosaic.setOnClickListener { selectStrain(chipMosaic, "Mosaic") }
+        chipAlbino.setOnClickListener { selectStrain(chipAlbino, "Albino") }
+        chipTuxedo.setOnClickListener { selectStrain(chipTuxedo, "Tuxedo") }
+    }
+
+    private fun setupSortAndFilterButtons() {
+        val chipPopular = findViewById<TextView>(R.id.chipSortPopular)
+        val chipLatest = findViewById<TextView>(R.id.chipSortLatest)
+        val chipPrice = findViewById<TextView>(R.id.chipSortPrice)
+        val btnFilter = findViewById<View>(R.id.btnFilterOptions)
+
+        val sortChips = listOf(chipPopular, chipLatest, chipPrice)
+
+        fun selectSort(selected: TextView) {
+            sortChips.forEach { chip ->
+                if (chip == selected) {
+                    chip.setBackgroundResource(R.drawable.bg_chip_outline)
+                    chip.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.guppy_primary))
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_primary))
+                } else {
+                    chip.setBackgroundResource(R.drawable.bg_chip_outline)
+                    chip.backgroundTintList = null
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
+                }
             }
         }
 
-        gridAdapter = GridAdapter(this, filteredList.ifEmpty { allItems })
-        recycler.layoutManager = GridLayoutManager(this, 2)
-        recycler.adapter = gridAdapter
+        chipPopular.setOnClickListener { selectSort(chipPopular) }
+        chipLatest.setOnClickListener { selectSort(chipLatest) }
+        chipPrice.setOnClickListener { selectSort(chipPrice) }
 
-        gridAdapter.setOnItemClickListener(object : GridAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val item = gridAdapter.getItem(position)
-                val intent = Intent(this@CategoryProductsActivity, DetailActivity::class.java).apply {
-                    putExtra("ITEM_NAME", item.name)
-                    putExtra("ITEM_IMAGE", item.image)
-                }
-                startActivity(intent)
-            }
-        })
+        btnFilter?.setOnClickListener {
+            BottomDialogFilter().show(supportFragmentManager, "BottomDialogFilter")
+        }
+    }
+
+    private fun setupProductsGrid() {
+        val productList = listOf(
+            CategoryProductAdapter.CategoryProduct(
+                title = "Red Dragon Delta",
+                seller = "Bekasi Aqua Farm",
+                price = "Rp 275.000",
+                unit = "per pasang",
+                sold = "120",
+                imageRes = R.drawable.bg_image_grid,
+                strain = "Dragon"
+            ),
+            CategoryProductAdapter.CategoryProduct(
+                title = "Sky Blue High Dorsal",
+                seller = "Jakarta Guppy House",
+                price = "Rp 150.000",
+                unit = "per ekor",
+                sold = "86",
+                imageRes = R.drawable.skyblue,
+                strain = "Blue"
+            ),
+            CategoryProductAdapter.CategoryProduct(
+                title = "Blue Moscow Full",
+                seller = "Depok Tail Studio",
+                price = "Rp 90.000",
+                unit = "per ekor",
+                sold = "54",
+                imageRes = R.drawable.gsrts,
+                strain = "Moscow"
+            ),
+            CategoryProductAdapter.CategoryProduct(
+                title = "Albino Full White",
+                seller = "Bogor Guppy Lab",
+                price = "Rp 320.000",
+                unit = "per pasang",
+                sold = "33",
+                imageRes = R.drawable.platinumrd,
+                strain = "Albino"
+            ),
+            CategoryProductAdapter.CategoryProduct(
+                title = "Blue Grass Full Red",
+                seller = "Jakarta Guppy House",
+                price = "Rp 450.000",
+                unit = "per ekor",
+                sold = "21",
+                imageRes = R.drawable.bg_image_grid,
+                strain = "Grass"
+            ),
+            CategoryProductAdapter.CategoryProduct(
+                title = "Mosaic Premium",
+                seller = "Bekasi Aqua Farm",
+                price = "Rp 380.000",
+                unit = "per pasang",
+                sold = "17",
+                imageRes = R.drawable.mssrl,
+                strain = "Mosaic"
+            )
+        )
+
+        adapter = CategoryProductAdapter(this, productList)
+        recycler.layoutManager = GridLayoutManager(this, 2)
+        recycler.adapter = adapter
 
         updateCountAndEmptyState()
     }
 
     private fun updateCountAndEmptyState() {
-        val count = gridAdapter.itemCount
+        val count = adapter.itemCount
         tvCount.text = "$count produk"
         if (count == 0) {
             recycler.visibility = View.GONE
