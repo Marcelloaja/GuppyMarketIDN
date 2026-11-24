@@ -773,6 +773,124 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- PENGIRIMAN & ESTIMASI ONGKIR SECTION -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="32dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pengiriman &amp; Ongkir"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/btnChangeShippingLoc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ubah Tujuan"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="13sp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="@color/guppy_stroke"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Origin to Destination Info -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_map_folded"
+                            app:tint="@color/guppy_primary"/>
+
+                        <TextView
+                            android:id="@+id/tvShippingRoute"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            android:text="Dikirim dari Bogor → Jatinegara, Jakarta"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_semi_bold"
+                            android:textSize="13sp"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="12dp"
+                        android:background="@color/guppy_stroke"/>
+
+                    <!-- J&T Express Option -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_tag_grade"
+                            android:text="J&amp;T EZ"
+                            android:textColor="@color/guppy_primary"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="11sp"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="4dp"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="10dp"
+                            android:text="Estimasi 1 - 2 hari"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:id="@+id/tvJntShippingCost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 12.000"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <!-- RIWAYAT PENAWARAN SECTION -->
             <LinearLayout
                 android:layout_width="match_parent"
