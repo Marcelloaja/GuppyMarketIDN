@@ -92,6 +92,8 @@ class Profile : Fragment() {
 
         fetchUserData()
         setupProfileAuctions(view)
+        setupProfileProducts(view)
+        setupProfileOrders(view)
 
         val swipeRefresh = view.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipeRefreshProfile)
         swipeRefresh?.setColorSchemeResources(R.color.guppy_primary)
@@ -274,6 +276,57 @@ class Profile : Fragment() {
                 } else {
                     recyclerProfileAuctions.visibility = View.VISIBLE
                     tvEmpty?.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    private fun setupProfileProducts(view: View) {
+        val recyclerProducts = view.findViewById<RecyclerView>(R.id.recyclerProfileProducts)
+        val tvEmptyProducts = view.findViewById<TextView>(R.id.tvEmptyProfileProducts)
+        recyclerProducts?.layoutManager = LinearLayoutManager(requireContext())
+
+        FirestoreRepository.fetchProducts { products ->
+            if (isAdded && recyclerProducts != null) {
+                if (products.isEmpty()) {
+                    recyclerProducts.visibility = View.GONE
+                    tvEmptyProducts?.visibility = View.VISIBLE
+                } else {
+                    recyclerProducts.visibility = View.VISIBLE
+                    tvEmptyProducts?.visibility = View.GONE
+
+                    val adaptedProducts = products.map { p ->
+                        com.stiki.marcelloilham.guppymarketidn.adapter.CategoryProductAdapter.CategoryProduct(
+                            title = p.title,
+                            seller = p.seller,
+                            price = p.price,
+                            unit = p.unit,
+                            sold = p.sold,
+                            imageRes = p.imageRes,
+                            strain = p.strain
+                        )
+                    }
+
+                    recyclerProducts.adapter = com.stiki.marcelloilham.guppymarketidn.adapter.CategoryProductAdapter(requireContext(), adaptedProducts)
+                }
+            }
+        }
+    }
+
+    private fun setupProfileOrders(view: View) {
+        val recyclerOrders = view.findViewById<RecyclerView>(R.id.recyclerProfileOrders)
+        val tvEmptyOrders = view.findViewById<TextView>(R.id.tvEmptyProfileOrders)
+        recyclerOrders?.layoutManager = LinearLayoutManager(requireContext())
+
+        FirestoreRepository.fetchUserOrders { orders ->
+            if (isAdded && recyclerOrders != null) {
+                if (orders.isEmpty()) {
+                    recyclerOrders.visibility = View.GONE
+                    tvEmptyOrders?.visibility = View.VISIBLE
+                } else {
+                    recyclerOrders.visibility = View.VISIBLE
+                    tvEmptyOrders?.visibility = View.GONE
+                    recyclerOrders.adapter = com.stiki.marcelloilham.guppymarketidn.adapter.ProfileOrderAdapter(requireContext(), orders)
                 }
             }
         }
