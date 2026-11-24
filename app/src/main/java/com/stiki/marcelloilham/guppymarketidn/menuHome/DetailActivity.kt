@@ -3,11 +3,15 @@ package com.stiki.marcelloilham.guppymarketidn.menuHome
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.stiki.marcelloilham.guppymarketidn.R
 
 class DetailActivity : AppCompatActivity() {
@@ -23,6 +27,17 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_limited)
+
+        val topBar = findViewById<View>(R.id.topBarDetail)
+        topBar?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                it.updatePadding(
+                    top = systemBars.top + (8 * resources.displayMetrics.density).toInt()
+                )
+                insets
+            }
+        }
 
         // Inisialisasi semua view
         btnBackDetail = findViewById(R.id.btnBackDetails)
