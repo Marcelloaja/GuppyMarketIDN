@@ -1,6 +1,8 @@
 package com.stiki.marcelloilham.guppymarketidn.menuAuction
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -80,6 +82,8 @@ class CreateAuctionActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        setupCurrencyTextWatchers()
+
         val cardVideo = findViewById<View>(R.id.cardUploadVideo)
         val cardPhoto1 = findViewById<View>(R.id.cardUploadPhoto1)
         val cardPhoto2 = findViewById<View>(R.id.cardUploadPhoto2)
@@ -129,6 +133,39 @@ class CreateAuctionActivity : AppCompatActivity() {
 
         btnPublishTop?.setOnClickListener { publishAction() }
         btnPublishBottom?.setOnClickListener { publishAction() }
+    }
+
+    private fun setupCurrencyTextWatchers() {
+        val addRupiahWatcher = { editText: EditText ->
+            editText.addTextChangedListener(object : TextWatcher {
+                private var current = ""
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    if (s.toString() != current) {
+                        editText.removeTextChangedListener(this)
+
+                        val cleanString = s.toString().replace(".", "").replace(",", "").trim()
+                        if (cleanString.isNotEmpty()) {
+                            val parsed = cleanString.toLongOrNull() ?: 0L
+                            val formatted = java.text.NumberFormat.getInstance(java.util.Locale("in", "ID")).format(parsed)
+                            current = formatted
+                            editText.setText(formatted)
+                            editText.setSelection(formatted.length)
+                        } else {
+                            current = ""
+                            editText.setText("")
+                        }
+
+                        editText.addTextChangedListener(this)
+                    }
+                }
+            })
+        }
+
+        addRupiahWatcher(etOpenBid)
+        addRupiahWatcher(etBidIncrement)
+        addRupiahWatcher(etBuyout)
     }
 
     private fun selectDuration(selected: TextView, hours: Int) {
