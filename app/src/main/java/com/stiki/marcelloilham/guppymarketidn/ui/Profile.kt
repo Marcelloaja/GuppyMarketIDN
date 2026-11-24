@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,6 +22,26 @@ class Profile : Fragment() {
     private lateinit var textName: TextView
     private lateinit var textDescription: TextView
     private lateinit var btnMenuProfile: View
+
+    private var tabProfileVarian: View? = null
+    private var tabProfileLelang: View? = null
+    private var tabProfilePesanan: View? = null
+    private var tabProfileUlasan: View? = null
+
+    private var tvTabProfileVarian: TextView? = null
+    private var tvTabProfileLelang: TextView? = null
+    private var tvTabProfilePesanan: TextView? = null
+    private var tvTabProfileUlasan: TextView? = null
+
+    private var indicatorProfileVarian: View? = null
+    private var indicatorProfileLelang: View? = null
+    private var indicatorProfilePesanan: View? = null
+    private var indicatorProfileUlasan: View? = null
+
+    private var layoutContentProfileVarian: View? = null
+    private var layoutContentProfileLelang: View? = null
+    private var layoutContentProfilePesanan: View? = null
+    private var layoutContentProfileUlasan: View? = null
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
@@ -48,6 +68,94 @@ class Profile : Fragment() {
             Toast.makeText(requireContext(), "Berhasil keluar dari akun", Toast.LENGTH_SHORT).show()
         }
 
+        initTabs(view)
+        setupTabClickListeners()
+        selectTab(0)
+
+        fetchUserData()
+
+        btnMenuProfile.setOnClickListener {
+            val animContext = context ?: return@setOnClickListener
+            val animation = AnimationUtils.loadAnimation(animContext, R.anim.button_click)
+            btnMenuProfile.startAnimation(animation)
+            btnMenuProfile.postDelayed({
+                if (isAdded) {
+                    startActivity(Intent(activity, MenuProfile::class.java))
+                }
+            }, animation.duration)
+        }
+
+        return view
+    }
+
+    private fun initTabs(view: View) {
+        tabProfileVarian = view.findViewById(R.id.tabProfileVarian)
+        tabProfileLelang = view.findViewById(R.id.tabProfileLelang)
+        tabProfilePesanan = view.findViewById(R.id.tabProfilePesanan)
+        tabProfileUlasan = view.findViewById(R.id.tabProfileUlasan)
+
+        tvTabProfileVarian = view.findViewById(R.id.tvTabProfileVarian)
+        tvTabProfileLelang = view.findViewById(R.id.tvTabProfileLelang)
+        tvTabProfilePesanan = view.findViewById(R.id.tvTabProfilePesanan)
+        tvTabProfileUlasan = view.findViewById(R.id.tvTabProfileUlasan)
+
+        indicatorProfileVarian = view.findViewById(R.id.indicatorProfileVarian)
+        indicatorProfileLelang = view.findViewById(R.id.indicatorProfileLelang)
+        indicatorProfilePesanan = view.findViewById(R.id.indicatorProfilePesanan)
+        indicatorProfileUlasan = view.findViewById(R.id.indicatorProfileUlasan)
+
+        layoutContentProfileVarian = view.findViewById(R.id.layoutContentProfileVarian)
+        layoutContentProfileLelang = view.findViewById(R.id.layoutContentProfileLelang)
+        layoutContentProfilePesanan = view.findViewById(R.id.layoutContentProfilePesanan)
+        layoutContentProfileUlasan = view.findViewById(R.id.layoutContentProfileUlasan)
+    }
+
+    private fun setupTabClickListeners() {
+        tabProfileVarian?.setOnClickListener { selectTab(0) }
+        tabProfileLelang?.setOnClickListener { selectTab(1) }
+        tabProfilePesanan?.setOnClickListener { selectTab(2) }
+        tabProfileUlasan?.setOnClickListener { selectTab(3) }
+    }
+
+    private fun selectTab(index: Int) {
+        val safeContext = context ?: return
+        val primaryColor = ContextCompat.getColor(safeContext, R.color.guppy_primary)
+        val grayColor = ContextCompat.getColor(safeContext, R.color.guppy_text_gray)
+        val strokeColor = ContextCompat.getColor(safeContext, R.color.guppy_stroke)
+        val density = resources.displayMetrics.density
+
+        val textViews = listOfNotNull(tvTabProfileVarian, tvTabProfileLelang, tvTabProfilePesanan, tvTabProfileUlasan)
+        val indicators = listOfNotNull(indicatorProfileVarian, indicatorProfileLelang, indicatorProfilePesanan, indicatorProfileUlasan)
+        val contents = listOfNotNull(layoutContentProfileVarian, layoutContentProfileLelang, layoutContentProfilePesanan, layoutContentProfileUlasan)
+
+        textViews.forEachIndexed { i, tv ->
+            if (i == index) {
+                tv.setTextColor(primaryColor)
+                tv.typeface = androidx.core.content.res.ResourcesCompat.getFont(safeContext, R.font.inter_bold)
+            } else {
+                tv.setTextColor(grayColor)
+                tv.typeface = androidx.core.content.res.ResourcesCompat.getFont(safeContext, R.font.inter_medium)
+            }
+        }
+
+        indicators.forEachIndexed { i, v ->
+            val lp = v.layoutParams
+            if (i == index) {
+                v.setBackgroundColor(primaryColor)
+                lp.height = (2.5f * density).toInt()
+            } else {
+                v.setBackgroundColor(strokeColor)
+                lp.height = (1f * density).toInt()
+            }
+            v.layoutParams = lp
+        }
+
+        contents.forEachIndexed { i, c ->
+            c.visibility = if (i == index) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun fetchUserData() {
         val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser != null) {
             val userId = firebaseUser.uid
@@ -74,19 +182,6 @@ class Profile : Fragment() {
         } else {
             loadUserDataLocally()
         }
-
-        btnMenuProfile.setOnClickListener {
-            val animContext = context ?: return@setOnClickListener
-            val animation = AnimationUtils.loadAnimation(animContext, R.anim.button_click)
-            btnMenuProfile.startAnimation(animation)
-            btnMenuProfile.postDelayed({
-                if (isAdded) {
-                    startActivity(Intent(activity, MenuProfile::class.java))
-                }
-            }, animation.duration)
-        }
-
-        return view
     }
 
     private fun saveUserDataLocally(name: String, description: String) {
