@@ -309,6 +309,7 @@
                     android:fontFamily="@font/inter_regular"
                     android:textSize="13sp"/>
                 <TextView
+                    android:id="@+id/tvAvgResponseTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="10 menit"
@@ -331,6 +332,7 @@
                     android:fontFamily="@font/inter_regular"
                     android:textSize="13sp"/>
                 <TextView
+                    android:id="@+id/tvOnTimeDeliveryRate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="98%"

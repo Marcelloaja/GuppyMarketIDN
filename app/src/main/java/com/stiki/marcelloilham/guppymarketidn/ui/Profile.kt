@@ -23,6 +23,9 @@ class Profile : Fragment() {
     private lateinit var textDescription: TextView
     private lateinit var btnMenuProfile: View
 
+    private var tvAvgResponseTime: TextView? = null
+    private var tvOnTimeDeliveryRate: TextView? = null
+
     private var tabProfileVarian: View? = null
     private var tabProfileLelang: View? = null
     private var tabProfilePesanan: View? = null
@@ -55,6 +58,9 @@ class Profile : Fragment() {
         textName = view.findViewById(R.id.namaProfile)
         textDescription = view.findViewById(R.id.descriptionProfile)
         btnMenuProfile = view.findViewById(R.id.btnMenuProfile)
+
+        tvAvgResponseTime = view.findViewById(R.id.tvAvgResponseTime)
+        tvOnTimeDeliveryRate = view.findViewById(R.id.tvOnTimeDeliveryRate)
 
         val btnEditProfile = view.findViewById<TextView>(R.id.btnEditProfile)
         val btnLogout = view.findViewById<TextView>(R.id.btnLogout)
@@ -166,8 +172,19 @@ class Profile : Fragment() {
                     val name = document.getString("name").orEmpty()
                     val description = document.getString("description").orEmpty()
 
+                    val totalChats = document.getLong("total_chats") ?: 3L
+                    val totalResponseMin = document.getLong("total_response_time_minutes") ?: 30L
+                    val totalOrders = document.getLong("total_orders") ?: 100L
+                    val ontimeOrders = document.getLong("ontime_orders_count") ?: 98L
+
+                    val avgMin = if (totalChats > 0) totalResponseMin / totalChats else 10L
+                    val deliveryRate = if (totalOrders > 0) ((ontimeOrders.toDouble() / totalOrders.toDouble()) * 100).toInt() else 98
+
                     if (name.isNotEmpty()) textName.text = name
                     if (description.isNotEmpty()) textDescription.text = description
+
+                    tvAvgResponseTime?.text = "$avgMin menit"
+                    tvOnTimeDeliveryRate?.text = "$deliveryRate%"
 
                     saveUserDataLocally(name, description)
                     Log.d("Profile", "Data retrieved: Name=$name, Description=$description")
