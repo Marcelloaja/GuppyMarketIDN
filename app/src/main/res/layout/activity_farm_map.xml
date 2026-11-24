@@ -124,6 +124,16 @@
                         android:textColor="@color/guppy_text_gray"
                         android:fontFamily="@font/inter_regular"
                         android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/tvFarmMapCardDistance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Menghitung jarak &amp; estimasi..."
+                        android:textColor="@color/guppy_primary"
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:textSize="12sp"/>
                 </LinearLayout>
             </LinearLayout>
 

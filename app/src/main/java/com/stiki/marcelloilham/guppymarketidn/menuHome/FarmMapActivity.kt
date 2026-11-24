@@ -9,6 +9,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.View
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
@@ -27,6 +28,7 @@ class FarmMapActivity : AppCompatActivity() {
     private lateinit var tvTitle: TextView
     private lateinit var tvCardName: TextView
     private lateinit var tvCardAddress: TextView
+    private lateinit var tvCardDistance: TextView
     private lateinit var btnStartNav: TextView
 
     private lateinit var locationManager: LocationManager
@@ -53,6 +55,7 @@ class FarmMapActivity : AppCompatActivity() {
         tvTitle = findViewById(R.id.tvFarmMapTitle)
         tvCardName = findViewById(R.id.tvFarmMapCardName)
         tvCardAddress = findViewById(R.id.tvFarmMapCardAddress)
+        tvCardDistance = findViewById(R.id.tvFarmMapCardDistance)
         webView = findViewById(R.id.webViewFarmMap)
 
         val btnBack = findViewById<ImageView>(R.id.btnBackFarmMap)
@@ -132,6 +135,18 @@ class FarmMapActivity : AppCompatActivity() {
         }
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
+
+        // Bridge JS for Dynamic Realtime Distance & Duration ETA Updates
+        webView.addJavascriptInterface(object {
+            @JavascriptInterface
+            fun onRouteUpdated(distance: String, duration: String) {
+                runOnUiThread {
+                    if (!isFinishing && ::tvCardDistance.isInitialized) {
+                        tvCardDistance.text = "$distance · Estimasi $duration"
+                    }
+                }
+            }
+        }, "AndroidBridge")
 
         webView.loadUrl("file:///android_asset/maps.html")
     }
