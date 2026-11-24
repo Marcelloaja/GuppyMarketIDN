@@ -49,6 +49,36 @@ class GridAdapter(
         notifyDataSetChanged()
     }
 
+    private fun parsePrice(priceStr: String): Long {
+        return priceStr.replace("Rp.", "").replace("Rp", "").replace(".", "").replace(" ", "").trim().toLongOrNull() ?: 0L
+    }
+
+    fun applyAdvancedFilter(sort: String, grade: String, location: String, minPrice: Float, maxPrice: Float) {
+        var filtered = originalItems.filter { item ->
+            val matchesGrade = grade.equals("All", ignoreCase = true) ||
+                item.name.contains(grade, true) ||
+                item.type.contains(grade, true)
+
+            val matchesLocation = location.equals("All", ignoreCase = true) ||
+                item.name.contains(location, true) ||
+                item.type.contains(location, true)
+
+            val numericPrice = parsePrice(item.price).toFloat()
+            val matchesPrice = numericPrice == 0f || (numericPrice in minPrice..maxPrice)
+
+            matchesGrade && matchesLocation && matchesPrice
+        }
+
+        filtered = when (sort) {
+            "LowToHigh" -> filtered.sortedBy { parsePrice(it.price) }
+            "HighToLow" -> filtered.sortedByDescending { parsePrice(it.price) }
+            else -> filtered
+        }
+
+        items = filtered
+        notifyDataSetChanged()
+    }
+
     fun getItem(position: Int): Item {
         return items[position]
     }

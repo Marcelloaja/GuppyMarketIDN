@@ -405,12 +405,8 @@ class HomeFragment : Fragment() {
     private fun applyUnifiedFilters(sort: String, grade: String, location: String, minPrice: Float, maxPrice: Float) {
         if (!::gridAdapter.isInitialized) return
 
-        var filterQuery = ""
-        if (grade != "All") filterQuery = grade
-        else if (location != "All") filterQuery = location
-
-        gridAdapter.searchItems(filterQuery)
-        toggleNoDataState(filterQuery)
+        gridAdapter.applyAdvancedFilter(sort, grade, location, minPrice, maxPrice)
+        toggleNoDataState(if (grade != "All") grade else if (location != "All") location else "")
     }
 
     private fun setupFilterRecyclerView() {
