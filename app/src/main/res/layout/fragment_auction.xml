@@ -6,7 +6,7 @@
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/guppy_background"
+    android:background="#F8F9FA"
     tools:context=".ui.AuctionFragment">
 
     <androidx.core.widget.NestedScrollView
@@ -18,712 +18,526 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="50dp"
             android:paddingBottom="100dp">
 
-            <!-- HEADER TITLE -->
+            <!-- HEADER TITLE & ICONS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="50dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_bold"
-                    android:text="Lelang Guppy"
-                    android:textColor="@color/guppy_text_black"
-                    android:textSize="22sp" />
+                <ImageView
+                    android:id="@+id/btnBackAuction"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_circle_white_stroke"
+                    android:src="@drawable/ic_chevron_left"
+                    android:padding="8dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/inter_regular"
-                    android:text="Ikuti lelang aktif dan dapatkan guppy kontes impianmu"
-                    android:textColor="@color/guppy_text_gray"
-                    android:textSize="13sp" />
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_bold"
+                        android:text="Lelang"
+                        android:textColor="@color/guppy_text_black"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text="Kesempatan memiliki varian guppy pilihan"
+                        android:textColor="@color/guppy_text_gray"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
+                    <ImageView
+                        android:id="@+id/btnNotifAuction"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_notifications_black_24dp"
+                        app:tint="#D4D9D7"
+                        android:padding="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_circle_image"
+                        android:backgroundTint="@color/guppy_red"/>
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/btnCartAuction"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/fi_rr_shopping_cart"
+                    app:tint="@color/guppy_text_black"
+                    android:padding="8dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
             </LinearLayout>
 
             <!-- SEARCH BAR -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/bg_search_bar"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp">
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_search_bar"
+                    android:backgroundTint="@color/white"
+                    android:elevation="0dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/search"
+                        app:tint="@color/guppy_text_gray"/>
+
+                    <EditText
+                        android:id="@+id/etSearchAuction"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/inter_regular"
+                        android:hint="Cari lelang, varian, atau nama farm..."
+                        android:textColor="@color/guppy_text_black"
+                        android:textColorHint="@color/guppy_text_gray"
+                        android:paddingStart="12dp"
+                        android:singleLine="true"
+                        android:textSize="13sp" />
+                </LinearLayout>
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/search"
+                    android:id="@+id/filterAuction"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/bg_circle_image"
+                    android:backgroundTint="#E8F5E9"
+                    android:src="@drawable/filter"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:tint="@color/guppy_primary"/>
-
-                <EditText
-                    android:id="@+id/etSearchHome"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:fontFamily="@font/inter_regular"
-                    android:hint="Cari lelang atau nama farm..."
-                    android:textColor="@color/guppy_text_black"
-                    android:textColorHint="@color/guppy_text_gray"
-                    android:paddingStart="12dp"
-                    android:singleLine="true"
-                    android:textSize="13sp" />
             </LinearLayout>
 
-            <!-- LELANG CARD 1 -->
+            <!-- TABS SEGMENTED -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_vehicle_segment_container"
+                android:backgroundTint="#EDEDED"
+                android:padding="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_vehicle_active_pill"
+                    android:text="Live (12)"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="13sp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:text="Akan Datang (8)"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="13sp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:text="Selesai (34)"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="13sp"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+            <!-- COUNTDOWN BANNER -->
             <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/guppy_stroke">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/guppy_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lelang Berakhir Terdekat"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="3 lot akan ditutup hari ini"
+                            android:textColor="@color/guppy_primary"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+
+                    <!-- Timer Blocks -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_tag_photo_count"
+                            android:backgroundTint="#F0F0F0"
+                            android:text="02"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="4dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=":"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"
+                            android:layout_marginHorizontal="4dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_tag_photo_count"
+                            android:backgroundTint="#F0F0F0"
+                            android:text="14"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="4dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=":"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"
+                            android:layout_marginHorizontal="4dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_tag_photo_count"
+                            android:backgroundTint="#FFEBEE"
+                            android:text="33"
+                            android:textColor="@color/guppy_red"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="4dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- CATEGORIES (HORIZONTAL RECYCLER) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerAuctionCategories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/white">
+                android:clipToPadding="false"
+                android:paddingHorizontal="20dp"
+                android:scrollbars="none"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_border_card"
-                    android:padding="16dp">
-
-                    <!-- FARM HEADER -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/logofinfantasyfarm"
-                            android:scaleType="centerCrop"
-                            app:cornerSize="50%"
-                            app:strokeColor="@color/guppy_primary"
-                            app:strokeWidth="1dp"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="10dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="@font/inter_semi_bold"
-                                    android:text="FinFantasy Farm"
-                                    android:textColor="@color/guppy_text_black"
-                                    android:textSize="14sp" />
-
-                                <ImageView
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
-                                    android:layout_marginStart="4dp"
-                                    android:src="@drawable/ic_verified_badge" />
-                            </LinearLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/inter_regular"
-                                android:text="Malang, Jawa Timur"
-                                android:textColor="@color/guppy_text_gray"
-                                android:textSize="11sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_tag_live"
-                            android:text="● LIVE"
-                            android:textColor="@color/white"
-                            android:textSize="10sp"
-                            android:fontFamily="@font/inter_bold"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"/>
-                    </LinearLayout>
-
-                    <!-- COUNTDOWN TIMER SECTION -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:background="@drawable/bg_chip_outline"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Sisa Waktu: "
-                            android:fontFamily="@font/inter_medium"
-                            android:textColor="@color/guppy_text_gray"
-                            android:textSize="12sp"/>
-
-                        <!-- Days -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tvDays1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="00"
-                                android:textColor="@color/guppy_red"
-                                android:textSize="14sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Hari"
-                                android:textColor="@color/guppy_text_gray"
-                                android:textSize="9sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" : "
-                            android:fontFamily="@font/inter_bold"
-                            android:textColor="@color/guppy_red"/>
-
-                        <!-- Hours -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tvHours1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="00"
-                                android:textColor="@color/guppy_red"
-                                android:textSize="14sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Jam"
-                                android:textColor="@color/guppy_text_gray"
-                                android:textSize="9sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" : "
-                            android:fontFamily="@font/inter_bold"
-                            android:textColor="@color/guppy_red"/>
-
-                        <!-- Minutes -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tvMinutes1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="00"
-                                android:textColor="@color/guppy_red"
-                                android:textSize="14sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Menit"
-                                android:textColor="@color/guppy_text_gray"
-                                android:textSize="9sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" : "
-                            android:fontFamily="@font/inter_bold"
-                            android:textColor="@color/guppy_red"/>
-
-                        <!-- Seconds -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tvSeconds1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="00"
-                                android:textColor="@color/guppy_red"
-                                android:textSize="14sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Detik"
-                                android:textColor="@color/guppy_text_gray"
-                                android:textSize="9sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- VIDEO PREVIEW CONTAINER -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="190dp"
-                        android:layout_marginTop="16dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="0dp">
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <VideoView
-                                android:id="@+id/videoView1"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center" />
-
-                            <ImageButton
-                                android:id="@+id/btnPlayVideo1"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_gravity="center"
-                                android:background="@drawable/bg_circle_image"
-                                android:backgroundTint="#99000000"
-                                android:src="@drawable/ic_play"
-                                android:padding="12dp"
-                                android:scaleType="fitCenter"
-                                app:tint="@color/white" />
-                        </FrameLayout>
-                    </androidx.cardview.widget.CardView>
-
-                    <!-- TITLE & PRICES -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/inter_bold"
-                            android:text="Blue Grass SWR Pair (Kontes Grade)"
-                            android:textColor="@color/guppy_text_black"
-                            android:textSize="15sp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Open Bid"
-                                    android:textColor="@color/guppy_text_gray"
-                                    android:textSize="11sp"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Rp 50.000"
-                                    android:textColor="@color/guppy_text_black"
-                                    android:fontFamily="@font/inter_medium"
-                                    android:textSize="13sp"/>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:gravity="end">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Last Bid (Tertinggi)"
-                                    android:textColor="@color/guppy_text_gray"
-                                    android:textSize="11sp"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Rp 55.000"
-                                    android:textColor="@color/guppy_primary"
-                                    android:fontFamily="@font/inter_bold"
-                                    android:textSize="16sp"/>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- ACTION BUTTON -->
-                    <TextView
-                        android:id="@+id/btnDetails1"
-                        android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@drawable/bg_btn_primary"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:text="Ikut Bid / Lihat Detail"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- LELANG CARD 2 -->
-            <androidx.cardview.widget.CardView
+            <!-- FILTERS CHIPS -->
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/white">
+                android:layout_marginTop="24dp"
+                android:scrollbars="none"
+                android:clipToPadding="false"
+                android:paddingHorizontal="20dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_border_card"
-                    android:padding="16dp">
+                    android:orientation="horizontal">
 
-                    <!-- FARM HEADER -->
+                    <!-- Filter with Badge -->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:backgroundTint="@color/white"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="12dp"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/logofinfantasyfarm"
-                            android:scaleType="centerCrop"
-                            app:cornerSize="50%"
-                            app:strokeColor="@color/guppy_primary"
-                            app:strokeWidth="1dp"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="10dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="@font/inter_semi_bold"
-                                    android:text="FinFantasy Farm"
-                                    android:textColor="@color/guppy_text_black"
-                                    android:textSize="14sp" />
-
-                                <ImageView
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
-                                    android:layout_marginStart="4dp"
-                                    android:src="@drawable/ic_verified_badge" />
-                            </LinearLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/inter_regular"
-                                android:text="Malang, Jawa Timur"
-                                android:textColor="@color/guppy_text_gray"
-                                android:textSize="11sp" />
-                        </LinearLayout>
-
+                        android:orientation="horizontal"
+                        app:strokeColor="@color/guppy_primary"
+                        app:strokeWidth="1dp">
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:src="@drawable/filter"
+                            app:tint="@color/guppy_primary"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_tag_live"
-                            android:text="● LIVE"
+                            android:layout_marginStart="6dp"
+                            android:text="Filter"
+                            android:textColor="@color/guppy_primary"
+                            android:fontFamily="@font/inter_semi_bold"
+                            android:textSize="12sp"/>
+                        <!-- Badge -->
+                        <TextView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:background="@drawable/bg_circle_image"
+                            android:backgroundTint="@color/guppy_primary"
+                            android:text="2"
                             android:textColor="@color/white"
                             android:textSize="10sp"
                             android:fontFamily="@font/inter_bold"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"/>
+                            android:gravity="center"
+                            android:layout_marginStart="6dp"/>
                     </LinearLayout>
 
-                    <!-- COUNTDOWN TIMER SECTION -->
+                    <!-- Harga -->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
                         android:background="@drawable/bg_chip_outline"
-                        android:gravity="center"
-                        android:padding="12dp"
+                        android:backgroundTint="@color/white"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="12dp"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal">
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sisa Waktu: "
-                            android:fontFamily="@font/inter_medium"
-                            android:textColor="@color/guppy_text_gray"
-                            android:textSize="12sp"/>
-
-                        <!-- Days -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tvDays2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="00"
-                                android:textColor="@color/guppy_red"
-                                android:textSize="14sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Hari"
-                                android:textColor="@color/guppy_text_gray"
-                                android:textSize="9sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" : "
-                            android:fontFamily="@font/inter_bold"
-                            android:textColor="@color/guppy_red"/>
-
-                        <!-- Hours -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tvHours2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="00"
-                                android:textColor="@color/guppy_red"
-                                android:textSize="14sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Jam"
-                                android:textColor="@color/guppy_text_gray"
-                                android:textSize="9sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" : "
-                            android:fontFamily="@font/inter_bold"
-                            android:textColor="@color/guppy_red"/>
-
-                        <!-- Minutes -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tvMinutes2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="00"
-                                android:textColor="@color/guppy_red"
-                                android:textSize="14sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Menit"
-                                android:textColor="@color/guppy_text_gray"
-                                android:textSize="9sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" : "
-                            android:fontFamily="@font/inter_bold"
-                            android:textColor="@color/guppy_red"/>
-
-                        <!-- Seconds -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tvSeconds2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="00"
-                                android:textColor="@color/guppy_red"
-                                android:textSize="14sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Detik"
-                                android:textColor="@color/guppy_text_gray"
-                                android:textSize="9sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- VIDEO PREVIEW CONTAINER -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="190dp"
-                        android:layout_marginTop="16dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="0dp">
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <VideoView
-                                android:id="@+id/videoView2"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center" />
-
-                            <ImageButton
-                                android:id="@+id/btnPlayVideo2"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_gravity="center"
-                                android:background="@drawable/bg_circle_image"
-                                android:backgroundTint="#99000000"
-                                android:src="@drawable/ic_play"
-                                android:padding="12dp"
-                                android:scaleType="fitCenter"
-                                app:tint="@color/white" />
-                        </FrameLayout>
-                    </androidx.cardview.widget.CardView>
-
-                    <!-- TITLE & PRICES -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/inter_bold"
-                            android:text="Albino Full Red High Dorsal (Jantan Super)"
+                            android:text="Harga"
                             android:textColor="@color/guppy_text_black"
-                            android:textSize="15sp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Open Bid"
-                                    android:textColor="@color/guppy_text_gray"
-                                    android:textSize="11sp"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Rp 75.000"
-                                    android:textColor="@color/guppy_text_black"
-                                    android:fontFamily="@font/inter_medium"
-                                    android:textSize="13sp"/>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:gravity="end">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Last Bid (Tertinggi)"
-                                    android:textColor="@color/guppy_text_gray"
-                                    android:textSize="11sp"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Rp 90.000"
-                                    android:textColor="@color/guppy_primary"
-                                    android:fontFamily="@font/inter_bold"
-                                    android:textSize="16sp"/>
-                            </LinearLayout>
-                        </LinearLayout>
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="12sp"/>
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginStart="4dp"
+                            android:src="@drawable/ic_chevron_down" />
                     </LinearLayout>
 
-                    <!-- ACTION BUTTON -->
-                    <TextView
-                        android:id="@+id/btnDetails2"
-                        android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@drawable/bg_btn_primary"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:text="Ikut Bid / Lihat Detail"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true" />
+                    <!-- Grade -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:backgroundTint="@color/white"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Grade"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="12sp"/>
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginStart="4dp"
+                            android:src="@drawable/ic_chevron_down" />
+                    </LinearLayout>
 
+                    <!-- Lokasi -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_outline"
+                        android:backgroundTint="@color/white"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lokasi"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="12sp"/>
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginStart="4dp"
+                            android:src="@drawable/ic_chevron_down" />
+                    </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </HorizontalScrollView>
+
+            <!-- SECTION HEADER: LELANG LIVE SEKARANG -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lelang Live Sekarang"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="18sp"/>
+                        <View
+                            android:layout_width="6dp"
+                            android:layout_height="6dp"
+                            android:background="@drawable/bg_circle_image"
+                            android:backgroundTint="@color/guppy_primary"
+                            android:layout_marginStart="8dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Penawaran berlangsung real-time"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lihat Semua"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_semi_bold"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="16dp"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Urutkan: "
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="11sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Berakhir tercepat ∨"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="11sp"/>
+            </LinearLayout>
+
+            <!-- AUCTION GRID ITEMS -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerAuctionGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
