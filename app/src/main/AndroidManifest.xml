@@ -79,6 +79,9 @@
             android:name=".menuHome.BottomDialogFilter"
             android:exported="false" />
         <activity
+            android:name=".menuProfile.AddProductActivity"
+            android:exported="false" />
+        <activity
             android:name=".menuProfile.MenuProfile"
             android:exported="false" />
         <activity
