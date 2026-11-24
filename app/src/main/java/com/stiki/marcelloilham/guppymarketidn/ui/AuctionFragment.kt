@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.adapter.AuctionGridAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.HomeCategoryAdapter
@@ -43,8 +44,20 @@ class AuctionFragment : Fragment() {
         setupCategories()
         setupAuctions()
         setupTopBar(view)
+        setupSwipeRefresh(view)
 
         return view
+    }
+
+    private fun setupSwipeRefresh(view: View) {
+        val swipeRefresh = view.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipeRefreshLayout)
+        swipeRefresh?.setColorSchemeResources(R.color.guppy_primary)
+        swipeRefresh?.setOnRefreshListener {
+            setupAuctions()
+            swipeRefresh.postDelayed({
+                swipeRefresh.isRefreshing = false
+            }, 1000)
+        }
     }
 
     private fun initViews(view: View) {

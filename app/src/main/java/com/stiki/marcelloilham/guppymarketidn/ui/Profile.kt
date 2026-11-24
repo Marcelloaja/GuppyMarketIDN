@@ -82,6 +82,15 @@ class Profile : Fragment() {
 
         fetchUserData()
 
+        val swipeRefresh = view.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipeRefreshProfile)
+        swipeRefresh?.setColorSchemeResources(R.color.guppy_primary)
+        swipeRefresh?.setOnRefreshListener {
+            fetchUserData()
+            swipeRefresh.postDelayed({
+                swipeRefresh.isRefreshing = false
+            }, 1000)
+        }
+
         return view
     }
 

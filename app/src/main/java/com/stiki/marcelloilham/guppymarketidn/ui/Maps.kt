@@ -77,6 +77,16 @@ class Maps : Fragment() {
         setupSearchAndVoice(view)
         setupTTS()
         checkAndRequestLocationPermission()
+
+        val swipeRefresh = view.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipeRefreshMaps)
+        swipeRefresh?.setColorSchemeResources(R.color.guppy_primary)
+        swipeRefresh?.setOnRefreshListener {
+            webView.reload()
+            swipeRefresh.postDelayed({
+                swipeRefresh.isRefreshing = false
+            }, 1000)
+        }
+
         return view
     }
 
