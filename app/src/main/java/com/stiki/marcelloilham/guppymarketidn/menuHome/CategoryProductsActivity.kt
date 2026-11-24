@@ -31,6 +31,7 @@ class CategoryProductsActivity : AppCompatActivity() {
 
     private var activeStrain: String = "Semua"
     private var activeQuery: String = ""
+    private var activeSort: String = "DEFAULT"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +78,7 @@ class CategoryProductsActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 activeQuery = s.toString().trim()
-                adapter.filterByQueryAndStrain(activeQuery, activeStrain)
+                adapter.applyAdvancedFilterAndSort(activeQuery, activeStrain, activeSort)
                 updateCountAndEmptyState()
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -93,7 +94,8 @@ class CategoryProductsActivity : AppCompatActivity() {
 
         val sortChips = listOf(chipPopular, chipLatest, chipPrice)
 
-        fun selectSort(selected: TextView) {
+        fun selectSort(selected: TextView, sortType: String) {
+            activeSort = sortType
             sortChips.forEach { chip ->
                 if (chip == selected) {
                     chip.setBackgroundResource(R.drawable.bg_chip_outline)
@@ -105,11 +107,24 @@ class CategoryProductsActivity : AppCompatActivity() {
                     chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
                 }
             }
+            adapter.applyAdvancedFilterAndSort(activeQuery, activeStrain, activeSort)
+            updateCountAndEmptyState()
         }
 
-        chipPopular.setOnClickListener { selectSort(chipPopular) }
-        chipLatest.setOnClickListener { selectSort(chipLatest) }
-        chipPrice.setOnClickListener { selectSort(chipPrice) }
+        chipPopular.setOnClickListener { selectSort(chipPopular, "POPULAR") }
+        chipLatest.setOnClickListener { selectSort(chipLatest, "DEFAULT") }
+
+        var isPriceAscending = true
+        chipPrice.setOnClickListener {
+            if (isPriceAscending) {
+                chipPrice.text = "Harga: Termurah ∨"
+                selectSort(chipPrice, "PRICE_LOW")
+            } else {
+                chipPrice.text = "Harga: Termahal ∧"
+                selectSort(chipPrice, "PRICE_HIGH")
+            }
+            isPriceAscending = !isPriceAscending
+        }
 
         // Dropdown Selection for Strain / Galur
         val strainOptions = arrayOf("Semua", "Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass")
@@ -119,14 +134,18 @@ class CategoryProductsActivity : AppCompatActivity() {
                 .setItems(strainOptions) { _, which ->
                     activeStrain = strainOptions[which]
                     chipFilterGalur.text = "Galur: $activeStrain ∨"
-                    adapter.filterByQueryAndStrain(activeQuery, activeStrain)
+                    adapter.applyAdvancedFilterAndSort(activeQuery, activeStrain, activeSort)
                     updateCountAndEmptyState()
                 }
                 .show()
         }
 
         btnFilter?.setOnClickListener {
-            BottomDialogFilter().show(supportFragmentManager, "BottomDialogFilter")
+            BottomDialogFilter { sort, _, _, _, _ ->
+                activeSort = if (sort == "LowToHigh") "PRICE_LOW" else "PRICE_HIGH"
+                adapter.applyAdvancedFilterAndSort(activeQuery, activeStrain, activeSort)
+                updateCountAndEmptyState()
+            }.show(supportFragmentManager, "BottomDialogFilter")
         }
     }
 

@@ -62,8 +62,20 @@ class CategoryProductAdapter(
 
     override fun getItemCount(): Int = filteredList.size
 
-    fun filterByQueryAndStrain(query: String, strain: String) {
-        filteredList = productList.filter { item ->
+    private fun parsePriceAmount(priceStr: String): Long {
+        return priceStr.replace("Rp", "").replace(".", "").replace(" ", "").trim().toLongOrNull() ?: 0L
+    }
+
+    private fun parseSoldAmount(soldStr: String): Int {
+        return soldStr.toIntOrNull() ?: 0
+    }
+
+    fun applyAdvancedFilterAndSort(
+        query: String,
+        strain: String,
+        sortType: String = "DEFAULT"
+    ) {
+        var result = productList.filter { item ->
             val matchesQuery = query.isEmpty() ||
                 item.title.lowercase().contains(query.lowercase()) ||
                 item.seller.lowercase().contains(query.lowercase())
@@ -74,6 +86,15 @@ class CategoryProductAdapter(
 
             matchesQuery && matchesStrain
         }
+
+        result = when (sortType) {
+            "POPULAR" -> result.sortedByDescending { parseSoldAmount(it.sold) }
+            "PRICE_LOW" -> result.sortedBy { parsePriceAmount(it.price) }
+            "PRICE_HIGH" -> result.sortedByDescending { parsePriceAmount(it.price) }
+            else -> result
+        }
+
+        filteredList = result
         notifyDataSetChanged()
     }
 }
