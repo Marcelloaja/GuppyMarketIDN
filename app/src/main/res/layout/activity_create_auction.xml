@@ -77,59 +77,174 @@
             android:paddingTop="20dp"
             android:paddingBottom="40dp">
 
-            <!-- 1. UPLOAD PHOTO / VIDEO FRAME -->
+            <!-- 1. UPLOAD MEDIA (1 VIDEO + 3 PHOTOS GRID) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Foto / Video Ikan Lelang"
+                android:text="Media Ikan (1 Video + 3 Foto)"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_bold"
                 android:textSize="14sp"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardUploadPhoto"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/white"
-                app:strokeColor="@color/guppy_primary"
-                app:strokeWidth="1.5dp"
-                android:clickable="true"
-                android:focusable="true">
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                <!-- Video Slot -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardUploadVideo"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="6dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:strokeColor="@color/guppy_primary"
+                    app:strokeWidth="1.5dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_video_camera"
-                        app:tint="@color/guppy_primary"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="6dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="+ Upload Foto / Video Ikan"
-                        android:textColor="@color/guppy_primary"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="14sp"/>
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_video_camera"
+                            app:tint="@color/guppy_primary"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Maksimal 4 foto / 1 video pendek"
-                        android:textColor="@color/guppy_text_gray"
-                        android:fontFamily="@font/inter_regular"
-                        android:textSize="11.5sp"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="+ Video"
+                            android:textColor="@color/guppy_primary"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Photo Slot 1 -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardUploadPhoto1"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="100dp"
+                    android:layout_marginHorizontal="3dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:strokeColor="@color/guppy_stroke"
+                    app:strokeWidth="1dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_image_gallery"
+                            app:tint="@color/guppy_text_gray"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Foto 1"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Photo Slot 2 -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardUploadPhoto2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="100dp"
+                    android:layout_marginHorizontal="3dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:strokeColor="@color/guppy_stroke"
+                    app:strokeWidth="1dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_image_gallery"
+                            app:tint="@color/guppy_text_gray"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Foto 2"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Photo Slot 3 -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardUploadPhoto3"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="6dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:strokeColor="@color/guppy_stroke"
+                    app:strokeWidth="1dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_image_gallery"
+                            app:tint="@color/guppy_text_gray"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Foto 3"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
 
             <!-- 2. JUDUL LELANG -->
             <TextView
@@ -155,43 +270,243 @@
                 android:textSize="13.5sp"
                 android:singleLine="true"/>
 
-            <!-- 3. PILIH GALUR VARIAN -->
+            <!-- 3. Rincian SPESIFIKASI DETAIL IKAN TABLE -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Galur Varian"
-                android:textColor="@color/guppy_text_black"
+                android:layout_marginTop="24dp"
+                android:text="Spesifikasi Detail Ikan"
+                android:textColor="@color/guppy_primary"
                 android:fontFamily="@font/inter_bold"
                 android:textSize="14sp"/>
 
-            <TextView
-                android:id="@+id/tvSelectStrain"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_search_bar"
-                android:text="Pilih Galur Varian ∨"
-                android:textColor="@color/guppy_text_black"
-                android:fontFamily="@font/inter_medium"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="14dp"
-                android:textSize="13.5sp"
-                android:clickable="true"
-                android:focusable="true"/>
-
-            <!-- 4. HARGA OPEN BID & KELIPATAN BID -->
+            <!-- Strain & Gender -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="6dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Strain / Genetik"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:id="@+id/tvSelectStrain"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_search_bar"
+                        android:text="Mosaic ∨"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="13sp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Jenis Kelamin"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:id="@+id/tvSelectGender"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_search_bar"
+                        android:text="1 Pasang (Pair) ∨"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="13sp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Umur & Jumlah -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Umur Ikan"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="13sp"/>
+
+                    <EditText
+                        android:id="@+id/etFishAge"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_search_bar"
+                        android:hint="misal: 3.5 Bulan"
+                        android:textColorHint="@color/guppy_text_gray"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_regular"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="13sp"
+                        android:singleLine="true"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Jumlah"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="13sp"/>
+
+                    <EditText
+                        android:id="@+id/etFishQuantity"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_search_bar"
+                        android:hint="misal: 1 Pasang"
+                        android:textColorHint="@color/guppy_text_gray"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_regular"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="13sp"
+                        android:singleLine="true"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Kondisi Kesehatan & Karantina -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kondisi Kesehatan"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="13sp"/>
+
+                    <EditText
+                        android:id="@+id/etFishCondition"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_search_bar"
+                        android:hint="Sangat Lincah, Ekor Solid"
+                        android:textColorHint="@color/guppy_text_gray"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_regular"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="13sp"
+                        android:singleLine="true"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lama Karantina"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="13sp"/>
+
+                    <EditText
+                        android:id="@+id/etQuarantineDays"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_search_bar"
+                        android:hint="14 hari di farm"
+                        android:textColorHint="@color/guppy_text_gray"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_regular"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="13sp"
+                        android:singleLine="true"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 4. HARGA OPEN BID & KELIPATAN BID -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Sesi &amp; Aturan Penawaran"
+                android:textColor="@color/guppy_primary"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="14sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -200,20 +515,20 @@
                         android:text="Open Bid (OB)"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
-                        android:textSize="14sp"/>
+                        android:textSize="13sp"/>
 
                     <EditText
                         android:id="@+id/etOpenBidPrice"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="6dp"
                         android:background="@drawable/bg_search_bar"
                         android:hint="Rp 200.000"
                         android:textColorHint="@color/guppy_text_gray"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
-                        android:paddingHorizontal="14dp"
-                        android:textSize="13.5sp"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="13sp"
                         android:inputType="number"/>
                 </LinearLayout>
 
@@ -221,7 +536,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="6dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -230,20 +545,20 @@
                         android:text="Kelipatan (KB)"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
-                        android:textSize="14sp"/>
+                        android:textSize="13sp"/>
 
                     <EditText
                         android:id="@+id/etBidIncrementPrice"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="6dp"
                         android:background="@drawable/bg_search_bar"
                         android:hint="Rp 25.000"
                         android:textColorHint="@color/guppy_text_gray"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
-                        android:paddingHorizontal="14dp"
-                        android:textSize="13.5sp"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="13sp"
                         android:inputType="number"/>
                 </LinearLayout>
             </LinearLayout>
@@ -252,24 +567,24 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:text="Harga Buyout (Opsional)"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_bold"
-                android:textSize="14sp"/>
+                android:textSize="13sp"/>
 
             <EditText
                 android:id="@+id/etBuyoutPrice"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="6dp"
                 android:background="@drawable/bg_search_bar"
                 android:hint="Rp 1.000.000 (Kosongkan jika tidak ada)"
                 android:textColorHint="@color/guppy_text_gray"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_bold"
-                android:paddingHorizontal="14dp"
-                android:textSize="13.5sp"
+                android:paddingHorizontal="12dp"
+                android:textSize="13sp"
                 android:inputType="number"/>
 
             <!-- 6. DURASI LELANG CHIPS -->
@@ -280,7 +595,7 @@
                 android:text="Durasi Lelang"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_bold"
-                android:textSize="14sp"/>
+                android:textSize="13sp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -297,7 +612,7 @@
                     android:text="12 Jam"
                     android:textColor="@color/guppy_text_black"
                     android:fontFamily="@font/inter_medium"
-                    android:textSize="13sp"
+                    android:textSize="12.5sp"
                     android:gravity="center"
                     android:layout_marginEnd="6dp"
                     android:clickable="true"
@@ -312,7 +627,7 @@
                     android:text="24 Jam"
                     android:textColor="@color/guppy_primary"
                     android:fontFamily="@font/inter_bold"
-                    android:textSize="13sp"
+                    android:textSize="12.5sp"
                     android:gravity="center"
                     android:layout_marginHorizontal="3dp"
                     android:clickable="true"
@@ -327,7 +642,7 @@
                     android:text="48 Jam"
                     android:textColor="@color/guppy_text_black"
                     android:fontFamily="@font/inter_medium"
-                    android:textSize="13sp"
+                    android:textSize="12.5sp"
                     android:gravity="center"
                     android:layout_marginStart="6dp"
                     android:clickable="true"
@@ -342,7 +657,7 @@
                 android:text="Deskripsi &amp; Garansi Ikan"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_bold"
-                android:textSize="14sp"/>
+                android:textSize="13sp"/>
 
             <EditText
                 android:id="@+id/etAuctionDescription"

@@ -1,6 +1,5 @@
 package com.stiki.marcelloilham.guppymarketidn.menuAuction
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -20,6 +19,12 @@ class CreateAuctionActivity : AppCompatActivity() {
 
     private lateinit var etTitle: EditText
     private lateinit var tvStrain: TextView
+    private lateinit var tvGender: TextView
+    private lateinit var etFishAge: EditText
+    private lateinit var etFishQuantity: EditText
+    private lateinit var etFishCondition: EditText
+    private lateinit var etQuarantineDays: EditText
+
     private lateinit var etOpenBid: EditText
     private lateinit var etBidIncrement: EditText
     private lateinit var etBuyout: EditText
@@ -30,6 +35,7 @@ class CreateAuctionActivity : AppCompatActivity() {
     private lateinit var chip48h: TextView
 
     private var selectedStrain: String = "Mosaic"
+    private var selectedGender: String = "1 Pasang (Pair)"
     private var selectedDurationHours: Int = 24
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +63,12 @@ class CreateAuctionActivity : AppCompatActivity() {
     private fun initViews() {
         etTitle = findViewById(R.id.etAuctionTitle)
         tvStrain = findViewById(R.id.tvSelectStrain)
+        tvGender = findViewById(R.id.tvSelectGender)
+        etFishAge = findViewById(R.id.etFishAge)
+        etFishQuantity = findViewById(R.id.etFishQuantity)
+        etFishCondition = findViewById(R.id.etFishCondition)
+        etQuarantineDays = findViewById(R.id.etQuarantineDays)
+
         etOpenBid = findViewById(R.id.etOpenBidPrice)
         etBidIncrement = findViewById(R.id.etBidIncrementPrice)
         etBuyout = findViewById(R.id.etBuyoutPrice)
@@ -68,10 +80,19 @@ class CreateAuctionActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        val cardPhoto = findViewById<View>(R.id.cardUploadPhoto)
-        cardPhoto?.setOnClickListener {
-            Toast.makeText(this, "Membuka galeri untuk memilih foto ikan...", Toast.LENGTH_SHORT).show()
+        val cardVideo = findViewById<View>(R.id.cardUploadVideo)
+        val cardPhoto1 = findViewById<View>(R.id.cardUploadPhoto1)
+        val cardPhoto2 = findViewById<View>(R.id.cardUploadPhoto2)
+        val cardPhoto3 = findViewById<View>(R.id.cardUploadPhoto3)
+
+        val mediaUploadPrompt = { slotName: String ->
+            Toast.makeText(this, "Membuka galeri untuk upload $slotName...", Toast.LENGTH_SHORT).show()
         }
+
+        cardVideo?.setOnClickListener { mediaUploadPrompt("1 Video Pendek") }
+        cardPhoto1?.setOnClickListener { mediaUploadPrompt("Foto Utama 1") }
+        cardPhoto2?.setOnClickListener { mediaUploadPrompt("Foto 2") }
+        cardPhoto3?.setOnClickListener { mediaUploadPrompt("Foto 3") }
 
         val strainOptions = arrayOf("Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass", "Koi", "Snakeskin")
         tvStrain.setOnClickListener {
@@ -80,6 +101,17 @@ class CreateAuctionActivity : AppCompatActivity() {
                 .setItems(strainOptions) { _, which ->
                     selectedStrain = strainOptions[which]
                     tvStrain.text = "Galur: $selectedStrain ∨"
+                }
+                .show()
+        }
+
+        val genderOptions = arrayOf("1 Pasang (Pair)", "Jantan Single", "Betina Single", "Koloni (3 Ekor)")
+        tvGender.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Pilih Jenis Kelamin")
+                .setItems(genderOptions) { _, which ->
+                    selectedGender = genderOptions[which]
+                    tvGender.text = selectedGender
                 }
                 .show()
         }
@@ -148,7 +180,7 @@ class CreateAuctionActivity : AppCompatActivity() {
             grade = "Grade A+"
         )
 
-        Toast.makeText(this, "Sesi Lelang '$titleText' Berhasil Diterbitkan!", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Sesi Lelang '$titleText' ($selectedGender, $selectedStrain) Berhasil Diterbitkan!", Toast.LENGTH_LONG).show()
         finish()
     }
 }
