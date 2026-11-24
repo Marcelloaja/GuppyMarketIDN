@@ -92,7 +92,6 @@ class AuctionFragment : Fragment() {
         setupCategories()
         setupAuctions()
         setupSearchAndFilter(view)
-        setupQuickFilterBar(view)
         setupNearestBanner(view)
         setupSwipeRefresh(view)
 
@@ -198,61 +197,6 @@ class AuctionFragment : Fragment() {
             }
             override fun afterTextChanged(s: Editable?) {}
         })
-    }
-
-    private fun setupQuickFilterBar(view: View) {
-        val btnFilterDialog = view.findViewById<View>(R.id.btnAuctionFilterDialog)
-        val chipPrice = view.findViewById<TextView>(R.id.chipAuctionPrice)
-        val chipGrade = view.findViewById<TextView>(R.id.chipAuctionGrade)
-        val chipLocation = view.findViewById<TextView>(R.id.chipAuctionLocation)
-
-        val openFilterDialog = {
-            BottomDialogFilter { sort, grade, location, _, _ ->
-                activeGrade = grade
-                activeLocation = location
-                activeSortType = if (sort == "LowToHigh") "PRICE_LOW" else "PRICE_HIGH"
-                applyFilters()
-            }.show(childFragmentManager, "BottomDialogFilter")
-        }
-
-        btnFilterDialog?.setOnClickListener { openFilterDialog() }
-
-        var isPriceAscending = true
-        chipPrice?.setOnClickListener {
-            if (isPriceAscending) {
-                chipPrice.text = "Harga: Termurah ∨"
-                activeSortType = "PRICE_LOW"
-            } else {
-                chipPrice.text = "Harga: Termahal ∧"
-                activeSortType = "PRICE_HIGH"
-            }
-            isPriceAscending = !isPriceAscending
-            applyFilters()
-        }
-
-        val gradeOptions = arrayOf("All", "Grade S", "Grade A+", "Grade A", "Grade B")
-        chipGrade?.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Pilih Grade Kualitas")
-                .setItems(gradeOptions) { _, which ->
-                    activeGrade = gradeOptions[which]
-                    chipGrade.text = if (activeGrade == "All") "Grade ∨" else "Grade: $activeGrade ∨"
-                    applyFilters()
-                }
-                .show()
-        }
-
-        val locOptions = arrayOf("All", "Bandung", "Jakarta", "Malang", "Surabaya", "Bekasi", "Depok", "Bogor")
-        chipLocation?.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Pilih Lokasi Farm")
-                .setItems(locOptions) { _, which ->
-                    activeLocation = locOptions[which]
-                    chipLocation.text = if (activeLocation == "All") "Lokasi ∨" else "Lokasi: $activeLocation ∨"
-                    applyFilters()
-                }
-                .show()
-        }
     }
 
     private fun setupAuctions() {
