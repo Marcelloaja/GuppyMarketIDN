@@ -14,6 +14,7 @@ import com.stiki.marcelloilham.guppymarketidn.R
 class AuctionGridAdapter(
     private val context: Context,
     private val rawItems: List<AuctionItem>,
+    private val itemLayoutResId: Int = R.layout.item_auction_grid,
     private val onClick: (AuctionItem) -> Unit
 ) : RecyclerView.Adapter<AuctionGridAdapter.ViewHolder>() {
 
@@ -53,13 +54,16 @@ class AuctionGridAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_auction_grid, parent, false)
+        val view = LayoutInflater.from(context).inflate(itemLayoutResId, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = filteredList[position]
-        holder.imgAuction.setImageResource(item.imageRes)
+
+        val safeImage = if (item.imageRes != 0) item.imageRes else R.drawable.bg_image_grid
+        holder.imgAuction.setImageResource(safeImage)
+
         holder.tvTitle.text = item.title
         holder.tvSeller.text = "${item.seller} · ${item.location}"
         holder.tvPrice.text = item.price

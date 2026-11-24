@@ -173,7 +173,11 @@ class HomeFragment : Fragment() {
             }
 
             if (isAdded && ::recyclerHomeAuctions.isInitialized) {
-                homeAuctionAdapter = AuctionGridAdapter(requireContext(), liveItems) { item ->
+                homeAuctionAdapter = AuctionGridAdapter(
+                    context = requireContext(),
+                    rawItems = liveItems,
+                    itemLayoutResId = R.layout.item_home_auction_card
+                ) { item ->
                     val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java)
                     intent.putExtra("auction_title", item.title)
                     startActivity(intent)
