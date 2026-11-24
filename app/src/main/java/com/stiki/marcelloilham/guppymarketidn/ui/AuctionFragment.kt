@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -45,6 +46,7 @@ class AuctionFragment : Fragment() {
     private var activeQuery: String = ""
     private var activeGrade: String = "All"
     private var activeLocation: String = "All"
+    private var activeSortType: String = "DEFAULT"
 
     private var nearestSecs: Long = 8073L
     private val nearestHandler = Handler(Looper.getMainLooper())
@@ -90,6 +92,7 @@ class AuctionFragment : Fragment() {
         setupCategories()
         setupAuctions()
         setupSearchAndFilter(view)
+        setupQuickFilterBar(view)
         setupNearestBanner(view)
         setupSwipeRefresh(view)
 
@@ -179,9 +182,10 @@ class AuctionFragment : Fragment() {
         val btnFilter = view.findViewById<ImageView>(R.id.filterAuction)
 
         btnFilter?.setOnClickListener {
-            BottomDialogFilter { _, grade, location, _, _ ->
+            BottomDialogFilter { sort, grade, location, _, _ ->
                 activeGrade = grade
                 activeLocation = location
+                activeSortType = if (sort == "LowToHigh") "PRICE_LOW" else "PRICE_HIGH"
                 applyFilters()
             }.show(childFragmentManager, "BottomDialogFilter")
         }
@@ -196,14 +200,69 @@ class AuctionFragment : Fragment() {
         })
     }
 
+    private fun setupQuickFilterBar(view: View) {
+        val btnFilterDialog = view.findViewById<View>(R.id.btnAuctionFilterDialog)
+        val chipPrice = view.findViewById<TextView>(R.id.chipAuctionPrice)
+        val chipGrade = view.findViewById<TextView>(R.id.chipAuctionGrade)
+        val chipLocation = view.findViewById<TextView>(R.id.chipAuctionLocation)
+
+        val openFilterDialog = {
+            BottomDialogFilter { sort, grade, location, _, _ ->
+                activeGrade = grade
+                activeLocation = location
+                activeSortType = if (sort == "LowToHigh") "PRICE_LOW" else "PRICE_HIGH"
+                applyFilters()
+            }.show(childFragmentManager, "BottomDialogFilter")
+        }
+
+        btnFilterDialog?.setOnClickListener { openFilterDialog() }
+
+        var isPriceAscending = true
+        chipPrice?.setOnClickListener {
+            if (isPriceAscending) {
+                chipPrice.text = "Harga: Termurah ∨"
+                activeSortType = "PRICE_LOW"
+            } else {
+                chipPrice.text = "Harga: Termahal ∧"
+                activeSortType = "PRICE_HIGH"
+            }
+            isPriceAscending = !isPriceAscending
+            applyFilters()
+        }
+
+        val gradeOptions = arrayOf("All", "Grade S", "Grade A+", "Grade A", "Grade B")
+        chipGrade?.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Pilih Grade Kualitas")
+                .setItems(gradeOptions) { _, which ->
+                    activeGrade = gradeOptions[which]
+                    chipGrade.text = if (activeGrade == "All") "Grade ∨" else "Grade: $activeGrade ∨"
+                    applyFilters()
+                }
+                .show()
+        }
+
+        val locOptions = arrayOf("All", "Bandung", "Jakarta", "Malang", "Surabaya", "Bekasi", "Depok", "Bogor")
+        chipLocation?.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Pilih Lokasi Farm")
+                .setItems(locOptions) { _, which ->
+                    activeLocation = locOptions[which]
+                    chipLocation.text = if (activeLocation == "All") "Lokasi ∨" else "Lokasi: $activeLocation ∨"
+                    applyFilters()
+                }
+                .show()
+        }
+    }
+
     private fun setupAuctions() {
         FirestoreRepository.fetchAuctions { firebaseAuctions ->
             val initialItems = listOf(
                 // Live Auctions
-                AuctionGridAdapter.AuctionItem(1, "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 12, 2530L, R.drawable.bg_image_grid, "Grade A+", "Mosaic", "LIVE"),
-                AuctionGridAdapter.AuctionItem(2, "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 9, 3933L, R.drawable.platinumrd, "Grade S", "Koi", "LIVE"),
-                AuctionGridAdapter.AuctionItem(3, "Sky Blue Albino", "FinFantasy Farm", "Malang", "Rp 550.000", 24, 11700L, R.drawable.skyblue, "Grade A", "Albino", "LIVE"),
-                AuctionGridAdapter.AuctionItem(4, "Golden Tuxedo", "Breeder Lokal", "Surabaya", "Rp 320.000", 5, 18720L, R.drawable.gsrts, "Grade B", "Tuxedo", "LIVE"),
+                AuctionGridAdapter.AuctionItem(1, "Blue Gold Mosaic", "Guppy Nusantara", "Bandung", "Rp 850.000", 12, System.currentTimeMillis() + 2530000L, R.drawable.bg_image_grid, "Grade A+", "Mosaic", "LIVE"),
+                AuctionGridAdapter.AuctionItem(2, "Red Koi Grade S", "Aquatic Lab", "Jakarta", "Rp 1.250.000", 9, System.currentTimeMillis() + 3933000L, R.drawable.platinumrd, "Grade S", "Koi", "LIVE"),
+                AuctionGridAdapter.AuctionItem(3, "Sky Blue Albino", "FinFantasy Farm", "Malang", "Rp 550.000", 24, System.currentTimeMillis() + 11700000L, R.drawable.skyblue, "Grade A", "Albino", "LIVE"),
+                AuctionGridAdapter.AuctionItem(4, "Golden Tuxedo", "Breeder Lokal", "Surabaya", "Rp 320.000", 5, System.currentTimeMillis() + 18720000L, R.drawable.gsrts, "Grade B", "Tuxedo", "LIVE"),
 
                 // Upcoming Auctions
                 AuctionGridAdapter.AuctionItem(5, "Snakeskin King Blue", "Bekasi Aqua Farm", "Bekasi", "Rp 400.000 (Start)", 0, 0L, R.drawable.mssrl, "Grade A", "Snakeskin", "UPCOMING"),
@@ -237,7 +296,8 @@ class AuctionFragment : Fragment() {
                 category = activeCategory,
                 query = activeQuery,
                 grade = activeGrade,
-                location = activeLocation
+                location = activeLocation,
+                sortType = activeSortType
             )
         }
     }

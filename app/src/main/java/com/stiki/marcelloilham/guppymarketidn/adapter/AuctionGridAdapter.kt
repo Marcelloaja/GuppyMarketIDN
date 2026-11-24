@@ -90,14 +90,19 @@ class AuctionGridAdapter(
 
     override fun getItemCount(): Int = filteredList.size
 
+    private fun parsePriceAmount(priceStr: String): Long {
+        return priceStr.replace("Rp", "").replace(".", "").replace(" ", "").replace("(Start)", "").trim().toLongOrNull() ?: 0L
+    }
+
     fun filterItems(
         status: String = "LIVE",
         category: String = "Semua",
         query: String = "",
         grade: String = "All",
-        location: String = "All"
+        location: String = "All",
+        sortType: String = "DEFAULT"
     ) {
-        val result = rawItems.filter { item ->
+        var result = rawItems.filter { item ->
             val matchesStatus = item.status.equals(status, ignoreCase = true)
 
             val matchesCategory = category.equals("Semua", ignoreCase = true) ||
@@ -116,6 +121,13 @@ class AuctionGridAdapter(
                 item.location.lowercase().contains(location.lowercase())
 
             matchesStatus && matchesCategory && matchesQuery && matchesGrade && matchesLocation
+        }
+
+        result = when (sortType) {
+            "PRICE_LOW" -> result.sortedBy { parsePriceAmount(it.price) }
+            "PRICE_HIGH" -> result.sortedByDescending { parsePriceAmount(it.price) }
+            "BIDS_HIGH" -> result.sortedByDescending { it.bids }
+            else -> result
         }
 
         filteredList = result.toMutableList()
