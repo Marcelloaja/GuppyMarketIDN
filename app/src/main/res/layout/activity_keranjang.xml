@@ -61,6 +61,7 @@
 
             <!-- SELECT ALL CARD -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardSelectAll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -104,11 +105,24 @@
                         android:textColor="@color/guppy_text_gray"
                         android:fontFamily="@font/inter_regular"
                         android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/btnDeleteSelected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="Hapus"
+                        android:textColor="@color/guppy_red"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="12sp"
+                        android:clickable="true"
+                        android:focusable="true"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- FARM PRODUCTS CONTAINER CARD -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardFarmContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -234,6 +248,7 @@
 
                     <!-- ITEM 1 -->
                     <LinearLayout
+                        android:id="@+id/layoutItem1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -408,6 +423,7 @@
                     </LinearLayout>
 
                     <View
+                        android:id="@+id/dividerItem1"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/guppy_stroke"
@@ -415,6 +431,7 @@
 
                     <!-- ITEM 2 -->
                     <LinearLayout
+                        android:id="@+id/layoutItem2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -582,6 +599,7 @@
 
             <!-- OXYGEN PACKAGE NOTE BANNER -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardOxygenNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -618,6 +636,7 @@
 
             <!-- SHOPPING SUMMARY CARD -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardSummary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -718,6 +737,42 @@
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+            <!-- EMPTY CART STATE -->
+            <LinearLayout
+                android:id="@+id/layoutEmptyCart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="80dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/fi_rr_shopping_cart"
+                    app:tint="@color/guppy_text_gray"
+                    android:alpha="0.3"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Keranjang kamu masih kosong"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Yuk, jelajahi varian guppy cantik di Beranda!"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="13sp"/>
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
