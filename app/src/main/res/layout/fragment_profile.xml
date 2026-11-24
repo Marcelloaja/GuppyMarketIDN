@@ -345,19 +345,21 @@
                 android:textSize="13sp"/>
 
             <TextView
+                android:id="@+id/tvProfileSaldoAktif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Rp 1.250.000"
+                android:text="Rp 0"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_bold"
                 android:textSize="22sp"/>
 
             <TextView
+                android:id="@+id/tvProfileDanaTertahan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Dana tertahan Rp 577.000 (1 pesanan dikirim)"
+                android:text="Dana tertahan Rp 0 (0 pesanan dikirim)"
                 android:textColor="@color/guppy_text_gray"
                 android:fontFamily="@font/inter_regular"
                 android:textSize="12sp"/>

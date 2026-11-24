@@ -198,11 +198,22 @@ class Profile : Fragment() {
                     val totalOrders = document.getLong("total_orders") ?: 100L
                     val ontimeOrders = document.getLong("ontime_orders_count") ?: 98L
 
+                    val activeBalance = document.getLong("active_balance") ?: 0L
+                    val pendingBalance = document.getLong("pending_balance") ?: 0L
+                    val pendingOrdersCount = document.getLong("pending_orders_count") ?: 0L
+
                     val avgMin = if (totalChats > 0) totalResponseMin / totalChats else 10L
                     val deliveryRate = if (totalOrders > 0) ((ontimeOrders.toDouble() / totalOrders.toDouble()) * 100).toInt() else 98
 
                     if (name.isNotEmpty()) textName.text = name
                     if (description.isNotEmpty()) textDescription.text = description
+
+                    val formatter = java.text.NumberFormat.getCurrencyInstance(java.util.Locale("in", "ID"))
+                    val tvSaldo = view?.findViewById<TextView>(R.id.tvProfileSaldoAktif)
+                    val tvTertahan = view?.findViewById<TextView>(R.id.tvProfileDanaTertahan)
+
+                    tvSaldo?.text = formatter.format(activeBalance).replace("Rp", "Rp ").replace(",00", "")
+                    tvTertahan?.text = "Dana tertahan ${formatter.format(pendingBalance).replace("Rp", "Rp ").replace(",00", "")} ($pendingOrdersCount pesanan dikirim)"
 
                     tvAvgResponseTime?.text = "$avgMin menit"
                     tvOnTimeDeliveryRate?.text = "$deliveryRate%"
