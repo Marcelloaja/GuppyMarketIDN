@@ -1,16 +1,13 @@
 package com.stiki.marcelloilham.guppymarketidn.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
-import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
 import com.stiki.marcelloilham.guppymarketidn.menuHome.Item
 
 class GridAdapter(
@@ -69,7 +66,10 @@ class GridAdapter(
         holder.itemImage.setImageResource(item.image)
 
         holder.buttonViewDetail.setOnClickListener {
-            listener?.onItemClick(position)
+            val pos = holder.bindingAdapterPosition
+            if (pos != RecyclerView.NO_POSITION) {
+                listener?.onItemClick(pos)
+            }
         }
     }
 
@@ -82,11 +82,14 @@ class GridAdapter(
         val nameProductGrid: TextView = itemView.findViewById(R.id.nameProductGrid)
         val showTypeGrid: TextView = itemView.findViewById(R.id.showTypeGrid)
         val showPriceGrid: TextView = itemView.findViewById(R.id.showPriceGrid)
-        val buttonViewDetail: LinearLayout = itemView.findViewById(R.id.button_view_detail)
+        val buttonViewDetail: View = itemView.findViewById(R.id.button_view_detail)
 
         init {
             itemView.setOnClickListener {
-                listener?.onItemClick(adapterPosition)
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    listener?.onItemClick(pos)
+                }
             }
         }
     }
