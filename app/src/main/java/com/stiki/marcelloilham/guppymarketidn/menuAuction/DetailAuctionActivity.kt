@@ -9,7 +9,7 @@ import android.widget.TextView
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.card.MaterialCardView
 import com.stiki.marcelloilham.guppymarketidn.R
 
 class DetailAuctionActivity : AppCompatActivity() {
@@ -19,10 +19,15 @@ class DetailAuctionActivity : AppCompatActivity() {
     private lateinit var btnPlayVideoOverlay: ImageView
     private lateinit var tvPhotoCount: TextView
 
-    private lateinit var thumbVideo: ShapeableImageView
-    private lateinit var thumbImg1: ShapeableImageView
-    private lateinit var thumbImg2: ShapeableImageView
-    private lateinit var thumbImg3: ShapeableImageView
+    private lateinit var cardThumbVideo: MaterialCardView
+    private lateinit var cardThumb1: MaterialCardView
+    private lateinit var cardThumb2: MaterialCardView
+    private lateinit var cardThumb3: MaterialCardView
+
+    private lateinit var thumbVideo: View
+    private lateinit var thumbImg1: View
+    private lateinit var thumbImg2: View
+    private lateinit var thumbImg3: View
 
     private val slideHandler = Handler(Looper.getMainLooper())
     private var slideRunnable: Runnable? = null
@@ -57,6 +62,11 @@ class DetailAuctionActivity : AppCompatActivity() {
         vvMainGallery = findViewById(R.id.vvMainGallery)
         btnPlayVideoOverlay = findViewById(R.id.btnPlayVideoOverlay)
         tvPhotoCount = findViewById(R.id.tvPhotoCount)
+
+        cardThumbVideo = findViewById(R.id.cardThumbVideo)
+        cardThumb1 = findViewById(R.id.cardThumb1)
+        cardThumb2 = findViewById(R.id.cardThumb2)
+        cardThumb3 = findViewById(R.id.cardThumb3)
 
         thumbVideo = findViewById(R.id.thumbVideo)
         thumbImg1 = findViewById(R.id.thumbImg1)
@@ -95,20 +105,17 @@ class DetailAuctionActivity : AppCompatActivity() {
             btnPlayVideoOverlay.visibility = View.GONE
         }
 
-        // Highlight selected thumbnail border
+        // Highlight selected thumbnail CardView border with 14dp rounded corners
         val density = resources.displayMetrics.density
-        val thumbs = listOf(thumbVideo, thumbImg1, thumbImg2, thumbImg3)
+        val cards = listOf(cardThumbVideo, cardThumb1, cardThumb2, cardThumb3)
 
-        thumbs.forEachIndexed { index, thumb ->
+        cards.forEachIndexed { index, card ->
             if (index == position) {
-                thumb.strokeColor = ContextCompat.getColorStateList(this, R.color.guppy_primary)
-                thumb.strokeWidth = 2.5f * density
-                val pad = (2 * density).toInt()
-                thumb.setPadding(pad, pad, pad, pad)
+                card.strokeColor = ContextCompat.getColor(this, R.color.guppy_primary)
+                card.strokeWidth = (2.5f * density).toInt()
             } else {
-                thumb.strokeColor = ContextCompat.getColorStateList(this, android.R.color.transparent)
-                thumb.strokeWidth = 0f
-                thumb.setPadding(0, 0, 0, 0)
+                card.strokeColor = ContextCompat.getColor(this, android.R.color.transparent)
+                card.strokeWidth = 0
             }
         }
     }
