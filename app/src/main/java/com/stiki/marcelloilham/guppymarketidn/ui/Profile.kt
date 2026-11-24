@@ -106,6 +106,7 @@ class Profile : Fragment() {
         swipeRefresh?.setOnRefreshListener {
             fetchUserData()
             loadUserAuctions()
+            loadUserProducts()
             swipeRefresh.postDelayed({
                 swipeRefresh.isRefreshing = false
             }, 1000)
@@ -118,6 +119,9 @@ class Profile : Fragment() {
         super.onResume()
         if (::recyclerProfileAuctions.isInitialized) {
             loadUserAuctions()
+        }
+        if (this::recyclerProfileProducts.isInitialized) {
+            loadUserProducts()
         }
     }
 
@@ -282,6 +286,7 @@ class Profile : Fragment() {
 
     private lateinit var recyclerProfileAuctions: RecyclerView
     private lateinit var myAuctionListAdapter: MyAuctionListAdapter
+    private lateinit var recyclerProfileProducts: RecyclerView
 
     private fun setupProfileAuctions(view: View) {
         recyclerProfileAuctions = view.findViewById(R.id.recyclerProfileAuctions)
@@ -316,21 +321,24 @@ class Profile : Fragment() {
     }
 
     private fun setupProfileProducts(view: View) {
-        val recyclerProducts = view.findViewById<RecyclerView>(R.id.recyclerProfileProducts)
-        val tvEmptyProducts = view.findViewById<TextView>(R.id.tvEmptyProfileProducts)
-        recyclerProducts?.layoutManager = LinearLayoutManager(requireContext())
+        recyclerProfileProducts = view.findViewById(R.id.recyclerProfileProducts)
+        recyclerProfileProducts.layoutManager = LinearLayoutManager(requireContext())
+        loadUserProducts()
+    }
 
+    private fun loadUserProducts() {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
 
         FirestoreRepository.fetchUserProducts(currentUserId) { products ->
-            if (isAdded && recyclerProducts != null) {
+            if (isAdded && ::recyclerProfileProducts.isInitialized) {
+                val tvEmptyProducts = view?.findViewById<TextView>(R.id.tvEmptyProfileProducts)
                 if (products.isEmpty()) {
-                    recyclerProducts.visibility = View.GONE
+                    recyclerProfileProducts.visibility = View.GONE
                     tvEmptyProducts?.visibility = View.VISIBLE
                 } else {
-                    recyclerProducts.visibility = View.VISIBLE
+                    recyclerProfileProducts.visibility = View.VISIBLE
                     tvEmptyProducts?.visibility = View.GONE
-                    recyclerProducts.adapter = com.stiki.marcelloilham.guppymarketidn.adapter.ProfileProductAdapter(requireContext(), products)
+                    recyclerProfileProducts.adapter = com.stiki.marcelloilham.guppymarketidn.adapter.ProfileProductAdapter(requireContext(), products)
                 }
             }
         }
