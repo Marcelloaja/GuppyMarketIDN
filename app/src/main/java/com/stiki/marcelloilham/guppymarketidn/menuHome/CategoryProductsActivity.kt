@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -69,7 +70,6 @@ class CategoryProductsActivity : AppCompatActivity() {
             startActivity(Intent(this, KeranjangHome::class.java))
         }
 
-        setupStrainFilterChips()
         setupSortAndFilterButtons()
         setupProductsGrid()
 
@@ -84,41 +84,11 @@ class CategoryProductsActivity : AppCompatActivity() {
         })
     }
 
-    private fun setupStrainFilterChips() {
-        val chipAll = findViewById<TextView>(R.id.chipStrainAll)
-        val chipMosaic = findViewById<TextView>(R.id.chipStrainMosaic)
-        val chipAlbino = findViewById<TextView>(R.id.chipStrainAlbino)
-        val chipTuxedo = findViewById<TextView>(R.id.chipStrainTuxedo)
-
-        val strainChips = listOf(chipAll, chipMosaic, chipAlbino, chipTuxedo)
-
-        fun selectStrain(selected: TextView, strainName: String) {
-            activeStrain = strainName
-
-            strainChips.forEach { chip ->
-                if (chip == selected) {
-                    chip.setBackgroundResource(R.drawable.bg_filter_green)
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.white))
-                } else {
-                    chip.setBackgroundResource(R.drawable.bg_chip_outline)
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
-                }
-            }
-
-            adapter.filterByQueryAndStrain(activeQuery, activeStrain)
-            updateCountAndEmptyState()
-        }
-
-        chipAll.setOnClickListener { selectStrain(chipAll, "Semua") }
-        chipMosaic.setOnClickListener { selectStrain(chipMosaic, "Mosaic") }
-        chipAlbino.setOnClickListener { selectStrain(chipAlbino, "Albino") }
-        chipTuxedo.setOnClickListener { selectStrain(chipTuxedo, "Tuxedo") }
-    }
-
     private fun setupSortAndFilterButtons() {
         val chipPopular = findViewById<TextView>(R.id.chipSortPopular)
         val chipLatest = findViewById<TextView>(R.id.chipSortLatest)
         val chipPrice = findViewById<TextView>(R.id.chipSortPrice)
+        val chipFilterGalur = findViewById<TextView>(R.id.chipFilterGalur)
         val btnFilter = findViewById<View>(R.id.btnFilterOptions)
 
         val sortChips = listOf(chipPopular, chipLatest, chipPrice)
@@ -140,6 +110,20 @@ class CategoryProductsActivity : AppCompatActivity() {
         chipPopular.setOnClickListener { selectSort(chipPopular) }
         chipLatest.setOnClickListener { selectSort(chipLatest) }
         chipPrice.setOnClickListener { selectSort(chipPrice) }
+
+        // Dropdown Selection for Strain / Galur
+        val strainOptions = arrayOf("Semua", "Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass")
+        chipFilterGalur?.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Pilih Galur Varian")
+                .setItems(strainOptions) { _, which ->
+                    activeStrain = strainOptions[which]
+                    chipFilterGalur.text = "Galur: $activeStrain ∨"
+                    adapter.filterByQueryAndStrain(activeQuery, activeStrain)
+                    updateCountAndEmptyState()
+                }
+                .show()
+        }
 
         btnFilter?.setOnClickListener {
             BottomDialogFilter().show(supportFragmentManager, "BottomDialogFilter")
