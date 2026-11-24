@@ -2,6 +2,8 @@ package com.stiki.marcelloilham.guppymarketidn.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -44,6 +46,29 @@ class AuctionFragment : Fragment() {
     private var activeGrade: String = "All"
     private var activeLocation: String = "All"
 
+    private var nearestSecs: Long = 8073L
+    private val nearestHandler = Handler(Looper.getMainLooper())
+    private var tvNearestHours: TextView? = null
+    private var tvNearestMins: TextView? = null
+    private var tvNearestSecs: TextView? = null
+
+    private val nearestTimerRunnable = object : Runnable {
+        override fun run() {
+            if (nearestSecs > 0) {
+                nearestSecs--
+                val h = nearestSecs / 3600
+                val m = (nearestSecs % 3600) / 60
+                val s = nearestSecs % 60
+
+                tvNearestHours?.text = String.format("%02d", h)
+                tvNearestMins?.text = String.format("%02d", m)
+                tvNearestSecs?.text = String.format("%02d", s)
+
+                nearestHandler.postDelayed(this, 1000L)
+            }
+        }
+    }
+
     private val categoriesList = listOf(
         CategoryItem("Semua", R.drawable.bg_image_grid, "61 lot"),
         CategoryItem("Mosaic", R.drawable.bg_image_grid, "24 lot"),
@@ -65,6 +90,7 @@ class AuctionFragment : Fragment() {
         setupCategories()
         setupAuctions()
         setupSearchAndFilter(view)
+        setupNearestBanner(view)
         setupSwipeRefresh(view)
 
         return view
@@ -78,6 +104,21 @@ class AuctionFragment : Fragment() {
         tabUpcoming = view.findViewById(R.id.tabAuctionUpcoming)
         tabFinished = view.findViewById(R.id.tabAuctionFinished)
         etSearch = view.findViewById(R.id.etSearchAuction)
+    }
+
+    private fun setupNearestBanner(view: View) {
+        val cardNearest = view.findViewById<View>(R.id.cardNearestBanner)
+        tvNearestHours = view.findViewById(R.id.tvNearestHours)
+        tvNearestMins = view.findViewById(R.id.tvNearestMins)
+        tvNearestSecs = view.findViewById(R.id.tvNearestSecs)
+
+        cardNearest?.setOnClickListener {
+            val intent = Intent(requireContext(), DetailAuctionActivity::class.java)
+            intent.putExtra("auction_title", "Blue Gold Mosaic")
+            startActivity(intent)
+        }
+
+        nearestHandler.postDelayed(nearestTimerRunnable, 1000L)
     }
 
     private fun setupTopBar(view: View) {
@@ -214,6 +255,7 @@ class AuctionFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        nearestHandler.removeCallbacks(nearestTimerRunnable)
         if (::auctionAdapter.isInitialized) {
             auctionAdapter.stopTimer()
         }
