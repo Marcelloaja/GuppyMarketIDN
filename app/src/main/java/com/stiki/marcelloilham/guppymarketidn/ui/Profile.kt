@@ -294,20 +294,7 @@ class Profile : Fragment() {
                 } else {
                     recyclerProducts.visibility = View.VISIBLE
                     tvEmptyProducts?.visibility = View.GONE
-
-                    val adaptedProducts = products.map { p ->
-                        com.stiki.marcelloilham.guppymarketidn.adapter.CategoryProductAdapter.CategoryProduct(
-                            title = p.title,
-                            seller = p.seller,
-                            price = p.price,
-                            unit = p.unit,
-                            sold = p.sold,
-                            imageRes = p.imageRes,
-                            strain = p.strain
-                        )
-                    }
-
-                    recyclerProducts.adapter = com.stiki.marcelloilham.guppymarketidn.adapter.CategoryProductAdapter(requireContext(), adaptedProducts)
+                    recyclerProducts.adapter = com.stiki.marcelloilham.guppymarketidn.adapter.ProfileProductAdapter(requireContext(), products)
                 }
             }
         }
