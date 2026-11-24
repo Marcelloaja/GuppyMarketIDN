@@ -76,8 +76,49 @@ class FarmMapActivity : AppCompatActivity() {
             }
         }
 
+        setupModeSelection()
         setupWebView(farmName)
         checkAndRequestLocationPermission()
+    }
+
+    private fun setupModeSelection() {
+        val chipCar = findViewById<View>(R.id.chipFarmModeCar)
+        val icCar = findViewById<ImageView>(R.id.icFarmModeCar)
+        val tvCar = findViewById<TextView>(R.id.tvFarmModeCar)
+
+        val chipMotor = findViewById<View>(R.id.chipFarmModeMotor)
+        val icMotor = findViewById<ImageView>(R.id.icFarmModeMotor)
+        val tvMotor = findViewById<TextView>(R.id.tvFarmModeMotor)
+
+        val chipWalk = findViewById<View>(R.id.chipFarmModeWalk)
+        val icWalk = findViewById<ImageView>(R.id.icFarmModeWalk)
+        val tvWalk = findViewById<TextView>(R.id.tvFarmModeWalk)
+
+        fun updateChips(selectedMode: String) {
+            val bgSelected = R.drawable.bg_filter_green
+            val bgUnselected = R.drawable.bg_chip_outline
+
+            val whiteColor = ContextCompat.getColor(this, R.color.white)
+            val blackColor = ContextCompat.getColor(this, R.color.guppy_text_black)
+
+            chipCar?.setBackgroundResource(if (selectedMode == "driving") bgSelected else bgUnselected)
+            icCar?.setColorFilter(if (selectedMode == "driving") whiteColor else blackColor)
+            tvCar?.setTextColor(if (selectedMode == "driving") whiteColor else blackColor)
+
+            chipMotor?.setBackgroundResource(if (selectedMode == "bike") bgSelected else bgUnselected)
+            icMotor?.setColorFilter(if (selectedMode == "bike") whiteColor else blackColor)
+            tvMotor?.setTextColor(if (selectedMode == "bike") whiteColor else blackColor)
+
+            chipWalk?.setBackgroundResource(if (selectedMode == "foot") bgSelected else bgUnselected)
+            icWalk?.setColorFilter(if (selectedMode == "foot") whiteColor else blackColor)
+            tvWalk?.setTextColor(if (selectedMode == "foot") whiteColor else blackColor)
+
+            webView.evaluateJavascript("javascript:setRouteProfile('$selectedMode')", null)
+        }
+
+        chipCar?.setOnClickListener { updateChips("driving") }
+        chipMotor?.setOnClickListener { updateChips("bike") }
+        chipWalk?.setOnClickListener { updateChips("foot") }
     }
 
     @SuppressLint("SetJavaScriptEnabled")

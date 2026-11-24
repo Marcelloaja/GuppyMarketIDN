@@ -100,9 +100,9 @@
         let currentLat = -6.225014;
         let currentLng = 106.865421;
 
-        // Destination: Guppy King Farm
-        const destLng = 106.868500;
-        const destLat = -6.221500;
+        // Destination default
+        let activeDestLng = 106.868500;
+        let activeDestLat = -6.221500;
 
         let isRoutingActive = false;
         let currentProfile = 'driving'; // 'driving' (Mobil), 'bike' (Motor), 'foot' (Jalan Kaki)
@@ -220,7 +220,7 @@
             }
 
             if (isRoutingActive) {
-                fetchRoute(currentLng, currentLat, destLng, destLat);
+                fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
             }
         }
 
@@ -232,8 +232,8 @@
 
         function focusFarmByName(name) {
             if (!name) return;
-            let targetLng = destLng;
-            let targetLat = destLat;
+            let targetLng = 106.8685;
+            let targetLat = -6.2215;
             let displayName = name;
 
             if (name.toLowerCase().includes('jakarta')) {
@@ -250,6 +250,9 @@
                 displayName = "FinFantasy Farm";
             }
 
+            activeDestLng = targetLng;
+            activeDestLat = targetLat;
+
             // Remove previous active marker if exists
             if (activeFarmMarker) {
                 activeFarmMarker.remove();
@@ -264,13 +267,13 @@
             activeEl.innerHTML = '📍 ' + displayName + ' <span class="verified-icon">✓</span>';
 
             activeFarmMarker = new maplibregl.Marker({ element: activeEl, anchor: 'bottom' })
-                .setLngLat([targetLng, targetLat])
+                .setLngLat([activeDestLng, activeDestLat])
                 .addTo(map);
 
             isRoutingActive = true;
-            fetchRoute(currentLng, currentLat, targetLng, targetLat);
+            fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
             map.flyTo({
-                center: [targetLng, targetLat],
+                center: [activeDestLng, activeDestLat],
                 zoom: 15.8,
                 pitch: 45,
                 speed: 1.5
@@ -278,7 +281,7 @@
         }
 
         function centerLocation() {
-            const targetBearing = isRoutingActive ? calculateBearing(currentLng, currentLat, destLng, destLat) : 0;
+            const targetBearing = isRoutingActive ? calculateBearing(currentLng, currentLat, activeDestLng, activeDestLat) : 0;
             map.flyTo({ center: [currentLng, currentLat], zoom: 15.5, pitch: isRoutingActive ? 60 : 25, bearing: targetBearing, speed: 1.2 });
         }
 
@@ -308,8 +311,8 @@
 
             // If routing is active, dynamically update line, ETA, AND ROTATE CAMERA FORWARD
             if (isRoutingActive) {
-                fetchRoute(currentLng, currentLat, destLng, destLat);
-                const targetBearing = calculateBearing(currentLng, currentLat, destLng, destLat);
+                fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
+                const targetBearing = calculateBearing(currentLng, currentLat, activeDestLng, activeDestLat);
                 map.flyTo({
                     center: [currentLng, currentLat],
                     zoom: 16.8,
@@ -382,9 +385,9 @@
         // Triggered via Android FAB button or clicking the Farm Marker
         function startNavigation() {
             isRoutingActive = true;
-            fetchRoute(currentLng, currentLat, destLng, destLat);
+            fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
 
-            const targetBearing = calculateBearing(currentLng, currentLat, destLng, destLat);
+            const targetBearing = calculateBearing(currentLng, currentLat, activeDestLng, activeDestLat);
 
             map.flyTo({
                 center: [currentLng, currentLat],

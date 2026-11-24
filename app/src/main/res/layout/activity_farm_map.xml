@@ -133,6 +133,102 @@
                 android:layout_marginVertical="12dp"
                 android:background="@color/guppy_stroke"/>
 
+            <!-- Vehicle Mode Chips Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp"
+                android:gravity="center">
+
+                <!-- Mode Car -->
+                <LinearLayout
+                    android:id="@+id/chipFarmModeCar"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_filter_green"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="6dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <ImageView
+                        android:id="@+id/icFarmModeCar"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_mode_car"
+                        app:tint="@color/white"/>
+                    <TextView
+                        android:id="@+id/tvFarmModeCar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Mobil"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/inter_semi_bold"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+
+                <!-- Mode Motor -->
+                <LinearLayout
+                    android:id="@+id/chipFarmModeMotor"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_chip_outline"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="3dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <ImageView
+                        android:id="@+id/icFarmModeMotor"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_mode_motor"
+                        app:tint="@color/guppy_text_black"/>
+                    <TextView
+                        android:id="@+id/tvFarmModeMotor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Motor"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+
+                <!-- Mode Walk -->
+                <LinearLayout
+                    android:id="@+id/chipFarmModeWalk"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_chip_outline"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="6dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <ImageView
+                        android:id="@+id/icFarmModeWalk"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_mode_walk"
+                        app:tint="@color/guppy_text_black"/>
+                    <TextView
+                        android:id="@+id/tvFarmModeWalk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Jalan"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
             <!-- Action Buttons Row -->
             <LinearLayout
                 android:layout_width="match_parent"
