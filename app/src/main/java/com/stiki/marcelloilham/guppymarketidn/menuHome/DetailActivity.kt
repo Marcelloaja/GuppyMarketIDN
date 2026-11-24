@@ -1,6 +1,7 @@
 package com.stiki.marcelloilham.guppymarketidn.menuHome
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.animation.AnimationUtils
 import android.widget.EditText
@@ -65,6 +66,11 @@ class DetailActivity : AppCompatActivity() {
                 number++
                 editTextNumber.setText(number.toString())
             }, animation.duration)
+        }
+
+        val btnBuyNow = findViewById<TextView>(R.id.btnBuyNowDetail)
+        btnBuyNow?.setOnClickListener {
+            startActivity(Intent(this, CheckoutActivity::class.java))
         }
     }
 }
