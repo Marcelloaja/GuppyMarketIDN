@@ -95,7 +95,7 @@ class DetailAuctionActivity : AppCompatActivity() {
         }
 
         tvDetailAuctionTimeLeft = findViewById(R.id.tvDetailAuctionTimeLeft)
-        auctionTimerHandler.postDelayed(auctionTimerRunnable, 1000L)
+        auctionTimerRunnable.run()
 
         initGalleryViews()
         setupGalleryClickListeners()
