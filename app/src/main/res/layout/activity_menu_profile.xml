@@ -1,641 +1,625 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".menuProfile.MenuProfile">
 
+    <!-- TOP BAR HEADER -->
     <LinearLayout
+        android:id="@+id/topBarEditProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_alignParentTop="true"
+        android:background="@color/white"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:id="@+id/btnBackProfile"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/btnback"
-                android:layout_marginTop="50dp"
-                android:layout_marginLeft="16dp"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="0.5"
-                android:gravity="center|bottom"
-                android:text="Setting"
-                android:layout_marginRight="60dp"
-                android:fontFamily="@font/inter_semi_bold"
-                android:textSize="15dp"
-                android:textColor="#000000"
-                android:layout_marginTop="65dp"/>
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/btnBackProfile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_white_stroke"
+            android:src="@drawable/ic_chevron_left"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
 
-        <!-- Setting - Bahasa -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/setting_bahasa"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-            <!-- LinearLayout pertama -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/fi_rs_globe"/>
-            </LinearLayout>
-            <!-- LinearLayout kedua -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:layout_marginLeft="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Language"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Setting - Clear Cache -->
-        <LinearLayout
-            android:id="@+id/clear_cache_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/setting_bahasa"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-
-            <!-- Icon Container -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/fi_rs_broom"/>
-            </LinearLayout>
-
-            <!-- Label Container -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:layout_marginLeft="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Clear Cache"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"/>
-            </LinearLayout>
-
-            <!-- Cache Size Container -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal">
-                <TextView
-                    android:id="@+id/cache_size_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="48.35MB"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="12dp"
-                    android:textColor="#40000000" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Setting - Change Password -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/setting_bahasa"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-            <!-- LinearLayout pertama -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/fi_rs_password"/>
-            </LinearLayout>
-            <!-- LinearLayout kedua -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:layout_marginLeft="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Change Password"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Setting - Payment History -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/setting_bahasa"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-            <!-- LinearLayout pertama -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/fi_rs_time_past"/>
-            </LinearLayout>
-            <!-- LinearLayout kedua -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:layout_marginLeft="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Payment History"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Divider Line -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginTop="20dp"
-            android:background="#e0e0e0" />
-
-        <!-- My Account Title -->
         <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/inter_bold"
+            android:text="Edit Profil"
+            android:textColor="@color/guppy_text_black"
+            android:textSize="18sp"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/btnSaveTop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="My Account"
-            android:fontFamily="@font/inter_regular"
+            android:text="Simpan"
+            android:textColor="@color/guppy_primary"
+            android:fontFamily="@font/inter_bold"
             android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"/>
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
 
-        <!-- Setting - Account -->
+    <View
+        android:id="@+id/dividerHeader"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/topBarEditProfile"
+        android:background="@color/guppy_stroke"/>
+
+    <!-- CONTENT SCROLL -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dividerHeader"
+        android:layout_above="@id/bottomBarEditProfile"
+        android:fillViewport="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/setting_bahasa"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-            <!-- LinearLayout pertama -->
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="30dp">
+
+            <!-- AVATAR SECTION -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp">
-                <ImageView
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="96dp"
+                    android:layout_height="96dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imgEditAvatar"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:src="@drawable/marcello"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/CircleImageStyle"
+                        app:strokeColor="@color/guppy_primary"
+                        app:strokeWidth="2dp"/>
+
+                    <!-- Camera Icon Overlay Button -->
+                    <ImageView
+                        android:id="@+id/btnChangePhotoCamera"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="bottom|end"
+                        android:background="@drawable/bg_circle_image"
+                        android:backgroundTint="@color/guppy_primary"
+                        android:src="@drawable/ic_mic"
+                        app:tint="@color/white"
+                        android:padding="6dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/btnChangePhoto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/user"/>
+                    android:layout_marginTop="10dp"
+                    android:text="Ganti foto"
+                    android:textColor="@color/guppy_primary"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="14sp"
+                    android:clickable="true"
+                    android:focusable="true"/>
             </LinearLayout>
-            <!-- LinearLayout kedua -->
+
+            <!-- FORM FIELDS -->
+            <!-- 1. Nama Pemilik -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:layout_marginLeft="20dp">
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Account"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"/>
-            </LinearLayout>
-            <!-- LinearLayout ketiga -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.30"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal">
-                <ImageButton
-                    android:layout_width="wrap_content"
+                    android:text="Nama pemilik"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+                <EditText
+                    android:id="@+id/etOwnerName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/fi_rr_angle_small_right"
-                    android:layout_gravity="end"/>
+                    android:layout_marginTop="4dp"
+                    android:background="@null"
+                    android:text="Marcello Aja"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="15sp"
+                    android:inputType="textPersonName"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/guppy_stroke"/>
             </LinearLayout>
-        </LinearLayout>
 
-        <!-- Setting - My Product's -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/setting_bahasa"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-            <!-- LinearLayout pertama -->
+            <!-- 2. Nama Farm -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/fish"/>
-            </LinearLayout>
-            <!-- LinearLayout kedua -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:layout_marginLeft="20dp">
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="My Product's"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"/>
-            </LinearLayout>
-            <!-- LinearLayout ketiga -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.30"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal">
-                <ImageButton
-                    android:id="@+id/btnMyProducts"
-                    android:layout_width="wrap_content"
+                    android:text="Nama farm"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+                <EditText
+                    android:id="@+id/etFarmName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/fi_rr_angle_small_right"
-                    android:layout_gravity="end"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Setting - My Bidding -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/setting_bahasa"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-            <!-- LinearLayout pertama -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/fi_rr_folder"/>
-            </LinearLayout>
-            <!-- LinearLayout kedua -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:layout_marginLeft="20dp">
+                    android:layout_marginTop="4dp"
+                    android:background="@null"
+                    android:text="Marcello Guppy Farm"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="15sp"
+                    android:inputType="text"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="My Auction's"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"/>
+                    android:layout_marginTop="2dp"
+                    android:text="Tampil di profil dan lelang"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="11sp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/guppy_stroke"/>
             </LinearLayout>
-            <!-- LinearLayout ketiga -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.30"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal">
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/fi_rr_angle_small_right"
-                    android:layout_gravity="end"/>
-            </LinearLayout>
-        </LinearLayout>
 
-        <!-- Setting - My Bidding -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/setting_bahasa"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-            <!-- LinearLayout pertama -->
+            <!-- 3. Lokasi -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:id="@+id/btnSelectLocation"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/fi_rr_shopping_cart"/>
-            </LinearLayout>
-            <!-- LinearLayout kedua -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:layout_marginLeft="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My Shopping Cart"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"/>
-            </LinearLayout>
-            <!-- LinearLayout ketiga -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.30"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal">
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/fi_rr_angle_small_right"
-                    android:layout_gravity="end"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Setting - My Bidding -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/setting_bahasa"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-            <!-- LinearLayout pertama -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/fi_ss_heart_full"/>
-            </LinearLayout>
-            <!-- LinearLayout kedua -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:layout_marginLeft="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My Bookmark"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"/>
-            </LinearLayout>
-            <!-- LinearLayout ketiga -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.30"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal">
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/fi_rr_angle_small_right"
-                    android:layout_gravity="end"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Divider Line -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginTop="20dp"
-            android:background="#e0e0e0" />
-
-        <!-- My Account Title -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="About Us"
-            android:fontFamily="@font/inter_regular"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/border_about_us"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="16dp">
-
-            <ImageButton
-                android:id="@+id/imgInformation"
-                android:layout_width="40dp"
-                android:layout_height="80dp"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:background="@drawable/information"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical"
-                android:layout_weight="1"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp">
+                android:clickable="true"
+                android:focusable="true">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lokasi"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tvFarmLocation"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Bekasi, Jawa Barat"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="15sp"/>
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/guppy_text_gray"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/guppy_stroke"/>
+            </LinearLayout>
+
+            <!-- 4. Nomor WhatsApp -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nomor WhatsApp"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+                <EditText
+                    android:id="@+id/etWhatsapp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@null"
+                    android:text="+62 812-3456-7890"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="15sp"
+                    android:inputType="phone"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/guppy_stroke"/>
+            </LinearLayout>
+
+            <!-- 5. Email -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Email"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="finfantasyfarm@gmail.com"
+                    android:textColor="@color/guppy_text_gray"
                     android:fontFamily="@font/inter_regular"
-                    android:textSize="14sp"
-                    android:textColor="#90A1DB"/>
-                <TextView
-                    android:layout_width="wrap_content"
+                    android:textSize="12sp"/>
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Telepon"
-                    android:fontFamily="@font/inter_light"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"
-                    android:layout_marginTop="10dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="+62 896 2597 6080"
-                    android:fontFamily="@font/inter_regular"
-                    android:textSize="14sp"
-                    android:textColor="#90A1DB"/>
-
-                <TextView
-                    android:id="@+id/menu_chat_cs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@null"
+                    android:text="marcello@guppymarket.id"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="15sp"
+                    android:inputType="textEmailAddress"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/border_chat_cs"
-                    android:fontFamily="@font/inter_semi_bold"
-                    android:gravity="center"
-                    android:text="Chat CS"
-                    android:textColor="#90A1DB"
-                    android:textSize="14sp"
-                    android:clickable="true"
-                    android:focusable="true" />
+                    android:background="@color/guppy_stroke"/>
             </LinearLayout>
+
+            <!-- 6. Deskripsi Farm -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deskripsi farm"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="12sp"/>
+                <EditText
+                    android:id="@+id/etFarmDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@null"
+                    android:text="Breeder guppy Bekasi. Fokus ikan varian warna dan kualitas sehat, dikirim dengan kemasan oksigen."
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="3dp"
+                    android:maxLength="300"
+                    android:inputType="textMultiLine"/>
+                <TextView
+                    android:id="@+id/tvCharCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="4dp"
+                    android:text="96/300"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="11sp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/guppy_stroke"/>
+            </LinearLayout>
+
+            <!-- SECTION: PENCAIRAN DANA -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Pencairan dana"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="16sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rekening BCA"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="•••• 4821"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/guppy_text_gray"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Ubah PIN penarikan"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14sp"/>
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/guppy_text_gray"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+            </LinearLayout>
+
+            <!-- SECTION: TAMPILAN TOKO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Tampilan toko"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="16sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <!-- Switch 1: Tampilkan lokasi -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tampilkan lokasi"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Pembeli dapat melihat kota asal pengiriman"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchShowLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        app:useMaterialThemeColors="true"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+                <!-- Switch 2: Tampilkan stok varian -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tampilkan stok varian"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Menampilkan jumlah stok ikan di profil farm"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchShowStock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        app:useMaterialThemeColors="true"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+
+                <!-- Switch 3: Terima penawaran lelang -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Terima penawaran lelang"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Izinkan pembeli melakukan penawaran harga"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchAllowAuctionBids"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        app:useMaterialThemeColors="true"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
+            </LinearLayout>
+
+            <!-- HAPUS AKUN FARM LINK -->
+            <TextView
+                android:id="@+id/btnDeleteFarmAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Hapus akun farm"
+                android:textColor="@color/guppy_red"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="14sp"
+                android:clickable="true"
+                android:focusable="true"/>
+
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- BOTTOM ACTION BAR -->
+    <LinearLayout
+        android:id="@+id/bottomBarEditProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:elevation="12dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
 
         <TextView
-            android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/btn_sign_out"
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_btn_outline"
+            android:text="Batal"
+            android:textColor="@color/guppy_primary"
             android:fontFamily="@font/inter_bold"
+            android:textSize="14sp"
             android:gravity="center"
-            android:text="Sign Out"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="V1.0"
-            android:gravity="center"
-            android:fontFamily="@font/inter_medium"
+            android:id="@+id/btnSaveBottom"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_btn_primary"
+            android:text="Simpan perubahan"
+            android:textColor="@color/white"
+            android:fontFamily="@font/inter_bold"
             android:textSize="14sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginBottom="30dp"
-            android:textColor="#DADADA"/>
-
+            android:gravity="center"
+            android:layout_marginStart="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
     </LinearLayout>
-</ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/bottomBarEditProfile"
+        android:background="@color/guppy_stroke"/>
+
+</RelativeLayout>

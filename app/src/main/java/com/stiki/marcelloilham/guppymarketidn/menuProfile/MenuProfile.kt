@@ -1,224 +1,164 @@
 package com.stiki.marcelloilham.guppymarketidn.menuProfile
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.view.animation.AnimationUtils
-import android.widget.ImageButton
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.stiki.marcelloilham.guppymarketidn.R
-import com.stiki.marcelloilham.guppymarketidn.intro.Login
-import java.io.File
-import java.text.DecimalFormat
 
 class MenuProfile : AppCompatActivity() {
 
     private lateinit var btnBackProfile: ImageView
-    private lateinit var btnLogout: TextView
-    private lateinit var btnMyProducts: ImageView
-    private lateinit var imgInformation: ImageButton
-    private lateinit var menuChatCS: TextView
-    private lateinit var clearCacheLayout: LinearLayout
-    private lateinit var cacheSizeText: TextView
-    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var btnSaveTop: TextView
+    private lateinit var btnSaveBottom: TextView
+    private lateinit var btnCancel: TextView
 
-    companion object {
-        private const val RC_SIGN_IN = 1001
-    }
+    private lateinit var etOwnerName: EditText
+    private lateinit var etFarmName: EditText
+    private lateinit var tvFarmLocation: TextView
+    private lateinit var etWhatsapp: EditText
+    private lateinit var etEmail: EditText
+    private lateinit var etFarmDescription: EditText
+    private lateinit var tvCharCount: TextView
 
-    @SuppressLint("MissingInflatedId")
+    private lateinit var btnChangePhoto: TextView
+    private lateinit var btnChangePhotoCamera: ImageView
+    private lateinit var btnDeleteFarmAccount: TextView
+
+    private val firebaseAuth = FirebaseAuth.getInstance()
+    private val db = FirebaseFirestore.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .requestProfile()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_menu_profile)
 
-        btnBackProfile = findViewById(R.id.btnBackProfile)
-        btnLogout = findViewById(R.id.btnLogout)
-        btnMyProducts = findViewById(R.id.btnMyProducts)
-        menuChatCS = findViewById(R.id.menu_chat_cs)
-        clearCacheLayout = findViewById(R.id.clear_cache_layout)
-        cacheSizeText = findViewById(R.id.cache_size_text)
-        imgInformation = findViewById(R.id.imgInformation)
-
-        // Display the cache size on startup
-        displayCacheSize()
-
-        btnBackProfile.setOnClickListener {
-            finish()  // Close the current activity and return to the previous one
-        }
-
-        btnMyProducts.setOnClickListener {
-            val animation = AnimationUtils.loadAnimation(this, R.anim.button_click)
-            btnMyProducts.startAnimation(animation)
-            btnMyProducts.postDelayed({
-                startActivity(Intent(this, MyProductsActivity::class.java))
-                finish()
-            }, animation.duration)
-        }
-
-        imgInformation.setOnClickListener {
-            val animation = AnimationUtils.loadAnimation(this, R.anim.button_click)
-            imgInformation.startAnimation(animation)
-            imgInformation.postDelayed({
-                startActivity(Intent(this, Information::class.java))
-            }, animation.duration)
-        }
-
-        btnLogout.setOnClickListener {
-            // Create an AlertDialog to confirm logout
-            val animation = AnimationUtils.loadAnimation(this, R.anim.button_click)
-            btnLogout.startAnimation(animation)
-            btnLogout.postDelayed({
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("Logout")
-                builder.setMessage("Are you sure you want to logout?")
-
-                builder.setPositiveButton("Yes") { dialog, _ ->
-                    googleSignInClient.signOut()
-                    FirebaseAuth.getInstance().signOut()
-                    clearUserDataLocally() // Clear locally saved data when logging out
-                    startActivity(Intent(this, Login::class.java))
-                    finish()
-                }
-
-                builder.setNegativeButton("No") { dialog, _ ->
-                    dialog.dismiss() // Dismiss the dialog if the user cancels
-                }
-
-                // Show the AlertDialog
-                val dialog = builder.create()
-                dialog.show()
-            }, animation.duration)
-        }
-
-        menuChatCS.setOnClickListener {
-            val userName = getUserNameFromDatabase()
-            val message =
-                "*Chat from Guppy Market!*\n\nFrom: _${userName}_\nHello, thank you for contacting CS.\nQuestion: "
-            val phoneNumberWithCountryCode = "+6289625976080"
-            startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(
-                        String.format(
-                            "https://api.whatsapp.com/send?phone=%s&text=%s",
-                            phoneNumberWithCountryCode, message
-                        )
-                    )
+        val topBar = findViewById<View>(R.id.topBarEditProfile)
+        topBar?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                it.updatePadding(
+                    top = systemBars.top + (8 * resources.displayMetrics.density).toInt()
                 )
+                insets
+            }
+        }
+
+        initViews()
+        setupListeners()
+        loadProfileData()
+    }
+
+    private fun initViews() {
+        btnBackProfile = findViewById(R.id.btnBackProfile)
+        btnSaveTop = findViewById(R.id.btnSaveTop)
+        btnSaveBottom = findViewById(R.id.btnSaveBottom)
+        btnCancel = findViewById(R.id.btnCancel)
+
+        etOwnerName = findViewById(R.id.etOwnerName)
+        etFarmName = findViewById(R.id.etFarmName)
+        tvFarmLocation = findViewById(R.id.tvFarmLocation)
+        etWhatsapp = findViewById(R.id.etWhatsapp)
+        etEmail = findViewById(R.id.etEmail)
+        etFarmDescription = findViewById(R.id.etFarmDescription)
+        tvCharCount = findViewById(R.id.tvCharCount)
+
+        btnChangePhoto = findViewById(R.id.btnChangePhoto)
+        btnChangePhotoCamera = findViewById(R.id.btnChangePhotoCamera)
+        btnDeleteFarmAccount = findViewById(R.id.btnDeleteFarmAccount)
+    }
+
+    private fun setupListeners() {
+        btnBackProfile.setOnClickListener { finish() }
+        btnCancel.setOnClickListener { finish() }
+
+        btnSaveTop.setOnClickListener { saveProfileData() }
+        btnSaveBottom.setOnClickListener { saveProfileData() }
+
+        // Character counter for farm description
+        etFarmDescription.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val len = s?.length ?: 0
+                tvCharCount.text = "$len/300"
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        btnChangePhoto.setOnClickListener {
+            Toast.makeText(this, "Pilih foto dari galeri", Toast.LENGTH_SHORT).show()
+        }
+        btnChangePhotoCamera.setOnClickListener {
+            Toast.makeText(this, "Buka kamera", Toast.LENGTH_SHORT).show()
+        }
+
+        btnDeleteFarmAccount.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Hapus Akun Farm")
+                .setMessage("Apakah Anda yakin ingin menghapus akun farm ini? Tindakan ini tidak dapat dibatalkan.")
+                .setPositiveButton("Hapus") { dialog, _ ->
+                    Toast.makeText(this, "Permintaan hapus akun diproses", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Batal") { dialog, _ -> dialog.dismiss() }
+                .show()
+        }
+    }
+
+    private fun loadProfileData() {
+        val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val name = prefs.getString("name", "Marcello Aja")
+        val desc = prefs.getString("description", "Breeder guppy Bekasi. Fokus ikan varian warna dan kualitas sehat, dikirim dengan kemasan oksigen.")
+
+        if (!name.isNullOrEmpty()) etOwnerName.setText(name)
+        if (!desc.isNullOrEmpty()) {
+            etFarmDescription.setText(desc)
+            tvCharCount.text = "${desc.length}/300"
+        }
+    }
+
+    private fun saveProfileData() {
+        val ownerName = etOwnerName.text.toString().trim()
+        val farmName = etFarmName.text.toString().trim()
+        val desc = etFarmDescription.text.toString().trim()
+
+        if (ownerName.isEmpty()) {
+            etOwnerName.error = "Nama pemilik wajib diisi"
+            return
+        }
+
+        // Save locally
+        val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        prefs.edit().apply {
+            putString("name", ownerName)
+            putString("farm_name", farmName)
+            putString("description", desc)
+            apply()
+        }
+
+        // Save to Firebase Firestore if logged in
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            val userMap = hashMapOf<String, Any>(
+                "name" to ownerName,
+                "farm_name" to farmName,
+                "description" to desc
             )
+            db.collection("user").document(user.uid).update(userMap)
         }
 
-        clearCacheLayout.setOnClickListener {
-            val animation = AnimationUtils.loadAnimation(this, R.anim.button_click)
-            clearCacheLayout.startAnimation(animation)
-            clearCacheLayout.postDelayed({
-                clearCache()
-            }, animation.duration)
-        }
-    }
-
-    private fun displayCacheSize() {
-        val cacheSize = getCacheSize(this)
-        cacheSizeText.text = formatSize(cacheSize)
-    }
-
-    private fun getCacheSize(context: Context): Long {
-        var size: Long = 0
-        try {
-            val cacheDir = context.cacheDir
-            size += getDirSize(cacheDir)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return size
-    }
-
-    private fun getDirSize(dir: File): Long {
-        var size: Long = 0
-        for (file in dir.listFiles()!!) {
-            size += if (file.isDirectory) {
-                getDirSize(file)
-            } else {
-                file.length()
-            }
-        }
-        return size
-    }
-
-    private fun formatSize(size: Long): String {
-        val hrSize: String
-        val m = size / 1024.0
-        val dec = DecimalFormat("0.00")
-        hrSize = if (m > 1) {
-            val g = m / 1024.0
-            if (g > 1) {
-                val t = g / 1024.0
-                if (t > 1) {
-                    dec.format(t) + " TB"
-                } else {
-                    dec.format(g) + " GB"
-                }
-            } else {
-                dec.format(m) + " MB"
-            }
-        } else {
-            dec.format(size.toDouble()) + " KB"
-        }
-        return hrSize
-    }
-
-    private fun clearCache() {
-        try {
-            val dir = cacheDir
-            deleteDir(dir)
-            displayCacheSize()
-            Toast.makeText(this, "Cache cleared", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Failed to clear cache", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun deleteDir(dir: File?): Boolean {
-        if (dir != null && dir.isDirectory) {
-            val children = dir.list()
-            for (i in children.indices) {
-                val success = deleteDir(File(dir, children[i]))
-                if (!success) {
-                    return false
-                }
-            }
-        }
-        return dir!!.delete()
-    }
-
-    private fun getUserNameFromDatabase(): String {
-        val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        return prefs.getString("name", "Friend") ?: "Friend"
-    }
-
-    private fun clearUserDataLocally() {
-        val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        prefs.edit().clear().apply()
+        Toast.makeText(this, "Profil berhasil disimpan!", Toast.LENGTH_SHORT).show()
+        finish()
     }
 }
