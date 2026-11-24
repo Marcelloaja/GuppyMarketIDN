@@ -338,10 +338,80 @@ class Profile : Fragment() {
                 } else {
                     recyclerProfileProducts.visibility = View.VISIBLE
                     tvEmptyProducts?.visibility = View.GONE
-                    recyclerProfileProducts.adapter = com.stiki.marcelloilham.guppymarketidn.adapter.ProfileProductAdapter(requireContext(), products)
+                    recyclerProfileProducts.adapter = com.stiki.marcelloilham.guppymarketidn.adapter.ProfileProductAdapter(
+                        context = requireContext(),
+                        products = products,
+                        onManageClicked = { productToEdit ->
+                            showEditProductDialog(productToEdit)
+                        },
+                        onDeleteClicked = { productToDelete ->
+                            FirestoreRepository.deleteProduct(productToDelete.id) { success ->
+                                if (success) {
+                                    Toast.makeText(requireContext(), "Varian '${productToDelete.title}' Berhasil Dihapus", Toast.LENGTH_SHORT).show()
+                                    loadUserProducts()
+                                }
+                            }
+                        }
+                    )
                 }
             }
         }
+    }
+
+    private fun showEditProductDialog(product: FirestoreRepository.ProductModel) {
+        val safeContext = context ?: return
+        val layout = android.widget.LinearLayout(safeContext).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding(50, 30, 50, 10)
+        }
+
+        val tvPriceLabel = TextView(safeContext).apply {
+            text = "Harga Jual Baru (Rp):"
+            setTextColor(ContextCompat.getColor(safeContext, R.color.guppy_text_black))
+            typeface = androidx.core.content.res.ResourcesCompat.getFont(safeContext, R.font.inter_bold)
+        }
+        val etPrice = android.widget.EditText(safeContext).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            hint = "misal: 150000"
+            setText(product.price.replace("Rp", "").replace(".", "").replace(" ", "").trim())
+        }
+
+        val tvStockLabel = TextView(safeContext).apply {
+            text = "Jumlah Stok Tersedia:"
+            setTextColor(ContextCompat.getColor(safeContext, R.color.guppy_text_black))
+            typeface = androidx.core.content.res.ResourcesCompat.getFont(safeContext, R.font.inter_bold)
+            setPadding(0, 30, 0, 0)
+        }
+        val etStock = android.widget.EditText(safeContext).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            hint = "misal: 10"
+            setText(product.sold)
+        }
+
+        layout.addView(tvPriceLabel)
+        layout.addView(etPrice)
+        layout.addView(tvStockLabel)
+        layout.addView(etStock)
+
+        androidx.appcompat.app.AlertDialog.Builder(safeContext)
+            .setTitle("Kelola Varian ${product.title}")
+            .setView(layout)
+            .setPositiveButton("Simpan Perubahan") { _, _ ->
+                val newPriceInput = etPrice.text.toString().trim()
+                val newStockInput = etStock.text.toString().trim()
+
+                val parsedPrice = newPriceInput.toLongOrNull() ?: 150000L
+                val formattedPrice = "Rp ${java.text.NumberFormat.getInstance(java.util.Locale("in", "ID")).format(parsedPrice)}"
+
+                FirestoreRepository.updateProductPriceAndStock(product.id, formattedPrice, newStockInput) { success ->
+                    if (success) {
+                        Toast.makeText(safeContext, "Stok & Harga ${product.title} Berhasil Diperbarui!", Toast.LENGTH_SHORT).show()
+                        loadUserProducts()
+                    }
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
     }
 
     private fun setupProfileOrders(view: View) {

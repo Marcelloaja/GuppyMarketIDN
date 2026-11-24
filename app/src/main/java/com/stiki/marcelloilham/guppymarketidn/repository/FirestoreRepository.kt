@@ -163,6 +163,26 @@ object FirestoreRepository {
             }
     }
 
+    // DELETE PRODUCT
+    fun deleteProduct(productId: String, onComplete: (Boolean) -> Unit) {
+        db.collection("products").document(productId).delete()
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    // UPDATE PRODUCT PRICE AND STOCK
+    fun updateProductPriceAndStock(productId: String, newPrice: String, newStock: String, onComplete: (Boolean) -> Unit) {
+        db.collection("products").document(productId)
+            .update(
+                mapOf(
+                    "price" to newPrice,
+                    "sold" to newStock
+                )
+            )
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
+    }
+
     // CREATE NEW AUCTION
     fun createAuction(auction: AuctionModel, onComplete: (Boolean) -> Unit) {
         val docRef = db.collection("auctions").document()

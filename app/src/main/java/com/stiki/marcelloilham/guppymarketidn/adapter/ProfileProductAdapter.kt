@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
@@ -15,7 +14,9 @@ import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 
 class ProfileProductAdapter(
     private val context: Context,
-    private val products: List<FirestoreRepository.ProductModel>
+    private val products: List<FirestoreRepository.ProductModel>,
+    private val onManageClicked: (FirestoreRepository.ProductModel) -> Unit,
+    private val onDeleteClicked: (FirestoreRepository.ProductModel) -> Unit
 ) : RecyclerView.Adapter<ProfileProductAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -36,15 +37,15 @@ class ProfileProductAdapter(
         val item = products[position]
         holder.imgThumb.setImageResource(if (item.imageRes != 0) item.imageRes else R.drawable.bg_image_grid)
         holder.tvTitle.text = item.title
-        holder.tvStockInfo.text = "${item.unit} · Stok ${item.sold} terjual"
+        holder.tvStockInfo.text = "${item.unit} · Stok ${item.sold}"
         holder.tvPrice.text = item.price
 
         holder.btnManage.setOnClickListener {
-            Toast.makeText(context, "Membuka modul kelola stok untuk varian ${item.title}...", Toast.LENGTH_SHORT).show()
+            onManageClicked(item)
         }
 
         holder.btnDelete.setOnClickListener {
-            Toast.makeText(context, "Hapus varian ${item.title} (segera hadir)", Toast.LENGTH_SHORT).show()
+            onDeleteClicked(item)
         }
 
         holder.itemView.setOnClickListener {
