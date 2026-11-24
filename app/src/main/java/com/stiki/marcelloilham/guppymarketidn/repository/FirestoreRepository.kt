@@ -12,6 +12,7 @@ object FirestoreRepository {
 
     data class ProductModel(
         val id: String = "",
+        val sellerId: String = "",
         val title: String = "",
         val seller: String = "",
         val price: String = "",
@@ -131,6 +132,34 @@ object FirestoreRepository {
             }
             .addOnFailureListener {
                 onResult(emptyList())
+            }
+    }
+
+    // FETCH PRODUCTS CREATED BY SPECIFIC USER
+    fun fetchUserProducts(userId: String, onResult: (List<ProductModel>) -> Unit) {
+        db.collection("products")
+            .whereEqualTo("sellerId", userId)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val list = snapshot.toObjects(ProductModel::class.java)
+                onResult(list)
+            }
+            .addOnFailureListener {
+                onResult(emptyList())
+            }
+    }
+
+    // CREATE NEW PRODUCT
+    fun createProduct(product: ProductModel, onComplete: (Boolean) -> Unit) {
+        val docRef = db.collection("products").document()
+        val finalProduct = product.copy(id = docRef.id)
+
+        docRef.set(finalProduct)
+            .addOnSuccessListener {
+                onComplete(true)
+            }
+            .addOnFailureListener {
+                onComplete(false)
             }
     }
 

@@ -81,6 +81,12 @@ class Profile : Fragment() {
             startActivity(intent)
         }
 
+        val btnAddProductProfile = view.findViewById<View>(R.id.btnAddProductProfile)
+        btnAddProductProfile?.setOnClickListener {
+            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuProfile.AddProductActivity::class.java)
+            startActivity(intent)
+        }
+
         btnLogout?.setOnClickListener {
             firebaseAuth.signOut()
             Toast.makeText(requireContext(), "Berhasil keluar dari akun", Toast.LENGTH_SHORT).show()
@@ -314,7 +320,9 @@ class Profile : Fragment() {
         val tvEmptyProducts = view.findViewById<TextView>(R.id.tvEmptyProfileProducts)
         recyclerProducts?.layoutManager = LinearLayoutManager(requireContext())
 
-        FirestoreRepository.fetchProducts { products ->
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+
+        FirestoreRepository.fetchUserProducts(currentUserId) { products ->
             if (isAdded && recyclerProducts != null) {
                 if (products.isEmpty()) {
                     recyclerProducts.visibility = View.GONE
