@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -76,9 +77,41 @@ class DetailFarmActivity : AppCompatActivity() {
         initTabViews()
         setupTabClickListeners()
         setupFarmProductsRecyclerView()
+        setupFollowAndShareButtons()
 
         // Select Varian Tab by Default
         selectTab(0)
+    }
+
+    private var isFollowingFarm: Boolean = false
+
+    private fun setupFollowAndShareButtons() {
+        val btnFollow = findViewById<TextView>(R.id.btnFollowFarm)
+        val btnShare = findViewById<TextView>(R.id.btnShareFarm)
+
+        btnFollow?.setOnClickListener {
+            isFollowingFarm = !isFollowingFarm
+            if (isFollowingFarm) {
+                btnFollow.text = "Mengikuti ✓"
+                btnFollow.setBackgroundResource(R.drawable.bg_chip_selected)
+                btnFollow.setTextColor(ContextCompat.getColor(this, R.color.guppy_primary))
+                Toast.makeText(this, "Berhasil mengikuti Jakarta Guppy House!", Toast.LENGTH_SHORT).show()
+            } else {
+                btnFollow.text = "+ Ikuti Farm"
+                btnFollow.setBackgroundResource(R.drawable.bg_btn_primary)
+                btnFollow.setTextColor(ContextCompat.getColor(this, R.color.white))
+                Toast.makeText(this, "Batal mengikuti Jakarta Guppy House", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnShare?.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "Jakarta Guppy House - Farm Guppy Terpercaya")
+                putExtra(Intent.EXTRA_TEXT, "Kunjungi profil Jakarta Guppy House di GuppyMarket: Koleksi guppy kontes dan indukan berkualitas!")
+            }
+            startActivity(Intent.createChooser(shareIntent, "Bagikan Farm via"))
+        }
     }
 
     private fun initTabViews() {
