@@ -241,7 +241,8 @@ object FirestoreRepository {
         colRef.get()
             .addOnSuccessListener { snapshot ->
                 val list = snapshot.toObjects(AddressModel::class.java)
-                onResult(list)
+                val realList = list.filterNot { it.id == "addr1" || it.id == "addr2" }
+                onResult(realList)
             }
             .addOnFailureListener {
                 onResult(emptyList())
