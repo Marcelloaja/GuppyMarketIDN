@@ -168,6 +168,19 @@ class AccountDetailActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        switchMainAccount.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked != isMain) {
+                isMain = isChecked
+                if (isMain) {
+                    tvUtamaBadge.visibility = View.VISIBLE
+                    updateMainPaymentInFirestore()
+                    Toast.makeText(this, "'$providerName' dijadikan metode utama!", Toast.LENGTH_SHORT).show()
+                } else {
+                    tvUtamaBadge.visibility = View.GONE
+                }
+            }
+        }
+
         val btnDownload = findViewById<View>(R.id.btnDownloadQris)
         btnDownload?.setOnClickListener {
             Toast.makeText(this, "Foto Barcode QRIS disalin ke folder Unduhan!", Toast.LENGTH_SHORT).show()
@@ -200,6 +213,16 @@ class AccountDetailActivity : AppCompatActivity() {
 
         val btnSave = findViewById<TextView>(R.id.btnSaveAccountDetails)
         btnSave?.setOnClickListener { saveChangesToFirestore() }
+    }
+
+    private fun updateMainPaymentInFirestore() {
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+        FirestoreRepository.fetchUserPaymentMethods(currentUserId) { list ->
+            val updated = list.map {
+                if (it.id == methodId) it.copy(isMain = true) else it.copy(isMain = false)
+            }
+            FirestoreRepository.updateAllPaymentMethods(currentUserId, updated) {}
+        }
     }
 
     private fun showDeleteConfirmDialog() {

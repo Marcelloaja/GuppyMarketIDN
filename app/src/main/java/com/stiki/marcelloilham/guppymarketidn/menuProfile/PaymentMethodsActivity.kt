@@ -201,11 +201,21 @@ class PaymentMethodsActivity : AppCompatActivity() {
         }.sortedByDescending { it.isMain }
 
         realPaymentMethodsList = updated.toMutableList()
+        paymentAdapter.updateData(realPaymentMethodsList)
 
-        FirestoreRepository.updateAllPaymentMethods(currentUserId, updated) {
-            loadRealUserPaymentMethods()
-            Toast.makeText(this, "'${selected.providerName}' dijadikan metode utama!", Toast.LENGTH_SHORT).show()
+        val mainMethod = realPaymentMethodsList.find { it.isMain }
+        val tvUtamaBadge = findViewById<TextView>(R.id.tvMainPaymentUtamaBadge)
+        if (mainMethod != null) {
+            tvMainPaymentName.text = "${mainMethod.providerName} (${mainMethod.type})"
+            val last4 = if (mainMethod.accountNumber.length >= 4) mainMethod.accountNumber.takeLast(4) else mainMethod.accountNumber
+            tvMainPaymentAccNumber.text = "•••• $last4 (${mainMethod.accountOwner})"
+            tvWithdrawalAccountName.text = "${mainMethod.providerName} a.n. ${mainMethod.accountOwner}"
+            tvUtamaBadge?.visibility = View.VISIBLE
         }
+
+        Toast.makeText(this, "'${selected.providerName}' berhasil dijadikan metode utama!", Toast.LENGTH_SHORT).show()
+
+        FirestoreRepository.updateAllPaymentMethods(currentUserId, updated) {}
     }
 
     private fun updatePaymentEmptyState() {
