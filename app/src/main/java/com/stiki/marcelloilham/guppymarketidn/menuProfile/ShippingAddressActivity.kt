@@ -1,5 +1,6 @@
 package com.stiki.marcelloilham.guppymarketidn.menuProfile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -95,7 +96,17 @@ class ShippingAddressActivity : AppCompatActivity() {
                     setDefaultAddress(addr)
                 },
                 onEditClicked = { addr ->
-                    showAddressFormDialog(addr)
+                    val intent = Intent(this, AddAddressActivity::class.java).apply {
+                        putExtra("EXTRA_IS_EDIT", true)
+                        putExtra("EXTRA_ADDRESS_ID", addr.id)
+                        putExtra("EXTRA_ADDRESS_LABEL", addr.label)
+                        putExtra("EXTRA_RECIPIENT_NAME", addr.recipientName)
+                        putExtra("EXTRA_PHONE_NUMBER", addr.phone)
+                        putExtra("EXTRA_FULL_ADDRESS", addr.fullAddress)
+                        putExtra("EXTRA_IS_DEFAULT", addr.isDefault)
+                        putExtra("EXTRA_NOTES", addr.notesForCourier)
+                    }
+                    startActivity(intent)
                 },
                 onDeleteClicked = { addr ->
                     deleteAddress(addr)

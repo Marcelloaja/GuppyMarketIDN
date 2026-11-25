@@ -49,6 +49,8 @@ class AddAddressActivity : AppCompatActivity() {
     private lateinit var switchSetDefault: SwitchMaterial
 
     private var selectedLabel: String = "Rumah"
+    private var isEditMode = false
+    private var existingAddressId: String? = null
     private val firebaseAuth = FirebaseAuth.getInstance()
     private lateinit var locationPermissionLauncher: ActivityResultLauncher<Array<String>>
 
@@ -78,7 +80,61 @@ class AddAddressActivity : AppCompatActivity() {
         initOpenStreetMap()
         setupListeners()
         loadDefaultProfileName()
+        checkEditModeIntent()
         requestLocationPermission()
+    }
+
+    private fun checkEditModeIntent() {
+        isEditMode = intent.getBooleanExtra("EXTRA_IS_EDIT", false)
+        if (isEditMode) {
+            existingAddressId = intent.getStringExtra("EXTRA_ADDRESS_ID")
+            val label = intent.getStringExtra("EXTRA_ADDRESS_LABEL") ?: "Rumah"
+            val name = intent.getStringExtra("EXTRA_RECIPIENT_NAME") ?: ""
+            val phone = intent.getStringExtra("EXTRA_PHONE_NUMBER") ?: ""
+            val addressText = intent.getStringExtra("EXTRA_FULL_ADDRESS") ?: ""
+            val isDefault = intent.getBooleanExtra("EXTRA_IS_DEFAULT", false)
+            val notes = intent.getStringExtra("EXTRA_NOTES") ?: ""
+
+            // Update Header & Button Titles
+            val tvHeaderTitle = findViewById<TextView>(R.id.tvAddAddressHeaderTitle)
+            tvHeaderTitle?.text = "Ubah Alamat"
+
+            val btnSave = findViewById<TextView>(R.id.btnSaveAddressBottom)
+            btnSave?.text = "Simpan Perubahan"
+
+            // Pre-fill fields
+            if (name.isNotEmpty()) etRecipientName.setText(name)
+            val cleanPhone = phone.replace("+62", "").replace("-", "").replace(" ", "").trim()
+            if (cleanPhone.isNotEmpty()) etPhoneNumber.setText(cleanPhone)
+            if (addressText.isNotEmpty()) etDetailAddress.setText(addressText)
+            if (notes.isNotEmpty()) etLandmarkNotes.setText(notes)
+            switchSetDefault.isChecked = isDefault
+
+            selectChipByLabel(label)
+
+            // Geocode address
+            if (addressText.isNotEmpty()) {
+                performMapSearch(addressText)
+            }
+        }
+    }
+
+    private fun selectChipByLabel(targetLabel: String) {
+        val labelChips = listOf(chipRumah, chipKantor, chipGudang)
+        labelChips.forEach { chip ->
+            if (chip.text.toString().equals(targetLabel, ignoreCase = true)) {
+                chip.setBackgroundResource(R.drawable.bg_chip_selected)
+                chip.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#124332"))
+                chip.setTextColor(ContextCompat.getColor(this, R.color.white))
+                chip.typeface = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.inter_bold)
+                selectedLabel = chip.text.toString()
+            } else {
+                chip.setBackgroundResource(R.drawable.bg_btn_outline)
+                chip.backgroundTintList = null
+                chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
+                chip.typeface = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.inter_medium)
+            }
+        }
     }
 
     private fun initLocationPermissionLauncher() {
@@ -390,25 +446,26 @@ class AddAddressActivity : AppCompatActivity() {
 
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
         val newAddress = FirestoreRepository.AddressModel(
-            id = "addr_${System.currentTimeMillis()}",
+            id = existingAddressId ?: "addr_${System.currentTimeMillis()}",
             label = selectedLabel,
             recipientName = recipientName,
             phone = phoneFormatted,
-            fullAddress = if (landmarkNotes.isNotEmpty()) "$fullAddress (Patokan: $landmarkNotes)" else fullAddress,
+            fullAddress = fullAddress,
             isDefault = isDefaultAddr,
             notesForCourier = landmarkNotes
         )
 
         val btnSave = findViewById<TextView>(R.id.btnSaveAddressBottom)
         btnSave?.isEnabled = false
-        btnSave?.text = "Menyimpan Alamat..."
+        btnSave?.text = if (isEditMode) "Menyimpan Perubahan..." else "Menyimpan Alamat..."
 
         FirestoreRepository.addUserAddress(currentUserId, newAddress) { success ->
             btnSave?.isEnabled = true
-            btnSave?.text = "Simpan Alamat"
+            btnSave?.text = if (isEditMode) "Simpan Perubahan" else "Simpan Alamat"
 
             if (success) {
-                Toast.makeText(this, "Alamat '$selectedLabel' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+                val successMsg = if (isEditMode) "Alamat '$selectedLabel' berhasil diperbarui!" else "Alamat '$selectedLabel' berhasil ditambahkan!"
+                Toast.makeText(this, successMsg, Toast.LENGTH_SHORT).show()
                 finish()
             } else {
                 Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
