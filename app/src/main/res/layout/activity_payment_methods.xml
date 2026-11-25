@@ -137,7 +137,7 @@
                                 android:id="@+id/tvMainPaymentName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="BCA Virtual Account"
+                                android:text="Belum Ada Metode Utama"
                                 android:textColor="@color/guppy_text_black"
                                 android:fontFamily="@font/inter_bold"
                                 android:textSize="14.5sp"/>
@@ -161,7 +161,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="•••• 4821"
+                            android:text="Pilih atau tambah metode pembayaran"
                             android:textColor="@color/guppy_text_gray"
                             android:fontFamily="@font/inter_regular"
                             android:textSize="12.5sp"/>
@@ -175,204 +175,36 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- SECTION 2: REKENING BANK CARD -->
+            <!-- SECTION 2: METODE PEMBAYARAN TERSIMPAN -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="REKENING BANK"
+                android:text="METODE PEMBAYARAN TERSIMPAN"
                 android:textColor="@color/guppy_text_gray"
                 android:fontFamily="@font/inter_bold"
                 android:textSize="11.5sp"
                 android:letterSpacing="0.05"/>
 
-            <com.google.android.material.card.MaterialCardView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerPaymentMethods"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/white"
-                app:strokeColor="#E2E8F0"
-                app:strokeWidth="1dp">
+                android:nestedScrollingEnabled="false"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- Bank BCA -->
-                    <LinearLayout
-                        android:id="@+id/rowBankBCA"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:background="@drawable/bg_circle_image"
-                            android:backgroundTint="#E0F2F1"
-                            android:src="@drawable/ic_verified_badge"
-                            app:tint="@color/guppy_primary"
-                            android:padding="9dp"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="BCA"
-                                android:textColor="@color/guppy_text_black"
-                                android:fontFamily="@font/inter_bold"
-                                android:textSize="14.5sp"/>
-
-                            <TextView
-                                android:id="@+id/tvBankBCANumber"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="•••• 4821 (Utama)"
-                                android:textColor="@color/guppy_text_gray"
-                                android:fontFamily="@font/inter_regular"
-                                android:textSize="12sp"/>
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/guppy_text_gray"/>
-                    </LinearLayout>
-
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
-
-                    <!-- Bank BNI -->
-                    <LinearLayout
-                        android:id="@+id/rowBankBNI"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:background="@drawable/bg_circle_image"
-                            android:backgroundTint="#E0F2F1"
-                            android:src="@drawable/ic_verified_badge"
-                            app:tint="@color/guppy_primary"
-                            android:padding="9dp"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="BNI"
-                                android:textColor="@color/guppy_text_black"
-                                android:fontFamily="@font/inter_bold"
-                                android:textSize="14.5sp"/>
-
-                            <TextView
-                                android:id="@+id/tvBankBNINumber"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="•••• 7730"
-                                android:textColor="@color/guppy_text_gray"
-                                android:fontFamily="@font/inter_regular"
-                                android:textSize="12sp"/>
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/guppy_text_gray"/>
-                    </LinearLayout>
-
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
-
-                    <!-- Bank Mandiri -->
-                    <LinearLayout
-                        android:id="@+id/rowBankMandiri"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:background="@drawable/bg_circle_image"
-                            android:backgroundTint="#F5F5F5"
-                            android:src="@drawable/ic_verified_badge"
-                            app:tint="@color/guppy_text_gray"
-                            android:padding="9dp"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Mandiri"
-                                android:textColor="@color/guppy_text_black"
-                                android:fontFamily="@font/inter_bold"
-                                android:textSize="14.5sp"/>
-
-                            <TextView
-                                android:id="@+id/tvBankMandiriStatus"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Belum aktif"
-                                android:textColor="@color/guppy_text_gray"
-                                android:fontFamily="@font/inter_regular"
-                                android:textSize="12sp"/>
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/btnActivateMandiri"
-                            android:layout_width="wrap_content"
-                            android:layout_height="32dp"
-                            android:background="@drawable/bg_chip_selected"
-                            android:backgroundTint="#E0F2F1"
-                            android:text="Aktifkan"
-                            android:textColor="@color/guppy_primary"
-                            android:fontFamily="@font/inter_bold"
-                            android:textSize="12sp"
-                            android:gravity="center"
-                            android:paddingHorizontal="14dp"
-                            android:clickable="true"
-                            android:focusable="true"/>
-                    </LinearLayout>
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/tvEmptyPaymentMethods"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="Belum ada metode pembayaran tersimpan. Ketuk '+ Tambah metode pembayaran' untuk menambahkan."
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="13sp"
+                android:visibility="gone"/>
 
             <!-- SECTION 3: E-WALLET & QRIS CARD -->
             <TextView
@@ -597,7 +429,7 @@
                             android:id="@+id/tvWithdrawalAccountName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="BCA a.n. Marcello"
+                            android:text="Belum Ada Rekening Pencairan"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="14.5sp"/>

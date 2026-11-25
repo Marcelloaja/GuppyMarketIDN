@@ -94,6 +94,16 @@ object FirestoreRepository {
         val withdrawalAccount: String = ""
     )
 
+    data class PaymentMethodModel(
+        val id: String = "",
+        val type: String = "Bank", // "Bank" or "E-Wallet"
+        val providerName: String = "BCA",
+        val accountNumber: String = "",
+        val accountOwner: String = "",
+        @field:JvmField
+        val isMain: Boolean = false
+    )
+
     data class ChatMessageModel(
         val id: String = "",
         val senderId: String = "",
@@ -325,6 +335,64 @@ object FirestoreRepository {
         val currentUid = auth.currentUser?.uid ?: userId
         db.collection("user").document(currentUid).collection("settings").document("payments")
             .set(settings)
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    // FETCH REAL USER PAYMENT METHODS
+    fun fetchUserPaymentMethods(userId: String, onResult: (List<PaymentMethodModel>) -> Unit) {
+        val currentUid = auth.currentUser?.uid ?: userId
+        db.collection("user").document(currentUid).collection("payment_methods")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val list = snapshot.toObjects(PaymentMethodModel::class.java)
+                onResult(list)
+            }
+            .addOnFailureListener {
+                onResult(emptyList())
+            }
+    }
+
+    // SAVE OR UPDATE REAL PAYMENT METHOD
+    fun saveUserPaymentMethod(userId: String, method: PaymentMethodModel, onComplete: (Boolean) -> Unit) {
+        val currentUid = auth.currentUser?.uid ?: userId
+        val docRef = if (method.id.isNotEmpty()) {
+            db.collection("user").document(currentUid).collection("payment_methods").document(method.id)
+        } else {
+            db.collection("user").document(currentUid).collection("payment_methods").document()
+        }
+        val finalItem = if (method.id.isEmpty()) method.copy(id = docRef.id) else method
+
+        docRef.set(finalItem)
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    // UPDATE ALL PAYMENT METHODS IN BATCH
+    fun updateAllPaymentMethods(userId: String, methods: List<PaymentMethodModel>, onComplete: (Boolean) -> Unit) {
+        val currentUid = auth.currentUser?.uid ?: userId
+        val batch = db.batch()
+
+        methods.forEach { item ->
+            val docRef = if (item.id.isNotEmpty()) {
+                db.collection("user").document(currentUid).collection("payment_methods").document(item.id)
+            } else {
+                db.collection("user").document(currentUid).collection("payment_methods").document()
+            }
+            val finalItem = if (item.id.isEmpty()) item.copy(id = docRef.id) else item
+            batch.set(docRef, finalItem)
+        }
+
+        batch.commit()
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    // DELETE REAL PAYMENT METHOD
+    fun deleteUserPaymentMethod(userId: String, methodId: String, onComplete: (Boolean) -> Unit) {
+        val currentUid = auth.currentUser?.uid ?: userId
+        db.collection("user").document(currentUid).collection("payment_methods").document(methodId)
+            .delete()
             .addOnSuccessListener { onComplete(true) }
             .addOnFailureListener { onComplete(false) }
     }

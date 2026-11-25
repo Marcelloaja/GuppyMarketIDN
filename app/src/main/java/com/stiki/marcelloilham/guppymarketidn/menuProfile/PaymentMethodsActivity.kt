@@ -13,9 +13,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.stiki.marcelloilham.guppymarketidn.R
+import com.stiki.marcelloilham.guppymarketidn.adapter.PaymentMethodAdapter
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 
 class PaymentMethodsActivity : AppCompatActivity() {
@@ -23,10 +26,9 @@ class PaymentMethodsActivity : AppCompatActivity() {
     private lateinit var tvMainPaymentName: TextView
     private lateinit var tvMainPaymentAccNumber: TextView
 
-    private lateinit var tvBankBCANumber: TextView
-    private lateinit var tvBankBNINumber: TextView
-    private lateinit var tvBankMandiriStatus: TextView
-    private lateinit var btnActivateMandiri: TextView
+    private lateinit var recyclerPaymentMethods: RecyclerView
+    private lateinit var tvEmptyPaymentMethods: TextView
+    private lateinit var paymentAdapter: PaymentMethodAdapter
 
     private lateinit var switchGoPay: SwitchMaterial
     private lateinit var switchOVO: SwitchMaterial
@@ -38,6 +40,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private var currentModel = FirestoreRepository.PaymentSettingsModel()
+    private var realPaymentMethodsList: MutableList<FirestoreRepository.PaymentMethodModel> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +62,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
         initViews()
         setupListeners()
-        loadPaymentSettingsFromFirestore()
+        loadRealUserPaymentMethods()
         loadActiveUserBalance()
     }
 
@@ -67,10 +70,9 @@ class PaymentMethodsActivity : AppCompatActivity() {
         tvMainPaymentName = findViewById(R.id.tvMainPaymentName)
         tvMainPaymentAccNumber = findViewById(R.id.tvMainPaymentAccNumber)
 
-        tvBankBCANumber = findViewById(R.id.tvBankBCANumber)
-        tvBankBNINumber = findViewById(R.id.tvBankBNINumber)
-        tvBankMandiriStatus = findViewById(R.id.tvBankMandiriStatus)
-        btnActivateMandiri = findViewById(R.id.btnActivateMandiri)
+        recyclerPaymentMethods = findViewById(R.id.recyclerPaymentMethods)
+        tvEmptyPaymentMethods = findViewById(R.id.tvEmptyPaymentMethods)
+        recyclerPaymentMethods.layoutManager = LinearLayoutManager(this)
 
         switchGoPay = findViewById(R.id.switchGoPay)
         switchOVO = findViewById(R.id.switchOVO)
@@ -85,16 +87,6 @@ class PaymentMethodsActivity : AppCompatActivity() {
         val cardMain = findViewById<View>(R.id.cardMainPaymentMethod)
         cardMain?.setOnClickListener { showMainPaymentChooserDialog() }
 
-        val rowBCA = findViewById<View>(R.id.rowBankBCA)
-        rowBCA?.setOnClickListener { showEditBankDialog("BCA", currentModel.bcaAccountNumber) }
-
-        val rowBNI = findViewById<View>(R.id.rowBankBNI)
-        rowBNI?.setOnClickListener { showEditBankDialog("BNI", currentModel.bniAccountNumber) }
-
-        btnActivateMandiri.setOnClickListener {
-            showEditBankDialog("Mandiri", "")
-        }
-
         val btnAddPayment = findViewById<View>(R.id.btnAddNewPaymentMethod)
         btnAddPayment?.setOnClickListener { showAddPaymentBottomSheet() }
 
@@ -102,61 +94,65 @@ class PaymentMethodsActivity : AppCompatActivity() {
         btnSave?.setOnClickListener { saveSettingsToFirestore() }
     }
 
-    private fun loadPaymentSettingsFromFirestore() {
+    private fun loadRealUserPaymentMethods() {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-        FirestoreRepository.fetchPaymentSettings(currentUserId) { model ->
-            currentModel = model
+        FirestoreRepository.fetchUserPaymentMethods(currentUserId) { list ->
+            realPaymentMethodsList = list.distinctBy { it.id }.toMutableList()
 
-            val mainLower = model.mainMethod.lowercase()
+            val mainMethod = realPaymentMethodsList.find { it.isMain } ?: realPaymentMethodsList.firstOrNull()
 
-            if (model.mainMethod.isNotEmpty() && model.mainMethod != "Belum Diatur") {
-                tvMainPaymentName.text = model.mainMethod
-                val mainAccNum = when {
-                    mainLower.contains("bca") -> model.bcaAccountNumber
-                    mainLower.contains("bni") -> model.bniAccountNumber
-                    else -> ""
-                }
-                tvMainPaymentAccNumber.text = if (mainAccNum.isNotEmpty()) "•••• ${mainAccNum.takeLast(4)}" else "Metode pembayaran aktif"
+            if (mainMethod != null) {
+                tvMainPaymentName.text = "${mainMethod.providerName} (${mainMethod.type})"
+                val last4 = if (mainMethod.accountNumber.length >= 4) mainMethod.accountNumber.takeLast(4) else mainMethod.accountNumber
+                tvMainPaymentAccNumber.text = "•••• $last4 (${mainMethod.accountOwner})"
+                tvWithdrawalAccountName.text = "${mainMethod.providerName} a.n. ${mainMethod.accountOwner}"
             } else {
                 tvMainPaymentName.text = "Belum Ada Metode Utama"
                 tvMainPaymentAccNumber.text = "Pilih atau tambah metode pembayaran di bawah"
-            }
-
-            tvBankBCANumber.text = if (model.bcaAccountNumber.isNotEmpty()) {
-                val suffix = if (mainLower.contains("bca")) " (Utama)" else ""
-                "•••• ${model.bcaAccountNumber.takeLast(4)}$suffix"
-            } else {
-                "Belum diatur"
-            }
-
-            tvBankBNINumber.text = if (model.bniAccountNumber.isNotEmpty()) {
-                val suffix = if (mainLower.contains("bni")) " (Utama)" else ""
-                "•••• ${model.bniAccountNumber.takeLast(4)}$suffix"
-            } else {
-                "Belum diatur"
-            }
-
-            if (model.mandiriActive) {
-                val isMandiriMain = mainLower.contains("mandiri")
-                tvBankMandiriStatus.text = if (isMandiriMain) "Terhubung (Utama)" else "Terhubung"
-                btnActivateMandiri.text = "Kelola"
-            } else {
-                tvBankMandiriStatus.text = "Belum aktif"
-                btnActivateMandiri.text = "Aktifkan"
-            }
-
-            switchGoPay.isChecked = model.goPayEnabled
-            switchOVO.isChecked = model.ovoEnabled
-            switchDANA.isChecked = model.danaEnabled
-            switchQRIS.isChecked = model.qrisEnabled
-
-            if (model.withdrawalAccount.isNotEmpty()) {
-                tvWithdrawalAccountName.text = model.withdrawalAccount
-            } else if (model.bcaAccountNumber.isNotEmpty()) {
-                tvWithdrawalAccountName.text = "BCA •••• ${model.bcaAccountNumber.takeLast(4)}"
-            } else {
                 tvWithdrawalAccountName.text = "Belum Ada Rekening Pencairan"
             }
+
+            if (realPaymentMethodsList.isEmpty()) {
+                recyclerPaymentMethods.visibility = View.GONE
+                tvEmptyPaymentMethods.visibility = View.VISIBLE
+            } else {
+                recyclerPaymentMethods.visibility = View.VISIBLE
+                tvEmptyPaymentMethods.visibility = View.GONE
+            }
+
+            paymentAdapter = PaymentMethodAdapter(
+                context = this,
+                methodList = realPaymentMethodsList,
+                onSetMainClicked = { selected ->
+                    setMainPaymentMethod(selected)
+                },
+                onDeleteClicked = { selected ->
+                    deletePaymentMethod(selected)
+                }
+            )
+            recyclerPaymentMethods.adapter = paymentAdapter
+        }
+    }
+
+    private fun setMainPaymentMethod(selected: FirestoreRepository.PaymentMethodModel) {
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+        val updated = realPaymentMethodsList.map {
+            it.copy(isMain = (it.id == selected.id))
+        }.sortedByDescending { it.isMain }
+
+        realPaymentMethodsList = updated.toMutableList()
+
+        FirestoreRepository.updateAllPaymentMethods(currentUserId, updated) {
+            loadRealUserPaymentMethods()
+            Toast.makeText(this, "'${selected.providerName}' dijadikan metode utama!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun deletePaymentMethod(selected: FirestoreRepository.PaymentMethodModel) {
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+        FirestoreRepository.deleteUserPaymentMethod(currentUserId, selected.id) { _ ->
+            Toast.makeText(this, "Metode '${selected.providerName}' berhasil dihapus", Toast.LENGTH_SHORT).show()
+            loadRealUserPaymentMethods()
         }
     }
 
@@ -174,58 +170,20 @@ class PaymentMethodsActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun showMainPaymentChooserDialog() {
-        val options = arrayOf("BCA Virtual Account", "BNI Virtual Account", "Mandiri Virtual Account", "GoPay / QRIS")
+        if (realPaymentMethodsList.isEmpty()) {
+            Toast.makeText(this, "Tambahkan metode pembayaran terlebih dahulu", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val options = realPaymentMethodsList.map { "${it.providerName} (${it.accountNumber.takeLast(4)})" }.toTypedArray()
         AlertDialog.Builder(this)
             .setTitle("Pilih Metode Utama")
             .setItems(options) { _, which ->
-                val selectedName = options[which]
-                currentModel = currentModel.copy(mainMethod = selectedName)
-                tvMainPaymentName.text = selectedName
-
-                val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-                FirestoreRepository.savePaymentSettings(currentUserId, currentModel) {
-                    loadPaymentSettingsFromFirestore()
-                    Toast.makeText(this, "Metode utama diubah menjadi '$selectedName'!", Toast.LENGTH_SHORT).show()
-                }
+                val selected = realPaymentMethodsList[which]
+                setMainPaymentMethod(selected)
             }
-            .show()
-    }
-
-    private fun showEditBankDialog(bankName: String, currentAcc: String) {
-        val layout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(50, 30, 50, 10)
-        }
-
-        val etAccNumber = EditText(this).apply {
-            hint = "Nomor Rekening $bankName"
-            inputType = android.text.InputType.TYPE_CLASS_NUMBER
-            setText(currentAcc)
-        }
-
-        layout.addView(etAccNumber)
-
-        AlertDialog.Builder(this)
-            .setTitle("Kelola Rekening $bankName")
-            .setView(layout)
-            .setPositiveButton("Simpan") { _, _ ->
-                val newNumber = etAccNumber.text.toString().trim()
-                if (newNumber.isNotEmpty()) {
-                    currentModel = when (bankName) {
-                        "BCA" -> currentModel.copy(bcaAccountNumber = newNumber)
-                        "BNI" -> currentModel.copy(bniAccountNumber = newNumber)
-                        else -> currentModel.copy(mandiriActive = true)
-                    }
-
-                    val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-                    FirestoreRepository.savePaymentSettings(currentUserId, currentModel) {
-                        loadPaymentSettingsFromFirestore()
-                        Toast.makeText(this, "Rekening $bankName berhasil diperbarui!", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            .setNegativeButton("Batal", null)
             .show()
     }
 
@@ -312,28 +270,33 @@ class PaymentMethodsActivity : AppCompatActivity() {
             }
 
             val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+            val isMain = switchMain?.isChecked == true
 
-            currentModel = when (selectedProviderName) {
-                "BCA" -> currentModel.copy(bcaAccountNumber = number)
-                "BNI" -> currentModel.copy(bniAccountNumber = number)
-                "Mandiri" -> currentModel.copy(mandiriActive = true)
-                "GoPay" -> currentModel.copy(goPayEnabled = true)
-                "OVO" -> currentModel.copy(ovoEnabled = true)
-                "DANA" -> currentModel.copy(danaEnabled = true)
-                else -> currentModel
-            }
+            val newMethod = FirestoreRepository.PaymentMethodModel(
+                id = "pay_${System.currentTimeMillis()}",
+                type = if (selectedTypeIsBank) "Bank" else "E-Wallet",
+                providerName = selectedProviderName,
+                accountNumber = number,
+                accountOwner = owner,
+                isMain = isMain
+            )
 
-            if (switchMain?.isChecked == true) {
-                currentModel = currentModel.copy(mainMethod = "$selectedProviderName Virtual Account")
-            }
-
-            FirestoreRepository.savePaymentSettings(currentUserId, currentModel) { success ->
-                if (success) {
+            if (isMain) {
+                val updatedList = realPaymentMethodsList.map { it.copy(isMain = false) } + newMethod
+                FirestoreRepository.updateAllPaymentMethods(currentUserId, updatedList) {
                     Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
-                    loadPaymentSettingsFromFirestore()
+                    loadRealUserPaymentMethods()
                     dialog.dismiss()
-                } else {
-                    Toast.makeText(this, "Gagal menyimpan. Coba lagi.", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                FirestoreRepository.saveUserPaymentMethod(currentUserId, newMethod) { success ->
+                    if (success) {
+                        Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+                        loadRealUserPaymentMethods()
+                        dialog.dismiss()
+                    } else {
+                        Toast.makeText(this, "Gagal menyimpan. Coba lagi.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
