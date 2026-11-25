@@ -356,10 +356,12 @@
                     android:textSize="15sp"/>
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:id="@+id/ivNameValidationCheck"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:src="@drawable/ic_verified_badge"
-                    app:tint="@color/guppy_primary"/>
+                    app:tint="@color/guppy_primary"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <androidx.cardview.widget.CardView

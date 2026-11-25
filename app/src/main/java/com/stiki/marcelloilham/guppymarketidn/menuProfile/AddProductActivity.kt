@@ -221,6 +221,7 @@ class AddProductActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         setupCurrencyTextWatchers()
+        setupNameValidationWatcher()
 
         val cardVideo = findViewById<View>(R.id.cardUploadVideo)
         val cardPhoto1 = findViewById<View>(R.id.cardUploadPhoto1)
@@ -302,6 +303,33 @@ class AddProductActivity : AppCompatActivity() {
         btnPublishBottom?.setOnClickListener {
             publishProduct()
         }
+    }
+
+    private fun setupNameValidationWatcher() {
+        val ivValidationCheck = findViewById<ImageView>(R.id.ivNameValidationCheck)
+
+        etTitle.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val inputName = s?.toString()?.trim() ?: ""
+                val isValidName = inputName.length >= 5 && isSuitableProductName(inputName)
+
+                if (isValidName) {
+                    if (ivValidationCheck?.visibility != View.VISIBLE) {
+                        ivValidationCheck?.visibility = View.VISIBLE
+                        ivValidationCheck?.alpha = 0f
+                        ivValidationCheck?.animate()?.alpha(1f)?.setDuration(200)?.start()
+                    }
+                } else {
+                    ivValidationCheck?.visibility = View.GONE
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun isSuitableProductName(name: String): Boolean {
+        return name.any { it.isLetter() }
     }
 
     private fun setupCurrencyTextWatchers() {
