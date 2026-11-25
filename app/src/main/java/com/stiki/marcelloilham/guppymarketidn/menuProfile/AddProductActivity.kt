@@ -243,6 +243,31 @@ class AddProductActivity : AppCompatActivity() {
                 .show()
         }
 
+        val btnMinStock = findViewById<View>(R.id.btnMinStock)
+        val btnPlusStock = findViewById<View>(R.id.btnPlusStock)
+
+        btnMinStock?.setOnClickListener {
+            val currentVal = etStock.text.toString().trim().toIntOrNull() ?: 0
+            if (currentVal > 1) {
+                etStock.setText((currentVal - 1).toString())
+            }
+        }
+
+        btnPlusStock?.setOnClickListener {
+            val currentVal = etStock.text.toString().trim().toIntOrNull() ?: 0
+            etStock.setText((currentVal + 1).toString())
+        }
+
+        val tvDescCharCount = findViewById<TextView>(R.id.tvDescCharCount)
+        etDescription.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val len = s?.length ?: 0
+                tvDescCharCount?.text = "$len/1000"
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
         val btnPublishBottom = findViewById<TextView>(R.id.btnPublishProductBottom)
         btnPublishBottom?.setOnClickListener {
             publishProduct()
