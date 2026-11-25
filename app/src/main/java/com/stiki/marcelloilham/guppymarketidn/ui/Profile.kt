@@ -107,6 +107,7 @@ class Profile : Fragment() {
         selectTab(0)
 
         fetchUserData()
+        loadDefaultAddressSub()
         setupProfileAuctions(view)
         setupProfileProducts(view)
         setupProfileOrders(view)
@@ -118,6 +119,7 @@ class Profile : Fragment() {
             fetchUserData()
             loadUserAuctions()
             loadUserProducts()
+            loadDefaultAddressSub()
             swipeRefresh.postDelayed({
                 swipeRefresh.isRefreshing = false
             }, 1000)
@@ -128,6 +130,7 @@ class Profile : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        loadDefaultAddressSub()
         if (::recyclerProfileAuctions.isInitialized) {
             loadUserAuctions()
         }
@@ -285,6 +288,27 @@ class Profile : Fragment() {
 
         if (!savedName.isNullOrEmpty()) textName.text = savedName
         if (!savedDesc.isNullOrEmpty()) textDescription.text = savedDesc
+    }
+
+    private fun loadDefaultAddressSub() {
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+        FirestoreRepository.fetchUserAddresses(currentUserId) { addresses ->
+            if (isAdded) {
+                val tvAddrSub = view?.findViewById<TextView>(R.id.tvProfileAddressSub)
+                val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
+
+                if (defaultAddr != null) {
+                    val shortLocation = if (defaultAddr.fullAddress.contains(",")) {
+                        defaultAddr.fullAddress.split(",").takeLast(2).joinToString(",").trim()
+                    } else {
+                        defaultAddr.fullAddress
+                    }
+                    tvAddrSub?.text = "${defaultAddr.label}, $shortLocation"
+                } else {
+                    tvAddrSub?.text = "Belum ada alamat tersimpan"
+                }
+            }
+        }
     }
 
     private lateinit var recyclerProfileAuctions: RecyclerView
