@@ -61,6 +61,16 @@ object FirestoreRepository {
         val createdAt: Long = System.currentTimeMillis()
     )
 
+    data class AddressModel(
+        val id: String = "",
+        val label: String = "Rumah",
+        val recipientName: String = "Marcello Aja",
+        val phone: String = "0812-3456-7890",
+        val fullAddress: String = "Jl. Raya Cibubur No. 14, RT 03/RW 05, Bekasi Selatan, Kota Bekasi, Jawa Barat 17147",
+        val isDefault: Boolean = false,
+        val notesForCourier: String = ""
+    )
+
     data class ChatMessageModel(
         val id: String = "",
         val senderId: String = "",
@@ -220,6 +230,45 @@ object FirestoreRepository {
             .addOnFailureListener {
                 onResult(FarmProfileModel())
             }
+    }
+
+    // FETCH USER ADDRESSES
+    fun fetchUserAddresses(userId: String, onResult: (List<AddressModel>) -> Unit) {
+        db.collection("user").document(userId).collection("addresses")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val list = snapshot.toObjects(AddressModel::class.java)
+                if (list.isEmpty()) {
+                    val defaultAddressList = listOf(
+                        AddressModel("addr1", "Rumah", "Marcello Aja", "(0812-3456-7890)", "Jl. Raya Cibubur No. 14, RT 03/RW 05, Bekasi Selatan, Kota Bekasi, Jawa Barat 17147", true),
+                        AddressModel("addr2", "Gudang Ikan", "Marcello Aja", "(0812-3456-7890)", "Jl. Pahlawan Revolusi Blok C2 No. 7, Bekasi Barat, Kota Bekasi, Jawa Barat 17136", false)
+                    )
+                    onResult(defaultAddressList)
+                } else {
+                    onResult(list)
+                }
+            }
+            .addOnFailureListener {
+                onResult(emptyList())
+            }
+    }
+
+    // SAVE ADDRESS TO FIRESTORE
+    fun addUserAddress(userId: String, address: AddressModel, onComplete: (Boolean) -> Unit) {
+        val docRef = db.collection("user").document(userId).collection("addresses").document()
+        val finalAddr = address.copy(id = docRef.id)
+
+        docRef.set(finalAddr)
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    // DELETE ADDRESS FROM FIRESTORE
+    fun deleteUserAddress(userId: String, addressId: String, onComplete: (Boolean) -> Unit) {
+        db.collection("user").document(userId).collection("addresses").document(addressId)
+            .delete()
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
     }
 
     // 4. CREATE ORDER IN FIRESTORE

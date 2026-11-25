@@ -430,10 +430,8 @@ class Profile : Fragment() {
 
         val btnAddress = view.findViewById<View>(R.id.btnAddressSetting)
         btnAddress?.setOnClickListener {
-            com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogMapChoice(
-                farmName = textName.text.toString(),
-                address = "Rumah, Bekasi Selatan"
-            ).show(childFragmentManager, "BottomDialogMapChoice")
+            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuProfile.ShippingAddressActivity::class.java)
+            startActivity(intent)
         }
 
         val btnCourier = view.findViewById<View>(R.id.btnCourierSetting)
