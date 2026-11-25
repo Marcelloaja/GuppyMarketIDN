@@ -120,9 +120,8 @@ class ShippingAddressActivity : AppCompatActivity() {
         addressesList = updatedList.toMutableList()
         adapter.updateDataWithMoveAnimation(addressesList, oldIndex)
 
-        updatedList.forEach { addr ->
-            FirestoreRepository.addUserAddress(currentUserId, addr) {}
-        }
+        // Save atomically via Firestore Batch Write
+        FirestoreRepository.updateAllAddresses(currentUserId, updatedList) {}
     }
 
     private fun deleteAddress(addr: FirestoreRepository.AddressModel) {
