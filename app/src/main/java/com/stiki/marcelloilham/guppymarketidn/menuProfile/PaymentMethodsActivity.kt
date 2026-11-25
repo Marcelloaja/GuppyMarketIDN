@@ -179,6 +179,34 @@ class PaymentMethodsActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun showCustomProviderDialog(isBank: Boolean, onProvided: (String) -> Unit) {
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 30, 50, 10)
+        }
+
+        val etCustom = EditText(this).apply {
+            hint = if (isBank) "contoh: Bank Jabar Banten (BJB)" else "contoh: iSaku / AstraPay"
+            isSingleLine = true
+        }
+
+        layout.addView(etCustom)
+
+        val titleText = if (isBank) "Ketik Nama Bank Baru" else "Ketik Nama E-Wallet Baru"
+
+        AlertDialog.Builder(this)
+            .setTitle(titleText)
+            .setView(layout)
+            .setPositiveButton("Gunakan Ini") { _, _ ->
+                val typed = etCustom.text.toString().trim()
+                if (typed.isNotEmpty()) {
+                    onProvided(typed)
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
     private fun showAddPaymentBottomSheet() {
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_add_payment_method, null)
         val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
@@ -238,16 +266,23 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
         tvProvider?.setOnClickListener {
             val options = if (selectedTypeIsBank) {
-                arrayOf("BCA", "BNI", "Mandiri", "BRI", "CIMB Niaga", "Permata Bank")
+                arrayOf("BCA", "BNI", "Mandiri", "BRI", "CIMB Niaga", "Permata Bank", "Bank Syariah Indonesia (BSI)", "Bank Danamon", "Lainnya (Ketik Bank Baru)...")
             } else {
-                arrayOf("GoPay", "OVO", "DANA", "ShopeePay", "LinkAja")
+                arrayOf("GoPay", "OVO", "DANA", "ShopeePay", "LinkAja", "QRIS", "Lainnya (Ketik E-Wallet Baru)...")
             }
 
             AlertDialog.Builder(this)
                 .setTitle(if (selectedTypeIsBank) "Pilih Bank" else "Pilih E-Wallet")
                 .setItems(options) { _, which ->
-                    selectedProviderName = options[which]
-                    tvProvider.text = selectedProviderName
+                    if (which == options.lastIndex) {
+                        showCustomProviderDialog(selectedTypeIsBank) { typedName ->
+                            selectedProviderName = typedName
+                            tvProvider.text = selectedProviderName
+                        }
+                    } else {
+                        selectedProviderName = options[which]
+                        tvProvider.text = selectedProviderName
+                    }
                 }
                 .show()
         }
