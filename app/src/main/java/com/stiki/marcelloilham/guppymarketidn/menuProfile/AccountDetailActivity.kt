@@ -79,14 +79,22 @@ class AccountDetailActivity : AppCompatActivity() {
         accountOwner = intent.getStringExtra("EXTRA_OWNER_NAME") ?: "Marcello Aja"
         isMain = intent.getBooleanExtra("EXTRA_IS_MAIN", false)
 
-        methodType = if (passedType.isNotEmpty()) {
-            passedType
-        } else if (providerName.contains("QRIS", true)) {
-            "QRIS"
-        } else if (providerName.contains("GoPay", true) || providerName.contains("OVO", true) || providerName.contains("DANA", true) || providerName.contains("ShopeePay", true)) {
-            "E-Wallet"
-        } else {
-            "Bank"
+        val isQrisCheck = providerName.contains("QRIS", true) || passedType.equals("QRIS", true)
+        val isBankCheck = providerName.contains("BCA", true) ||
+                providerName.contains("BNI", true) ||
+                providerName.contains("Mandiri", true) ||
+                providerName.contains("BRI", true) ||
+                providerName.contains("CIMB", true) ||
+                providerName.contains("Permata", true) ||
+                providerName.contains("BSI", true) ||
+                providerName.contains("Danamon", true) ||
+                providerName.contains("Bank", true) ||
+                passedType.equals("Bank", true)
+
+        methodType = when {
+            isQrisCheck -> "QRIS"
+            isBankCheck -> "Bank"
+            else -> "E-Wallet"
         }
 
         updateUI()
@@ -103,13 +111,14 @@ class AccountDetailActivity : AppCompatActivity() {
         val cardBalance = findViewById<View>(R.id.cardBalanceContainer)
         val cardQris = findViewById<View>(R.id.cardQrisContainer)
 
-        val isQris = methodType.equals("QRIS", ignoreCase = true) || providerName.contains("QRIS", true)
-        val isEWallet = methodType.equals("E-Wallet", ignoreCase = true) || providerName.contains("GoPay", true) || providerName.contains("OVO", true) || providerName.contains("DANA", true) || providerName.contains("ShopeePay", true)
+        val isQris = methodType.equals("QRIS", ignoreCase = true)
+        val isBank = methodType.equals("Bank", ignoreCase = true)
+        val isEWallet = methodType.equals("E-Wallet", ignoreCase = true)
 
         if (isQris) {
             tvHeaderTitle?.text = "Detail QRIS"
             tvHeaderSub?.text = "QRIS Toko Guppy Farm"
-            tvProviderName.text = "$providerName (Scan QR)"
+            tvProviderName.text = providerName
             tvBoxLabel?.text = "NMID / BARCODE"
             imgTypeIcon?.setImageResource(R.drawable.ic_qris)
 
@@ -118,12 +127,25 @@ class AccountDetailActivity : AppCompatActivity() {
             cardEWalletInfo?.visibility = View.GONE
             cardBalance?.visibility = View.GONE
 
-            if (accountNumber.startsWith("content://") || accountNumber.startsWith("file://")) {
-                val ivBarcode = findViewById<ImageView>(R.id.ivQrisBarcodeImage)
-                try {
-                    ivBarcode?.setImageURI(android.net.Uri.parse(accountNumber))
-                    ivBarcode?.clearColorFilter()
-                } catch (_: Exception) {}
+            val ivBarcode = findViewById<ImageView>(R.id.ivQrisBarcodeImage)
+            if (ivBarcode != null) {
+                if (accountNumber.startsWith("content://") || accountNumber.startsWith("file://")) {
+                    try {
+                        contentResolver.takePersistableUriPermission(
+                            android.net.Uri.parse(accountNumber),
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        )
+                    } catch (_: Throwable) {}
+
+                    try {
+                        ivBarcode.setImageURI(android.net.Uri.parse(accountNumber))
+                        ivBarcode.clearColorFilter()
+                    } catch (_: Throwable) {
+                        ivBarcode.setImageResource(R.drawable.ic_qris)
+                    }
+                } else {
+                    ivBarcode.setImageResource(R.drawable.ic_qris)
+                }
             }
         } else if (isEWallet) {
             tvHeaderTitle?.text = "Detail E-Wallet"
