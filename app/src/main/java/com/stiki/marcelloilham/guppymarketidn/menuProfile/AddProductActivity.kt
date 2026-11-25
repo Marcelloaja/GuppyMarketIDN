@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -219,6 +220,34 @@ class AddProductActivity : AppCompatActivity() {
         }
     }
 
+    private fun showCustomStrainDialog() {
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 30, 50, 10)
+        }
+
+        val etCustom = EditText(this).apply {
+            hint = "contoh: Super Red Albino High Dorsal"
+            singleLine = true
+        }
+
+        layout.addView(etCustom)
+
+        AlertDialog.Builder(this)
+            .setTitle("Ketik Galur / Strain Baru")
+            .setView(layout)
+            .setPositiveButton("Gunakan Strain Ini") { _, _ ->
+                val typedStrain = etCustom.text.toString().trim()
+                if (typedStrain.isNotEmpty()) {
+                    selectedStrain = typedStrain
+                    tvStrain.text = selectedStrain
+                    Toast.makeText(this, "Galur '$selectedStrain' berhasil digunakan!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
     private fun setupListeners() {
         setupCurrencyTextWatchers()
         setupNameValidationWatcher()
@@ -245,13 +274,17 @@ class AddProductActivity : AppCompatActivity() {
                 .show()
         }
 
-        val strainOptions = arrayOf("Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass", "Koi", "Snakeskin")
+        val strainOptions = arrayOf("Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass", "Koi", "Snakeskin", "✨ Lainnya (Ketik Sendiri)...")
         tvStrain.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Pilih Galur Varian")
                 .setItems(strainOptions) { _, which ->
-                    selectedStrain = strainOptions[which]
-                    tvStrain.text = selectedStrain
+                    if (which == strainOptions.lastIndex) {
+                        showCustomStrainDialog()
+                    } else {
+                        selectedStrain = strainOptions[which]
+                        tvStrain.text = selectedStrain
+                    }
                 }
                 .show()
         }

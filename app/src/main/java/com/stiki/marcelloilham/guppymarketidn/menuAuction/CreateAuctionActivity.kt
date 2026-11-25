@@ -159,13 +159,17 @@ class CreateAuctionActivity : AppCompatActivity() {
         cardPhoto2?.setOnClickListener { showMediaSourceDialog(isVideo = false, slotName = "Foto 2") }
         cardPhoto3?.setOnClickListener { showMediaSourceDialog(isVideo = false, slotName = "Foto 3") }
 
-        val strainOptions = arrayOf("Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass", "Koi", "Snakeskin")
+        val strainOptions = arrayOf("Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass", "Koi", "Snakeskin", "✨ Lainnya (Ketik Sendiri)...")
         tvStrain.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Pilih Galur Varian")
                 .setItems(strainOptions) { _, which ->
-                    selectedStrain = strainOptions[which]
-                    tvStrain.text = "Galur: $selectedStrain ∨"
+                    if (which == strainOptions.lastIndex) {
+                        showCustomStrainDialog()
+                    } else {
+                        selectedStrain = strainOptions[which]
+                        tvStrain.text = "Galur: $selectedStrain"
+                    }
                 }
                 .show()
         }
@@ -222,6 +226,34 @@ class CreateAuctionActivity : AppCompatActivity() {
         addRupiahWatcher(etOpenBid)
         addRupiahWatcher(etBidIncrement)
         addRupiahWatcher(etBuyout)
+    }
+
+    private fun showCustomStrainDialog() {
+        val layout = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding(50, 30, 50, 10)
+        }
+
+        val etCustom = EditText(this).apply {
+            hint = "contoh: Super Red Albino High Dorsal"
+            isSingleLine = true
+        }
+
+        layout.addView(etCustom)
+
+        AlertDialog.Builder(this)
+            .setTitle("Ketik Galur / Strain Baru")
+            .setView(layout)
+            .setPositiveButton("Gunakan Strain Ini") { _, _ ->
+                val typedStrain = etCustom.text.toString().trim()
+                if (typedStrain.isNotEmpty()) {
+                    selectedStrain = typedStrain
+                    tvStrain.text = "Galur: $selectedStrain"
+                    Toast.makeText(this, "Galur '$selectedStrain' berhasil digunakan!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
     }
 
     private fun selectDuration(selected: TextView, hours: Int) {
