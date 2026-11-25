@@ -1,8 +1,12 @@
 package com.stiki.marcelloilham.guppymarketidn.menuProfile
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +16,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -44,6 +50,7 @@ class AddAddressActivity : AppCompatActivity() {
 
     private var selectedLabel: String = "Rumah"
     private val firebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var locationPermissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,10 +73,39 @@ class AddAddressActivity : AppCompatActivity() {
         val btnCancel = findViewById<View>(R.id.btnCancelAddress)
         btnCancel?.setOnClickListener { finish() }
 
+        initLocationPermissionLauncher()
         initViews()
         initOpenStreetMap()
         setupListeners()
         loadDefaultProfileName()
+        requestLocationPermission()
+    }
+
+    private fun initLocationPermissionLauncher() {
+        locationPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            val granted = permissions.entries.any { it.value }
+            if (granted) {
+                fetchRealGpsLocation()
+            } else {
+                useDefaultBekasiLocation()
+            }
+        }
+    }
+
+    private fun requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fetchRealGpsLocation()
+        } else {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
     }
 
     private fun initViews() {
@@ -112,7 +148,7 @@ class AddAddressActivity : AppCompatActivity() {
         // GPS Location Button
         val btnGPS = findViewById<View>(R.id.btnUseCurrentLocation)
         btnGPS?.setOnClickListener {
-            fetchRealGpsLocation()
+            requestLocationPermission()
         }
 
         // Search Map Input Listener
@@ -158,18 +194,33 @@ class AddAddressActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun fetchRealGpsLocation() {
         try {
-            val locationManager = getSystemService(LOCATION_SERVICE) as? android.location.LocationManager
-            val gpsLocation = locationManager?.getLastKnownLocation(android.location.LocationManager.GPS_PROVIDER)
-                ?: locationManager?.getLastKnownLocation(android.location.LocationManager.NETWORK_PROVIDER)
+            val locationManager = getSystemService(LOCATION_SERVICE) as? LocationManager
+            val locationListener = object : LocationListener {
+                override fun onLocationChanged(location: Location) {
+                    val lat = location.latitude
+                    val lng = location.longitude
+                    tvCoordinates.text = String.format(Locale.US, "%.4f, %.4f", lat, lng)
+                    reverseGeocodeLocation(lat, lng)
+                    try { locationManager?.removeUpdates(this) } catch (_: Exception) {}
+                }
+                @Deprecated("Deprecated in Java")
+                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+                override fun onProviderEnabled(provider: String) {}
+                override fun onProviderDisabled(provider: String) {}
+            }
 
-            if (gpsLocation != null) {
-                val lat = gpsLocation.latitude
-                val lng = gpsLocation.longitude
+            val lastKnown = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                ?: locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+
+            if (lastKnown != null) {
+                val lat = lastKnown.latitude
+                val lng = lastKnown.longitude
                 tvCoordinates.text = String.format(Locale.US, "%.4f, %.4f", lat, lng)
                 reverseGeocodeLocation(lat, lng)
-            } else {
-                useDefaultBekasiLocation()
             }
+
+            locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 10f, locationListener)
+            locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 10f, locationListener)
         } catch (_: Exception) {
             useDefaultBekasiLocation()
         }
@@ -190,6 +241,7 @@ class AddAddressActivity : AppCompatActivity() {
         webViewOsmMap = findViewById(R.id.webViewOsmMap)
         webViewOsmMap.settings.javaScriptEnabled = true
         webViewOsmMap.settings.domStorageEnabled = true
+        webViewOsmMap.settings.userAgentString = "GuppyMarketIDN/1.0 (Android; MobileApp)"
 
         webViewOsmMap.addJavascriptInterface(object {
             @android.webkit.JavascriptInterface
@@ -217,8 +269,9 @@ class AddAddressActivity : AppCompatActivity() {
                 <div id="map"></div>
                 <script>
                     var map = L.map('map', { zoomControl: false }).setView([-6.2349, 106.9924], 15);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 19
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                        maxZoom: 19,
+                        subdomains: 'abcd'
                     }).addTo(map);
 
                     var marker = L.marker([-6.2349, 106.9924], { draggable: true }).addTo(map);
