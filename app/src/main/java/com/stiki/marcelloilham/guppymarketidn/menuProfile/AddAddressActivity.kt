@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -495,12 +496,70 @@ class AddAddressActivity : AppCompatActivity() {
             btnSave?.text = if (isEditMode) "Simpan Perubahan" else "Simpan Alamat"
 
             if (success) {
-                val successMsg = if (isEditMode) "Alamat '$selectedLabel' berhasil diperbarui!" else "Alamat '$selectedLabel' berhasil ditambahkan!"
-                Toast.makeText(this, successMsg, Toast.LENGTH_SHORT).show()
-                finish()
+                showAddressSuccessDialog(newAddress)
             } else {
                 Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showAddressSuccessDialog(savedAddress: FirestoreRepository.AddressModel) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_add_address_success, null)
+
+        val tvName = dialogView.findViewById<TextView>(R.id.tvSuccessRecipientName)
+        val tvPhone = dialogView.findViewById<TextView>(R.id.tvSuccessPhone)
+        val tvFullAddr = dialogView.findViewById<TextView>(R.id.tvSuccessFullAddress)
+
+        val btnEdit = dialogView.findViewById<TextView>(R.id.btnSuccessEdit)
+        val btnDelete = dialogView.findViewById<TextView>(R.id.btnSuccessDelete)
+        val btnDone = dialogView.findViewById<TextView>(R.id.btnSuccessDone)
+        val btnAddAnother = dialogView.findViewById<TextView>(R.id.btnSuccessAddAnother)
+
+        tvName?.text = savedAddress.recipientName
+        tvPhone?.text = savedAddress.phone
+        tvFullAddr?.text = savedAddress.fullAddress
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        btnEdit?.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        btnDelete?.setOnClickListener {
+            val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+            FirestoreRepository.deleteUserAddress(currentUserId, savedAddress.id) { _ ->
+                Toast.makeText(this, "Alamat '${savedAddress.label}' dihapus", Toast.LENGTH_SHORT).show()
+                alertDialog.dismiss()
+            }
+        }
+
+        btnDone?.setOnClickListener {
+            alertDialog.dismiss()
+            finish()
+        }
+
+        btnAddAnother?.setOnClickListener {
+            alertDialog.dismiss()
+            etDetailAddress.setText("")
+            etLandmarkNotes.setText("")
+            etSearchMap.setText("")
+            isEditMode = false
+            existingAddressId = null
+
+            val tvHeaderTitle = findViewById<TextView>(R.id.tvAddAddressHeaderTitle)
+            tvHeaderTitle?.text = "Tambah Alamat Baru"
+
+            val btnSave = findViewById<TextView>(R.id.btnSaveAddressBottom)
+            btnSave?.text = "Simpan Alamat"
+
+            Toast.makeText(this, "Silakan isi alamat baru berikutnya", Toast.LENGTH_SHORT).show()
+        }
+
+        alertDialog.show()
     }
 }

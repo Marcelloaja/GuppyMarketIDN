@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/white"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Circular Green Checkmark Header -->
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_circle_image"
+            android:backgroundTint="#E8F5E9"
+            android:src="@drawable/ic_verified_badge"
+            app:tint="#00C853"
+            android:padding="16dp"/>
+
+        <!-- Title & Subtitle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Alamat Berhasil Disimpan"
+            android:textColor="@color/guppy_text_black"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="Alamat pengiriman baru sudah tersimpan dan siap dipakai untuk pesanan berikutnya."
+            android:textColor="@color/guppy_text_gray"
+            android:fontFamily="@font/inter_regular"
+            android:textSize="13sp"
+            android:lineSpacingExtra="3dp"/>
+
+        <!-- Address Preview Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F8F9FA"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_location_pin"
+                        app:tint="@color/guppy_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvSuccessRecipientName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rizky Pratama"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:id="@+id/tvSuccessPhone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="0812-3456-7890"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="12.5sp"/>
+
+                        <TextView
+                            android:id="@+id/tvSuccessFullAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Jl. Mangga Raya No. 12, Kel. Sukamaju, Kec. Cibinong, Bogor 16914"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="12sp"
+                            android:lineSpacingExtra="2dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Inner Buttons Row (Edit & Hapus) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/btnSuccessEdit"
+                        android:layout_width="100dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_btn_outline_pill_gray"
+                        android:text="Edit"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="12.5sp"
+                        android:gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/btnSuccessDelete"
+                        android:layout_width="100dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_btn_outline_pill_gray"
+                        android:text="Hapus"
+                        android:textColor="#E53935"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="12.5sp"
+                        android:gravity="center"
+                        android:layout_marginStart="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Bottom Main Action Buttons -->
+        <TextView
+            android:id="@+id/btnSuccessDone"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_chip_selected"
+            android:backgroundTint="#00C853"
+            android:text="Selesai"
+            android:textColor="@color/white"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:id="@+id/btnSuccessAddAnother"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Tambah Alamat Lain"
+            android:textColor="@color/guppy_text_black"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="14sp"
+            android:padding="6dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
