@@ -22,7 +22,7 @@
             android:layout_height="56dp"
             android:background="@drawable/bg_circle_image"
             android:backgroundTint="#FFEBEE"
-            android:src="@drawable/fi_rr_cross_small"
+            android:src="@drawable/ic_trash_delete"
             app:tint="#E53935"
             android:padding="16dp"/>
 
