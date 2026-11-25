@@ -338,12 +338,17 @@ class Profile : Fragment() {
 
     private fun loadDefaultPaymentSub() {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-        FirestoreRepository.fetchPaymentSettings(currentUserId) { model ->
+        FirestoreRepository.fetchUserPaymentMethods(currentUserId) { methods ->
             if (isAdded) {
                 val tvPaymentSub = view?.findViewById<TextView>(R.id.tvPaymentSettingSub)
-                val mainMethod = model.mainMethod
-                val last4 = model.bcaAccountNumber.takeLast(4)
-                tvPaymentSub?.text = "$mainMethod •••• $last4"
+                val mainMethod = methods.find { it.isMain } ?: methods.firstOrNull()
+
+                if (mainMethod != null) {
+                    val last4 = if (mainMethod.accountNumber.length >= 4) mainMethod.accountNumber.takeLast(4) else mainMethod.accountNumber
+                    tvPaymentSub?.text = "${mainMethod.providerName} (${mainMethod.type}) · •••• $last4"
+                } else {
+                    tvPaymentSub?.text = "Belum ada metode pembayaran"
+                }
             }
         }
     }

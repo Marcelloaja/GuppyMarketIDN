@@ -30,16 +30,10 @@ class PaymentMethodsActivity : AppCompatActivity() {
     private lateinit var tvEmptyPaymentMethods: TextView
     private lateinit var paymentAdapter: PaymentMethodAdapter
 
-    private lateinit var switchGoPay: SwitchMaterial
-    private lateinit var switchOVO: SwitchMaterial
-    private lateinit var switchDANA: SwitchMaterial
-    private lateinit var switchQRIS: SwitchMaterial
-
     private lateinit var tvWithdrawalAccountName: TextView
     private lateinit var tvWithdrawalSubtitle: TextView
 
     private val firebaseAuth = FirebaseAuth.getInstance()
-    private var currentModel = FirestoreRepository.PaymentSettingsModel()
     private var realPaymentMethodsList: MutableList<FirestoreRepository.PaymentMethodModel> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,11 +68,6 @@ class PaymentMethodsActivity : AppCompatActivity() {
         tvEmptyPaymentMethods = findViewById(R.id.tvEmptyPaymentMethods)
         recyclerPaymentMethods.layoutManager = LinearLayoutManager(this)
 
-        switchGoPay = findViewById(R.id.switchGoPay)
-        switchOVO = findViewById(R.id.switchOVO)
-        switchDANA = findViewById(R.id.switchDANA)
-        switchQRIS = findViewById(R.id.switchQRIS)
-
         tvWithdrawalAccountName = findViewById(R.id.tvWithdrawalAccountName)
         tvWithdrawalSubtitle = findViewById(R.id.tvWithdrawalSubtitle)
     }
@@ -91,7 +80,10 @@ class PaymentMethodsActivity : AppCompatActivity() {
         btnAddPayment?.setOnClickListener { showAddPaymentBottomSheet() }
 
         val btnSave = findViewById<TextView>(R.id.btnSavePaymentSettings)
-        btnSave?.setOnClickListener { saveSettingsToFirestore() }
+        btnSave?.setOnClickListener {
+            Toast.makeText(this, "Seluruh perubahan metode pembayaran telah tersinkronisasi!", Toast.LENGTH_SHORT).show()
+            finish()
+        }
     }
 
     private fun loadRealUserPaymentMethods() {
@@ -304,28 +296,5 @@ class PaymentMethodsActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun saveSettingsToFirestore() {
-        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-        val updatedModel = currentModel.copy(
-            goPayEnabled = switchGoPay.isChecked,
-            ovoEnabled = switchOVO.isChecked,
-            danaEnabled = switchDANA.isChecked,
-            qrisEnabled = switchQRIS.isChecked
-        )
 
-        val btnSave = findViewById<TextView>(R.id.btnSavePaymentSettings)
-        btnSave?.isEnabled = false
-        btnSave?.text = "Menyimpan Perubahan..."
-
-        FirestoreRepository.savePaymentSettings(currentUserId, updatedModel) { success ->
-            btnSave?.isEnabled = true
-            btnSave?.text = "Simpan Perubahan"
-            if (success) {
-                Toast.makeText(this, "Metode pembayaran berhasil diperbarui!", Toast.LENGTH_SHORT).show()
-                finish()
-            } else {
-                Toast.makeText(this, "Gagal menyimpan. Coba lagi.", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 }
