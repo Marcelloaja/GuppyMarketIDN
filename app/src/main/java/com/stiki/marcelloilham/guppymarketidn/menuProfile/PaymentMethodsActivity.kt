@@ -148,8 +148,12 @@ class PaymentMethodsActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("Pilih Metode Utama")
             .setItems(options) { _, which ->
-                currentModel = currentModel.copy(mainMethod = options[which])
-                tvMainPaymentName.text = currentModel.mainMethod
+                val selectedName = options[which]
+                currentModel = currentModel.copy(mainMethod = selectedName)
+                tvMainPaymentName.text = selectedName
+
+                val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+                FirestoreRepository.savePaymentSettings(currentUserId, currentModel) {}
             }
             .show()
     }
@@ -161,7 +165,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
         }
 
         val etAccNumber = EditText(this).apply {
-            hint = "Nomor Rekening / Virtual Account $bankName"
+            hint = "Nomor Rekening $bankName"
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
             setText(currentAcc)
         }
@@ -179,8 +183,12 @@ class PaymentMethodsActivity : AppCompatActivity() {
                         "BNI" -> currentModel.copy(bniAccountNumber = newNumber)
                         else -> currentModel.copy(mandiriActive = true)
                     }
-                    loadPaymentSettingsFromFirestore()
-                    Toast.makeText(this, "Rekening $bankName diperbarui!", Toast.LENGTH_SHORT).show()
+
+                    val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+                    FirestoreRepository.savePaymentSettings(currentUserId, currentModel) {
+                        loadPaymentSettingsFromFirestore()
+                        Toast.makeText(this, "Rekening $bankName berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
             .setNegativeButton("Batal", null)
