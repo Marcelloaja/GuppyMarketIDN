@@ -115,6 +115,7 @@ class Profile : Fragment() {
         setupProfileAuctions(view)
         setupProfileProducts(view)
         setupProfileOrders(view)
+        setupSettingsListeners(view)
 
         val swipeRefresh = view.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipeRefreshProfile)
         swipeRefresh?.setColorSchemeResources(R.color.guppy_primary)
@@ -427,6 +428,56 @@ class Profile : Fragment() {
             }
             .setNegativeButton("Batal", null)
             .show()
+    }
+
+    private fun setupSettingsListeners(view: View) {
+        val btnShare = view.findViewById<View>(R.id.btnShareProfile)
+        btnShare?.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "GuppyMarket - Profil Farm ${textName.text}")
+                putExtra(Intent.EXTRA_TEXT, "Kunjungi toko guppy ${textName.text} di GuppyMarket: Kualitas kontes & garansi ikan hidup!")
+            }
+            startActivity(Intent.createChooser(shareIntent, "Bagikan Profil Farm via"))
+        }
+
+        val btnAddress = view.findViewById<View>(R.id.btnAddressSetting)
+        btnAddress?.setOnClickListener {
+            com.stiki.marcelloilham.guppymarketidn.menuHome.BottomDialogMapChoice(
+                farmName = textName.text.toString(),
+                address = "Rumah, Bekasi Selatan"
+            ).show(childFragmentManager, "BottomDialogMapChoice")
+        }
+
+        val btnCourier = view.findViewById<View>(R.id.btnCourierSetting)
+        btnCourier?.setOnClickListener {
+            Toast.makeText(requireContext(), "Kurir aktif: J&T, JNE, SiCepat (Biteship API)", Toast.LENGTH_SHORT).show()
+        }
+
+        val btnPayment = view.findViewById<View>(R.id.btnPaymentSetting)
+        btnPayment?.setOnClickListener {
+            startActivity(Intent(requireContext(), MenuProfile::class.java))
+        }
+
+        val btnGuarantee = view.findViewById<View>(R.id.btnGuaranteeSetting)
+        btnGuarantee?.setOnClickListener {
+            Toast.makeText(requireContext(), "Jaminan Farm: Garansi sehat 24 jam, karantina 3 hari, kemasan oksigen", Toast.LENGTH_LONG).show()
+        }
+
+        val btnNotification = view.findViewById<View>(R.id.btnNotificationSetting)
+        btnNotification?.setOnClickListener {
+            Toast.makeText(requireContext(), "Notifikasi pesanan, lelang, dan pesan aktif", Toast.LENGTH_SHORT).show()
+        }
+
+        val btnSecurity = view.findViewById<View>(R.id.btnSecuritySetting)
+        btnSecurity?.setOnClickListener {
+            startActivity(Intent(requireContext(), MenuProfile::class.java))
+        }
+
+        val btnHelp = view.findViewById<View>(R.id.btnHelpSetting)
+        btnHelp?.setOnClickListener {
+            startActivity(Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuProfile.Information::class.java))
+        }
     }
 
     private fun setupProfileOrders(view: View) {
