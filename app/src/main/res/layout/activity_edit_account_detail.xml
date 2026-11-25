@@ -186,7 +186,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:layout_marginEnd="10dp"
-                                android:src="@drawable/ic_chevron_right"
+                                android:src="@drawable/ic_copy_clipboard"
                                 app:tint="@color/guppy_text_gray"
                                 android:clickable="true"
                                 android:focusable="true"/>

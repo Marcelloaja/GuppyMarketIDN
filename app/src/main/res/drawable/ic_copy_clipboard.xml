@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Back sheet (Outline stroke) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#757575"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M15,16v3c0,1.1 -0.9,2 -2,2H5c-1.1,0 -2,-0.9 -2,-2V10c0,-1.1 0.9,-2 2,-2h3"/>
+    <!-- Front sheet (Solid filled with folded top-right corner) -->
+    <path
+        android:fillColor="#757575"
+        android:pathData="M10,3h5.58c0.53,0 1.04,0.21 1.41,0.59l2.41,2.41c0.38,0.38 0.59,0.89 0.59,1.41V14c0,1.1 -0.9,2 -2,2H10c-1.1,0 -2,-0.9 -2,-2V5c0,-1.1 0.9,-2 2,-2z"/>
+</vector>
