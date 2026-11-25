@@ -633,17 +633,16 @@
                     android:paddingHorizontal="8dp"
                     android:orientation="horizontal">
 
-                    <!-- Minus Button -->
+                    <!-- Minus Button (Kiri) -->
                     <ImageView
                         android:id="@+id/btnMinStock"
                         android:layout_width="38dp"
                         android:layout_height="38dp"
                         android:background="@drawable/bg_circle_image"
                         android:backgroundTint="#E0F2F1"
-                        android:src="@drawable/fi_rr_cross_small"
-                        android:rotation="45"
+                        android:src="@drawable/ic_minus"
                         app:tint="@color/guppy_primary"
-                        android:padding="10dp"
+                        android:padding="9dp"
                         android:clickable="true"
                         android:focusable="true"/>
 
@@ -662,16 +661,16 @@
                         android:gravity="center"
                         android:inputType="number"/>
 
-                    <!-- Plus Button -->
+                    <!-- Plus Button (Kanan) -->
                     <ImageView
                         android:id="@+id/btnPlusStock"
                         android:layout_width="38dp"
                         android:layout_height="38dp"
                         android:background="@drawable/bg_circle_image"
                         android:backgroundTint="#E0F2F1"
-                        android:src="@drawable/fi_rr_cross_small"
+                        android:src="@drawable/ic_plus"
                         app:tint="@color/guppy_primary"
-                        android:padding="10dp"
+                        android:padding="9dp"
                         android:clickable="true"
                         android:focusable="true"/>
                 </LinearLayout>
