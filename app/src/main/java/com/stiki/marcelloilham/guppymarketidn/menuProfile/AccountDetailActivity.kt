@@ -110,53 +110,41 @@ class AccountDetailActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (methodId.isNotEmpty()) {
+            val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+            FirestoreRepository.fetchUserPaymentMethods(currentUserId) { list ->
+                val updated = list.find { it.id == methodId }
+                if (updated != null) {
+                    providerName = updated.providerName
+                    accountNumber = updated.accountNumber
+                    accountOwner = updated.accountOwner
+                    isMain = updated.isMain
+                    updateUI()
+                }
+            }
+        }
+    }
+
     private fun setupListeners() {
         val btnEdit = findViewById<View>(R.id.btnEditAccountDetails)
-        btnEdit?.setOnClickListener { showEditDetailsDialog() }
+        btnEdit?.setOnClickListener {
+            val intent = Intent(this, EditAccountDetailActivity::class.java).apply {
+                putExtra("EXTRA_METHOD_ID", methodId)
+                putExtra("EXTRA_PROVIDER_NAME", providerName)
+                putExtra("EXTRA_ACCOUNT_NUMBER", accountNumber)
+                putExtra("EXTRA_OWNER_NAME", accountOwner)
+                putExtra("EXTRA_IS_MAIN", isMain)
+            }
+            startActivity(intent)
+        }
 
         val btnDelete = findViewById<View>(R.id.btnDeleteAccount)
         btnDelete?.setOnClickListener { showDeleteConfirmDialog() }
 
         val btnSave = findViewById<TextView>(R.id.btnSaveAccountDetails)
         btnSave?.setOnClickListener { saveChangesToFirestore() }
-    }
-
-    private fun showEditDetailsDialog() {
-        val layout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(50, 30, 50, 10)
-        }
-
-        val etNumber = EditText(this).apply {
-            hint = "Nomor Rekening / Akun E-Wallet"
-            inputType = android.text.InputType.TYPE_CLASS_NUMBER
-            setText(accountNumber)
-        }
-
-        val etOwner = EditText(this).apply {
-            hint = "Nama Pemilik Rekening"
-            isSingleLine = true
-            setText(accountOwner)
-        }
-
-        layout.addView(etOwner)
-        layout.addView(etNumber)
-
-        AlertDialog.Builder(this)
-            .setTitle("Ubah Data $providerName")
-            .setView(layout)
-            .setPositiveButton("Simpan") { _, _ ->
-                val newNum = etNumber.text.toString().trim()
-                val newOwner = etOwner.text.toString().trim()
-                if (newNum.isNotEmpty()) {
-                    accountNumber = newNum
-                    accountOwner = if (newOwner.isNotEmpty()) newOwner else accountOwner
-                    updateUI()
-                    Toast.makeText(this, "Data $providerName diperbarui!", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .setNegativeButton("Batal", null)
-            .show()
     }
 
     private fun showDeleteConfirmDialog() {
