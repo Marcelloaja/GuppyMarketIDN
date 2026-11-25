@@ -74,11 +74,14 @@ class AccountDetailActivity : AppCompatActivity() {
     private fun readIntentData() {
         methodId = intent.getStringExtra("EXTRA_METHOD_ID") ?: ""
         providerName = intent.getStringExtra("EXTRA_PROVIDER_NAME") ?: "BCA"
+        val passedType = intent.getStringExtra("EXTRA_TYPE") ?: ""
         accountNumber = intent.getStringExtra("EXTRA_ACCOUNT_NUMBER") ?: ""
         accountOwner = intent.getStringExtra("EXTRA_OWNER_NAME") ?: "Marcello Aja"
         isMain = intent.getBooleanExtra("EXTRA_IS_MAIN", false)
 
-        methodType = if (providerName.contains("QRIS", true)) {
+        methodType = if (passedType.isNotEmpty()) {
+            passedType
+        } else if (providerName.contains("QRIS", true)) {
             "QRIS"
         } else if (providerName.contains("GoPay", true) || providerName.contains("OVO", true) || providerName.contains("DANA", true) || providerName.contains("ShopeePay", true)) {
             "E-Wallet"
@@ -90,17 +93,29 @@ class AccountDetailActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        val cardInfo = findViewById<View>(R.id.cardAccountInfoContainer)
+        val tvHeaderTitle = findViewById<TextView>(R.id.tvAccountDetailHeaderTitle)
+        val tvHeaderSub = findViewById<TextView>(R.id.tvAccountDetailHeaderSub)
+        val tvBoxLabel = findViewById<TextView>(R.id.tvDetailBoxLabel)
+        val imgTypeIcon = findViewById<ImageView>(R.id.imgDetailTypeIcon)
+
+        val cardBankInfo = findViewById<View>(R.id.cardAccountInfoContainer)
+        val cardEWalletInfo = findViewById<View>(R.id.cardEWalletInfoContainer)
         val cardBalance = findViewById<View>(R.id.cardBalanceContainer)
         val cardQris = findViewById<View>(R.id.cardQrisContainer)
 
         val isQris = methodType.equals("QRIS", ignoreCase = true) || providerName.contains("QRIS", true)
-        val isEWallet = methodType.equals("E-Wallet", ignoreCase = true) || providerName.contains("GoPay", true) || providerName.contains("OVO", true) || providerName.contains("DANA", true)
+        val isEWallet = methodType.equals("E-Wallet", ignoreCase = true) || providerName.contains("GoPay", true) || providerName.contains("OVO", true) || providerName.contains("DANA", true) || providerName.contains("ShopeePay", true)
 
         if (isQris) {
+            tvHeaderTitle?.text = "Detail QRIS"
+            tvHeaderSub?.text = "QRIS Toko Guppy Farm"
             tvProviderName.text = "$providerName (Scan QR)"
+            tvBoxLabel?.text = "NMID / BARCODE"
+            imgTypeIcon?.setImageResource(R.drawable.ic_qris)
+
             cardQris?.visibility = View.VISIBLE
-            cardInfo?.visibility = View.GONE
+            cardBankInfo?.visibility = View.GONE
+            cardEWalletInfo?.visibility = View.GONE
             cardBalance?.visibility = View.GONE
 
             if (accountNumber.startsWith("content://") || accountNumber.startsWith("file://")) {
@@ -111,14 +126,31 @@ class AccountDetailActivity : AppCompatActivity() {
                 } catch (_: Exception) {}
             }
         } else if (isEWallet) {
-            tvProviderName.text = "$providerName (E-Wallet)"
-            cardQris?.visibility = View.GONE
-            cardInfo?.visibility = View.VISIBLE
-            cardBalance?.visibility = View.VISIBLE
-        } else {
+            tvHeaderTitle?.text = "Detail E-Wallet"
+            tvHeaderSub?.text = "$providerName - Terhubung"
             tvProviderName.text = providerName
+            tvBoxLabel?.text = "NOMOR HP / ID AKUN"
+            imgTypeIcon?.setImageResource(R.drawable.ic_ewallet)
+
+            val tvEWalletOwner = findViewById<TextView>(R.id.tvEWalletOwnerName)
+            val tvEWalletPhone = findViewById<TextView>(R.id.tvEWalletPhone)
+            tvEWalletOwner?.text = accountOwner
+            tvEWalletPhone?.text = accountNumber
+
             cardQris?.visibility = View.GONE
-            cardInfo?.visibility = View.VISIBLE
+            cardBankInfo?.visibility = View.GONE
+            cardEWalletInfo?.visibility = View.VISIBLE
+            cardBalance?.visibility = View.GONE
+        } else {
+            tvHeaderTitle?.text = "Detail Rekening"
+            tvHeaderSub?.text = "Kelola rekening penerima pencairan"
+            tvProviderName.text = providerName
+            tvBoxLabel?.text = "NOMOR REKENING"
+            imgTypeIcon?.setImageResource(R.drawable.ic_payment_card)
+
+            cardQris?.visibility = View.GONE
+            cardBankInfo?.visibility = View.VISIBLE
+            cardEWalletInfo?.visibility = View.GONE
             cardBalance?.visibility = View.VISIBLE
         }
 

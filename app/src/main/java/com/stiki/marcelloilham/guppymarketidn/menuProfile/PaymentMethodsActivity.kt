@@ -177,6 +177,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
                     val intent = Intent(this, AccountDetailActivity::class.java).apply {
                         putExtra("EXTRA_METHOD_ID", selected.id)
                         putExtra("EXTRA_PROVIDER_NAME", selected.providerName)
+                        putExtra("EXTRA_TYPE", selected.type)
                         putExtra("EXTRA_ACCOUNT_NUMBER", selected.accountNumber)
                         putExtra("EXTRA_OWNER_NAME", selected.accountOwner)
                         putExtra("EXTRA_IS_MAIN", selected.isMain)
