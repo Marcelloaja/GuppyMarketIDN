@@ -239,10 +239,17 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
         btnConfirm?.setOnClickListener {
             val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-            FirestoreRepository.deleteUserPaymentMethod(currentUserId, selected.id) { _ ->
-                Toast.makeText(this, "Metode '${selected.providerName}' berhasil dihapus", Toast.LENGTH_SHORT).show()
-                loadRealUserPaymentMethods()
-                alertDialog.dismiss()
+            btnConfirm.isEnabled = false
+            FirestoreRepository.deleteUserPaymentMethod(currentUserId, selected.id) { success ->
+                runOnUiThread {
+                    alertDialog.dismiss()
+                    if (success) {
+                        Toast.makeText(this, "Metode '${selected.providerName}' berhasil dihapus!", Toast.LENGTH_SHORT).show()
+                        loadRealUserPaymentMethods()
+                    } else {
+                        Toast.makeText(this, "Gagal menghapus metode pembayaran.", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
@@ -437,6 +444,8 @@ class PaymentMethodsActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            btnSave.isEnabled = false
+
             val finalAccNumber = if (isQris) {
                 tempQrisImageUri?.toString() ?: "Barcode QRIS Terunggah"
             } else {
@@ -457,19 +466,29 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
             if (isMain) {
                 val updatedList = realPaymentMethodsList.map { it.copy(isMain = false) } + newMethod
-                FirestoreRepository.updateAllPaymentMethods(currentUserId, updatedList) {
-                    Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
-                    loadRealUserPaymentMethods()
-                    dialog.dismiss()
+                FirestoreRepository.updateAllPaymentMethods(currentUserId, updatedList) { success ->
+                    runOnUiThread {
+                        btnSave.isEnabled = true
+                        dialog.dismiss()
+                        if (success) {
+                            Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+                            loadRealUserPaymentMethods()
+                        } else {
+                            Toast.makeText(this, "Gagal menyimpan. Coba lagi.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             } else {
                 FirestoreRepository.saveUserPaymentMethod(currentUserId, newMethod) { success ->
-                    if (success) {
-                        Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
-                        loadRealUserPaymentMethods()
+                    runOnUiThread {
+                        btnSave.isEnabled = true
                         dialog.dismiss()
-                    } else {
-                        Toast.makeText(this, "Gagal menyimpan. Coba lagi.", Toast.LENGTH_SHORT).show()
+                        if (success) {
+                            Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+                            loadRealUserPaymentMethods()
+                        } else {
+                            Toast.makeText(this, "Gagal menyimpan. Coba lagi.", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
