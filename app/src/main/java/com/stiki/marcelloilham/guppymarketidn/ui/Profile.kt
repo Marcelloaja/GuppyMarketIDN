@@ -106,6 +106,7 @@ class Profile : Fragment() {
         setupTabClickListeners()
         selectTab(0)
 
+        loadUserDataLocally()
         fetchUserData()
         loadDefaultAddressSub()
         loadDefaultCourierSub()
@@ -291,9 +292,20 @@ class Profile : Fragment() {
         val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         val savedName = prefs.getString("name", "")
         val savedDesc = prefs.getString("description", "")
+        val savedAddrSub = prefs.getString("address_sub", "")
+        val savedCourierSub = prefs.getString("courier_sub", "")
+        val savedPaymentSub = prefs.getString("payment_sub", "")
 
         if (!savedName.isNullOrEmpty()) textName.text = savedName
         if (!savedDesc.isNullOrEmpty()) textDescription.text = savedDesc
+
+        val tvAddrSub = view?.findViewById<TextView>(R.id.tvProfileAddressSub)
+        val tvCourierSub = view?.findViewById<TextView>(R.id.tvProfileCourierSub)
+        val tvPaymentSub = view?.findViewById<TextView>(R.id.tvPaymentSettingSub)
+
+        if (!savedAddrSub.isNullOrEmpty()) tvAddrSub?.text = savedAddrSub
+        if (!savedCourierSub.isNullOrEmpty()) tvCourierSub?.text = savedCourierSub
+        if (!savedPaymentSub.isNullOrEmpty()) tvPaymentSub?.text = savedPaymentSub
     }
 
     private fun loadDefaultAddressSub() {
@@ -303,16 +315,20 @@ class Profile : Fragment() {
                 val tvAddrSub = view?.findViewById<TextView>(R.id.tvProfileAddressSub)
                 val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
 
-                if (defaultAddr != null) {
+                val formattedText = if (defaultAddr != null) {
                     val shortLocation = if (defaultAddr.fullAddress.contains(",")) {
                         defaultAddr.fullAddress.split(",").takeLast(2).joinToString(",").trim()
                     } else {
                         defaultAddr.fullAddress
                     }
-                    tvAddrSub?.text = "${defaultAddr.label}, $shortLocation"
+                    "${defaultAddr.label}, $shortLocation"
                 } else {
-                    tvAddrSub?.text = "Belum ada alamat tersimpan"
+                    "Belum ada alamat tersimpan"
                 }
+
+                tvAddrSub?.text = formattedText
+                context?.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    ?.edit()?.putString("address_sub", formattedText)?.apply()
             }
         }
     }
@@ -330,8 +346,10 @@ class Profile : Fragment() {
                     settings.grabInstantEnabled
                 ).count { it }
 
-                val mainCourierName = settings.mainCourier
-                tvCourierSub?.text = "$mainCourierName · $activeCount layanan aktif"
+                val formattedText = "${settings.mainCourier} · $activeCount layanan aktif"
+                tvCourierSub?.text = formattedText
+                context?.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    ?.edit()?.putString("courier_sub", formattedText)?.apply()
             }
         }
     }
@@ -343,12 +361,16 @@ class Profile : Fragment() {
                 val tvPaymentSub = view?.findViewById<TextView>(R.id.tvPaymentSettingSub)
                 val mainMethod = methods.find { it.isMain } ?: methods.firstOrNull()
 
-                if (mainMethod != null) {
+                val formattedText = if (mainMethod != null) {
                     val last4 = if (mainMethod.accountNumber.length >= 4) mainMethod.accountNumber.takeLast(4) else mainMethod.accountNumber
-                    tvPaymentSub?.text = "${mainMethod.providerName} (${mainMethod.type}) · •••• $last4"
+                    "${mainMethod.providerName} (${mainMethod.type}) · •••• $last4"
                 } else {
-                    tvPaymentSub?.text = "Belum ada metode pembayaran"
+                    "Belum ada metode pembayaran"
                 }
+
+                tvPaymentSub?.text = formattedText
+                context?.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    ?.edit()?.putString("payment_sub", formattedText)?.apply()
             }
         }
     }
