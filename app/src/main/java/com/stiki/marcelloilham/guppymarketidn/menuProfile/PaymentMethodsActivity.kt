@@ -107,13 +107,34 @@ class PaymentMethodsActivity : AppCompatActivity() {
         FirestoreRepository.fetchPaymentSettings(currentUserId) { model ->
             currentModel = model
 
-            tvMainPaymentName.text = model.mainMethod
-            tvMainPaymentAccNumber.text = "•••• ${model.bcaAccountNumber.takeLast(4)}"
-
             val mainLower = model.mainMethod.lowercase()
 
-            tvBankBCANumber.text = if (mainLower.contains("bca")) "•••• ${model.bcaAccountNumber.takeLast(4)} (Utama)" else "•••• ${model.bcaAccountNumber.takeLast(4)}"
-            tvBankBNINumber.text = if (mainLower.contains("bni")) "•••• ${model.bniAccountNumber.takeLast(4)} (Utama)" else "•••• ${model.bniAccountNumber.takeLast(4)}"
+            if (model.mainMethod.isNotEmpty() && model.mainMethod != "Belum Diatur") {
+                tvMainPaymentName.text = model.mainMethod
+                val mainAccNum = when {
+                    mainLower.contains("bca") -> model.bcaAccountNumber
+                    mainLower.contains("bni") -> model.bniAccountNumber
+                    else -> ""
+                }
+                tvMainPaymentAccNumber.text = if (mainAccNum.isNotEmpty()) "•••• ${mainAccNum.takeLast(4)}" else "Metode pembayaran aktif"
+            } else {
+                tvMainPaymentName.text = "Belum Ada Metode Utama"
+                tvMainPaymentAccNumber.text = "Pilih atau tambah metode pembayaran di bawah"
+            }
+
+            tvBankBCANumber.text = if (model.bcaAccountNumber.isNotEmpty()) {
+                val suffix = if (mainLower.contains("bca")) " (Utama)" else ""
+                "•••• ${model.bcaAccountNumber.takeLast(4)}$suffix"
+            } else {
+                "Belum diatur"
+            }
+
+            tvBankBNINumber.text = if (model.bniAccountNumber.isNotEmpty()) {
+                val suffix = if (mainLower.contains("bni")) " (Utama)" else ""
+                "•••• ${model.bniAccountNumber.takeLast(4)}$suffix"
+            } else {
+                "Belum diatur"
+            }
 
             if (model.mandiriActive) {
                 val isMandiriMain = mainLower.contains("mandiri")
@@ -129,7 +150,13 @@ class PaymentMethodsActivity : AppCompatActivity() {
             switchDANA.isChecked = model.danaEnabled
             switchQRIS.isChecked = model.qrisEnabled
 
-            tvWithdrawalAccountName.text = model.withdrawalAccount
+            if (model.withdrawalAccount.isNotEmpty()) {
+                tvWithdrawalAccountName.text = model.withdrawalAccount
+            } else if (model.bcaAccountNumber.isNotEmpty()) {
+                tvWithdrawalAccountName.text = "BCA •••• ${model.bcaAccountNumber.takeLast(4)}"
+            } else {
+                tvWithdrawalAccountName.text = "Belum Ada Rekening Pencairan"
+            }
         }
     }
 

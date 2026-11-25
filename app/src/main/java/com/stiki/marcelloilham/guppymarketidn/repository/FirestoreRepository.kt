@@ -83,15 +83,15 @@ object FirestoreRepository {
     )
 
     data class PaymentSettingsModel(
-        val mainMethod: String = "BCA Virtual Account",
-        val bcaAccountNumber: String = "4821",
-        val bniAccountNumber: String = "7730",
+        val mainMethod: String = "Belum Diatur",
+        val bcaAccountNumber: String = "",
+        val bniAccountNumber: String = "",
         val mandiriActive: Boolean = false,
-        val goPayEnabled: Boolean = true,
-        val ovoEnabled: Boolean = true,
+        val goPayEnabled: Boolean = false,
+        val ovoEnabled: Boolean = false,
         val danaEnabled: Boolean = false,
-        val qrisEnabled: Boolean = true,
-        val withdrawalAccount: String = "BCA a.n. Marcello"
+        val qrisEnabled: Boolean = false,
+        val withdrawalAccount: String = ""
     )
 
     data class ChatMessageModel(
