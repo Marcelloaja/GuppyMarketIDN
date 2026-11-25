@@ -454,7 +454,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            btnSave.isEnabled = false
+            dialog.dismiss()
 
             val finalAccNumber = if (isQris) {
                 tempQrisImageUri?.toString() ?: "Barcode QRIS Terunggah"
@@ -474,32 +474,16 @@ class PaymentMethodsActivity : AppCompatActivity() {
                 isMain = isMain
             )
 
+            Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+
             if (isMain) {
                 val updatedList = realPaymentMethodsList.map { it.copy(isMain = false) } + newMethod
-                FirestoreRepository.updateAllPaymentMethods(currentUserId, updatedList) { success ->
-                    runOnUiThread {
-                        btnSave.isEnabled = true
-                        dialog.dismiss()
-                        if (success) {
-                            Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
-                            loadRealUserPaymentMethods()
-                        } else {
-                            Toast.makeText(this, "Gagal menyimpan. Coba lagi.", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                FirestoreRepository.updateAllPaymentMethods(currentUserId, updatedList) {
+                    loadRealUserPaymentMethods()
                 }
             } else {
-                FirestoreRepository.saveUserPaymentMethod(currentUserId, newMethod) { success ->
-                    runOnUiThread {
-                        btnSave.isEnabled = true
-                        dialog.dismiss()
-                        if (success) {
-                            Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
-                            loadRealUserPaymentMethods()
-                        } else {
-                            Toast.makeText(this, "Gagal menyimpan. Coba lagi.", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                FirestoreRepository.saveUserPaymentMethod(currentUserId, newMethod) {
+                    loadRealUserPaymentMethods()
                 }
             }
         }
