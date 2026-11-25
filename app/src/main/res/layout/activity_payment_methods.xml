@@ -116,7 +116,7 @@
                         android:layout_height="38dp"
                         android:background="@drawable/bg_circle_image"
                         android:backgroundTint="#E0F2F1"
-                        android:src="@drawable/ic_verified_badge"
+                        android:src="@drawable/ic_payment_card"
                         app:tint="@color/guppy_primary"
                         android:padding="10dp"/>
 
