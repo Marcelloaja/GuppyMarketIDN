@@ -34,6 +34,7 @@ class AccountDetailActivity : AppCompatActivity() {
     private var providerName: String = "BCA"
     private var accountNumber: String = ""
     private var accountOwner: String = "Marcello Aja"
+    private var methodType: String = "Bank"
     private var isMain: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,15 +74,54 @@ class AccountDetailActivity : AppCompatActivity() {
     private fun readIntentData() {
         methodId = intent.getStringExtra("EXTRA_METHOD_ID") ?: ""
         providerName = intent.getStringExtra("EXTRA_PROVIDER_NAME") ?: "BCA"
-        accountNumber = intent.getStringExtra("EXTRA_ACCOUNT_NUMBER") ?: "821044564821"
+        accountNumber = intent.getStringExtra("EXTRA_ACCOUNT_NUMBER") ?: ""
         accountOwner = intent.getStringExtra("EXTRA_OWNER_NAME") ?: "Marcello Aja"
         isMain = intent.getBooleanExtra("EXTRA_IS_MAIN", false)
+
+        methodType = if (providerName.contains("QRIS", true)) {
+            "QRIS"
+        } else if (providerName.contains("GoPay", true) || providerName.contains("OVO", true) || providerName.contains("DANA", true) || providerName.contains("ShopeePay", true)) {
+            "E-Wallet"
+        } else {
+            "Bank"
+        }
 
         updateUI()
     }
 
     private fun updateUI() {
-        tvProviderName.text = providerName
+        val cardInfo = findViewById<View>(R.id.cardAccountInfoContainer)
+        val cardBalance = findViewById<View>(R.id.cardBalanceContainer)
+        val cardQris = findViewById<View>(R.id.cardQrisContainer)
+
+        val isQris = methodType.equals("QRIS", ignoreCase = true) || providerName.contains("QRIS", true)
+        val isEWallet = methodType.equals("E-Wallet", ignoreCase = true) || providerName.contains("GoPay", true) || providerName.contains("OVO", true) || providerName.contains("DANA", true)
+
+        if (isQris) {
+            tvProviderName.text = "$providerName (Scan QR)"
+            cardQris?.visibility = View.VISIBLE
+            cardInfo?.visibility = View.GONE
+            cardBalance?.visibility = View.GONE
+
+            if (accountNumber.startsWith("content://") || accountNumber.startsWith("file://")) {
+                val ivBarcode = findViewById<ImageView>(R.id.ivQrisBarcodeImage)
+                try {
+                    ivBarcode?.setImageURI(android.net.Uri.parse(accountNumber))
+                    ivBarcode?.clearColorFilter()
+                } catch (_: Exception) {}
+            }
+        } else if (isEWallet) {
+            tvProviderName.text = "$providerName (E-Wallet)"
+            cardQris?.visibility = View.GONE
+            cardInfo?.visibility = View.VISIBLE
+            cardBalance?.visibility = View.VISIBLE
+        } else {
+            tvProviderName.text = providerName
+            cardQris?.visibility = View.GONE
+            cardInfo?.visibility = View.VISIBLE
+            cardBalance?.visibility = View.VISIBLE
+        }
+
         tvOwnerName.text = accountOwner
         switchMainAccount.isChecked = isMain
 
@@ -92,7 +132,7 @@ class AccountDetailActivity : AppCompatActivity() {
         }
 
         val last4 = if (accountNumber.length >= 4) accountNumber.takeLast(4) else accountNumber
-        tvFullAccNumber.text = "•••• $last4    $accountNumber"
+        tvFullAccNumber.text = if (isQris) "KODE QRIS TERDAFTAR" else "•••• $last4    $accountNumber"
     }
 
     private fun loadActiveUserBalance() {
@@ -128,6 +168,21 @@ class AccountDetailActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        val btnDownload = findViewById<View>(R.id.btnDownloadQris)
+        btnDownload?.setOnClickListener {
+            Toast.makeText(this, "Foto Barcode QRIS disalin ke folder Unduhan!", Toast.LENGTH_SHORT).show()
+        }
+
+        val btnShare = findViewById<View>(R.id.btnShareQris)
+        btnShare?.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "QRIS Toko - $providerName")
+                putExtra(Intent.EXTRA_TEXT, "Scan QRIS toko Guppy Farm untuk melakukan pembayaran cepat!")
+            }
+            startActivity(Intent.createChooser(shareIntent, "Bagikan Kode QRIS via"))
+        }
+
         val btnEdit = findViewById<View>(R.id.btnEditAccountDetails)
         btnEdit?.setOnClickListener {
             val intent = Intent(this, EditAccountDetailActivity::class.java).apply {
