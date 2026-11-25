@@ -275,7 +275,7 @@
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
-                        android:src="@drawable/ic_verified_badge"
+                        android:src="@drawable/ic_image_gallery"
                         app:tint="@color/guppy_primary"/>
 
                     <TextView
