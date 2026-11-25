@@ -193,11 +193,37 @@ class PaymentMethodsActivity : AppCompatActivity() {
     }
 
     private fun deletePaymentMethod(selected: FirestoreRepository.PaymentMethodModel) {
-        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-        FirestoreRepository.deleteUserPaymentMethod(currentUserId, selected.id) { _ ->
-            Toast.makeText(this, "Metode '${selected.providerName}' berhasil dihapus", Toast.LENGTH_SHORT).show()
-            loadRealUserPaymentMethods()
+        val dialogView = layoutInflater.inflate(R.layout.dialog_delete_address_confirm, null)
+
+        val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogRecipientName)
+        val tvPhone = dialogView.findViewById<TextView>(R.id.tvDialogPhone)
+        val tvFull = dialogView.findViewById<TextView>(R.id.tvDialogFullAddress)
+        val btnCancel = dialogView.findViewById<View>(R.id.btnDialogCancel)
+        val btnConfirm = dialogView.findViewById<View>(R.id.btnDialogConfirmDelete)
+
+        tvTitle?.text = selected.providerName
+        val last4 = if (selected.accountNumber.length >= 4) selected.accountNumber.takeLast(4) else selected.accountNumber
+        tvPhone?.text = "•••• $last4"
+        tvFull?.text = if (selected.accountOwner.isNotEmpty()) "Atas nama ${selected.accountOwner}" else "Tipe: ${selected.type}"
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        btnCancel?.setOnClickListener { alertDialog.dismiss() }
+
+        btnConfirm?.setOnClickListener {
+            val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+            FirestoreRepository.deleteUserPaymentMethod(currentUserId, selected.id) { _ ->
+                Toast.makeText(this, "Metode '${selected.providerName}' berhasil dihapus", Toast.LENGTH_SHORT).show()
+                loadRealUserPaymentMethods()
+                alertDialog.dismiss()
+            }
         }
+
+        alertDialog.show()
     }
 
     private fun loadActiveUserBalance() {

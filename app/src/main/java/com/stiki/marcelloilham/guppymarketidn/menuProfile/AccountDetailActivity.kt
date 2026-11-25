@@ -157,8 +157,9 @@ class AccountDetailActivity : AppCompatActivity() {
         val btnConfirm = dialogView.findViewById<View>(R.id.btnDialogConfirmDelete)
 
         tvTitle?.text = providerName
-        tvSub?.text = "•••• ${accountNumber.takeLast(4)}"
-        tvFull?.text = "Rekening/E-wallet atas nama $accountOwner"
+        val last4 = if (accountNumber.length >= 4) accountNumber.takeLast(4) else accountNumber
+        tvSub?.text = "•••• $last4"
+        tvFull?.text = if (accountOwner.isNotEmpty()) "Atas nama $accountOwner" else "Rekening/E-wallet tersimpan"
 
         val alertDialog = AlertDialog.Builder(this)
             .setView(dialogView)
@@ -171,7 +172,7 @@ class AccountDetailActivity : AppCompatActivity() {
         btnConfirm?.setOnClickListener {
             val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
             FirestoreRepository.deleteUserPaymentMethod(currentUserId, methodId) { _ ->
-                Toast.makeText(this, "Metode $providerName berhasil dihapus", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Metode '$providerName' berhasil dihapus", Toast.LENGTH_SHORT).show()
                 alertDialog.dismiss()
                 finish()
             }
