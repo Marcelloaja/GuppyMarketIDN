@@ -45,16 +45,31 @@ class PaymentMethodsActivity : AppCompatActivity() {
     private var tempQrisImageUri: Uri? = null
     private lateinit var qrisImagePickerLauncher: ActivityResultLauncher<String>
 
+    private fun saveImageToInternalStorage(uri: Uri): String {
+        return try {
+            val inputStream = contentResolver.openInputStream(uri) ?: return uri.toString()
+            val file = java.io.File(filesDir, "qris_${System.currentTimeMillis()}.jpg")
+            val outputStream = java.io.FileOutputStream(file)
+            inputStream.copyTo(outputStream)
+            inputStream.close()
+            outputStream.close()
+            Uri.fromFile(file).toString()
+        } catch (e: Exception) {
+            uri.toString()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_payment_methods)
 
         qrisImagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
-                tempQrisImageUri = uri
+                val permanentUriString = saveImageToInternalStorage(uri)
+                tempQrisImageUri = Uri.parse(permanentUriString)
                 val ivPreview = currentBottomSheetView?.findViewById<ImageView>(R.id.ivQrisPreview)
                 val placeholder = currentBottomSheetView?.findViewById<View>(R.id.layoutQrisPlaceholder)
-                ivPreview?.setImageURI(uri)
+                ivPreview?.setImageURI(tempQrisImageUri)
                 ivPreview?.visibility = View.VISIBLE
                 placeholder?.visibility = View.GONE
                 Toast.makeText(this, "Foto Barcode QRIS berhasil diunggah! ✓", Toast.LENGTH_SHORT).show()

@@ -129,17 +129,11 @@ class AccountDetailActivity : AppCompatActivity() {
 
             val ivBarcode = findViewById<ImageView>(R.id.ivQrisBarcodeImage)
             if (ivBarcode != null) {
-                if (accountNumber.startsWith("content://") || accountNumber.startsWith("file://")) {
+                if (accountNumber.isNotEmpty() && (accountNumber.startsWith("file://") || accountNumber.startsWith("content://") || accountNumber.startsWith("/"))) {
                     try {
-                        contentResolver.takePersistableUriPermission(
-                            android.net.Uri.parse(accountNumber),
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        )
-                    } catch (_: Throwable) {}
-
-                    try {
-                        ivBarcode.setImageURI(android.net.Uri.parse(accountNumber))
-                        ivBarcode.clearColorFilter()
+                        val uri = android.net.Uri.parse(accountNumber)
+                        ivBarcode.setImageURI(uri)
+                        ivBarcode.colorFilter = null
                     } catch (_: Throwable) {
                         ivBarcode.setImageResource(R.drawable.ic_qris)
                     }
