@@ -353,6 +353,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/btnBankAccountSetting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="10dp"
@@ -368,15 +369,16 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rekening BCA"
+                            android:text="Rekening Bank &amp; E-Wallet"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="14sp"/>
                         <TextView
+                            android:id="@+id/tvBankAccountInfoSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="•••• 4821"
+                            android:text="BCA •••• 4821"
                             android:textColor="@color/guppy_text_gray"
                             android:fontFamily="@font/inter_regular"
                             android:textSize="12sp"/>
@@ -391,6 +393,7 @@
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/guppy_stroke"/>
 
                 <LinearLayout
+                    android:id="@+id/btnChangeWithdrawPin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="14dp"

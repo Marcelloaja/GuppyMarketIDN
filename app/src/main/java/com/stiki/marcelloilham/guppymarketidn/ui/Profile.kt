@@ -88,8 +88,23 @@ class Profile : Fragment() {
         }
 
         btnLogout?.setOnClickListener {
-            firebaseAuth.signOut()
-            Toast.makeText(requireContext(), "Berhasil keluar dari akun", Toast.LENGTH_SHORT).show()
+            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Keluar Akun")
+                .setMessage("Apakah Anda yakin ingin keluar dari akun GuppyMarket?")
+                .setPositiveButton("Keluar") { _, _ ->
+                    firebaseAuth.signOut()
+                    val prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    prefs.edit().clear().apply()
+
+                    Toast.makeText(requireContext(), "Berhasil keluar dari akun", Toast.LENGTH_SHORT).show()
+
+                    val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.intro.Login::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                    startActivity(intent)
+                }
+                .setNegativeButton("Batal", null)
+                .show()
         }
 
         initTabs(view)

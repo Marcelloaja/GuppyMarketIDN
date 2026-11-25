@@ -1,22 +1,26 @@
 package com.stiki.marcelloilham.guppymarketidn.menuProfile
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.stiki.marcelloilham.guppymarketidn.R
+import com.stiki.marcelloilham.guppymarketidn.intro.Login
 
 class MenuProfile : AppCompatActivity() {
 
@@ -31,6 +35,7 @@ class MenuProfile : AppCompatActivity() {
     private lateinit var etEmail: EditText
     private lateinit var etFarmDescription: EditText
     private lateinit var tvCharCount: TextView
+    private lateinit var tvBankAccountInfoSub: TextView
 
     private lateinit var btnChangePhoto: TextView
     private lateinit var btnChangePhotoCamera: ImageView
@@ -71,6 +76,7 @@ class MenuProfile : AppCompatActivity() {
         etEmail = findViewById(R.id.etEmail)
         etFarmDescription = findViewById(R.id.etFarmDescription)
         tvCharCount = findViewById(R.id.tvCharCount)
+        tvBankAccountInfoSub = findViewById(R.id.tvBankAccountInfoSub)
 
         btnChangePhoto = findViewById(R.id.btnChangePhoto)
         btnChangePhotoCamera = findViewById(R.id.btnChangePhotoCamera)
@@ -83,7 +89,6 @@ class MenuProfile : AppCompatActivity() {
 
         btnSaveBottom.setOnClickListener { saveProfileData() }
 
-        // Character counter for farm description
         etFarmDescription.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -94,40 +99,176 @@ class MenuProfile : AppCompatActivity() {
         })
 
         btnChangePhoto.setOnClickListener {
-            Toast.makeText(this, "Pilih foto dari galeri", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Membuka galeri untuk ganti foto profil...", Toast.LENGTH_SHORT).show()
         }
         btnChangePhotoCamera.setOnClickListener {
-            Toast.makeText(this, "Buka kamera", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Membuka kamera untuk foto profil...", Toast.LENGTH_SHORT).show()
+        }
+
+        val btnBankAccount = findViewById<View>(R.id.btnBankAccountSetting)
+        btnBankAccount?.setOnClickListener {
+            showBankAccountDialog()
+        }
+
+        val btnChangePin = findViewById<View>(R.id.btnChangeWithdrawPin)
+        btnChangePin?.setOnClickListener {
+            showChangePinDialog()
         }
 
         btnDeleteFarmAccount.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Hapus Akun Farm")
-                .setMessage("Apakah Anda yakin ingin menghapus akun farm ini? Tindakan ini tidak dapat dibatalkan.")
-                .setPositiveButton("Hapus") { dialog, _ ->
-                    Toast.makeText(this, "Permintaan hapus akun diproses", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                }
-                .setNegativeButton("Batal") { dialog, _ -> dialog.dismiss() }
-                .show()
+            showDeleteAccountValidationDialog()
         }
     }
 
-    private fun loadProfileData() {
-        val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val name = prefs.getString("name", "Marcello Aja")
-        val desc = prefs.getString("description", "Breeder guppy Bekasi. Fokus ikan varian warna dan kualitas sehat, dikirim dengan kemasan oksigen.")
+    private fun showBankAccountDialog() {
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 30, 50, 10)
+        }
 
-        if (!name.isNullOrEmpty()) etOwnerName.setText(name)
-        if (!desc.isNullOrEmpty()) {
-            etFarmDescription.setText(desc)
-            tvCharCount.text = "${desc.length}/300"
+        val etBankName = EditText(this).apply {
+            hint = "Nama Bank (contoh: BCA / Mandiri / BRI)"
+        }
+        val etAccNumber = EditText(this).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            hint = "Nomor Rekening / No. E-Wallet"
+        }
+
+        layout.addView(etBankName)
+        layout.addView(etAccNumber)
+
+        AlertDialog.Builder(this)
+            .setTitle("Atur Rekening Pencairan Dana")
+            .setView(layout)
+            .setPositiveButton("Simpan Rekening") { _, _ ->
+                val bank = etBankName.text.toString().trim()
+                val acc = etAccNumber.text.toString().trim()
+                if (bank.isNotEmpty() && acc.isNotEmpty()) {
+                    val formatted = "$bank •••• ${acc.takeLast(4)}"
+                    tvBankAccountInfoSub.text = formatted
+
+                    val user = firebaseAuth.currentUser
+                    if (user != null) {
+                        db.collection("user").document(user.uid).update("bank_account_info", formatted)
+                    }
+                    Toast.makeText(this, "Rekening $bank berhasil disimpan!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun showChangePinDialog() {
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 30, 50, 10)
+        }
+
+        val etPin = EditText(this).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+            hint = "Masukkan 6-Digit PIN Baru"
+        }
+
+        layout.addView(etPin)
+
+        AlertDialog.Builder(this)
+            .setTitle("Ubah PIN Penarikan Dana")
+            .setView(layout)
+            .setPositiveButton("Simpan PIN") { _, _ ->
+                val pin = etPin.text.toString().trim()
+                if (pin.length == 6) {
+                    val user = firebaseAuth.currentUser
+                    if (user != null) {
+                        db.collection("user").document(user.uid).update("withdrawal_pin", pin)
+                    }
+                    Toast.makeText(this, "PIN penarikan dana berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "PIN harus 6 digit angka", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun showDeleteAccountValidationDialog() {
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 30, 50, 10)
+        }
+
+        val tvNotice = TextView(this).apply {
+            text = "Ketik 'HAPUS AKUN' di bawah ini untuk memverifikasi penghapusan permanen seluruh data farm Anda:"
+            setTextColor(ContextCompat.getColor(context, R.color.guppy_red))
+            textSize = 13f
+        }
+
+        val etConfirmText = EditText(this).apply {
+            hint = "HAPUS AKUN"
+        }
+
+        layout.addView(tvNotice)
+        layout.addView(etConfirmText)
+
+        AlertDialog.Builder(this)
+            .setTitle("⚠️ Hapus Permanen Akun Farm")
+            .setView(layout)
+            .setPositiveButton("HAPUS SEKARANG") { _, _ ->
+                val inputStr = etConfirmText.text.toString().trim()
+                if (inputStr.equals("HAPUS AKUN", ignoreCase = true)) {
+                    val user = firebaseAuth.currentUser
+                    if (user != null) {
+                        db.collection("user").document(user.uid).delete()
+                        user.delete()
+                    }
+                    firebaseAuth.signOut()
+                    Toast.makeText(this, "Akun farm Anda telah berhasil dihapus.", Toast.LENGTH_LONG).show()
+
+                    val intent = Intent(this, Login::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(this, "Teks konfirmasi tidak cocok. Penghapusan dibatalkan.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun loadProfileData() {
+        val currentUser = firebaseAuth.currentUser
+        val userEmail = currentUser?.email ?: "marcello@guppymarket.id"
+        etEmail.setText(userEmail)
+
+        if (currentUser != null) {
+            db.collection("user").document(currentUser.uid).get()
+                .addOnSuccessListener { doc ->
+                    if (doc.exists()) {
+                        val name = doc.getString("name") ?: currentUser.displayName ?: "Marcello Aja"
+                        val farmName = doc.getString("farm_name") ?: "Marcello Guppy Farm"
+                        val loc = doc.getString("location") ?: "Bekasi, Jawa Barat"
+                        val wa = doc.getString("whatsapp") ?: "+62 812-3456-7890"
+                        val desc = doc.getString("description") ?: "Breeder guppy Bekasi. Fokus ikan varian warna dan kualitas sehat."
+                        val bank = doc.getString("bank_account_info") ?: "BCA •••• 4821"
+
+                        etOwnerName.setText(name)
+                        etFarmName.setText(farmName)
+                        tvFarmLocation.text = loc
+                        etWhatsapp.setText(wa)
+                        etFarmDescription.setText(desc)
+                        tvCharCount.text = "${desc.length}/300"
+                        tvBankAccountInfoSub.text = bank
+                    }
+                }
         }
     }
 
     private fun saveProfileData() {
         val ownerName = etOwnerName.text.toString().trim()
         val farmName = etFarmName.text.toString().trim()
+        val locationStr = tvFarmLocation.text.toString().trim()
+        val whatsappStr = etWhatsapp.text.toString().trim()
         val desc = etFarmDescription.text.toString().trim()
 
         if (ownerName.isEmpty()) {
@@ -135,7 +276,6 @@ class MenuProfile : AppCompatActivity() {
             return
         }
 
-        // Save locally
         val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         prefs.edit().apply {
             putString("name", ownerName)
@@ -144,18 +284,19 @@ class MenuProfile : AppCompatActivity() {
             apply()
         }
 
-        // Save to Firebase Firestore if logged in
         val user = firebaseAuth.currentUser
         if (user != null) {
             val userMap = hashMapOf<String, Any>(
                 "name" to ownerName,
                 "farm_name" to farmName,
+                "location" to locationStr,
+                "whatsapp" to whatsappStr,
                 "description" to desc
             )
-            db.collection("user").document(user.uid).update(userMap)
+            db.collection("user").document(user.uid).set(userMap, com.google.firebase.firestore.SetOptions.merge())
         }
 
-        Toast.makeText(this, "Profil berhasil disimpan!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Profil farm berhasil diperbarui!", Toast.LENGTH_SHORT).show()
         finish()
     }
 }
