@@ -37,6 +37,12 @@ class PaymentMethodAdapter(
         val item = methodList[position]
         holder.tvProviderName.text = item.providerName
 
+        if (item.type.contains("E-Wallet", true) || item.type.contains("QRIS", true) || item.providerName.contains("GoPay", true) || item.providerName.contains("OVO", true) || item.providerName.contains("DANA", true)) {
+            holder.imgTypeIcon.setImageResource(R.drawable.ic_ewallet)
+        } else {
+            holder.imgTypeIcon.setImageResource(R.drawable.ic_payment_card)
+        }
+
         val last4 = if (item.accountNumber.length >= 4) item.accountNumber.takeLast(4) else item.accountNumber
         val ownerSuffix = if (item.accountOwner.isNotEmpty()) " (${item.accountOwner})" else ""
         holder.tvAccDetails.text = "•••• $last4$ownerSuffix"
