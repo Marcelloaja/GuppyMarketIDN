@@ -265,6 +265,15 @@
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="12sp"/>
                         </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/ivCheckRow1"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_verified_badge"
+                            app:tint="@color/guppy_primary"
+                            android:visibility="gone"/>
                     </LinearLayout>
 
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="8dp" android:background="#EEEEEE"/>
@@ -314,6 +323,15 @@
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="12sp"/>
                         </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/ivCheckRow2"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_verified_badge"
+                            app:tint="@color/guppy_primary"
+                            android:visibility="gone"/>
                     </LinearLayout>
 
                 </LinearLayout>

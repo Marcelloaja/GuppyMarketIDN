@@ -212,15 +212,17 @@ class AddAddressActivity : AppCompatActivity() {
         val row2 = findViewById<View>(R.id.layoutLocationRow2)
 
         row1?.setOnClickListener {
+            highlightSelectedLocationRow(1)
             val addrText = "${tvAreaMain.text}, ${tvAreaSub.text}"
             etDetailAddress.setText(addrText)
-            Toast.makeText(this, "Lokasi '${tvAreaMain.text}' dipilih!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Rekomendasi lokasi '${tvAreaMain.text}' dipilih!", Toast.LENGTH_SHORT).show()
         }
 
         row2?.setOnClickListener {
+            highlightSelectedLocationRow(2)
             val landmarkText = "${tvLandmarkTitle.text}, ${tvLandmarkSub.text}"
             etDetailAddress.setText(landmarkText)
-            Toast.makeText(this, "Lokasi '${tvLandmarkTitle.text}' dipilih!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Rekomendasi lokasi '${tvLandmarkTitle.text}' dipilih!", Toast.LENGTH_SHORT).show()
         }
 
         // Search Map Input Listener
@@ -260,6 +262,35 @@ class AddAddressActivity : AppCompatActivity() {
         val btnSave = findViewById<TextView>(R.id.btnSaveAddressBottom)
         btnSave?.setOnClickListener {
             saveAddressToFirestore()
+        }
+    }
+
+    private fun highlightSelectedLocationRow(selectedIndex: Int) {
+        val row1 = findViewById<View>(R.id.layoutLocationRow1)
+        val row2 = findViewById<View>(R.id.layoutLocationRow2)
+
+        val check1 = findViewById<ImageView>(R.id.ivCheckRow1)
+        val check2 = findViewById<ImageView>(R.id.ivCheckRow2)
+
+        if (selectedIndex == 1) {
+            row1?.setBackgroundResource(R.drawable.bg_chip_selected)
+            row1?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#E0F2F1"))
+            check1?.visibility = View.VISIBLE
+
+            row2?.background = null
+            check2?.visibility = View.GONE
+        } else if (selectedIndex == 2) {
+            row2?.setBackgroundResource(R.drawable.bg_chip_selected)
+            row2?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#E0F2F1"))
+            check2?.visibility = View.VISIBLE
+
+            row1?.background = null
+            check1?.visibility = View.GONE
+        } else {
+            row1?.background = null
+            check1?.visibility = View.GONE
+            row2?.background = null
+            check2?.visibility = View.GONE
         }
     }
 
