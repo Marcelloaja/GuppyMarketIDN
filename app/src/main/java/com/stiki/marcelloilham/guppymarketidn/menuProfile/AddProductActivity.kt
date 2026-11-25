@@ -207,14 +207,14 @@ class AddProductActivity : AppCompatActivity() {
             layoutStrain?.visibility = View.VISIBLE
             if (selectedUnit !in listOf("per pasang", "per ekor", "per paket")) {
                 selectedUnit = "per pasang"
-                tvUnit.text = "$selectedUnit ∨"
+                tvUnit.text = selectedUnit
             }
         } else {
             layoutStrain?.visibility = View.GONE
             selectedStrain = "Semua"
             if (selectedUnit in listOf("per pasang", "per ekor")) {
                 selectedUnit = "per pcs"
-                tvUnit.text = "$selectedUnit ∨"
+                tvUnit.text = selectedUnit
             }
         }
     }
@@ -239,7 +239,7 @@ class AddProductActivity : AppCompatActivity() {
                 .setTitle("Pilih Kategori")
                 .setItems(categoryOptions) { _, which ->
                     selectedCategory = categoryOptions[which]
-                    tvCategory.text = "$selectedCategory ∨"
+                    tvCategory.text = selectedCategory
                     updateStrainAndUnitVisibility(selectedCategory)
                 }
                 .show()
@@ -251,7 +251,7 @@ class AddProductActivity : AppCompatActivity() {
                 .setTitle("Pilih Galur Varian")
                 .setItems(strainOptions) { _, which ->
                     selectedStrain = strainOptions[which]
-                    tvStrain.text = "$selectedStrain ∨"
+                    tvStrain.text = selectedStrain
                 }
                 .show()
         }
@@ -269,7 +269,7 @@ class AddProductActivity : AppCompatActivity() {
                 .setTitle("Pilih Satuan Jual")
                 .setItems(unitOptions) { _, which ->
                     selectedUnit = unitOptions[which]
-                    tvUnit.text = "$selectedUnit ∨"
+                    tvUnit.text = selectedUnit
                 }
                 .show()
         }
