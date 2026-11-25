@@ -68,7 +68,7 @@ class ShippingAddressActivity : AppCompatActivity() {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
 
         FirestoreRepository.fetchUserAddresses(currentUserId) { list ->
-            addressesList = list.toMutableList()
+            addressesList = list.sortedByDescending { it.isDefault }.toMutableList()
             tvTotalCount.text = "${addressesList.size} alamat"
 
             adapter = ShippingAddressAdapter(
@@ -89,12 +89,20 @@ class ShippingAddressActivity : AppCompatActivity() {
     }
 
     private fun setDefaultAddress(selectedAddr: FirestoreRepository.AddressModel) {
-        val updated = addressesList.map {
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+
+        val updatedList = addressesList.map {
             it.copy(isDefault = (it.id == selectedAddr.id))
-        }
-        addressesList = updated.toMutableList()
+        }.sortedByDescending { it.isDefault }
+
+        addressesList = updatedList.toMutableList()
         adapter.updateData(addressesList)
-        Toast.makeText(this, "Alamat '${selectedAddr.label}' dijadikan alamat utama!", Toast.LENGTH_SHORT).show()
+
+        updatedList.forEach { addr ->
+            FirestoreRepository.addUserAddress(currentUserId, addr) {}
+        }
+
+        Toast.makeText(this, "Alamat '${selectedAddr.label}' dijadikan alamat utama dan dipindahkan ke paling atas!", Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteAddress(addr: FirestoreRepository.AddressModel) {
