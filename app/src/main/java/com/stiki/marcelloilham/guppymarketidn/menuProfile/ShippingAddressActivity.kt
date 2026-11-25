@@ -57,6 +57,7 @@ class ShippingAddressActivity : AppCompatActivity() {
         etCourierNotes = findViewById(R.id.etCourierNotes)
 
         recyclerAddresses.layoutManager = LinearLayoutManager(this)
+        recyclerAddresses.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
 
         val btnAdd = findViewById<TextView>(R.id.btnAddNewAddress)
         btnAdd.setOnClickListener {
@@ -91,18 +92,20 @@ class ShippingAddressActivity : AppCompatActivity() {
     private fun setDefaultAddress(selectedAddr: FirestoreRepository.AddressModel) {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
 
+        val oldIndex = addressesList.indexOfFirst { it.id == selectedAddr.id }
+
         val updatedList = addressesList.map {
             it.copy(isDefault = (it.id == selectedAddr.id))
         }.sortedByDescending { it.isDefault }
 
         addressesList = updatedList.toMutableList()
-        adapter.updateData(addressesList)
+        adapter.updateDataWithMoveAnimation(addressesList, oldIndex)
 
         updatedList.forEach { addr ->
             FirestoreRepository.addUserAddress(currentUserId, addr) {}
         }
 
-        Toast.makeText(this, "Alamat '${selectedAddr.label}' dijadikan alamat utama dan dipindahkan ke paling atas!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Alamat '${selectedAddr.label}' dipindahkan ke paling atas!", Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteAddress(addr: FirestoreRepository.AddressModel) {

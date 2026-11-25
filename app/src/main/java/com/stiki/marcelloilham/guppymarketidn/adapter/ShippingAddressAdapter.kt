@@ -76,4 +76,14 @@ class ShippingAddressAdapter(
         addressList = newList
         notifyDataSetChanged()
     }
+
+    fun updateDataWithMoveAnimation(newList: List<FirestoreRepository.AddressModel>, movedFromPos: Int) {
+        addressList = newList
+        if (movedFromPos > 0) {
+            notifyItemMoved(movedFromPos, 0)
+            notifyItemRangeChanged(0, newList.size)
+        } else {
+            notifyDataSetChanged()
+        }
+    }
 }
