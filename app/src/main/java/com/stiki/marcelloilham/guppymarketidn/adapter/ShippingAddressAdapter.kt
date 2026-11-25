@@ -48,7 +48,6 @@ class ShippingAddressAdapter(
         if (item.isDefault) {
             holder.tvDefaultBadge.visibility = View.VISIBLE
             holder.btnSetDefault.visibility = View.GONE
-            holder.btnDelete.visibility = View.VISIBLE
 
             holder.imgTypeIcon.setBackgroundResource(R.drawable.bg_circle_image)
             holder.imgTypeIcon.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#E0F2F1"))
@@ -57,13 +56,14 @@ class ShippingAddressAdapter(
         } else {
             holder.tvDefaultBadge.visibility = View.GONE
             holder.btnSetDefault.visibility = View.VISIBLE
-            holder.btnDelete.visibility = View.GONE
 
             holder.imgTypeIcon.setBackgroundResource(R.drawable.bg_circle_image)
             holder.imgTypeIcon.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#F5F5F5"))
             holder.imgTypeIcon.setImageResource(R.drawable.ic_map_folded)
             holder.imgTypeIcon.imageTintList = android.content.res.ColorStateList.valueOf(grayColor)
         }
+
+        holder.btnDelete.visibility = View.VISIBLE
 
         holder.btnSetDefault.setOnClickListener { onSetDefaultClicked(item) }
         holder.btnEdit.setOnClickListener { onEditClicked(item) }
