@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/white"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Circular Exclamation Icon Header -->
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_circle_image"
+            android:backgroundTint="#FFEBEE"
+            android:src="@drawable/ic_info"
+            app:tint="#E53935"
+            android:padding="16dp"/>
+
+        <!-- Title & Subtitle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Data alamat belum lengkap"
+            android:textColor="@color/guppy_text_black"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="Beberapa data wajib belum diisi. Lengkapi dulu sebelum menyimpan alamat."
+            android:textColor="@color/guppy_text_gray"
+            android:fontFamily="@font/inter_regular"
+            android:textSize="13sp"
+            android:lineSpacingExtra="3dp"/>
+
+        <!-- Validation Checklist Items -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:paddingHorizontal="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvCheckRecipientName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="❌ Nama penerima"
+                android:textColor="#E53935"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tvCheckPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="❌ Nomor HP"
+                android:textColor="#E53935"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tvCheckDetailAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="❌ Alamat detail"
+                android:textColor="#E53935"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <!-- Bottom Action Button: Lengkapi Data (Single Button) -->
+        <TextView
+            android:id="@+id/btnCompleteData"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/bg_chip_selected"
+            android:backgroundTint="#124332"
+            android:text="Lengkapi Data"
+            android:textColor="@color/white"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

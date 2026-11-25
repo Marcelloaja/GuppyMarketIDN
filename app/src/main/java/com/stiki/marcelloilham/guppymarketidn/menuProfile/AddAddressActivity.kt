@@ -484,13 +484,12 @@ class AddAddressActivity : AppCompatActivity() {
         val fullAddress = etDetailAddress.text.toString().trim()
         val landmarkNotes = etLandmarkNotes.text.toString().trim()
 
-        if (recipientName.isEmpty()) {
-            etRecipientName.error = "Nama penerima wajib diisi"
-            return
-        }
+        val isNameValid = recipientName.isNotEmpty()
+        val isPhoneValid = phoneRaw.isNotEmpty()
+        val isAddrValid = fullAddress.isNotEmpty()
 
-        if (fullAddress.isEmpty()) {
-            etDetailAddress.error = "Alamat lengkap wajib diisi"
+        if (!isNameValid || !isPhoneValid || !isAddrValid) {
+            showIncompleteValidationDialog(isNameValid, isPhoneValid, isAddrValid)
             return
         }
 
@@ -669,5 +668,60 @@ class AddAddressActivity : AppCompatActivity() {
         }
 
         deleteAlertDialog.show()
+    }
+
+    private fun showIncompleteValidationDialog(isNameValid: Boolean, isPhoneValid: Boolean, isAddrValid: Boolean) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_incomplete_address_validation, null)
+
+        val tvCheckName = dialogView.findViewById<TextView>(R.id.tvCheckRecipientName)
+        val tvCheckPhone = dialogView.findViewById<TextView>(R.id.tvCheckPhone)
+        val tvCheckAddr = dialogView.findViewById<TextView>(R.id.tvCheckDetailAddress)
+        val btnComplete = dialogView.findViewById<TextView>(R.id.btnCompleteData)
+
+        val greenColor = ContextCompat.getColor(this, R.color.guppy_primary)
+        val redColor = android.graphics.Color.parseColor("#E53935")
+
+        if (isNameValid) {
+            tvCheckName?.text = "✅ Nama penerima"
+            tvCheckName?.setTextColor(greenColor)
+        } else {
+            tvCheckName?.text = "❌ Nama penerima"
+            tvCheckName?.setTextColor(redColor)
+        }
+
+        if (isPhoneValid) {
+            tvCheckPhone?.text = "✅ Nomor HP"
+            tvCheckPhone?.setTextColor(greenColor)
+        } else {
+            tvCheckPhone?.text = "❌ Nomor HP"
+            tvCheckPhone?.setTextColor(redColor)
+        }
+
+        if (isAddrValid) {
+            tvCheckAddr?.text = "✅ Alamat detail"
+            tvCheckAddr?.setTextColor(greenColor)
+        } else {
+            tvCheckAddr?.text = "❌ Alamat detail"
+            tvCheckAddr?.setTextColor(redColor)
+        }
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        btnComplete?.setOnClickListener {
+            alertDialog.dismiss()
+            if (!isNameValid) {
+                etRecipientName.requestFocus()
+            } else if (!isPhoneValid) {
+                etPhoneNumber.requestFocus()
+            } else if (!isAddrValid) {
+                etDetailAddress.requestFocus()
+            }
+        }
+
+        alertDialog.show()
     }
 }
