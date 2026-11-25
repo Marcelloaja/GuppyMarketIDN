@@ -233,7 +233,7 @@ object FirestoreRepository {
             }
     }
 
-    // FETCH USER ADDRESSES
+    // FETCH USER ADDRESSES (PURE REAL DATA)
     fun fetchUserAddresses(userId: String, onResult: (List<AddressModel>) -> Unit) {
         val currentUid = auth.currentUser?.uid ?: userId
         val colRef = db.collection("user").document(currentUid).collection("addresses")
@@ -241,24 +241,7 @@ object FirestoreRepository {
         colRef.get()
             .addOnSuccessListener { snapshot ->
                 val list = snapshot.toObjects(AddressModel::class.java)
-                if (list.isEmpty()) {
-                    val doc1 = colRef.document()
-                    val doc2 = colRef.document()
-
-                    val initial1 = AddressModel(doc1.id, "Rumah", "Marcello Aja", "(0812-3456-7890)", "Jl. Raya Cibubur No. 14, RT 03/RW 05, Bekasi Selatan, Kota Bekasi, Jawa Barat 17147", true)
-                    val initial2 = AddressModel(doc2.id, "Gudang Ikan", "Marcello Aja", "(0812-3456-7890)", "Jl. Pahlawan Revolusi Blok C2 No. 7, Bekasi Barat, Kota Bekasi, Jawa Barat 17136", false)
-
-                    val batch = db.batch()
-                    batch.set(doc1, initial1)
-                    batch.set(doc2, initial2)
-                    batch.commit().addOnSuccessListener {
-                        onResult(listOf(initial1, initial2))
-                    }.addOnFailureListener {
-                        onResult(emptyList())
-                    }
-                } else {
-                    onResult(list)
-                }
+                onResult(list)
             }
             .addOnFailureListener {
                 onResult(emptyList())
