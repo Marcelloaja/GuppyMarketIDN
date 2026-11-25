@@ -195,12 +195,14 @@ class PaymentMethodsActivity : AppCompatActivity() {
     private fun deletePaymentMethod(selected: FirestoreRepository.PaymentMethodModel) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_delete_address_confirm, null)
 
+        val tvHeaderTitle = dialogView.findViewById<TextView>(R.id.tvDeleteDialogTitle)
         val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogRecipientName)
         val tvPhone = dialogView.findViewById<TextView>(R.id.tvDialogPhone)
         val tvFull = dialogView.findViewById<TextView>(R.id.tvDialogFullAddress)
         val btnCancel = dialogView.findViewById<View>(R.id.btnDialogCancel)
         val btnConfirm = dialogView.findViewById<View>(R.id.btnDialogConfirmDelete)
 
+        tvHeaderTitle?.text = "Hapus rekening ini?"
         tvTitle?.text = selected.providerName
         val last4 = if (selected.accountNumber.length >= 4) selected.accountNumber.takeLast(4) else selected.accountNumber
         tvPhone?.text = "•••• $last4"

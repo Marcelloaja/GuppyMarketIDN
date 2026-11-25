@@ -184,12 +184,14 @@ class ShippingAddressActivity : AppCompatActivity() {
     private fun deleteAddress(addr: FirestoreRepository.AddressModel) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_delete_address_confirm, null)
 
+        val tvHeaderTitle = dialogView.findViewById<TextView>(R.id.tvDeleteDialogTitle)
         val tvName = dialogView.findViewById<TextView>(R.id.tvDialogRecipientName)
         val tvPhone = dialogView.findViewById<TextView>(R.id.tvDialogPhone)
         val tvFullAddr = dialogView.findViewById<TextView>(R.id.tvDialogFullAddress)
         val btnCancel = dialogView.findViewById<TextView>(R.id.btnDialogCancel)
         val btnConfirm = dialogView.findViewById<TextView>(R.id.btnDialogConfirmDelete)
 
+        tvHeaderTitle?.text = "Hapus alamat ini?"
         tvName?.text = addr.recipientName
         tvPhone?.text = addr.phone
         tvFullAddr?.text = addr.fullAddress
