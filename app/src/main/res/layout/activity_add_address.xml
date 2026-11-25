@@ -224,13 +224,19 @@
                         </RelativeLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Map Selected Location Labels -->
+                    <!-- Map Selected Location Row 1 -->
                     <LinearLayout
+                        android:id="@+id/layoutLocationRow1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
+                        android:paddingVertical="6dp"
+                        android:paddingHorizontal="8dp"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageView
                             android:layout_width="18dp"
@@ -266,13 +272,20 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="12dp" android:background="#EEEEEE"/>
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="8dp" android:background="#EEEEEE"/>
 
+                    <!-- Map Selected Location Row 2 -->
                     <LinearLayout
+                        android:id="@+id/layoutLocationRow2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingVertical="6dp"
+                        android:paddingHorizontal="8dp"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageView
                             android:layout_width="18dp"

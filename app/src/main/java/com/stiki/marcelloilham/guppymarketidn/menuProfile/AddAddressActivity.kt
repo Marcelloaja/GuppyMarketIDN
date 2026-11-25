@@ -151,6 +151,22 @@ class AddAddressActivity : AppCompatActivity() {
             requestLocationPermission()
         }
 
+        // Clickable Location Rows below Map
+        val row1 = findViewById<View>(R.id.layoutLocationRow1)
+        val row2 = findViewById<View>(R.id.layoutLocationRow2)
+
+        row1?.setOnClickListener {
+            val addrText = "${tvAreaMain.text}, ${tvAreaSub.text}"
+            etDetailAddress.setText(addrText)
+            Toast.makeText(this, "Lokasi '${tvAreaMain.text}' dipilih!", Toast.LENGTH_SHORT).show()
+        }
+
+        row2?.setOnClickListener {
+            val landmarkText = "${tvLandmarkTitle.text}, ${tvLandmarkSub.text}"
+            etDetailAddress.setText(landmarkText)
+            Toast.makeText(this, "Lokasi '${tvLandmarkTitle.text}' dipilih!", Toast.LENGTH_SHORT).show()
+        }
+
         // Search Map Input Listener
         etSearchMap.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
