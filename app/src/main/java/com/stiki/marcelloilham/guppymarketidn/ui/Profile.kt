@@ -108,6 +108,7 @@ class Profile : Fragment() {
 
         fetchUserData()
         loadDefaultAddressSub()
+        loadDefaultCourierSub()
         setupProfileAuctions(view)
         setupProfileProducts(view)
         setupProfileOrders(view)
@@ -120,6 +121,7 @@ class Profile : Fragment() {
             loadUserAuctions()
             loadUserProducts()
             loadDefaultAddressSub()
+            loadDefaultCourierSub()
             swipeRefresh.postDelayed({
                 swipeRefresh.isRefreshing = false
             }, 1000)
@@ -131,6 +133,7 @@ class Profile : Fragment() {
     override fun onResume() {
         super.onResume()
         loadDefaultAddressSub()
+        loadDefaultCourierSub()
         if (::recyclerProfileAuctions.isInitialized) {
             loadUserAuctions()
         }
@@ -307,6 +310,25 @@ class Profile : Fragment() {
                 } else {
                     tvAddrSub?.text = "Belum ada alamat tersimpan"
                 }
+            }
+        }
+    }
+
+    private fun loadDefaultCourierSub() {
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+        FirestoreRepository.fetchCourierSettings(currentUserId) { settings ->
+            if (isAdded) {
+                val tvCourierSub = view?.findViewById<TextView>(R.id.tvProfileCourierSub)
+                val activeCount = listOf(
+                    settings.jneRegularEnabled,
+                    settings.jneYesEnabled,
+                    settings.jntExpressEnabled,
+                    settings.sicepatHaluEnabled,
+                    settings.grabInstantEnabled
+                ).count { it }
+
+                val mainCourierName = settings.mainCourier
+                tvCourierSub?.text = "$mainCourierName · $activeCount layanan aktif"
             }
         }
     }

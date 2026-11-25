@@ -819,10 +819,11 @@
                                 android:fontFamily="@font/inter_bold"
                                 android:textSize="13.5sp"/>
                             <TextView
+                                android:id="@+id/tvProfileCourierSub"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="1dp"
-                                android:text="Instan, Reguler (Biteship)"
+                                android:text="JNE Reguler · 4 layanan aktif"
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="12sp"/>
