@@ -70,7 +70,18 @@ class ShippingAddressActivity : AppCompatActivity() {
 
         FirestoreRepository.fetchUserAddresses(currentUserId) { list ->
             val cleanList = list.distinctBy { it.id }.distinctBy { it.label }
-            addressesList = cleanList.sortedByDescending { it.isDefault }.toMutableList()
+
+            val ensuredList = if (cleanList.isNotEmpty() && cleanList.none { it.isDefault }) {
+                val fixedList = cleanList.mapIndexed { idx, addr ->
+                    if (idx == 0) addr.copy(isDefault = true) else addr.copy(isDefault = false)
+                }
+                FirestoreRepository.updateAllAddresses(currentUserId, fixedList) {}
+                fixedList
+            } else {
+                cleanList
+            }
+
+            addressesList = ensuredList.sortedByDescending { it.isDefault }.toMutableList()
 
             adapter = ShippingAddressAdapter(
                 context = this,
