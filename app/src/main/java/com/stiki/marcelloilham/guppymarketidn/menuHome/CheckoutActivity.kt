@@ -26,9 +26,14 @@ class CheckoutActivity : AppCompatActivity() {
 
     private var quantity: Int = 2
     private val unitPrice: Long = 275000L
-    private var shippingCost: Long = 25000L
+    private var shippingCost: Long = 18000L
     private val serviceFee: Long = 2000L
-    private var isInstantShipping: Boolean = true
+
+    private var selectedCourier: String = "JNT"
+    private var costJNT: Long = 18000L
+    private var costJNE: Long = 22000L
+    private var costSicepat: Long = 20000L
+    private var costInstant: Long = 35000L
     private var isPayVA: Boolean = true
 
     private lateinit var tvQuantity: TextView
@@ -39,14 +44,24 @@ class CheckoutActivity : AppCompatActivity() {
     private lateinit var tvBottomTotal: TextView
     private lateinit var tvBottomSubtext: TextView
 
+    private lateinit var optionShipJNT: View
+    private lateinit var optionShipJNE: View
+    private lateinit var optionShipSicepat: View
     private lateinit var optionShipInstant: View
-    private lateinit var optionShipRegular: View
+
+    private lateinit var icRadioShipJNT: ImageView
+    private lateinit var icRadioShipJNE: ImageView
+    private lateinit var icRadioShipSicepat: ImageView
     private lateinit var icRadioShipInstant: ImageView
-    private lateinit var icRadioShipRegular: ImageView
+
+    private lateinit var tvShipJNTTitle: TextView
+    private lateinit var tvShipJNTPrice: TextView
+    private lateinit var tvShipJNETitle: TextView
+    private lateinit var tvShipJNEPrice: TextView
+    private lateinit var tvShipSicepatTitle: TextView
+    private lateinit var tvShipSicepatPrice: TextView
     private lateinit var tvShipInstantTitle: TextView
     private lateinit var tvShipInstantPrice: TextView
-    private lateinit var tvShipRegularTitle: TextView
-    private lateinit var tvShipRegularPrice: TextView
 
     private lateinit var optionPayVA: View
     private lateinit var optionPayEWallet: View
@@ -92,14 +107,24 @@ class CheckoutActivity : AppCompatActivity() {
         tvBottomTotal = findViewById(R.id.tvBottomTotal)
         tvBottomSubtext = findViewById(R.id.tvBottomSubtext)
 
+        optionShipJNT = findViewById(R.id.optionShipJNT)
+        optionShipJNE = findViewById(R.id.optionShipJNE)
+        optionShipSicepat = findViewById(R.id.optionShipSicepat)
         optionShipInstant = findViewById(R.id.optionShipInstant)
-        optionShipRegular = findViewById(R.id.optionShipRegular)
+
+        icRadioShipJNT = findViewById(R.id.icRadioShipJNT)
+        icRadioShipJNE = findViewById(R.id.icRadioShipJNE)
+        icRadioShipSicepat = findViewById(R.id.icRadioShipSicepat)
         icRadioShipInstant = findViewById(R.id.icRadioShipInstant)
-        icRadioShipRegular = findViewById(R.id.icRadioShipRegular)
+
+        tvShipJNTTitle = findViewById(R.id.tvShipJNTTitle)
+        tvShipJNTPrice = findViewById(R.id.tvShipJNTPrice)
+        tvShipJNETitle = findViewById(R.id.tvShipJNETitle)
+        tvShipJNEPrice = findViewById(R.id.tvShipJNEPrice)
+        tvShipSicepatTitle = findViewById(R.id.tvShipSicepatTitle)
+        tvShipSicepatPrice = findViewById(R.id.tvShipSicepatPrice)
         tvShipInstantTitle = findViewById(R.id.tvShipInstantTitle)
         tvShipInstantPrice = findViewById(R.id.tvShipInstantPrice)
-        tvShipRegularTitle = findViewById(R.id.tvShipRegularTitle)
-        tvShipRegularPrice = findViewById(R.id.tvShipRegularPrice)
 
         optionPayVA = findViewById(R.id.optionPayVA)
         optionPayEWallet = findViewById(R.id.optionPayEWallet)
@@ -127,16 +152,30 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun setupShippingOptions() {
-        optionShipInstant.setOnClickListener {
-            isInstantShipping = true
-            shippingCost = 25000L
+        optionShipJNT.setOnClickListener {
+            selectedCourier = "JNT"
+            shippingCost = costJNT
             updateShippingUI()
             updateCalculations()
         }
 
-        optionShipRegular.setOnClickListener {
-            isInstantShipping = false
-            shippingCost = 15000L
+        optionShipJNE.setOnClickListener {
+            selectedCourier = "JNE"
+            shippingCost = costJNE
+            updateShippingUI()
+            updateCalculations()
+        }
+
+        optionShipSicepat.setOnClickListener {
+            selectedCourier = "SICEPAT"
+            shippingCost = costSicepat
+            updateShippingUI()
+            updateCalculations()
+        }
+
+        optionShipInstant.setOnClickListener {
+            selectedCourier = "INSTANT"
+            shippingCost = costInstant
             updateShippingUI()
             updateCalculations()
         }
@@ -149,26 +188,27 @@ class CheckoutActivity : AppCompatActivity() {
         val blackColor = ContextCompat.getColor(this, R.color.guppy_text_black)
         val grayColor = ContextCompat.getColor(this, R.color.guppy_text_gray)
 
-        if (isInstantShipping) {
-            optionShipInstant.setBackgroundResource(bgSelected)
-            icRadioShipInstant.setImageResource(R.drawable.ic_radio_selected)
-            tvShipInstantTitle.setTextColor(primaryColor)
-            tvShipInstantPrice.setTextColor(primaryColor)
+        val options = listOf(
+            Triple(optionShipJNT, icRadioShipJNT, Pair(tvShipJNTTitle, tvShipJNTPrice)),
+            Triple(optionShipJNE, icRadioShipJNE, Pair(tvShipJNETitle, tvShipJNEPrice)),
+            Triple(optionShipSicepat, icRadioShipSicepat, Pair(tvShipSicepatTitle, tvShipSicepatPrice)),
+            Triple(optionShipInstant, icRadioShipInstant, Pair(tvShipInstantTitle, tvShipInstantPrice))
+        )
 
-            optionShipRegular.setBackgroundResource(bgUnselected)
-            icRadioShipRegular.setImageResource(R.drawable.ic_radio_unselected)
-            tvShipRegularTitle.setTextColor(blackColor)
-            tvShipRegularPrice.setTextColor(grayColor)
-        } else {
-            optionShipInstant.setBackgroundResource(bgUnselected)
-            icRadioShipInstant.setImageResource(R.drawable.ic_radio_unselected)
-            tvShipInstantTitle.setTextColor(blackColor)
-            tvShipInstantPrice.setTextColor(grayColor)
+        val keys = listOf("JNT", "JNE", "SICEPAT", "INSTANT")
 
-            optionShipRegular.setBackgroundResource(bgSelected)
-            icRadioShipRegular.setImageResource(R.drawable.ic_radio_selected)
-            tvShipRegularTitle.setTextColor(primaryColor)
-            tvShipRegularPrice.setTextColor(primaryColor)
+        options.forEachIndexed { idx, (container, radio, titles) ->
+            if (keys[idx] == selectedCourier) {
+                container.setBackgroundResource(bgSelected)
+                radio.setImageResource(R.drawable.ic_radio_selected)
+                titles.first.setTextColor(primaryColor)
+                titles.second.setTextColor(primaryColor)
+            } else {
+                container.setBackgroundResource(bgUnselected)
+                radio.setImageResource(R.drawable.ic_radio_unselected)
+                titles.first.setTextColor(blackColor)
+                titles.second.setTextColor(grayColor)
+            }
         }
     }
 
@@ -229,7 +269,12 @@ class CheckoutActivity : AppCompatActivity() {
         val btnPay = findViewById<TextView>(R.id.btnPayNow)
         btnPay.setOnClickListener {
             val total = (unitPrice * quantity) + shippingCost + serviceFee
-            val courierText = if (isInstantShipping) "Kurir Instan" else "Reguler"
+            val courierText = when (selectedCourier) {
+                "JNT" -> "J&T Express EZ"
+                "JNE" -> "JNE Express YES"
+                "SICEPAT" -> "SiCepat BEST"
+                else -> "GoSend / GrabExpress Instan"
+            }
             val paymentText = if (isPayVA) "Transfer Bank (VA)" else "E-wallet"
 
             val order = FirestoreRepository.OrderModel(
@@ -252,7 +297,7 @@ class CheckoutActivity : AppCompatActivity() {
 
                 Toast.makeText(
                     this,
-                    "Pembayaran ${formatCurrency(total)} Berhasil! Pesanan Dicatat ke Sistem.",
+                    "Pembayaran ${formatCurrency(total)} via $courierText Berhasil! Pesanan Dicatat ke Sistem.",
                     Toast.LENGTH_LONG
                 ).show()
 
@@ -280,16 +325,36 @@ class CheckoutActivity : AppCompatActivity() {
             override fun onResponse(call: Call<RatesResponse>, response: Response<RatesResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
                     val pricings = response.body()?.pricing
-                    val instantOption = pricings?.firstOrNull { it.serviceTypeMatches("instant") || it.type?.contains("instant", true) == true }
-                    val regularOption = pricings?.firstOrNull { it.serviceTypeMatches("reguler") || it.type?.contains("reguler", true) == true }
+                    val jntOption = pricings?.firstOrNull { it.courierCode.contains("jnt", true) || it.courierName.contains("j&t", true) }
+                    val jneOption = pricings?.firstOrNull { it.courierCode.contains("jne", true) || it.courierName.contains("jne", true) }
+                    val sicepatOption = pricings?.firstOrNull { it.courierCode.contains("sicepat", true) || it.courierName.contains("sicepat", true) }
+                    val instantOption = pricings?.firstOrNull { it.type?.contains("instant", true) == true || it.courierCode.contains("gojek", true) || it.courierCode.contains("grab", true) }
 
                     runOnUiThread {
+                        if (jntOption != null && jntOption.price > 0) {
+                            costJNT = jntOption.price
+                            tvShipJNTPrice.text = formatCurrency(costJNT)
+                        }
+                        if (jneOption != null && jneOption.price > 0) {
+                            costJNE = jneOption.price
+                            tvShipJNEPrice.text = formatCurrency(costJNE)
+                        }
+                        if (sicepatOption != null && sicepatOption.price > 0) {
+                            costSicepat = sicepatOption.price
+                            tvShipSicepatPrice.text = formatCurrency(costSicepat)
+                        }
                         if (instantOption != null && instantOption.price > 0) {
-                            tvShipInstantPrice.text = formatCurrency(instantOption.price)
+                            costInstant = instantOption.price
+                            tvShipInstantPrice.text = formatCurrency(costInstant)
                         }
-                        if (regularOption != null && regularOption.price > 0) {
-                            tvShipRegularPrice.text = formatCurrency(regularOption.price)
+
+                        shippingCost = when (selectedCourier) {
+                            "JNT" -> costJNT
+                            "JNE" -> costJNE
+                            "SICEPAT" -> costSicepat
+                            else -> costInstant
                         }
+                        updateCalculations()
                     }
                     Log.d("BiteshipCheckout", "Biteship rates loaded: ${pricings?.size} options")
                 } else {
