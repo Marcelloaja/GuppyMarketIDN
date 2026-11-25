@@ -269,9 +269,8 @@ class AddAddressActivity : AppCompatActivity() {
                 <div id="map"></div>
                 <script>
                     var map = L.map('map', { zoomControl: false }).setView([-6.2349, 106.9924], 15);
-                    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                        maxZoom: 19,
-                        subdomains: 'abcd'
+                    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                        maxZoom: 19
                     }).addTo(map);
 
                     var marker = L.marker([-6.2349, 106.9924], { draggable: true }).addTo(map);
