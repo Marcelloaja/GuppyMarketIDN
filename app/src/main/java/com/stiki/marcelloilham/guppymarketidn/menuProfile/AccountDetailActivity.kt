@@ -151,6 +151,8 @@ class AccountDetailActivity : AppCompatActivity() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_delete_address_confirm, null)
 
         val tvHeaderTitle = dialogView.findViewById<TextView>(R.id.tvDeleteDialogTitle)
+        val tvSubNotice = dialogView.findViewById<TextView>(R.id.tvDeleteDialogSubNotice)
+        val ivIcon = dialogView.findViewById<ImageView>(R.id.ivDeleteDialogIcon)
         val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogRecipientName)
         val tvSub = dialogView.findViewById<TextView>(R.id.tvDialogPhone)
         val tvFull = dialogView.findViewById<TextView>(R.id.tvDialogFullAddress)
@@ -158,6 +160,9 @@ class AccountDetailActivity : AppCompatActivity() {
         val btnConfirm = dialogView.findViewById<View>(R.id.btnDialogConfirmDelete)
 
         tvHeaderTitle?.text = "Hapus rekening ini?"
+        tvSubNotice?.text = "Rekening/metode pembayaran ini akan dihapus dari daftar. Tindakan ini tidak bisa dibatalkan."
+        ivIcon?.visibility = View.GONE
+
         tvTitle?.text = providerName
         val last4 = if (accountNumber.length >= 4) accountNumber.takeLast(4) else accountNumber
         tvSub?.text = "•••• $last4"

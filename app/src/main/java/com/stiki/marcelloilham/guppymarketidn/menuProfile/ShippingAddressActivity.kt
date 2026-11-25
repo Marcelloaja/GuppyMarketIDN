@@ -185,6 +185,8 @@ class ShippingAddressActivity : AppCompatActivity() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_delete_address_confirm, null)
 
         val tvHeaderTitle = dialogView.findViewById<TextView>(R.id.tvDeleteDialogTitle)
+        val tvSubNotice = dialogView.findViewById<TextView>(R.id.tvDeleteDialogSubNotice)
+        val ivIcon = dialogView.findViewById<ImageView>(R.id.ivDeleteDialogIcon)
         val tvName = dialogView.findViewById<TextView>(R.id.tvDialogRecipientName)
         val tvPhone = dialogView.findViewById<TextView>(R.id.tvDialogPhone)
         val tvFullAddr = dialogView.findViewById<TextView>(R.id.tvDialogFullAddress)
@@ -192,6 +194,9 @@ class ShippingAddressActivity : AppCompatActivity() {
         val btnConfirm = dialogView.findViewById<TextView>(R.id.btnDialogConfirmDelete)
 
         tvHeaderTitle?.text = "Hapus alamat ini?"
+        tvSubNotice?.text = "Alamat pengiriman ini akan dihapus dari daftar. Tindakan ini tidak bisa dibatalkan."
+        ivIcon?.visibility = View.VISIBLE
+
         tvName?.text = addr.recipientName
         tvPhone?.text = addr.phone
         tvFullAddr?.text = addr.fullAddress
