@@ -81,8 +81,29 @@ class AddAddressActivity : AppCompatActivity() {
         initOpenStreetMap()
         setupListeners()
         loadDefaultProfileName()
+        checkAddressCountForDefaultToggle()
         checkEditModeIntent()
         requestLocationPermission()
+    }
+
+    private fun checkAddressCountForDefaultToggle() {
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+        FirestoreRepository.fetchUserAddresses(currentUserId) { addresses ->
+            val hasExistingAddress = addresses.isNotEmpty()
+            val tvSubNotice = findViewById<TextView>(R.id.tvSetDefaultSubNotice)
+
+            if (!hasExistingAddress) {
+                switchSetDefault.isChecked = true
+                switchSetDefault.isEnabled = false
+                tvSubNotice?.text = "Alamat pertama otomatis menjadi alamat utama"
+            } else {
+                if (!isEditMode) {
+                    switchSetDefault.isChecked = false
+                    switchSetDefault.isEnabled = true
+                    tvSubNotice?.text = "Dipakai sebagai default saat checkout"
+                }
+            }
+        }
     }
 
     private fun checkEditModeIntent() {
@@ -491,15 +512,30 @@ class AddAddressActivity : AppCompatActivity() {
         btnSave?.isEnabled = false
         btnSave?.text = if (isEditMode) "Menyimpan Perubahan..." else "Menyimpan Alamat..."
 
-        FirestoreRepository.addUserAddress(currentUserId, newAddress) { success ->
-            btnSave?.isEnabled = true
-            btnSave?.text = if (isEditMode) "Simpan Perubahan" else "Simpan Alamat"
+        val executeSave = {
+            FirestoreRepository.addUserAddress(currentUserId, newAddress) { success ->
+                btnSave?.isEnabled = true
+                btnSave?.text = if (isEditMode) "Simpan Perubahan" else "Simpan Alamat"
 
-            if (success) {
-                showAddressSuccessDialog(newAddress)
-            } else {
-                Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
+                if (success) {
+                    showAddressSuccessDialog(newAddress)
+                } else {
+                    Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
+                }
             }
+        }
+
+        if (isDefaultAddr) {
+            FirestoreRepository.fetchUserAddresses(currentUserId) { existingList ->
+                val updatedList = existingList.map {
+                    if (it.id == newAddress.id) it.copy(isDefault = true) else it.copy(isDefault = false)
+                }
+                FirestoreRepository.updateAllAddresses(currentUserId, updatedList) {
+                    executeSave()
+                }
+            }
+        } else {
+            executeSave()
         }
     }
 

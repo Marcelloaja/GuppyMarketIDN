@@ -670,6 +670,7 @@
                             android:textSize="14.5sp"/>
 
                         <TextView
+                            android:id="@+id/tvSetDefaultSubNotice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -683,7 +684,7 @@
                         android:id="@+id/switchSetDefaultAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
+                        android:checked="false"
                         app:useMaterialThemeColors="true"/>
 
                 </LinearLayout>
