@@ -91,7 +91,8 @@ object FirestoreRepository {
         val ovoEnabled: Boolean = false,
         val danaEnabled: Boolean = false,
         val qrisEnabled: Boolean = false,
-        val withdrawalAccount: String = ""
+        val withdrawalAccount: String = "",
+        val adminFeeAmount: Long = 4000L
     )
 
     data class PaymentMethodModel(

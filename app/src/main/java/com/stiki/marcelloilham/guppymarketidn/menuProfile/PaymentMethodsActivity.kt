@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.adapter.PaymentMethodAdapter
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
+import java.util.Locale
 
 class PaymentMethodsActivity : AppCompatActivity() {
 
@@ -35,11 +36,12 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
     private lateinit var tvWithdrawalAccountName: TextView
     private lateinit var tvWithdrawalSubtitle: TextView
+    private lateinit var tvAdminFeeNotice: TextView
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private var realPaymentMethodsList: MutableList<FirestoreRepository.PaymentMethodModel> = mutableListOf()
     private var currentBottomSheetView: View? = null
-    private var tempQrisImageUri: android.net.Uri? = null
+    private var tempQrisImageUri: Uri? = null
     private lateinit var qrisImagePickerLauncher: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +78,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
         setupListeners()
         loadRealUserPaymentMethods()
         loadActiveUserBalance()
+        loadAdminFeeNotice()
     }
 
     private fun initViews() {
@@ -88,6 +91,21 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
         tvWithdrawalAccountName = findViewById(R.id.tvWithdrawalAccountName)
         tvWithdrawalSubtitle = findViewById(R.id.tvWithdrawalSubtitle)
+        tvAdminFeeNotice = findViewById(R.id.tvAdminFeeNotice)
+    }
+
+    private fun loadAdminFeeNotice() {
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+        FirestoreRepository.fetchPaymentSettings(currentUserId) { settings ->
+            val feeAmount = settings.adminFeeAmount
+            val feeText = if (feeAmount > 0) {
+                val formattedFee = "Rp " + String.format(Locale.US, "%,d", feeAmount).replace(',', '.')
+                "Biaya admin Virtual Account $formattedFee per transaksi"
+            } else {
+                "Bebas biaya admin Virtual Account (Promo)"
+            }
+            tvAdminFeeNotice.text = feeText
+        }
     }
 
     private fun setupListeners() {
