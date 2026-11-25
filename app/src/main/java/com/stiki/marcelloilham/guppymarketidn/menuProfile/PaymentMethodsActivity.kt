@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -95,7 +96,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
         }
 
         val btnAddPayment = findViewById<View>(R.id.btnAddNewPaymentMethod)
-        btnAddPayment?.setOnClickListener { showAddPaymentDialog() }
+        btnAddPayment?.setOnClickListener { showAddPaymentBottomSheet() }
 
         val btnSave = findViewById<TextView>(R.id.btnSavePaymentSettings)
         btnSave?.setOnClickListener { saveSettingsToFirestore() }
@@ -195,14 +196,116 @@ class PaymentMethodsActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showAddPaymentDialog() {
-        val options = arrayOf("Tambah Rekening Bank Baru", "Hubungkan E-Wallet Lain (ShopeePay, LinkAja)", "Daftarkan QRIS Toko Baru")
-        AlertDialog.Builder(this)
-            .setTitle("Tambah Metode Pembayaran Baru")
-            .setItems(options) { _, which ->
-                Toast.makeText(this, "Memproses pilihan '${options[which]}'...", Toast.LENGTH_SHORT).show()
+    private fun showAddPaymentBottomSheet() {
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_add_payment_method, null)
+        val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+        dialog.setContentView(bottomSheetView)
+
+        val btnClose = bottomSheetView.findViewById<View>(R.id.btnCloseBottomSheet)
+        val tabBank = bottomSheetView.findViewById<TextView>(R.id.tabTypeBank)
+        val tabEWallet = bottomSheetView.findViewById<TextView>(R.id.tabTypeEWallet)
+        val tvProvider = bottomSheetView.findViewById<TextView>(R.id.tvSelectProvider)
+        val etOwnerName = bottomSheetView.findViewById<EditText>(R.id.etAccountOwnerName)
+        val etAccNumber = bottomSheetView.findViewById<EditText>(R.id.etAccountNumber)
+        val switchMain = bottomSheetView.findViewById<SwitchMaterial>(R.id.switchSetMainPayment)
+        val btnCancel = bottomSheetView.findViewById<View>(R.id.btnCancelBottomSheet)
+        val btnSave = bottomSheetView.findViewById<View>(R.id.btnSaveBottomSheet)
+
+        var selectedTypeIsBank = true
+        var selectedProviderName = "BCA"
+
+        val currentUser = firebaseAuth.currentUser
+        if (currentUser != null) {
+            com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("user").document(currentUser.uid)
+                .get().addOnSuccessListener { doc ->
+                    val name = doc.getString("name") ?: currentUser.displayName ?: "Marcello Aja"
+                    etOwnerName?.setText(name)
+                }
+        }
+
+        btnClose?.setOnClickListener { dialog.dismiss() }
+        btnCancel?.setOnClickListener { dialog.dismiss() }
+
+        tabBank?.setOnClickListener {
+            selectedTypeIsBank = true
+            tabBank.setBackgroundResource(R.drawable.bg_chip_selected)
+            tabBank.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#124332"))
+            tabBank.setTextColor(ContextCompat.getColor(this, R.color.white))
+
+            tabEWallet?.background = null
+            tabEWallet?.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
+
+            selectedProviderName = "BCA"
+            tvProvider?.text = "BCA"
+        }
+
+        tabEWallet?.setOnClickListener {
+            selectedTypeIsBank = false
+            tabEWallet.setBackgroundResource(R.drawable.bg_chip_selected)
+            tabEWallet.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#124332"))
+            tabEWallet.setTextColor(ContextCompat.getColor(this, R.color.white))
+
+            tabBank?.background = null
+            tabBank?.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
+
+            selectedProviderName = "GoPay"
+            tvProvider?.text = "GoPay"
+        }
+
+        tvProvider?.setOnClickListener {
+            val options = if (selectedTypeIsBank) {
+                arrayOf("BCA", "BNI", "Mandiri", "BRI", "CIMB Niaga", "Permata Bank")
+            } else {
+                arrayOf("GoPay", "OVO", "DANA", "ShopeePay", "LinkAja")
             }
-            .show()
+
+            AlertDialog.Builder(this)
+                .setTitle(if (selectedTypeIsBank) "Pilih Bank" else "Pilih E-Wallet")
+                .setItems(options) { _, which ->
+                    selectedProviderName = options[which]
+                    tvProvider.text = selectedProviderName
+                }
+                .show()
+        }
+
+        btnSave?.setOnClickListener {
+            val owner = etOwnerName?.text?.toString()?.trim() ?: ""
+            val number = etAccNumber?.text?.toString()?.trim() ?: ""
+
+            if (number.isEmpty()) {
+                etAccNumber?.error = "Nomor rekening / e-wallet wajib diisi"
+                return@setOnClickListener
+            }
+
+            val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+
+            currentModel = when (selectedProviderName) {
+                "BCA" -> currentModel.copy(bcaAccountNumber = number)
+                "BNI" -> currentModel.copy(bniAccountNumber = number)
+                "Mandiri" -> currentModel.copy(mandiriActive = true)
+                "GoPay" -> currentModel.copy(goPayEnabled = true)
+                "OVO" -> currentModel.copy(ovoEnabled = true)
+                "DANA" -> currentModel.copy(danaEnabled = true)
+                else -> currentModel
+            }
+
+            if (switchMain?.isChecked == true) {
+                currentModel = currentModel.copy(mainMethod = "$selectedProviderName Virtual Account")
+            }
+
+            FirestoreRepository.savePaymentSettings(currentUserId, currentModel) { success ->
+                if (success) {
+                    Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+                    loadPaymentSettingsFromFirestore()
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(this, "Gagal menyimpan. Coba lagi.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        dialog.show()
     }
 
     private fun saveSettingsToFirestore() {
