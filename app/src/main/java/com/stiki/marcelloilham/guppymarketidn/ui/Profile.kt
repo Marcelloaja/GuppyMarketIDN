@@ -38,11 +38,6 @@ class Profile : Fragment() {
     private var tvTabProfilePesanan: TextView? = null
     private var tvTabProfileUlasan: TextView? = null
 
-    private var indicatorProfileVarian: View? = null
-    private var indicatorProfileLelang: View? = null
-    private var indicatorProfilePesanan: View? = null
-    private var indicatorProfileUlasan: View? = null
-
     private var layoutContentProfileVarian: View? = null
     private var layoutContentProfileLelang: View? = null
     private var layoutContentProfilePesanan: View? = null
@@ -152,11 +147,6 @@ class Profile : Fragment() {
         tvTabProfilePesanan = view.findViewById(R.id.tvTabProfilePesanan)
         tvTabProfileUlasan = view.findViewById(R.id.tvTabProfileUlasan)
 
-        indicatorProfileVarian = view.findViewById(R.id.indicatorProfileVarian)
-        indicatorProfileLelang = view.findViewById(R.id.indicatorProfileLelang)
-        indicatorProfilePesanan = view.findViewById(R.id.indicatorProfilePesanan)
-        indicatorProfileUlasan = view.findViewById(R.id.indicatorProfileUlasan)
-
         layoutContentProfileVarian = view.findViewById(R.id.layoutContentProfileVarian)
         layoutContentProfileLelang = view.findViewById(R.id.layoutContentProfileLelang)
         layoutContentProfilePesanan = view.findViewById(R.id.layoutContentProfilePesanan)
@@ -172,35 +162,32 @@ class Profile : Fragment() {
 
     private fun selectTab(index: Int) {
         val safeContext = context ?: return
-        val primaryColor = ContextCompat.getColor(safeContext, R.color.guppy_primary)
-        val grayColor = ContextCompat.getColor(safeContext, R.color.guppy_text_gray)
-        val strokeColor = ContextCompat.getColor(safeContext, R.color.guppy_stroke)
-        val density = resources.displayMetrics.density
+        val activeBg = R.drawable.bg_vehicle_active_pill
+        val transparentBg = android.R.color.transparent
 
+        val blackColor = ContextCompat.getColor(safeContext, R.color.guppy_text_black)
+        val grayColor = ContextCompat.getColor(safeContext, R.color.guppy_text_gray)
+
+        val tabs = listOfNotNull(tabProfileVarian, tabProfileLelang, tabProfilePesanan, tabProfileUlasan)
         val textViews = listOfNotNull(tvTabProfileVarian, tvTabProfileLelang, tvTabProfilePesanan, tvTabProfileUlasan)
-        val indicators = listOfNotNull(indicatorProfileVarian, indicatorProfileLelang, indicatorProfilePesanan, indicatorProfileUlasan)
         val contents = listOfNotNull(layoutContentProfileVarian, layoutContentProfileLelang, layoutContentProfilePesanan, layoutContentProfileUlasan)
+
+        tabs.forEachIndexed { i, tab ->
+            if (i == index) {
+                tab.setBackgroundResource(activeBg)
+            } else {
+                tab.setBackgroundResource(transparentBg)
+            }
+        }
 
         textViews.forEachIndexed { i, tv ->
             if (i == index) {
-                tv.setTextColor(primaryColor)
+                tv.setTextColor(blackColor)
                 tv.typeface = androidx.core.content.res.ResourcesCompat.getFont(safeContext, R.font.inter_bold)
             } else {
                 tv.setTextColor(grayColor)
                 tv.typeface = androidx.core.content.res.ResourcesCompat.getFont(safeContext, R.font.inter_medium)
             }
-        }
-
-        indicators.forEachIndexed { i, v ->
-            val lp = v.layoutParams
-            if (i == index) {
-                v.setBackgroundColor(primaryColor)
-                lp.height = (2.5f * density).toInt()
-            } else {
-                v.setBackgroundColor(strokeColor)
-                lp.height = (1f * density).toInt()
-            }
-            v.layoutParams = lp
         }
 
         contents.forEachIndexed { i, c ->
