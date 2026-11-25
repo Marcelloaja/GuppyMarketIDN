@@ -131,19 +131,35 @@ class PaymentMethodsActivity : AppCompatActivity() {
     private fun loadRealUserPaymentMethods() {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
         FirestoreRepository.fetchUserPaymentMethods(currentUserId) { list ->
-            realPaymentMethodsList = list.distinctBy { it.id }.toMutableList()
+            val cleanList = list.distinctBy { it.id }
 
-            val mainMethod = realPaymentMethodsList.find { it.isMain } ?: realPaymentMethodsList.firstOrNull()
+            // Ensure EXACTLY ONE payment method is marked as main if cleanList is not empty!
+            val ensuredList = if (cleanList.isNotEmpty() && cleanList.none { it.isMain }) {
+                val fixedList = cleanList.mapIndexed { idx, item ->
+                    if (idx == 0) item.copy(isMain = true) else item.copy(isMain = false)
+                }
+                FirestoreRepository.updateAllPaymentMethods(currentUserId, fixedList) {}
+                fixedList
+            } else {
+                cleanList
+            }
+
+            realPaymentMethodsList = ensuredList.sortedByDescending { it.isMain }.toMutableList()
+
+            val mainMethod = realPaymentMethodsList.find { it.isMain }
+            val tvUtamaBadge = findViewById<TextView>(R.id.tvMainPaymentUtamaBadge)
 
             if (mainMethod != null) {
                 tvMainPaymentName.text = "${mainMethod.providerName} (${mainMethod.type})"
                 val last4 = if (mainMethod.accountNumber.length >= 4) mainMethod.accountNumber.takeLast(4) else mainMethod.accountNumber
                 tvMainPaymentAccNumber.text = "•••• $last4 (${mainMethod.accountOwner})"
                 tvWithdrawalAccountName.text = "${mainMethod.providerName} a.n. ${mainMethod.accountOwner}"
+                tvUtamaBadge?.visibility = View.VISIBLE
             } else {
                 tvMainPaymentName.text = "Belum Ada Metode Utama"
                 tvMainPaymentAccNumber.text = "Pilih atau tambah metode pembayaran di bawah"
                 tvWithdrawalAccountName.text = "Belum Ada Rekening Pencairan"
+                tvUtamaBadge?.visibility = View.GONE
             }
 
             if (realPaymentMethodsList.isEmpty()) {
@@ -323,6 +339,14 @@ class PaymentMethodsActivity : AppCompatActivity() {
         val switchMain = bottomSheetView.findViewById<SwitchMaterial>(R.id.switchSetMainPayment)
         val btnCancel = bottomSheetView.findViewById<View>(R.id.btnCancelBottomSheet)
         val btnSave = bottomSheetView.findViewById<View>(R.id.btnSaveBottomSheet)
+
+        if (realPaymentMethodsList.isEmpty()) {
+            switchMain?.isChecked = true
+            switchMain?.isEnabled = false
+        } else {
+            switchMain?.isChecked = false
+            switchMain?.isEnabled = true
+        }
 
         var selectedTypeIsBank = true
         var selectedProviderName = "BCA"
