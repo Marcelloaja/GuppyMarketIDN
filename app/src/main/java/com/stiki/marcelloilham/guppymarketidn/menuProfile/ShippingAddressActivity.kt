@@ -146,20 +146,47 @@ class ShippingAddressActivity : AppCompatActivity() {
     }
 
     private fun deleteAddress(addr: FirestoreRepository.AddressModel) {
-        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-        FirestoreRepository.deleteUserAddress(currentUserId, addr.id) { _ ->
-            addressesList.removeIf { it.id == addr.id }
+        val dialogView = layoutInflater.inflate(R.layout.dialog_delete_address_confirm, null)
 
-            if (addr.isDefault && addressesList.isNotEmpty()) {
-                addressesList[0] = addressesList[0].copy(isDefault = true)
-                FirestoreRepository.addUserAddress(currentUserId, addressesList[0]) {}
-            }
+        val tvName = dialogView.findViewById<TextView>(R.id.tvDialogRecipientName)
+        val tvPhone = dialogView.findViewById<TextView>(R.id.tvDialogPhone)
+        val tvFullAddr = dialogView.findViewById<TextView>(R.id.tvDialogFullAddress)
+        val btnCancel = dialogView.findViewById<TextView>(R.id.btnDialogCancel)
+        val btnConfirm = dialogView.findViewById<TextView>(R.id.btnDialogConfirmDelete)
 
-            addressesList = addressesList.sortedByDescending { it.isDefault }.toMutableList()
-            adapter.updateData(addressesList)
-            updateEmptyStateView()
-            Toast.makeText(this, "Alamat '${addr.label}' berhasil dihapus", Toast.LENGTH_SHORT).show()
+        tvName?.text = addr.recipientName
+        tvPhone?.text = addr.phone
+        tvFullAddr?.text = addr.fullAddress
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        btnCancel?.setOnClickListener {
+            alertDialog.dismiss()
         }
+
+        btnConfirm?.setOnClickListener {
+            val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+            FirestoreRepository.deleteUserAddress(currentUserId, addr.id) { _ ->
+                addressesList.removeIf { it.id == addr.id }
+
+                if (addr.isDefault && addressesList.isNotEmpty()) {
+                    addressesList[0] = addressesList[0].copy(isDefault = true)
+                    FirestoreRepository.addUserAddress(currentUserId, addressesList[0]) {}
+                }
+
+                addressesList = addressesList.sortedByDescending { it.isDefault }.toMutableList()
+                adapter.updateData(addressesList)
+                updateEmptyStateView()
+                Toast.makeText(this, "Alamat '${addr.label}' berhasil dihapus", Toast.LENGTH_SHORT).show()
+                alertDialog.dismiss()
+            }
+        }
+
+        alertDialog.show()
     }
 
     private fun showAddressFormDialog(existingAddr: FirestoreRepository.AddressModel?) {
