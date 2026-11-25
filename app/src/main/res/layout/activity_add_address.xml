@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA"
+    tools:context=".menuProfile.AddAddressActivity">
+
+    <!-- TOP BAR HEADER -->
+    <LinearLayout
+        android:id="@+id/topBarAddAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#FAFAFA"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/btnBackAddAddress"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_white_stroke"
+            android:src="@drawable/ic_chevron_left"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="Tambah Alamat Baru"
+                android:textColor="@color/guppy_text_black"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:fontFamily="@font/inter_regular"
+                android:text="Isi data penerima dan lokasi pengiriman"
+                android:textColor="@color/guppy_text_gray"
+                android:textSize="12.5sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dividerHeader"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/topBarAddAddress"
+        android:background="#EEEEEE"/>
+
+    <!-- FORM SCROLL CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dividerHeader"
+        android:layout_above="@id/bottomBarAddAddress"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="18dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="30dp">
+
+            <!-- 1. MAP LOCATION PICKER CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cari lokasi di peta"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14.5sp"/>
+
+                    <!-- Search Map Bar -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="10dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#F5F6F8"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="14dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_map_folded"
+                                app:tint="@color/guppy_text_gray"/>
+
+                            <EditText
+                                android:id="@+id/etSearchMap"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp"
+                                android:background="@null"
+                                android:hint="Cari nama jalan, gedung, atau area"
+                                android:textColorHint="@color/guppy_text_gray"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="13sp"
+                                android:singleLine="true"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- MAP PREVIEW BOX -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:layout_marginTop="12dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#E0F2F1"
+                        app:strokeColor="#B2DFDB"
+                        app:strokeWidth="1dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <!-- Google Maps Fragment or Live Map Frame -->
+                            <fragment
+                                android:id="@+id/mapFragmentAddress"
+                                android:name="com.google.android.gms.maps.SupportMapFragment"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+                            <!-- Fallback Map Image Pattern -->
+                            <ImageView
+                                android:id="@+id/imgMapFallback"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/bg_image_grid"
+                                android:scaleType="centerCrop"
+                                android:alpha="0.2"/>
+
+                            <!-- Coordinates Tag Badge -->
+                            <TextView
+                                android:id="@+id/tvMapCoordinates"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_margin="12dp"
+                                android:background="@drawable/bg_chip_selected"
+                                android:backgroundTint="#80000000"
+                                android:text="-6.2349, 106.9924"
+                                android:textColor="@color/white"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="11sp"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"/>
+
+                            <!-- Center Location Pin Marker -->
+                            <ImageView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:layout_centerInParent="true"
+                                android:src="@drawable/ic_map_folded"
+                                app:tint="#124332"/>
+
+                            <!-- Use My GPS Location Button -->
+                            <LinearLayout
+                                android:id="@+id/btnUseCurrentLocation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginBottom="12dp"
+                                android:background="@drawable/bg_chip_selected"
+                                android:backgroundTint="@color/white"
+                                android:paddingHorizontal="12dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:elevation="4dp"
+                                android:clickable="true"
+                                android:focusable="true">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:src="@drawable/ic_map_folded"
+                                    app:tint="#124332"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="6dp"
+                                    android:text="Gunakan lokasi saya"
+                                    android:textColor="#124332"
+                                    android:fontFamily="@font/inter_bold"
+                                    android:textSize="12sp"/>
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Map Selected Location Labels -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_map_folded"
+                            app:tint="@color/guppy_primary"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvSelectedAreaMain"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bekasi Selatan"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:id="@+id/tvSelectedAreaSub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:text="Kota Bekasi, Jawa Barat"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="12dp" android:background="#EEEEEE"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_map_folded"
+                            app:tint="@color/guppy_text_gray"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvSelectedLandmarkTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Summarecon Mall Bekasi"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="13.5sp"/>
+
+                            <TextView
+                                android:id="@+id/tvSelectedLandmarkSub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:text="Jl. Boulevard Ahmad Yani, Bekasi Utara"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2. DATA PENERIMA CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Data penerima"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14.5sp"/>
+
+                    <!-- Nama Penerima -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Nama penerima"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="6dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#F5F6F8"
+                        app:strokeWidth="0dp">
+
+                        <EditText
+                            android:id="@+id/etRecipientName"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:hint="Contoh: Marcello Aja"
+                            android:textColorHint="@color/guppy_text_gray"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_medium"
+                            android:paddingHorizontal="14dp"
+                            android:textSize="13.5sp"
+                            android:singleLine="true"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Nomor HP -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Nomor HP"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="60dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="8dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#E0F2F1"
+                            app:strokeWidth="0dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="+62"
+                                android:textColor="#124332"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F5F6F8"
+                            app:strokeWidth="0dp">
+
+                            <EditText
+                                android:id="@+id/etPhoneNumber"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@null"
+                                android:hint="81234567890"
+                                android:textColorHint="@color/guppy_text_gray"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:paddingHorizontal="14dp"
+                                android:textSize="13.5sp"
+                                android:inputType="phone"
+                                android:singleLine="true"/>
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Pastikan nomor HP aktif untuk mempermudah kurir."
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="11.5sp"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. ALAMAT LENGKAP CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alamat lengkap"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14.5sp"/>
+
+                    <!-- Alamat Detail -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Alamat detail"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:layout_marginTop="6dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#F5F6F8"
+                        app:strokeWidth="0dp">
+
+                        <EditText
+                            android:id="@+id/etDetailAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:gravity="top|start"
+                            android:hint="Jl. Raya Bekasi Selatan No. 12, RT 03/RW 05, Bekasi Selatan, Kota Bekasi, Jawa Barat 17147"
+                            android:textColorHint="@color/guppy_text_gray"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_regular"
+                            android:padding="12dp"
+                            android:textSize="13sp"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Patokan (Opsional) -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Patokan (opsional)"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="6dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#F5F6F8"
+                        app:strokeWidth="0dp">
+
+                        <EditText
+                            android:id="@+id/etLandmarkNotes"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:hint="Contoh: Dekat warung biru, pagar hijau"
+                            android:textColorHint="@color/guppy_text_gray"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_regular"
+                            android:paddingHorizontal="14dp"
+                            android:textSize="13sp"
+                            android:singleLine="true"/>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. LABEL ALAMAT CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Label alamat"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14.5sp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/chipRumah"
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_chip_selected"
+                            android:backgroundTint="#124332"
+                            android:text="Rumah"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="13sp"
+                            android:gravity="center"
+                            android:paddingHorizontal="18dp"
+                            android:layout_marginEnd="8dp"
+                            android:clickable="true"
+                            android:focusable="true"/>
+
+                        <TextView
+                            android:id="@+id/chipKantor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_btn_outline"
+                            android:text="Kantor"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="13sp"
+                            android:gravity="center"
+                            android:paddingHorizontal="18dp"
+                            android:layout_marginEnd="8dp"
+                            android:clickable="true"
+                            android:focusable="true"/>
+
+                        <TextView
+                            android:id="@+id/chipGudang"
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_btn_outline"
+                            android:text="Gudang Ikan"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="13sp"
+                            android:gravity="center"
+                            android:paddingHorizontal="18dp"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 5. JADIKAN ALAMAT UTAMA CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Jadikan alamat utama"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14.5sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Dipakai sebagai default saat checkout"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchSetDefaultAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        app:useMaterialThemeColors="true"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- STICKY BOTTOM ACTION BAR -->
+    <LinearLayout
+        android:id="@+id/bottomBarAddAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:elevation="12dp"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="14dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btnCancelAddress"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_btn_outline"
+            android:text="Batal"
+            android:textColor="@color/guppy_text_black"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="14.5sp"
+            android:gravity="center"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:id="@+id/btnSaveAddressBottom"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_chip_selected"
+            android:backgroundTint="#124332"
+            android:text="Simpan Alamat"
+            android:textColor="@color/white"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -85,6 +85,9 @@
             android:name=".menuProfile.ShippingAddressActivity"
             android:exported="false" />
         <activity
+            android:name=".menuProfile.AddAddressActivity"
+            android:exported="false" />
+        <activity
             android:name=".menuProfile.MenuProfile"
             android:exported="false" />
         <activity

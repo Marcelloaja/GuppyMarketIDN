@@ -61,8 +61,13 @@ class ShippingAddressActivity : AppCompatActivity() {
 
         val btnAdd = findViewById<TextView>(R.id.btnAddNewAddress)
         btnAdd.setOnClickListener {
-            showAddressFormDialog(null)
+            startActivity(android.content.Intent(this, AddAddressActivity::class.java))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadAddresses()
     }
 
     private fun loadAddresses() {
