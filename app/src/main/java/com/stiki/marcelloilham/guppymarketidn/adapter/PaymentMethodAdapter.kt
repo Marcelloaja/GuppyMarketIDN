@@ -13,11 +13,13 @@ import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 class PaymentMethodAdapter(
     private val context: Context,
     private var methodList: List<FirestoreRepository.PaymentMethodModel>,
+    private val onItemClicked: (FirestoreRepository.PaymentMethodModel) -> Unit,
     private val onSetMainClicked: (FirestoreRepository.PaymentMethodModel) -> Unit,
     private val onDeleteClicked: (FirestoreRepository.PaymentMethodModel) -> Unit
 ) : RecyclerView.Adapter<PaymentMethodAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val containerCard: View = view
         val imgTypeIcon: ImageView = view.findViewById(R.id.imgPaymentTypeIcon)
         val tvProviderName: TextView = view.findViewById(R.id.tvPaymentProviderName)
         val tvMainBadge: TextView = view.findViewById(R.id.tvPaymentMainBadge)
@@ -47,6 +49,7 @@ class PaymentMethodAdapter(
             holder.btnSetMain.visibility = View.VISIBLE
         }
 
+        holder.containerCard.setOnClickListener { onItemClicked(item) }
         holder.btnSetMain.setOnClickListener { onSetMainClicked(item) }
         holder.btnDelete.setOnClickListener { onDeleteClicked(item) }
     }

@@ -94,6 +94,9 @@
             android:name=".menuProfile.PaymentMethodsActivity"
             android:exported="false" />
         <activity
+            android:name=".menuProfile.AccountDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".menuProfile.MenuProfile"
             android:exported="false" />
         <activity

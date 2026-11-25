@@ -1,5 +1,6 @@
 package com.stiki.marcelloilham.guppymarketidn.menuProfile
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -81,6 +82,11 @@ class PaymentMethodsActivity : AppCompatActivity() {
         loadAdminFeeNotice()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadRealUserPaymentMethods()
+    }
+
     private fun initViews() {
         tvMainPaymentName = findViewById(R.id.tvMainPaymentName)
         tvMainPaymentAccNumber = findViewById(R.id.tvMainPaymentAccNumber)
@@ -151,6 +157,16 @@ class PaymentMethodsActivity : AppCompatActivity() {
             paymentAdapter = PaymentMethodAdapter(
                 context = this,
                 methodList = realPaymentMethodsList,
+                onItemClicked = { selected ->
+                    val intent = Intent(this, AccountDetailActivity::class.java).apply {
+                        putExtra("EXTRA_METHOD_ID", selected.id)
+                        putExtra("EXTRA_PROVIDER_NAME", selected.providerName)
+                        putExtra("EXTRA_ACCOUNT_NUMBER", selected.accountNumber)
+                        putExtra("EXTRA_OWNER_NAME", selected.accountOwner)
+                        putExtra("EXTRA_IS_MAIN", selected.isMain)
+                    }
+                    startActivity(intent)
+                },
                 onSetMainClicked = { selected ->
                     setMainPaymentMethod(selected)
                 },
