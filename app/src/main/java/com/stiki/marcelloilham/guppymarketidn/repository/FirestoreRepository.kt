@@ -234,19 +234,12 @@ object FirestoreRepository {
 
     // FETCH USER ADDRESSES
     fun fetchUserAddresses(userId: String, onResult: (List<AddressModel>) -> Unit) {
-        db.collection("user").document(userId).collection("addresses")
+        val currentUid = auth.currentUser?.uid ?: userId
+        db.collection("user").document(currentUid).collection("addresses")
             .get()
             .addOnSuccessListener { snapshot ->
                 val list = snapshot.toObjects(AddressModel::class.java)
-                if (list.isEmpty()) {
-                    val defaultAddressList = listOf(
-                        AddressModel("addr1", "Rumah", "Marcello Aja", "(0812-3456-7890)", "Jl. Raya Cibubur No. 14, RT 03/RW 05, Bekasi Selatan, Kota Bekasi, Jawa Barat 17147", true),
-                        AddressModel("addr2", "Gudang Ikan", "Marcello Aja", "(0812-3456-7890)", "Jl. Pahlawan Revolusi Blok C2 No. 7, Bekasi Barat, Kota Bekasi, Jawa Barat 17136", false)
-                    )
-                    onResult(defaultAddressList)
-                } else {
-                    onResult(list)
-                }
+                onResult(list)
             }
             .addOnFailureListener {
                 onResult(emptyList())

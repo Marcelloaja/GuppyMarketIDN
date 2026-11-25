@@ -111,8 +111,6 @@ class ShippingAddressActivity : AppCompatActivity() {
         updatedList.forEach { addr ->
             FirestoreRepository.addUserAddress(currentUserId, addr) {}
         }
-
-        Toast.makeText(this, "Alamat '${selectedAddr.label}' dipindahkan ke paling atas!", Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteAddress(addr: FirestoreRepository.AddressModel) {
