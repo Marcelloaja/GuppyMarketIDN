@@ -228,7 +228,7 @@ class AddProductActivity : AppCompatActivity() {
 
         val etCustom = EditText(this).apply {
             hint = "contoh: Super Red Albino High Dorsal"
-            singleLine = true
+            isSingleLine = true
         }
 
         layout.addView(etCustom)
@@ -274,7 +274,7 @@ class AddProductActivity : AppCompatActivity() {
                 .show()
         }
 
-        val strainOptions = arrayOf("Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass", "Koi", "Snakeskin", "✨ Lainnya (Ketik Sendiri)...")
+        val strainOptions = arrayOf("Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass", "Koi", "Snakeskin", "Lainnya (Ketik Sendiri)...")
         tvStrain.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Pilih Galur Varian")

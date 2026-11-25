@@ -159,7 +159,7 @@ class CreateAuctionActivity : AppCompatActivity() {
         cardPhoto2?.setOnClickListener { showMediaSourceDialog(isVideo = false, slotName = "Foto 2") }
         cardPhoto3?.setOnClickListener { showMediaSourceDialog(isVideo = false, slotName = "Foto 3") }
 
-        val strainOptions = arrayOf("Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass", "Koi", "Snakeskin", "✨ Lainnya (Ketik Sendiri)...")
+        val strainOptions = arrayOf("Mosaic", "Albino", "Tuxedo", "Dragon", "Moscow", "Grass", "Koi", "Snakeskin", "Lainnya (Ketik Sendiri)...")
         tvStrain.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Pilih Galur Varian")
