@@ -460,7 +460,8 @@ class Profile : Fragment() {
 
         val btnCourier = view.findViewById<View>(R.id.btnCourierSetting)
         btnCourier?.setOnClickListener {
-            Toast.makeText(requireContext(), "Kurir aktif: J&T, JNE, SiCepat (Biteship API)", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuProfile.CourierSettingsActivity::class.java)
+            startActivity(intent)
         }
 
         val btnPayment = view.findViewById<View>(R.id.btnPaymentSetting)

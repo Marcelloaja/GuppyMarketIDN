@@ -72,6 +72,16 @@ object FirestoreRepository {
         val notesForCourier: String = ""
     )
 
+    data class CourierSettingsModel(
+        val jneRegularEnabled: Boolean = true,
+        val jneYesEnabled: Boolean = true,
+        val jntExpressEnabled: Boolean = true,
+        val sicepatHaluEnabled: Boolean = false,
+        val grabInstantEnabled: Boolean = true,
+        val mainCourier: String = "JNE Reguler",
+        val pickupSchedule: String = "Setiap hari, 09.00–16.00"
+    )
+
     data class ChatMessageModel(
         val id: String = "",
         val senderId: String = "",
@@ -247,6 +257,35 @@ object FirestoreRepository {
             .addOnFailureListener {
                 onResult(emptyList())
             }
+    }
+
+    // FETCH COURIER SETTINGS
+    fun fetchCourierSettings(userId: String, onResult: (CourierSettingsModel) -> Unit) {
+        val currentUid = auth.currentUser?.uid ?: userId
+        db.collection("user").document(currentUid).collection("settings").document("couriers")
+            .get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    val settings = doc.toObject(CourierSettingsModel::class.java)
+                    if (settings != null) {
+                        onResult(settings)
+                        return@addOnSuccessListener
+                    }
+                }
+                onResult(CourierSettingsModel())
+            }
+            .addOnFailureListener {
+                onResult(CourierSettingsModel())
+            }
+    }
+
+    // SAVE COURIER SETTINGS
+    fun saveCourierSettings(userId: String, settings: CourierSettingsModel, onComplete: (Boolean) -> Unit) {
+        val currentUid = auth.currentUser?.uid ?: userId
+        db.collection("user").document(currentUid).collection("settings").document("couriers")
+            .set(settings)
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
     }
 
     // UPDATE ALL ADDRESSES ATOMICALLY IN FIRESTORE BATCH
