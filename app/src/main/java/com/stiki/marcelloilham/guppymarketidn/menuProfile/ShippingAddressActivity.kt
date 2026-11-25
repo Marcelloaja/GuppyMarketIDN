@@ -77,7 +77,6 @@ class ShippingAddressActivity : AppCompatActivity() {
             }
 
             addressesList = ensuredList.sortedByDescending { it.isDefault }.toMutableList()
-            tvTotalCount.text = "${addressesList.size} alamat"
 
             adapter = ShippingAddressAdapter(
                 context = this,
@@ -93,7 +92,20 @@ class ShippingAddressActivity : AppCompatActivity() {
                 }
             )
             recyclerAddresses.adapter = adapter
+            updateEmptyStateView()
         }
+    }
+
+    private fun updateEmptyStateView() {
+        val tvEmpty = findViewById<TextView>(R.id.tvEmptyAddressState)
+        if (addressesList.isEmpty()) {
+            recyclerAddresses.visibility = View.GONE
+            tvEmpty?.visibility = View.VISIBLE
+        } else {
+            recyclerAddresses.visibility = View.VISIBLE
+            tvEmpty?.visibility = View.GONE
+        }
+        tvTotalCount.text = "${addressesList.size} alamat"
     }
 
     private fun setDefaultAddress(selectedAddr: FirestoreRepository.AddressModel) {
@@ -124,8 +136,8 @@ class ShippingAddressActivity : AppCompatActivity() {
             }
 
             addressesList = addressesList.sortedByDescending { it.isDefault }.toMutableList()
-            tvTotalCount.text = "${addressesList.size} alamat"
             adapter.updateData(addressesList)
+            updateEmptyStateView()
             Toast.makeText(this, "Alamat '${addr.label}' berhasil dihapus", Toast.LENGTH_SHORT).show()
         }
     }

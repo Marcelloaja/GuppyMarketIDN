@@ -17,7 +17,7 @@
         android:layout_alignParentTop="true"
         android:background="#FAFAFA"
         android:paddingHorizontal="16dp"
-        android:paddingTop="48dp"
+        android:paddingTop="12dp"
         android:paddingBottom="12dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -152,6 +152,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:nestedScrollingEnabled="false"/>
+
+            <!-- EMPTY STATE TEXT -->
+            <TextView
+                android:id="@+id/tvEmptyAddressState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:layout_marginBottom="28dp"
+                android:gravity="center"
+                android:text="Belum ada alamat pengiriman tersimpan. Ketuk '+ Tambah Alamat Baru' untuk menambahkan."
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="13sp"
+                android:visibility="gone"/>
 
             <!-- SECTION 2: CATATAN PENGIRIMAN -->
             <TextView
