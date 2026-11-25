@@ -177,12 +177,12 @@ class AccountDetailActivity : AppCompatActivity() {
         btnCancel?.setOnClickListener { alertDialog.dismiss() }
 
         btnConfirm?.setOnClickListener {
+            alertDialog.dismiss()
+            Toast.makeText(this, "Metode '$providerName' berhasil dihapus!", Toast.LENGTH_SHORT).show()
+            finish()
+
             val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-            FirestoreRepository.deleteUserPaymentMethod(currentUserId, methodId) { _ ->
-                Toast.makeText(this, "Metode '$providerName' berhasil dihapus", Toast.LENGTH_SHORT).show()
-                alertDialog.dismiss()
-                finish()
-            }
+            FirestoreRepository.deleteUserPaymentMethod(currentUserId, methodId) {}
         }
 
         alertDialog.show()

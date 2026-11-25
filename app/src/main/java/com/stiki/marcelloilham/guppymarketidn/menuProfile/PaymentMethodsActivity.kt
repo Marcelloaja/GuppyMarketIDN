@@ -208,6 +208,17 @@ class PaymentMethodsActivity : AppCompatActivity() {
         }
     }
 
+    private fun updatePaymentEmptyState() {
+        if (realPaymentMethodsList.isEmpty()) {
+            recyclerPaymentMethods.visibility = View.GONE
+            tvEmptyPaymentMethods.visibility = View.VISIBLE
+            tvMainPaymentName.text = "Belum Ada Metode Utama"
+            tvMainPaymentAccNumber.text = "Pilih atau tambah metode pembayaran di bawah"
+            tvWithdrawalAccountName.text = "Belum Ada Rekening Pencairan"
+            findViewById<TextView>(R.id.tvMainPaymentUtamaBadge)?.visibility = View.GONE
+        }
+    }
+
     private fun deletePaymentMethod(selected: FirestoreRepository.PaymentMethodModel) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_delete_address_confirm, null)
 
@@ -238,18 +249,17 @@ class PaymentMethodsActivity : AppCompatActivity() {
         btnCancel?.setOnClickListener { alertDialog.dismiss() }
 
         btnConfirm?.setOnClickListener {
+            alertDialog.dismiss()
+
             val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-            btnConfirm.isEnabled = false
-            FirestoreRepository.deleteUserPaymentMethod(currentUserId, selected.id) { success ->
-                runOnUiThread {
-                    alertDialog.dismiss()
-                    if (success) {
-                        Toast.makeText(this, "Metode '${selected.providerName}' berhasil dihapus!", Toast.LENGTH_SHORT).show()
-                        loadRealUserPaymentMethods()
-                    } else {
-                        Toast.makeText(this, "Gagal menghapus metode pembayaran.", Toast.LENGTH_SHORT).show()
-                    }
-                }
+            realPaymentMethodsList.removeIf { it.id == selected.id }
+            paymentAdapter.updateData(realPaymentMethodsList)
+            updatePaymentEmptyState()
+
+            Toast.makeText(this, "Metode '${selected.providerName}' berhasil dihapus!", Toast.LENGTH_SHORT).show()
+
+            FirestoreRepository.deleteUserPaymentMethod(currentUserId, selected.id) { _ ->
+                loadRealUserPaymentMethods()
             }
         }
 
