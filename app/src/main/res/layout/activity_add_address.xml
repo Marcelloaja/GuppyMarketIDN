@@ -124,7 +124,7 @@
                             <ImageView
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/ic_map_folded"
+                                android:src="@drawable/ic_location_pin"
                                 app:tint="@color/guppy_text_gray"/>
 
                             <EditText
@@ -185,7 +185,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:layout_centerInParent="true"
-                                android:src="@drawable/ic_map_folded"
+                                android:src="@drawable/ic_location_pin"
                                 app:tint="#124332"/>
 
                             <!-- Use My GPS Location Button -->
@@ -208,7 +208,7 @@
                                 <ImageView
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
-                                    android:src="@drawable/ic_map_folded"
+                                    android:src="@drawable/ic_gps_fixed"
                                     app:tint="#124332"/>
 
                                 <TextView
@@ -241,7 +241,7 @@
                         <ImageView
                             android:layout_width="18dp"
                             android:layout_height="18dp"
-                            android:src="@drawable/ic_map_folded"
+                            android:src="@drawable/ic_location_pin"
                             app:tint="@color/guppy_primary"/>
 
                         <LinearLayout
@@ -290,7 +290,7 @@
                         <ImageView
                             android:layout_width="18dp"
                             android:layout_height="18dp"
-                            android:src="@drawable/ic_map_folded"
+                            android:src="@drawable/ic_landmark"
                             app:tint="@color/guppy_text_gray"/>
 
                         <LinearLayout
