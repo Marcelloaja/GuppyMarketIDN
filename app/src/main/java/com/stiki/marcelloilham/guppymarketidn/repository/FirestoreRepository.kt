@@ -253,10 +253,14 @@ object FirestoreRepository {
             }
     }
 
-    // SAVE ADDRESS TO FIRESTORE
+    // SAVE OR UPDATE ADDRESS TO FIRESTORE
     fun addUserAddress(userId: String, address: AddressModel, onComplete: (Boolean) -> Unit) {
-        val docRef = db.collection("user").document(userId).collection("addresses").document()
-        val finalAddr = address.copy(id = docRef.id)
+        val docRef = if (address.id.isNotEmpty()) {
+            db.collection("user").document(userId).collection("addresses").document(address.id)
+        } else {
+            db.collection("user").document(userId).collection("addresses").document()
+        }
+        val finalAddr = if (address.id.isEmpty()) address.copy(id = docRef.id) else address
 
         docRef.set(finalAddr)
             .addOnSuccessListener { onComplete(true) }

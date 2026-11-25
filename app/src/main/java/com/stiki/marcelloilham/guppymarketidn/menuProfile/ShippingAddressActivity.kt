@@ -69,7 +69,8 @@ class ShippingAddressActivity : AppCompatActivity() {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
 
         FirestoreRepository.fetchUserAddresses(currentUserId) { list ->
-            addressesList = list.sortedByDescending { it.isDefault }.toMutableList()
+            val cleanList = list.distinctBy { it.id }.distinctBy { it.label }
+            addressesList = cleanList.sortedByDescending { it.isDefault }.toMutableList()
             tvTotalCount.text = "${addressesList.size} alamat"
 
             adapter = ShippingAddressAdapter(
