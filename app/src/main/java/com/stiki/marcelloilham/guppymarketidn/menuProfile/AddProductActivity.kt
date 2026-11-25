@@ -195,6 +195,20 @@ class AddProductActivity : AppCompatActivity() {
         tvUnit = findViewById(R.id.tvSelectUnit)
         etStock = findViewById(R.id.etProductStock)
         etDescription = findViewById(R.id.etProductDescription)
+
+        updateStrainVisibility(selectedCategory)
+    }
+
+    private fun updateStrainVisibility(category: String) {
+        val layoutStrain = findViewById<View>(R.id.layoutStrainContainer)
+        val isFishCategory = category.equals("Ikan Kontes", ignoreCase = true) || category.equals("Indukan Breeder", ignoreCase = true)
+
+        if (isFishCategory) {
+            layoutStrain?.visibility = View.VISIBLE
+        } else {
+            layoutStrain?.visibility = View.GONE
+            selectedStrain = "Semua"
+        }
     }
 
     private fun setupListeners() {
@@ -217,6 +231,7 @@ class AddProductActivity : AppCompatActivity() {
                 .setItems(categoryOptions) { _, which ->
                     selectedCategory = categoryOptions[which]
                     tvCategory.text = "$selectedCategory ∨"
+                    updateStrainVisibility(selectedCategory)
                 }
                 .show()
         }
