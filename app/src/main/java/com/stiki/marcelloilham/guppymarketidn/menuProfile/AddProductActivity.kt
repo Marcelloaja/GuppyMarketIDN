@@ -196,18 +196,26 @@ class AddProductActivity : AppCompatActivity() {
         etStock = findViewById(R.id.etProductStock)
         etDescription = findViewById(R.id.etProductDescription)
 
-        updateStrainVisibility(selectedCategory)
+        updateStrainAndUnitVisibility(selectedCategory)
     }
 
-    private fun updateStrainVisibility(category: String) {
+    private fun updateStrainAndUnitVisibility(category: String) {
         val layoutStrain = findViewById<View>(R.id.layoutStrainContainer)
         val isFishCategory = category.equals("Ikan Kontes", ignoreCase = true) || category.equals("Indukan Breeder", ignoreCase = true)
 
         if (isFishCategory) {
             layoutStrain?.visibility = View.VISIBLE
+            if (selectedUnit !in listOf("per pasang", "per ekor", "per paket")) {
+                selectedUnit = "per pasang"
+                tvUnit.text = "$selectedUnit ∨"
+            }
         } else {
             layoutStrain?.visibility = View.GONE
             selectedStrain = "Semua"
+            if (selectedUnit in listOf("per pasang", "per ekor")) {
+                selectedUnit = "per pcs"
+                tvUnit.text = "$selectedUnit ∨"
+            }
         }
     }
 
@@ -231,7 +239,7 @@ class AddProductActivity : AppCompatActivity() {
                 .setItems(categoryOptions) { _, which ->
                     selectedCategory = categoryOptions[which]
                     tvCategory.text = "$selectedCategory ∨"
-                    updateStrainVisibility(selectedCategory)
+                    updateStrainAndUnitVisibility(selectedCategory)
                 }
                 .show()
         }
@@ -247,8 +255,15 @@ class AddProductActivity : AppCompatActivity() {
                 .show()
         }
 
-        val unitOptions = arrayOf("per pasang", "per ekor", "per paket", "per pcs")
         tvUnit.setOnClickListener {
+            val isFishCategory = selectedCategory.equals("Ikan Kontes", ignoreCase = true) || selectedCategory.equals("Indukan Breeder", ignoreCase = true)
+
+            val unitOptions = if (isFishCategory) {
+                arrayOf("per pasang", "per ekor", "per paket")
+            } else {
+                arrayOf("per pcs", "per botol", "per bungkus", "per paket", "per set")
+            }
+
             AlertDialog.Builder(this)
                 .setTitle("Pilih Satuan Jual")
                 .setItems(unitOptions) { _, which ->
