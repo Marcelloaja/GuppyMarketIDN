@@ -109,6 +109,7 @@ class Profile : Fragment() {
         fetchUserData()
         loadDefaultAddressSub()
         loadDefaultCourierSub()
+        loadDefaultPaymentSub()
         setupProfileAuctions(view)
         setupProfileProducts(view)
         setupProfileOrders(view)
@@ -122,6 +123,7 @@ class Profile : Fragment() {
             loadUserProducts()
             loadDefaultAddressSub()
             loadDefaultCourierSub()
+            loadDefaultPaymentSub()
             swipeRefresh.postDelayed({
                 swipeRefresh.isRefreshing = false
             }, 1000)
@@ -134,6 +136,7 @@ class Profile : Fragment() {
         super.onResume()
         loadDefaultAddressSub()
         loadDefaultCourierSub()
+        loadDefaultPaymentSub()
         if (::recyclerProfileAuctions.isInitialized) {
             loadUserAuctions()
         }
@@ -333,6 +336,18 @@ class Profile : Fragment() {
         }
     }
 
+    private fun loadDefaultPaymentSub() {
+        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+        FirestoreRepository.fetchPaymentSettings(currentUserId) { model ->
+            if (isAdded) {
+                val tvPaymentSub = view?.findViewById<TextView>(R.id.tvPaymentSettingSub)
+                val mainMethod = model.mainMethod
+                val last4 = model.bcaAccountNumber.takeLast(4)
+                tvPaymentSub?.text = "$mainMethod •••• $last4"
+            }
+        }
+    }
+
     private lateinit var recyclerProfileAuctions: RecyclerView
     private lateinit var myAuctionListAdapter: MyAuctionListAdapter
     private lateinit var recyclerProfileProducts: RecyclerView
@@ -488,7 +503,8 @@ class Profile : Fragment() {
 
         val btnPayment = view.findViewById<View>(R.id.btnPaymentSetting)
         btnPayment?.setOnClickListener {
-            startActivity(Intent(requireContext(), MenuProfile::class.java))
+            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuProfile.PaymentMethodsActivity::class.java)
+            startActivity(intent)
         }
 
         val btnGuarantee = view.findViewById<View>(R.id.btnGuaranteeSetting)

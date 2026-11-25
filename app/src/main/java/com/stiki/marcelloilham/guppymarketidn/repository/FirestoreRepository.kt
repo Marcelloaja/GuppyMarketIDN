@@ -82,6 +82,18 @@ object FirestoreRepository {
         val pickupSchedule: String = "Setiap hari, 09.00–16.00"
     )
 
+    data class PaymentSettingsModel(
+        val mainMethod: String = "BCA Virtual Account",
+        val bcaAccountNumber: String = "4821",
+        val bniAccountNumber: String = "7730",
+        val mandiriActive: Boolean = false,
+        val goPayEnabled: Boolean = true,
+        val ovoEnabled: Boolean = true,
+        val danaEnabled: Boolean = false,
+        val qrisEnabled: Boolean = true,
+        val withdrawalAccount: String = "BCA a.n. Marcello"
+    )
+
     data class ChatMessageModel(
         val id: String = "",
         val senderId: String = "",
@@ -283,6 +295,35 @@ object FirestoreRepository {
     fun saveCourierSettings(userId: String, settings: CourierSettingsModel, onComplete: (Boolean) -> Unit) {
         val currentUid = auth.currentUser?.uid ?: userId
         db.collection("user").document(currentUid).collection("settings").document("couriers")
+            .set(settings)
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    // FETCH PAYMENT SETTINGS
+    fun fetchPaymentSettings(userId: String, onResult: (PaymentSettingsModel) -> Unit) {
+        val currentUid = auth.currentUser?.uid ?: userId
+        db.collection("user").document(currentUid).collection("settings").document("payments")
+            .get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    val settings = doc.toObject(PaymentSettingsModel::class.java)
+                    if (settings != null) {
+                        onResult(settings)
+                        return@addOnSuccessListener
+                    }
+                }
+                onResult(PaymentSettingsModel())
+            }
+            .addOnFailureListener {
+                onResult(PaymentSettingsModel())
+            }
+    }
+
+    // SAVE PAYMENT SETTINGS
+    fun savePaymentSettings(userId: String, settings: PaymentSettingsModel, onComplete: (Boolean) -> Unit) {
+        val currentUid = auth.currentUser?.uid ?: userId
+        db.collection("user").document(currentUid).collection("settings").document("payments")
             .set(settings)
             .addOnSuccessListener { onComplete(true) }
             .addOnFailureListener { onComplete(false) }
