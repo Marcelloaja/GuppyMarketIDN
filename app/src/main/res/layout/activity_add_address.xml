@@ -180,13 +180,7 @@
                                 android:paddingHorizontal="10dp"
                                 android:paddingVertical="4dp"/>
 
-                            <!-- Center Location Pin Marker -->
-                            <ImageView
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:layout_centerInParent="true"
-                                android:src="@drawable/ic_location_pin"
-                                app:tint="#124332"/>
+
 
                             <!-- Use My GPS Location Button -->
                             <LinearLayout
