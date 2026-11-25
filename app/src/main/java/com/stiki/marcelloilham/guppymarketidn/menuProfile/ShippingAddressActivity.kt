@@ -70,7 +70,13 @@ class ShippingAddressActivity : AppCompatActivity() {
 
         FirestoreRepository.fetchUserAddresses(currentUserId) { list ->
             val cleanList = list.distinctBy { it.id }.distinctBy { it.label }
-            addressesList = cleanList.sortedByDescending { it.isDefault }.toMutableList()
+            val ensuredList = if (cleanList.isNotEmpty() && cleanList.none { it.isDefault }) {
+                cleanList.mapIndexed { idx, addr -> if (idx == 0) addr.copy(isDefault = true) else addr }
+            } else {
+                cleanList
+            }
+
+            addressesList = ensuredList.sortedByDescending { it.isDefault }.toMutableList()
             tvTotalCount.text = "${addressesList.size} alamat"
 
             adapter = ShippingAddressAdapter(
@@ -113,6 +119,13 @@ class ShippingAddressActivity : AppCompatActivity() {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
         FirestoreRepository.deleteUserAddress(currentUserId, addr.id) { _ ->
             addressesList.removeIf { it.id == addr.id }
+
+            if (addr.isDefault && addressesList.isNotEmpty()) {
+                addressesList[0] = addressesList[0].copy(isDefault = true)
+                FirestoreRepository.addUserAddress(currentUserId, addressesList[0]) {}
+            }
+
+            addressesList = addressesList.sortedByDescending { it.isDefault }.toMutableList()
             tvTotalCount.text = "${addressesList.size} alamat"
             adapter.updateData(addressesList)
             Toast.makeText(this, "Alamat '${addr.label}' berhasil dihapus", Toast.LENGTH_SHORT).show()
@@ -166,13 +179,16 @@ class ShippingAddressActivity : AppCompatActivity() {
                 }
 
                 val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+                val isFirstAddress = addressesList.isEmpty()
+                val isDefaultVal = existingAddr?.isDefault ?: isFirstAddress
+
                 val newModel = FirestoreRepository.AddressModel(
                     id = existingAddr?.id ?: "addr_${System.currentTimeMillis()}",
                     label = label,
                     recipientName = name,
                     phone = phone,
                     fullAddress = addressText,
-                    isDefault = existingAddr?.isDefault ?: (addressesList.isEmpty())
+                    isDefault = isDefaultVal
                 )
 
                 FirestoreRepository.addUserAddress(currentUserId, newModel) { _ ->
