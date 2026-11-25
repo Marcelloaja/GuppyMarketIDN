@@ -1,5 +1,6 @@
 package com.stiki.marcelloilham.guppymarketidn.menuProfile
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -7,6 +8,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -35,10 +38,25 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private var realPaymentMethodsList: MutableList<FirestoreRepository.PaymentMethodModel> = mutableListOf()
+    private var currentBottomSheetView: View? = null
+    private var tempQrisImageUri: android.net.Uri? = null
+    private lateinit var qrisImagePickerLauncher: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_payment_methods)
+
+        qrisImagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            if (uri != null) {
+                tempQrisImageUri = uri
+                val ivPreview = currentBottomSheetView?.findViewById<ImageView>(R.id.ivQrisPreview)
+                val placeholder = currentBottomSheetView?.findViewById<View>(R.id.layoutQrisPlaceholder)
+                ivPreview?.setImageURI(uri)
+                ivPreview?.visibility = View.VISIBLE
+                placeholder?.visibility = View.GONE
+                Toast.makeText(this, "Foto Barcode QRIS berhasil diunggah! ✓", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         val topBar = findViewById<View>(R.id.topBarPaymentMethods)
         topBar?.let {
@@ -207,8 +225,24 @@ class PaymentMethodsActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun updateProviderFieldsVisibility(providerName: String, dialogView: View) {
+        val layoutAccNum = dialogView.findViewById<View>(R.id.layoutAccountNumberContainer)
+        val layoutQrisUpload = dialogView.findViewById<View>(R.id.layoutQrisUploadContainer)
+
+        if (providerName.contains("QRIS", ignoreCase = true)) {
+            layoutAccNum?.visibility = View.GONE
+            layoutQrisUpload?.visibility = View.VISIBLE
+        } else {
+            layoutAccNum?.visibility = View.VISIBLE
+            layoutQrisUpload?.visibility = View.GONE
+        }
+    }
+
     private fun showAddPaymentBottomSheet() {
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_add_payment_method, null)
+        currentBottomSheetView = bottomSheetView
+        tempQrisImageUri = null
+
         val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
         dialog.setContentView(bottomSheetView)
 
@@ -218,6 +252,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
         val tvProvider = bottomSheetView.findViewById<TextView>(R.id.tvSelectProvider)
         val etOwnerName = bottomSheetView.findViewById<EditText>(R.id.etAccountOwnerName)
         val etAccNumber = bottomSheetView.findViewById<EditText>(R.id.etAccountNumber)
+        val cardUploadQris = bottomSheetView.findViewById<View>(R.id.cardUploadQris)
         val switchMain = bottomSheetView.findViewById<SwitchMaterial>(R.id.switchSetMainPayment)
         val btnCancel = bottomSheetView.findViewById<View>(R.id.btnCancelBottomSheet)
         val btnSave = bottomSheetView.findViewById<View>(R.id.btnSaveBottomSheet)
@@ -238,6 +273,10 @@ class PaymentMethodsActivity : AppCompatActivity() {
         btnClose?.setOnClickListener { dialog.dismiss() }
         btnCancel?.setOnClickListener { dialog.dismiss() }
 
+        cardUploadQris?.setOnClickListener {
+            qrisImagePickerLauncher.launch("image/*")
+        }
+
         tabBank?.setOnClickListener {
             selectedTypeIsBank = true
             tabBank.setBackgroundResource(R.drawable.bg_chip_selected)
@@ -249,6 +288,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
             selectedProviderName = "BCA"
             tvProvider?.text = "BCA"
+            updateProviderFieldsVisibility(selectedProviderName, bottomSheetView)
         }
 
         tabEWallet?.setOnClickListener {
@@ -262,6 +302,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
             selectedProviderName = "GoPay"
             tvProvider?.text = "GoPay"
+            updateProviderFieldsVisibility(selectedProviderName, bottomSheetView)
         }
 
         tvProvider?.setOnClickListener {
@@ -278,10 +319,12 @@ class PaymentMethodsActivity : AppCompatActivity() {
                         showCustomProviderDialog(selectedTypeIsBank) { typedName ->
                             selectedProviderName = typedName
                             tvProvider.text = selectedProviderName
+                            updateProviderFieldsVisibility(selectedProviderName, bottomSheetView)
                         }
                     } else {
                         selectedProviderName = options[which]
                         tvProvider.text = selectedProviderName
+                        updateProviderFieldsVisibility(selectedProviderName, bottomSheetView)
                     }
                 }
                 .show()
@@ -291,9 +334,22 @@ class PaymentMethodsActivity : AppCompatActivity() {
             val owner = etOwnerName?.text?.toString()?.trim() ?: ""
             val number = etAccNumber?.text?.toString()?.trim() ?: ""
 
-            if (number.isEmpty()) {
+            val isQris = selectedProviderName.contains("QRIS", ignoreCase = true)
+
+            if (!isQris && number.isEmpty()) {
                 etAccNumber?.error = "Nomor rekening / e-wallet wajib diisi"
                 return@setOnClickListener
+            }
+
+            if (isQris && tempQrisImageUri == null) {
+                Toast.makeText(this, "Harap upload foto barcode QRIS Toko terlebih dahulu", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val finalAccNumber = if (isQris) {
+                tempQrisImageUri?.toString() ?: "Barcode QRIS Terunggah"
+            } else {
+                number
             }
 
             val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
@@ -301,9 +357,9 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
             val newMethod = FirestoreRepository.PaymentMethodModel(
                 id = "pay_${System.currentTimeMillis()}",
-                type = if (selectedTypeIsBank) "Bank" else "E-Wallet",
+                type = if (isQris) "QRIS" else if (selectedTypeIsBank) "Bank" else "E-Wallet",
                 providerName = selectedProviderName,
-                accountNumber = number,
+                accountNumber = finalAccNumber,
                 accountOwner = owner,
                 isMain = isMain
             )
