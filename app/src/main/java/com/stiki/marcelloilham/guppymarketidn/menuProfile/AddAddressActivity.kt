@@ -527,11 +527,19 @@ class AddAddressActivity : AppCompatActivity() {
 
         if (isDefaultAddr) {
             FirestoreRepository.fetchUserAddresses(currentUserId) { existingList ->
-                val updatedList = existingList.map {
-                    if (it.id == newAddress.id) it.copy(isDefault = true) else it.copy(isDefault = false)
-                }
-                FirestoreRepository.updateAllAddresses(currentUserId, updatedList) {
-                    executeSave()
+                val updatedList = existingList.filterNot { it.id == newAddress.id }.map {
+                    it.copy(isDefault = false)
+                } + newAddress.copy(isDefault = true)
+
+                FirestoreRepository.updateAllAddresses(currentUserId, updatedList) { success ->
+                    btnSave?.isEnabled = true
+                    btnSave?.text = if (isEditMode) "Simpan Perubahan" else "Simpan Alamat"
+
+                    if (success) {
+                        showAddressSuccessDialog(newAddress)
+                    } else {
+                        Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         } else {

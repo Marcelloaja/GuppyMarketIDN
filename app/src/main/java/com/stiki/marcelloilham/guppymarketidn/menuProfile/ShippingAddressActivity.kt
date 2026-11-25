@@ -75,7 +75,7 @@ class ShippingAddressActivity : AppCompatActivity() {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
 
         FirestoreRepository.fetchUserAddresses(currentUserId) { list ->
-            val cleanList = list.distinctBy { it.id }.distinctBy { it.label }
+            val cleanList = list.distinctBy { it.id }
 
             val ensuredList = if (cleanList.isNotEmpty() && cleanList.none { it.isDefault }) {
                 val fixedList = cleanList.mapIndexed { idx, addr ->
