@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA"
+    android:background="#FAFAFA"
     tools:context=".menuAuction.CreateAuctionActivity">
 
     <!-- TOP BAR HEADER -->
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="#F8F9FA"
+        android:background="#FAFAFA"
         android:paddingHorizontal="16dp"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
@@ -49,13 +49,13 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/topBarCreateAuction"
-        android:background="@color/guppy_stroke"/>
+        android:background="#EEEEEE"/>
 
     <!-- FORM SCROLL CONTENT -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/dividerHeader"
+        android:layout_below="@id/topBarCreateAuction"
         android:layout_above="@id/bottomBarPublish"
         android:fillViewport="true">
 
@@ -64,189 +64,281 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="40dp">
+            android:paddingTop="16dp"
+            android:paddingBottom="30dp">
 
-            <!-- 1. UPLOAD MEDIA (1 VIDEO + 3 PHOTOS GRID) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Media Ikan (1 Video + 3 Foto)"
-                android:textColor="@color/guppy_text_black"
-                android:fontFamily="@font/inter_bold"
-                android:textSize="14sp"/>
-
-            <LinearLayout
+            <!-- 1. MEDIA IKAN CARD -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="0dp">
 
-                <!-- Video Slot -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardUploadVideo"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="100dp"
-                    android:layout_marginEnd="6dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/white"
-                    app:strokeColor="@color/guppy_primary"
-                    app:strokeWidth="1.5dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="6dp">
-
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_video_camera"
-                            app:tint="@color/guppy_primary"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="+ Video"
-                            android:textColor="@color/guppy_primary"
-                            android:fontFamily="@font/inter_bold"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- Photo Slot 1 -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardUploadPhoto1"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="100dp"
-                    android:layout_marginHorizontal="3dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/white"
-                    app:strokeColor="@color/guppy_stroke"
-                    app:strokeWidth="1dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Media Ikan (1 Video + 3 Foto)"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="14.5sp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_image_gallery"
-                            app:tint="@color/guppy_text_gray"/>
+                        <!-- Video Slot -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardUploadVideo"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="88dp"
+                            android:layout_marginEnd="5dp"
+                            app:cardCornerRadius="14dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#E8F5E9"
+                            app:strokeColor="@color/guppy_primary"
+                            app:strokeWidth="1.5dp"
+                            android:clickable="true"
+                            android:focusable="true">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Foto 1"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="11sp"/>
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:id="@+id/ivVideoPreview"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop"
+                                    android:visibility="gone"/>
+
+                                <LinearLayout
+                                    android:id="@+id/layoutVideoPlaceholder"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="4dp">
+
+                                    <ImageView
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:src="@drawable/ic_video_camera"
+                                        app:tint="@color/guppy_primary"/>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="+ Video"
+                                        android:textColor="@color/guppy_primary"
+                                        android:fontFamily="@font/inter_bold"
+                                        android:textSize="11sp"/>
+                                </LinearLayout>
+                            </FrameLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Photo Slot 1 -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardUploadPhoto1"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="88dp"
+                            android:layout_marginHorizontal="3dp"
+                            app:cardCornerRadius="14dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F2F4F5"
+                            app:strokeWidth="0dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:id="@+id/ivPhotoPreview1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop"
+                                    android:visibility="gone"/>
+
+                                <LinearLayout
+                                    android:id="@+id/layoutPhotoPlaceholder1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <ImageView
+                                        android:layout_width="22dp"
+                                        android:layout_height="22dp"
+                                        android:src="@drawable/ic_image_gallery"
+                                        app:tint="@color/guppy_text_gray"/>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Foto 1"
+                                        android:textColor="@color/guppy_text_gray"
+                                        android:fontFamily="@font/inter_medium"
+                                        android:textSize="11sp"/>
+                                </LinearLayout>
+                            </FrameLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Photo Slot 2 -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardUploadPhoto2"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="88dp"
+                            android:layout_marginHorizontal="3dp"
+                            app:cardCornerRadius="14dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F2F4F5"
+                            app:strokeWidth="0dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:id="@+id/ivPhotoPreview2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop"
+                                    android:visibility="gone"/>
+
+                                <LinearLayout
+                                    android:id="@+id/layoutPhotoPlaceholder2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <ImageView
+                                        android:layout_width="22dp"
+                                        android:layout_height="22dp"
+                                        android:src="@drawable/ic_image_gallery"
+                                        app:tint="@color/guppy_text_gray"/>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Foto 2"
+                                        android:textColor="@color/guppy_text_gray"
+                                        android:fontFamily="@font/inter_medium"
+                                        android:textSize="11sp"/>
+                                </LinearLayout>
+                            </FrameLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Photo Slot 3 -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardUploadPhoto3"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="88dp"
+                            android:layout_marginStart="5dp"
+                            app:cardCornerRadius="14dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F2F4F5"
+                            app:strokeWidth="0dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:id="@+id/ivPhotoPreview3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop"
+                                    android:visibility="gone"/>
+
+                                <LinearLayout
+                                    android:id="@+id/layoutPhotoPlaceholder3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <ImageView
+                                        android:layout_width="22dp"
+                                        android:layout_height="22dp"
+                                        android:src="@drawable/ic_image_gallery"
+                                        app:tint="@color/guppy_text_gray"/>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Foto 3"
+                                        android:textColor="@color/guppy_text_gray"
+                                        android:fontFamily="@font/inter_medium"
+                                        android:textSize="11sp"/>
+                                </LinearLayout>
+                            </FrameLayout>
+                        </androidx.cardview.widget.CardView>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
 
-                <!-- Photo Slot 2 -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardUploadPhoto2"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="100dp"
-                    android:layout_marginHorizontal="3dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/white"
-                    app:strokeColor="@color/guppy_stroke"
-                    app:strokeWidth="1dp"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
+                    <!-- Greenish Compression Notice Box -->
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#E8F5E9"
+                        app:strokeColor="#A5D6A7"
+                        app:strokeWidth="1dp">
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_image_gallery"
-                            app:tint="@color/guppy_text_gray"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Foto 2"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                            android:padding="12dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-                <!-- Photo Slot 3 -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardUploadPhoto3"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="6dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/white"
-                    app:strokeColor="@color/guppy_stroke"
-                    app:strokeWidth="1dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="💡"
+                                android:textSize="14sp"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tvVideoCompressNote"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="Maksimal video 10 MB. Jika ukuran melebihi 10 MB, sistem akan otomatis mengompresi video agar cepat di-stream tanpa mengurangi kejernihan warna ikan."
+                                android:textColor="#2E7D32"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="11.5sp"
+                                android:lineSpacingExtra="2dp"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_image_gallery"
-                            app:tint="@color/guppy_text_gray"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Foto 3"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <!-- Video Compression Guidance Note -->
-            <TextView
-                android:id="@+id/tvVideoCompressNote"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="💡 Maksimal video 10 MB. Jika ukuran melebihi 10 MB, sistem akan otomatis mengompresi video agar cepat di-stream tanpa mengurangi kejernihan warna ikan."
-                android:textColor="@color/guppy_primary"
-                android:fontFamily="@font/inter_medium"
-                android:textSize="11.5sp"
-                android:lineSpacingExtra="2dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- 2. JUDUL LELANG -->
             <TextView
@@ -256,424 +348,641 @@
                 android:text="Judul Lelang"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_bold"
-                android:textSize="14sp"/>
+                android:textSize="14.5sp"/>
 
-            <EditText
-                android:id="@+id/etAuctionTitle"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/bg_search_bar"
-                android:hint="contoh: Red Dragon Delta Grade A+ Pair"
-                android:textColorHint="@color/guppy_text_gray"
-                android:textColor="@color/guppy_text_black"
-                android:fontFamily="@font/inter_regular"
-                android:paddingHorizontal="14dp"
-                android:textSize="13.5sp"
-                android:singleLine="true"/>
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
 
-            <!-- 3. Rincian SPESIFIKASI DETAIL IKAN TABLE -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Spesifikasi Detail Ikan"
-                android:textColor="@color/guppy_primary"
-                android:fontFamily="@font/inter_bold"
-                android:textSize="14sp"/>
-
-            <!-- Strain & Gender -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Strain / Genetik"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="13sp"/>
-
-                    <TextView
-                        android:id="@+id/tvSelectStrain"
-                        android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_search_bar"
-                        android:text="Mosaic ∨"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_medium"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="12dp"
-                        android:textSize="13sp"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Jenis Kelamin"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="13sp"/>
-
-                    <TextView
-                        android:id="@+id/tvSelectGender"
-                        android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_search_bar"
-                        android:text="1 Pasang (Pair) ∨"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_medium"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="12dp"
-                        android:textSize="13sp"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Umur & Jumlah -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Umur Ikan"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="13sp"/>
-
-                    <EditText
-                        android:id="@+id/etFishAge"
-                        android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_search_bar"
-                        android:hint="contoh: 3.5 Bulan"
-                        android:textColorHint="@color/guppy_text_gray"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_regular"
-                        android:paddingHorizontal="12dp"
-                        android:textSize="13sp"
-                        android:singleLine="true"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Jumlah"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="13sp"/>
-
-                    <EditText
-                        android:id="@+id/etFishQuantity"
-                        android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_search_bar"
-                        android:hint="contoh: 1 Pasang"
-                        android:textColorHint="@color/guppy_text_gray"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_regular"
-                        android:paddingHorizontal="12dp"
-                        android:textSize="13sp"
-                        android:singleLine="true"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Kondisi Kesehatan & Karantina -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Kondisi Kesehatan"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="13sp"/>
-
-                    <EditText
-                        android:id="@+id/etFishCondition"
-                        android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_search_bar"
-                        android:hint="Sangat Lincah, Ekor Solid"
-                        android:textColorHint="@color/guppy_text_gray"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_regular"
-                        android:paddingHorizontal="12dp"
-                        android:textSize="13sp"
-                        android:singleLine="true"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Lama Karantina"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="13sp"/>
-
-                    <EditText
-                        android:id="@+id/etQuarantineDays"
-                        android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_search_bar"
-                        android:hint="14 hari di farm"
-                        android:textColorHint="@color/guppy_text_gray"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_regular"
-                        android:paddingHorizontal="12dp"
-                        android:textSize="13sp"
-                        android:singleLine="true"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- 4. HARGA OPEN BID & KELIPATAN BID -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Sesi &amp; Aturan Penawaran"
-                android:textColor="@color/guppy_primary"
-                android:fontFamily="@font/inter_bold"
-                android:textSize="14sp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Open Bid (OB)"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="13sp"/>
-
-                    <EditText
-                        android:id="@+id/etOpenBidPrice"
-                        android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_search_bar"
-                        android:hint="Rp 200.000"
-                        android:textColorHint="@color/guppy_text_gray"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:paddingHorizontal="12dp"
-                        android:textSize="13sp"
-                        android:inputType="number"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Kelipatan (KB)"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="13sp"/>
-
-                    <EditText
-                        android:id="@+id/etBidIncrementPrice"
-                        android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_search_bar"
-                        android:hint="Rp 25.000"
-                        android:textColorHint="@color/guppy_text_gray"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:paddingHorizontal="12dp"
-                        android:textSize="13sp"
-                        android:inputType="number"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- 5. BUYOUT PRICE (OPSIONAL) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Harga Buyout (Opsional)"
-                android:textColor="@color/guppy_text_black"
-                android:fontFamily="@font/inter_bold"
-                android:textSize="13sp"/>
-
-            <EditText
-                android:id="@+id/etBuyoutPrice"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginTop="6dp"
-                android:background="@drawable/bg_search_bar"
-                android:hint="Rp 1.000.000 (Kosongkan jika tidak ada)"
-                android:textColorHint="@color/guppy_text_gray"
-                android:textColor="@color/guppy_text_black"
-                android:fontFamily="@font/inter_bold"
-                android:paddingHorizontal="12dp"
-                android:textSize="13sp"
-                android:inputType="number"/>
-
-            <!-- 6. DURASI LELANG CHIPS -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Durasi Lelang"
-                android:textColor="@color/guppy_text_black"
-                android:fontFamily="@font/inter_bold"
-                android:textSize="13sp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/chipDuration12"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="38dp"
-                    android:background="@drawable/bg_chip_outline"
-                    android:text="12 Jam"
+                <EditText
+                    android:id="@+id/etAuctionTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="contoh: Red Dragon Delta Grade A+ Pair"
+                    android:textColorHint="@color/guppy_text_gray"
                     android:textColor="@color/guppy_text_black"
                     android:fontFamily="@font/inter_medium"
-                    android:textSize="12.5sp"
-                    android:gravity="center"
-                    android:layout_marginEnd="6dp"
-                    android:clickable="true"
-                    android:focusable="true"/>
+                    android:paddingHorizontal="16dp"
+                    android:textSize="13.5sp"
+                    android:singleLine="true"/>
+            </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/chipDuration24"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="38dp"
-                    android:background="@drawable/bg_chip_selected"
-                    android:text="24 Jam"
-                    android:textColor="@color/guppy_primary"
-                    android:fontFamily="@font/inter_bold"
-                    android:textSize="12.5sp"
-                    android:gravity="center"
-                    android:layout_marginHorizontal="3dp"
-                    android:clickable="true"
-                    android:focusable="true"/>
+            <!-- 3. SPESIFIKASI DETAIL IKAN CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="0dp">
 
-                <TextView
-                    android:id="@+id/chipDuration48"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="38dp"
-                    android:background="@drawable/bg_chip_outline"
-                    android:text="48 Jam"
-                    android:textColor="@color/guppy_text_black"
-                    android:fontFamily="@font/inter_medium"
-                    android:textSize="12.5sp"
-                    android:gravity="center"
-                    android:layout_marginStart="6dp"
-                    android:clickable="true"
-                    android:focusable="true"/>
-            </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            <!-- 7. DESKRIPSI LELANG -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Spesifikasi Detail Ikan"
+                        android:textColor="@color/guppy_primary"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="15sp"/>
+
+                    <!-- Strain & Gender Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Strain / Genetik"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12sp"/>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:layout_marginTop="6dp"
+                                app:cardCornerRadius="22dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="#F8F9FA"
+                                app:strokeColor="#E2E8F0"
+                                app:strokeWidth="1dp">
+
+                                <TextView
+                                    android:id="@+id/tvSelectStrain"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="Mosaic"
+                                    android:textColor="@color/guppy_text_black"
+                                    android:fontFamily="@font/inter_medium"
+                                    android:gravity="center_vertical"
+                                    android:paddingHorizontal="16dp"
+                                    android:textSize="13sp"
+                                    android:drawableEnd="@drawable/ic_chevron_right"
+                                    app:drawableTint="@color/guppy_text_gray"
+                                    android:clickable="true"
+                                    android:focusable="true"/>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Jenis Kelamin"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12sp"/>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:layout_marginTop="6dp"
+                                app:cardCornerRadius="22dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="#F8F9FA"
+                                app:strokeColor="#E2E8F0"
+                                app:strokeWidth="1dp">
+
+                                <TextView
+                                    android:id="@+id/tvSelectGender"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="1 Pasang (Pair)"
+                                    android:textColor="@color/guppy_text_black"
+                                    android:fontFamily="@font/inter_medium"
+                                    android:gravity="center_vertical"
+                                    android:paddingHorizontal="16dp"
+                                    android:textSize="13sp"
+                                    android:drawableEnd="@drawable/ic_chevron_right"
+                                    app:drawableTint="@color/guppy_text_gray"
+                                    android:clickable="true"
+                                    android:focusable="true"/>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Umur & Jumlah Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Umur Ikan"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12sp"/>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:layout_marginTop="6dp"
+                                app:cardCornerRadius="16dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="@color/white"
+                                app:strokeColor="#E2E8F0"
+                                app:strokeWidth="1dp">
+
+                                <EditText
+                                    android:id="@+id/etFishAge"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@null"
+                                    android:hint="contoh: 3.5 Bulan"
+                                    android:textColorHint="@color/guppy_text_gray"
+                                    android:textColor="@color/guppy_text_black"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:paddingHorizontal="14dp"
+                                    android:textSize="13sp"
+                                    android:singleLine="true"/>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Jumlah"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12sp"/>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:layout_marginTop="6dp"
+                                app:cardCornerRadius="16dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="@color/white"
+                                app:strokeColor="#E2E8F0"
+                                app:strokeWidth="1dp">
+
+                                <EditText
+                                    android:id="@+id/etFishQuantity"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@null"
+                                    android:hint="contoh: 1 Pasang"
+                                    android:textColorHint="@color/guppy_text_gray"
+                                    android:textColor="@color/guppy_text_black"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:paddingHorizontal="14dp"
+                                    android:textSize="13sp"
+                                    android:singleLine="true"/>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Kondisi & Karantina Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Kondisi Kesehatan"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12sp"/>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:layout_marginTop="6dp"
+                                app:cardCornerRadius="16dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="@color/white"
+                                app:strokeColor="#E2E8F0"
+                                app:strokeWidth="1dp">
+
+                                <EditText
+                                    android:id="@+id/etFishCondition"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@null"
+                                    android:hint="Sangat Lincah, Ekor Solid"
+                                    android:textColorHint="@color/guppy_text_gray"
+                                    android:textColor="@color/guppy_text_black"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:paddingHorizontal="14dp"
+                                    android:textSize="13sp"
+                                    android:singleLine="true"/>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lama Karantina"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12sp"/>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:layout_marginTop="6dp"
+                                app:cardCornerRadius="16dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="@color/white"
+                                app:strokeColor="#E2E8F0"
+                                app:strokeWidth="1dp">
+
+                                <EditText
+                                    android:id="@+id/etQuarantineDays"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@null"
+                                    android:hint="14 hari di farm"
+                                    android:textColorHint="@color/guppy_text_gray"
+                                    android:textColor="@color/guppy_text_black"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:paddingHorizontal="14dp"
+                                    android:textSize="13sp"
+                                    android:singleLine="true"/>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. SESI & ATURAN PENAWARAN CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sesi &amp; Aturan Penawaran"
+                        android:textColor="@color/guppy_primary"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="15sp"/>
+
+                    <!-- Open Bid & Kelipatan Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Open Bid (OB)"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12sp"/>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:layout_marginTop="6dp"
+                                app:cardCornerRadius="22dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="@color/white"
+                                app:strokeColor="#E2E8F0"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center_vertical"
+                                    android:paddingHorizontal="14dp"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Rp "
+                                        android:textColor="@color/guppy_text_gray"
+                                        android:fontFamily="@font/inter_bold"
+                                        android:textSize="13sp"/>
+
+                                    <EditText
+                                        android:id="@+id/etOpenBidPrice"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:background="@null"
+                                        android:hint="200.000"
+                                        android:textColorHint="@color/guppy_text_gray"
+                                        android:textColor="@color/guppy_text_black"
+                                        android:fontFamily="@font/inter_bold"
+                                        android:textSize="13.5sp"
+                                        android:inputType="number"/>
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Kelipatan (KB)"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12sp"/>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:layout_marginTop="6dp"
+                                app:cardCornerRadius="22dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="@color/white"
+                                app:strokeColor="#E2E8F0"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center_vertical"
+                                    android:paddingHorizontal="14dp"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Rp "
+                                        android:textColor="@color/guppy_text_gray"
+                                        android:fontFamily="@font/inter_bold"
+                                        android:textSize="13sp"/>
+
+                                    <EditText
+                                        android:id="@+id/etBidIncrementPrice"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:background="@null"
+                                        android:hint="25.000"
+                                        android:textColorHint="@color/guppy_text_gray"
+                                        android:textColor="@color/guppy_text_black"
+                                        android:fontFamily="@font/inter_bold"
+                                        android:textSize="13.5sp"
+                                        android:inputType="number"/>
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Harga Buyout -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Harga Buyout (Opsional)"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="6dp"
+                        app:cardCornerRadius="22dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/white"
+                        app:strokeColor="#E2E8F0"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="14dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Rp "
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="13sp"/>
+
+                            <EditText
+                                android:id="@+id/etBuyoutPrice"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@null"
+                                android:hint="1.000.000 (Kosongkan jika tidak ada)"
+                                android:textColorHint="@color/guppy_text_gray"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="13sp"
+                                android:inputType="number"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Durasi Lelang Segmented Pills -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Durasi Lelang"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="12sp"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="6dp"
+                        app:cardCornerRadius="22dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#F8F9FA"
+                        app:strokeColor="#E2E8F0"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="3dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/chipDuration12"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="12 Jam"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12.5sp"
+                                android:gravity="center"
+                                android:clickable="true"
+                                android:focusable="true"/>
+
+                            <TextView
+                                android:id="@+id/chipDuration24"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_vehicle_active_pill"
+                                android:backgroundTint="#E8F5E9"
+                                android:text="24 Jam"
+                                android:textColor="@color/guppy_primary"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="12.5sp"
+                                android:gravity="center"
+                                android:clickable="true"
+                                android:focusable="true"/>
+
+                            <TextView
+                                android:id="@+id/chipDuration48"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="48 Jam"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_medium"
+                                android:textSize="12.5sp"
+                                android:gravity="center"
+                                android:clickable="true"
+                                android:focusable="true"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 5. DESKRIPSI & GARANSI IKAN CARD -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:text="Deskripsi &amp; Garansi Ikan"
-                android:textColor="@color/guppy_text_black"
+                android:textColor="@color/guppy_primary"
                 android:fontFamily="@font/inter_bold"
-                android:textSize="13sp"/>
+                android:textSize="15sp"/>
 
-            <EditText
-                android:id="@+id/etAuctionDescription"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="140dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/bg_search_bar"
-                android:gravity="top|start"
-                android:hint="Tulis deskripsi kesehatan, umur, spesifikasi ekor, dan garansi..."
-                android:textColorHint="@color/guppy_text_gray"
-                android:textColor="@color/guppy_text_black"
-                android:fontFamily="@font/inter_regular"
-                android:padding="12dp"
-                android:textSize="13sp"/>
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="14dp">
+
+                    <EditText
+                        android:id="@+id/etAuctionDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/tvDescCharCount"
+                        android:background="@null"
+                        android:gravity="top|start"
+                        android:hint="Tulis deskripsi kesehatan, umur, spesifikasi ekor, dan garansi..."
+                        android:textColorHint="#B0BEC5"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="13sp"
+                        android:maxLength="1000"/>
+
+                    <TextView
+                        android:id="@+id/tvDescCharCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:text="0/1000"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="11sp"/>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -686,14 +995,15 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:elevation="12dp"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp">
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="14dp">
 
         <TextView
             android:id="@+id/btnPublishBottom"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@drawable/bg_btn_primary"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_chip_selected"
+            android:backgroundTint="#00897B"
             android:text="Terbitkan Lelang Sekarang"
             android:textColor="@color/white"
             android:fontFamily="@font/inter_bold"
@@ -702,11 +1012,5 @@
             android:clickable="true"
             android:focusable="true"/>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@id/bottomBarPublish"
-        android:background="@color/guppy_stroke"/>
 
 </RelativeLayout>

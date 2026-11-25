@@ -189,6 +189,16 @@ class CreateAuctionActivity : AppCompatActivity() {
         chip24h.setOnClickListener { selectDuration(chip24h, 24) }
         chip48h.setOnClickListener { selectDuration(chip48h, 48) }
 
+        val tvDescCharCount = findViewById<TextView>(R.id.tvDescCharCount)
+        etDescription.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val len = s?.length ?: 0
+                tvDescCharCount?.text = "$len/1000"
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
         val btnPublishBottom = findViewById<TextView>(R.id.btnPublishBottom)
         btnPublishBottom?.setOnClickListener {
             publishAuction()
