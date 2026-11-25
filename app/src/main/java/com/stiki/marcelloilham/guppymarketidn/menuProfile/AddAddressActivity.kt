@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.webkit.WebView
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -66,6 +67,7 @@ class AddAddressActivity : AppCompatActivity() {
         btnCancel?.setOnClickListener { finish() }
 
         initViews()
+        initOpenStreetMap()
         setupListeners()
         loadDefaultProfileName()
     }
@@ -181,7 +183,83 @@ class AddAddressActivity : AppCompatActivity() {
         Toast.makeText(this, "Lokasi GPS berhasil disinkronkan!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun reverseGeocodeLocation(lat: Double, lng: Double) {
+    private lateinit var webViewOsmMap: WebView
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun initOpenStreetMap() {
+        webViewOsmMap = findViewById(R.id.webViewOsmMap)
+        webViewOsmMap.settings.javaScriptEnabled = true
+        webViewOsmMap.settings.domStorageEnabled = true
+
+        webViewOsmMap.addJavascriptInterface(object {
+            @android.webkit.JavascriptInterface
+            fun onMapDragged(lat: Double, lng: Double) {
+                runOnUiThread {
+                    tvCoordinates.text = String.format(Locale.US, "%.4f, %.4f", lat, lng)
+                    reverseGeocodeLocation(lat, lng, syncOsm = false)
+                }
+            }
+        }, "AndroidInterface")
+
+        val htmlContent = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+                <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                <style>
+                    body, html, #map { margin: 0; padding: 0; width: 100%; height: 100%; }
+                    .leaflet-control-attribution { display: none; }
+                </style>
+            </head>
+            <body>
+                <div id="map"></div>
+                <script>
+                    var map = L.map('map', { zoomControl: false }).setView([-6.2349, 106.9924], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19
+                    }).addTo(map);
+
+                    var marker = L.marker([-6.2349, 106.9924], { draggable: true }).addTo(map);
+
+                    function updateMapLocation(lat, lng) {
+                        var newLatLng = new L.LatLng(lat, lng);
+                        map.setView(newLatLng, 16);
+                        marker.setLatLng(newLatLng);
+                    }
+
+                    marker.on('dragend', function(event) {
+                        var pos = marker.getLatLng();
+                        if (window.AndroidInterface) {
+                            window.AndroidInterface.onMapDragged(pos.lat, pos.lng);
+                        }
+                    });
+
+                    map.on('click', function(e) {
+                        marker.setLatLng(e.latlng);
+                        if (window.AndroidInterface) {
+                            window.AndroidInterface.onMapDragged(e.latlng.lat, e.latlng.lng);
+                        }
+                    });
+                </script>
+            </body>
+            </html>
+        """.trimIndent()
+
+        webViewOsmMap.loadDataWithBaseURL("https://openstreetmap.org", htmlContent, "text/html", "UTF-8", null)
+    }
+
+    private fun updateOsmMapCenter(lat: Double, lng: Double) {
+        if (::webViewOsmMap.isInitialized) {
+            webViewOsmMap.evaluateJavascript("updateMapLocation($lat, $lng)", null)
+        }
+    }
+
+    private fun reverseGeocodeLocation(lat: Double, lng: Double, syncOsm: Boolean = true) {
+        if (syncOsm) {
+            updateOsmMapCenter(lat, lng)
+        }
         try {
             val geocoder = Geocoder(this, Locale.getDefault())
             @Suppress("DEPRECATION")

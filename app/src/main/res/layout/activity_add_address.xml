@@ -157,20 +157,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <!-- Safe Interactive Map Frame Container -->
-                            <FrameLayout
-                                android:id="@+id/mapFrameContainer"
+                            <!-- Real Interactive OpenStreetMap View -->
+                            <WebView
+                                android:id="@+id/webViewOsmMap"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-
-                                <ImageView
-                                    android:id="@+id/imgMapFallback"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:src="@drawable/bg_image_grid"
-                                    android:scaleType="centerCrop"
-                                    android:alpha="0.25"/>
-                            </FrameLayout>
+                                android:layout_height="match_parent" />
 
                             <!-- Coordinates Tag Badge -->
                             <TextView
