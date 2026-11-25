@@ -37,7 +37,9 @@ class PaymentMethodAdapter(
         val item = methodList[position]
         holder.tvProviderName.text = item.providerName
 
-        if (item.type.contains("E-Wallet", true) || item.type.contains("QRIS", true) || item.providerName.contains("GoPay", true) || item.providerName.contains("OVO", true) || item.providerName.contains("DANA", true)) {
+        if (item.type.contains("QRIS", true) || item.providerName.contains("QRIS", true)) {
+            holder.imgTypeIcon.setImageResource(R.drawable.ic_qris)
+        } else if (item.type.contains("E-Wallet", true) || item.providerName.contains("GoPay", true) || item.providerName.contains("OVO", true) || item.providerName.contains("DANA", true)) {
             holder.imgTypeIcon.setImageResource(R.drawable.ic_ewallet)
         } else {
             holder.imgTypeIcon.setImageResource(R.drawable.ic_payment_card)
