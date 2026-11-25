@@ -129,7 +129,7 @@ class AddAddressActivity : AppCompatActivity() {
                 chip.typeface = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.inter_bold)
                 selectedLabel = chip.text.toString()
             } else {
-                chip.setBackgroundResource(R.drawable.bg_btn_outline)
+                chip.setBackgroundResource(R.drawable.bg_btn_outline_pill_gray)
                 chip.backgroundTintList = null
                 chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
                 chip.typeface = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.inter_medium)
@@ -249,7 +249,7 @@ class AddAddressActivity : AppCompatActivity() {
                         c.typeface = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.inter_bold)
                         selectedLabel = c.text.toString()
                     } else {
-                        c.setBackgroundResource(R.drawable.bg_btn_outline)
+                        c.setBackgroundResource(R.drawable.bg_btn_outline_pill_gray)
                         c.backgroundTintList = null
                         c.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
                         c.typeface = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.inter_medium)
