@@ -272,12 +272,12 @@ class CreateAuctionActivity : AppCompatActivity() {
 
         chips.forEach { chip ->
             if (chip == selected) {
-                chip.setBackgroundResource(R.drawable.bg_chip_selected)
+                chip.setBackgroundResource(R.drawable.bg_segmented_pill_selected)
                 chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_primary))
                 chip.typeface = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.inter_bold)
             } else {
-                chip.setBackgroundResource(R.drawable.bg_chip_outline)
-                chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
+                chip.background = null
+                chip.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_gray))
                 chip.typeface = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.inter_medium)
             }
         }
