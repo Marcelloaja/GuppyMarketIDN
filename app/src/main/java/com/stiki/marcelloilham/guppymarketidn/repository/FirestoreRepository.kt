@@ -67,6 +67,7 @@ object FirestoreRepository {
         val recipientName: String = "Marcello Aja",
         val phone: String = "0812-3456-7890",
         val fullAddress: String = "Jl. Raya Cibubur No. 14, RT 03/RW 05, Bekasi Selatan, Kota Bekasi, Jawa Barat 17147",
+        @field:JvmField
         val isDefault: Boolean = false,
         val notesForCourier: String = ""
     )
