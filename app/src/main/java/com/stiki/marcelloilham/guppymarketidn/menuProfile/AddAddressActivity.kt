@@ -567,11 +567,7 @@ class AddAddressActivity : AppCompatActivity() {
         }
 
         btnDelete?.setOnClickListener {
-            val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-            FirestoreRepository.deleteUserAddress(currentUserId, savedAddress.id) { _ ->
-                Toast.makeText(this, "Alamat '${savedAddress.label}' dihapus", Toast.LENGTH_SHORT).show()
-                alertDialog.dismiss()
-            }
+            showDeleteConfirmationDialog(savedAddress, alertDialog)
         }
 
         btnDone?.setOnClickListener {
@@ -597,5 +593,41 @@ class AddAddressActivity : AppCompatActivity() {
         }
 
         alertDialog.show()
+    }
+
+    private fun showDeleteConfirmationDialog(savedAddress: FirestoreRepository.AddressModel, parentSuccessDialog: AlertDialog) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_delete_address_confirm, null)
+
+        val tvName = dialogView.findViewById<TextView>(R.id.tvDialogRecipientName)
+        val tvPhone = dialogView.findViewById<TextView>(R.id.tvDialogPhone)
+        val tvFullAddr = dialogView.findViewById<TextView>(R.id.tvDialogFullAddress)
+        val btnCancel = dialogView.findViewById<TextView>(R.id.btnDialogCancel)
+        val btnConfirm = dialogView.findViewById<TextView>(R.id.btnDialogConfirmDelete)
+
+        tvName?.text = savedAddress.recipientName
+        tvPhone?.text = savedAddress.phone
+        tvFullAddr?.text = savedAddress.fullAddress
+
+        val deleteAlertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        deleteAlertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        btnCancel?.setOnClickListener {
+            deleteAlertDialog.dismiss()
+        }
+
+        btnConfirm?.setOnClickListener {
+            val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+            FirestoreRepository.deleteUserAddress(currentUserId, savedAddress.id) { _ ->
+                Toast.makeText(this, "Alamat '${savedAddress.label}' berhasil dihapus", Toast.LENGTH_SHORT).show()
+                deleteAlertDialog.dismiss()
+                parentSuccessDialog.dismiss()
+                finish()
+            }
+        }
+
+        deleteAlertDialog.show()
     }
 }
