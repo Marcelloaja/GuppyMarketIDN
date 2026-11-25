@@ -110,11 +110,14 @@ class PaymentMethodsActivity : AppCompatActivity() {
             tvMainPaymentName.text = model.mainMethod
             tvMainPaymentAccNumber.text = "•••• ${model.bcaAccountNumber.takeLast(4)}"
 
-            tvBankBCANumber.text = "•••• ${model.bcaAccountNumber.takeLast(4)} (Utama)"
-            tvBankBNINumber.text = "•••• ${model.bniAccountNumber.takeLast(4)}"
+            val mainLower = model.mainMethod.lowercase()
+
+            tvBankBCANumber.text = if (mainLower.contains("bca")) "•••• ${model.bcaAccountNumber.takeLast(4)} (Utama)" else "•••• ${model.bcaAccountNumber.takeLast(4)}"
+            tvBankBNINumber.text = if (mainLower.contains("bni")) "•••• ${model.bniAccountNumber.takeLast(4)} (Utama)" else "•••• ${model.bniAccountNumber.takeLast(4)}"
 
             if (model.mandiriActive) {
-                tvBankMandiriStatus.text = "Terhubung"
+                val isMandiriMain = mainLower.contains("mandiri")
+                tvBankMandiriStatus.text = if (isMandiriMain) "Terhubung (Utama)" else "Terhubung"
                 btnActivateMandiri.text = "Kelola"
             } else {
                 tvBankMandiriStatus.text = "Belum aktif"
@@ -154,7 +157,10 @@ class PaymentMethodsActivity : AppCompatActivity() {
                 tvMainPaymentName.text = selectedName
 
                 val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-                FirestoreRepository.savePaymentSettings(currentUserId, currentModel) {}
+                FirestoreRepository.savePaymentSettings(currentUserId, currentModel) {
+                    loadPaymentSettingsFromFirestore()
+                    Toast.makeText(this, "Metode utama diubah menjadi '$selectedName'!", Toast.LENGTH_SHORT).show()
+                }
             }
             .show()
     }
