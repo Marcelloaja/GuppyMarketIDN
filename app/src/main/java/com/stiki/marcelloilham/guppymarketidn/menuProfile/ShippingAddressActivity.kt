@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -62,8 +63,34 @@ class ShippingAddressActivity : AppCompatActivity() {
 
         val btnAdd = findViewById<TextView>(R.id.btnAddNewAddress)
         btnAdd.setOnClickListener {
-            startActivity(android.content.Intent(this, AddAddressActivity::class.java))
+            if (addressesList.size >= 5) {
+                showMaxAddressLimitDialog()
+            } else {
+                startActivity(Intent(this, AddAddressActivity::class.java))
+            }
         }
+    }
+
+    private fun showMaxAddressLimitDialog() {
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 30, 50, 10)
+        }
+
+        val tvNotice = TextView(this).apply {
+            text = "Anda telah mencapai batas maksimal 5 alamat tersimpan. Silakan hapus salah satu alamat pengiriman terlebih dahulu untuk menambahkan alamat baru."
+            setTextColor(ContextCompat.getColor(context, R.color.guppy_text_black))
+            textSize = 13.5f
+            setLineSpacing(4f, 1f)
+        }
+
+        layout.addView(tvNotice)
+
+        AlertDialog.Builder(this)
+            .setTitle("⚠️ Batas Maksimal Alamat (5/5)")
+            .setView(layout)
+            .setPositiveButton("Mengerti", null)
+            .show()
     }
 
     override fun onResume() {
@@ -119,14 +146,23 @@ class ShippingAddressActivity : AppCompatActivity() {
 
     private fun updateEmptyStateView() {
         val tvEmpty = findViewById<TextView>(R.id.tvEmptyAddressState)
+        val btnAdd = findViewById<TextView>(R.id.btnAddNewAddress)
+
         if (addressesList.isEmpty()) {
             recyclerAddresses.visibility = View.GONE
             tvEmpty?.visibility = View.VISIBLE
+            tvTotalCount.text = "0 alamat"
         } else {
             recyclerAddresses.visibility = View.VISIBLE
             tvEmpty?.visibility = View.GONE
+            tvTotalCount.text = "${addressesList.size}/5 alamat"
         }
-        tvTotalCount.text = "${addressesList.size} alamat"
+
+        if (addressesList.size >= 5) {
+            btnAdd?.alpha = 0.7f
+        } else {
+            btnAdd?.alpha = 1.0f
+        }
     }
 
     private fun setDefaultAddress(selectedAddr: FirestoreRepository.AddressModel) {

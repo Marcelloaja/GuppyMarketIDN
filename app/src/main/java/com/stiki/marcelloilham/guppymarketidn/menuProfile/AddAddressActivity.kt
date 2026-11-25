@@ -525,25 +525,57 @@ class AddAddressActivity : AppCompatActivity() {
             }
         }
 
-        if (isDefaultAddr) {
-            FirestoreRepository.fetchUserAddresses(currentUserId) { existingList ->
-                val updatedList = existingList.filterNot { it.id == newAddress.id }.map {
-                    it.copy(isDefault = false)
-                } + newAddress.copy(isDefault = true)
-
-                FirestoreRepository.updateAllAddresses(currentUserId, updatedList) { success ->
+        if (!isEditMode) {
+            FirestoreRepository.fetchUserAddresses(currentUserId) { existingAddresses ->
+                if (existingAddresses.size >= 5) {
                     btnSave?.isEnabled = true
-                    btnSave?.text = if (isEditMode) "Simpan Perubahan" else "Simpan Alamat"
+                    btnSave?.text = "Simpan Alamat"
+                    AlertDialog.Builder(this)
+                        .setTitle("⚠️ Batas Maksimal Alamat (5/5)")
+                        .setMessage("Anda telah mencapai batas maksimal 5 alamat tersimpan. Silakan hapus salah satu alamat pengiriman terlebih dahulu jika ingin menambahkan alamat baru.")
+                        .setPositiveButton("Mengerti", null)
+                        .show()
+                    return@fetchUserAddresses
+                }
 
-                    if (success) {
-                        showAddressSuccessDialog(newAddress)
-                    } else {
-                        Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
+                if (isDefaultAddr) {
+                    val updatedList = existingAddresses.map {
+                        it.copy(isDefault = false)
+                    } + newAddress.copy(isDefault = true)
+
+                    FirestoreRepository.updateAllAddresses(currentUserId, updatedList) { success ->
+                        btnSave?.isEnabled = true
+                        btnSave?.text = "Simpan Alamat"
+                        if (success) {
+                            showAddressSuccessDialog(newAddress)
+                        } else {
+                            Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
+                        }
                     }
+                } else {
+                    executeSave()
                 }
             }
         } else {
-            executeSave()
+            if (isDefaultAddr) {
+                FirestoreRepository.fetchUserAddresses(currentUserId) { existingAddresses ->
+                    val updatedList = existingAddresses.filterNot { it.id == newAddress.id }.map {
+                        it.copy(isDefault = false)
+                    } + newAddress.copy(isDefault = true)
+
+                    FirestoreRepository.updateAllAddresses(currentUserId, updatedList) { success ->
+                        btnSave?.isEnabled = true
+                        btnSave?.text = "Simpan Perubahan"
+                        if (success) {
+                            showAddressSuccessDialog(newAddress)
+                        } else {
+                            Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            } else {
+                executeSave()
+            }
         }
     }
 
