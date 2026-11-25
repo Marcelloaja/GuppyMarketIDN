@@ -55,12 +55,16 @@ class CheckoutActivity : AppCompatActivity() {
     private lateinit var icRadioShipInstant: ImageView
 
     private lateinit var tvShipJNTTitle: TextView
+    private lateinit var tvShipJNTEta: TextView
     private lateinit var tvShipJNTPrice: TextView
     private lateinit var tvShipJNETitle: TextView
+    private lateinit var tvShipJNEEta: TextView
     private lateinit var tvShipJNEPrice: TextView
     private lateinit var tvShipSicepatTitle: TextView
+    private lateinit var tvShipSicepatEta: TextView
     private lateinit var tvShipSicepatPrice: TextView
     private lateinit var tvShipInstantTitle: TextView
+    private lateinit var tvShipInstantEta: TextView
     private lateinit var tvShipInstantPrice: TextView
 
     private lateinit var optionPayVA: View
@@ -118,12 +122,16 @@ class CheckoutActivity : AppCompatActivity() {
         icRadioShipInstant = findViewById(R.id.icRadioShipInstant)
 
         tvShipJNTTitle = findViewById(R.id.tvShipJNTTitle)
+        tvShipJNTEta = findViewById(R.id.tvShipJNTEta)
         tvShipJNTPrice = findViewById(R.id.tvShipJNTPrice)
         tvShipJNETitle = findViewById(R.id.tvShipJNETitle)
+        tvShipJNEEta = findViewById(R.id.tvShipJNEEta)
         tvShipJNEPrice = findViewById(R.id.tvShipJNEPrice)
         tvShipSicepatTitle = findViewById(R.id.tvShipSicepatTitle)
+        tvShipSicepatEta = findViewById(R.id.tvShipSicepatEta)
         tvShipSicepatPrice = findViewById(R.id.tvShipSicepatPrice)
         tvShipInstantTitle = findViewById(R.id.tvShipInstantTitle)
+        tvShipInstantEta = findViewById(R.id.tvShipInstantEta)
         tvShipInstantPrice = findViewById(R.id.tvShipInstantPrice)
 
         optionPayVA = findViewById(R.id.optionPayVA)
@@ -334,18 +342,30 @@ class CheckoutActivity : AppCompatActivity() {
                         if (jntOption != null && jntOption.price > 0) {
                             costJNT = jntOption.price
                             tvShipJNTPrice.text = formatCurrency(costJNT)
+                            if (!jntOption.duration.isNullOrEmpty()) {
+                                tvShipJNTEta.text = "Estimasi ${jntOption.duration} (Kemasan Oksigen)"
+                            }
                         }
                         if (jneOption != null && jneOption.price > 0) {
                             costJNE = jneOption.price
                             tvShipJNEPrice.text = formatCurrency(costJNE)
+                            if (!jneOption.duration.isNullOrEmpty()) {
+                                tvShipJNEEta.text = "Estimasi ${jneOption.duration}"
+                            }
                         }
                         if (sicepatOption != null && sicepatOption.price > 0) {
                             costSicepat = sicepatOption.price
                             tvShipSicepatPrice.text = formatCurrency(costSicepat)
+                            if (!sicepatOption.duration.isNullOrEmpty()) {
+                                tvShipSicepatEta.text = "Estimasi ${sicepatOption.duration}"
+                            }
                         }
                         if (instantOption != null && instantOption.price > 0) {
                             costInstant = instantOption.price
                             tvShipInstantPrice.text = formatCurrency(costInstant)
+                            if (!instantOption.duration.isNullOrEmpty()) {
+                                tvShipInstantEta.text = "Estimasi tiba ${instantOption.duration}"
+                            }
                         }
 
                         shippingCost = when (selectedCourier) {
