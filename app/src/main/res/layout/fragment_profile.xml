@@ -625,7 +625,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:gravity="center"
-                        android:text="Anda belum menerbitkan lelang. Ketuk '+ Buat Lelang Baru' untuk mulai menerbitkan."
+                        android:text="Anda belum menerbitkan lelang."
                         android:textColor="@color/guppy_text_gray"
                         android:fontFamily="@font/inter_medium"
                         android:textSize="13sp"
