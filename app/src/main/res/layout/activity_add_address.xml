@@ -157,21 +157,20 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <!-- Google Maps Fragment or Live Map Frame -->
-                            <fragment
-                                android:id="@+id/mapFragmentAddress"
-                                android:name="com.google.android.gms.maps.SupportMapFragment"
+                            <!-- Safe Interactive Map Frame Container -->
+                            <FrameLayout
+                                android:id="@+id/mapFrameContainer"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
+                                android:layout_height="match_parent">
 
-                            <!-- Fallback Map Image Pattern -->
-                            <ImageView
-                                android:id="@+id/imgMapFallback"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/bg_image_grid"
-                                android:scaleType="centerCrop"
-                                android:alpha="0.2"/>
+                                <ImageView
+                                    android:id="@+id/imgMapFallback"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/bg_image_grid"
+                                    android:scaleType="centerCrop"
+                                    android:alpha="0.25"/>
+                            </FrameLayout>
 
                             <!-- Coordinates Tag Badge -->
                             <TextView
