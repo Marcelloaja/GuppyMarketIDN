@@ -118,10 +118,18 @@ class AccountDetailActivity : AppCompatActivity() {
 
         if (isQris) {
             tvHeaderTitle?.text = "Detail QRIS"
-            tvHeaderSub?.text = "QRIS Toko Guppy Farm"
+            tvHeaderSub?.text = "QRIS Toko - $accountOwner"
             tvProviderName.text = providerName
             tvBoxLabel?.text = "NMID / BARCODE"
             imgTypeIcon?.setImageResource(R.drawable.ic_qris)
+
+            val tvStoreName = findViewById<TextView>(R.id.tvQrisStoreName)
+            val tvNmid = findViewById<TextView>(R.id.tvQrisNmid)
+
+            tvStoreName?.text = if (accountOwner.isNotEmpty()) accountOwner else "Guppy Farm Toko"
+
+            val hashNmid = kotlin.math.abs((accountOwner + methodId).hashCode() % 100000000).toString().padStart(8, '0')
+            tvNmid?.text = "NMID: ID1025$hashNmid"
 
             cardQris?.visibility = View.VISIBLE
             cardBankInfo?.visibility = View.GONE
