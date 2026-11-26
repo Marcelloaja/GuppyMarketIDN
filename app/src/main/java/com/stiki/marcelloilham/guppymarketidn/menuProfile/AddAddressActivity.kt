@@ -535,6 +535,11 @@ class AddAddressActivity : AppCompatActivity() {
                 btnSave?.text = if (isEditMode) "Simpan Perubahan" else "Simpan Alamat"
 
                 if (success) {
+                    if (isDefaultAddr) {
+                        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                            .collection("user").document(currentUserId)
+                            .update(mapOf("location" to fullAddress, "full_address" to fullAddress))
+                    }
                     showAddressSuccessDialog(newAddress)
                 } else {
                     Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()

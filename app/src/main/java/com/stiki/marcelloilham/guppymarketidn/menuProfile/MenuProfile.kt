@@ -20,6 +20,7 @@ import androidx.core.view.updatePadding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.stiki.marcelloilham.guppymarketidn.R
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.intro.Login
 
 class MenuProfile : AppCompatActivity() {
@@ -237,31 +238,41 @@ class MenuProfile : AppCompatActivity() {
     }
 
     private fun loadProfileData() {
-        val currentUser = firebaseAuth.currentUser
-        val userEmail = currentUser?.email ?: "marcello@guppymarket.id"
-        etEmail.setText(userEmail)
+        val currentUser = firebaseAuth.currentUser ?: return
+        etEmail.setText(currentUser.email ?: "")
 
-        if (currentUser != null) {
-            db.collection("user").document(currentUser.uid).get()
-                .addOnSuccessListener { doc ->
-                    if (doc.exists()) {
-                        val name = doc.getString("name") ?: currentUser.displayName ?: "Marcello Aja"
-                        val farmName = doc.getString("farm_name") ?: "Marcello Guppy Farm"
-                        val loc = doc.getString("location") ?: "Bekasi, Jawa Barat"
-                        val wa = doc.getString("whatsapp") ?: "+62 812-3456-7890"
-                        val desc = doc.getString("description") ?: "Breeder guppy Bekasi. Fokus ikan varian warna dan kualitas sehat."
-                        val bank = doc.getString("bank_account_info") ?: "BCA •••• 4821"
+        val userId = currentUser.uid
+        db.collection("user").document(userId).get()
+            .addOnSuccessListener { doc ->
+                val name = doc.getString("name") ?: currentUser.displayName ?: ""
+                val farmName = doc.getString("farm_name") ?: ""
+                val loc = doc.getString("location") ?: doc.getString("full_address") ?: ""
+                val wa = doc.getString("whatsapp") ?: doc.getString("phone") ?: ""
+                val desc = doc.getString("description") ?: ""
+                val bank = doc.getString("bank_account_info") ?: "Belum diatur"
 
-                        etOwnerName.setText(name)
-                        etFarmName.setText(farmName)
-                        tvFarmLocation.text = loc
-                        etWhatsapp.setText(wa)
-                        etFarmDescription.setText(desc)
-                        tvCharCount.text = "${desc.length}/300"
-                        tvBankAccountInfoSub.text = bank
+                etOwnerName.setText(name)
+                etFarmName.setText(farmName)
+                etWhatsapp.setText(wa)
+                etFarmDescription.setText(desc)
+                tvCharCount.text = "${desc.length}/300"
+                tvBankAccountInfoSub.text = bank
+
+                if (loc.isNotEmpty()) {
+                    tvFarmLocation.text = loc
+                } else {
+                    // Fetch real addresses if location field is empty
+                    FirestoreRepository.fetchUserAddresses(userId) { addresses ->
+                        val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
+                        if (defaultAddr != null) {
+                            tvFarmLocation.text = defaultAddr.fullAddress
+                            db.collection("user").document(userId).update("location", defaultAddr.fullAddress)
+                        } else {
+                            tvFarmLocation.text = "Belum ada alamat terdaftar"
+                        }
                     }
                 }
-        }
+            }
     }
 
     private fun saveProfileData() {
