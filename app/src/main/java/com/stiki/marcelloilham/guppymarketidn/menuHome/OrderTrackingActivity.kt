@@ -65,7 +65,26 @@ class OrderTrackingActivity : AppCompatActivity() {
         initViews()
         readIntentData()
         setupListeners()
+        startActiveNodePulseAnimation()
         fetchLiveBiteshipTracking()
+    }
+
+    private fun startActiveNodePulseAnimation() {
+        val activeNodeCircle = findViewById<View>(R.id.viewActiveNodeCircle) ?: return
+        val pulseX = android.animation.ObjectAnimator.ofFloat(activeNodeCircle, "scaleX", 1.0f, 1.35f, 1.0f).apply {
+            duration = 1200
+            repeatCount = android.animation.ValueAnimator.INFINITE
+            repeatMode = android.animation.ValueAnimator.RESTART
+        }
+        val pulseY = android.animation.ObjectAnimator.ofFloat(activeNodeCircle, "scaleY", 1.0f, 1.35f, 1.0f).apply {
+            duration = 1200
+            repeatCount = android.animation.ValueAnimator.INFINITE
+            repeatMode = android.animation.ValueAnimator.RESTART
+        }
+        android.animation.AnimatorSet().apply {
+            playTogether(pulseX, pulseY)
+            start()
+        }
     }
 
     private fun initViews() {

@@ -335,6 +335,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -349,7 +350,7 @@
                                 android:backgroundTint="#E0E0E0"/>
                             <View
                                 android:layout_width="2dp"
-                                android:layout_height="40dp"
+                                android:layout_height="50dp"
                                 android:background="#E0E0E0"/>
                         </LinearLayout>
 
@@ -357,7 +358,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
+                            android:layout_marginStart="16dp"
                             android:orientation="vertical">
                             <TextView
                                 android:layout_width="wrap_content"
@@ -369,11 +370,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="4dp"
                                 android:text="Menunggu kedatangan"
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
-                                android:textSize="12sp"/>
+                                android:textSize="12.5sp"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -381,6 +382,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -389,13 +391,14 @@
                             android:gravity="center_horizontal"
                             android:orientation="vertical">
                             <View
+                                android:id="@+id/viewActiveNodeCircle"
                                 android:layout_width="14dp"
                                 android:layout_height="14dp"
                                 android:background="@drawable/bg_circle_image"
                                 android:backgroundTint="@color/guppy_primary"/>
                             <View
                                 android:layout_width="2dp"
-                                android:layout_height="55dp"
+                                android:layout_height="65dp"
                                 android:background="#E0E0E0"/>
                         </LinearLayout>
 
@@ -403,7 +406,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
+                            android:layout_marginStart="16dp"
                             android:orientation="vertical">
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -415,26 +418,26 @@
                                     android:text="Dikirim"
                                     android:textColor="@color/guppy_primary"
                                     android:fontFamily="@font/inter_bold"
-                                    android:textSize="14sp"/>
+                                    android:textSize="14.5sp"/>
                                 <TextView
                                     android:id="@+id/tvTimelineTimeDikirim"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
+                                    android:layout_marginStart="10dp"
                                     android:text="11 Des, 08.05"
                                     android:textColor="@color/guppy_text_gray"
                                     android:fontFamily="@font/inter_bold"
-                                    android:textSize="12sp"/>
+                                    android:textSize="12.5sp"/>
                             </LinearLayout>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="4dp"
                                 android:text="Paket dalam perjalanan ke alamat tujuan."
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
-                                android:textSize="12sp"
-                                android:lineSpacingExtra="2dp"/>
+                                android:textSize="12.5sp"
+                                android:lineSpacingExtra="3dp"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -442,6 +445,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -456,7 +460,7 @@
                                 android:backgroundTint="#124332"/>
                             <View
                                 android:layout_width="2dp"
-                                android:layout_height="35dp"
+                                android:layout_height="45dp"
                                 android:background="#E0E0E0"/>
                         </LinearLayout>
 
@@ -464,7 +468,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
+                            android:layout_marginStart="16dp"
                             android:orientation="vertical">
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -476,11 +480,11 @@
                                     android:text="Dikemas di Farm"
                                     android:textColor="@color/guppy_text_black"
                                     android:fontFamily="@font/inter_bold"
-                                    android:textSize="13.5sp"/>
+                                    android:textSize="14sp"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
+                                    android:layout_marginStart="10dp"
                                     android:text="10 Des, 14.40"
                                     android:textColor="@color/guppy_text_gray"
                                     android:fontFamily="@font/inter_regular"
@@ -493,7 +497,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -508,7 +512,7 @@
                                 android:backgroundTint="#124332"/>
                             <View
                                 android:layout_width="2dp"
-                                android:layout_height="35dp"
+                                android:layout_height="45dp"
                                 android:background="#E0E0E0"/>
                         </LinearLayout>
 
@@ -516,7 +520,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
+                            android:layout_marginStart="16dp"
                             android:orientation="vertical">
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -528,11 +532,11 @@
                                     android:text="Pembayaran dikonfirmasi"
                                     android:textColor="@color/guppy_text_black"
                                     android:fontFamily="@font/inter_bold"
-                                    android:textSize="13.5sp"/>
+                                    android:textSize="14sp"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
+                                    android:layout_marginStart="10dp"
                                     android:text="10 Des, 09.15"
                                     android:textColor="@color/guppy_text_gray"
                                     android:fontFamily="@font/inter_regular"
@@ -545,7 +549,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -564,7 +567,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
+                            android:layout_marginStart="16dp"
                             android:orientation="vertical">
                             <LinearLayout
                                 android:layout_width="wrap_content"
