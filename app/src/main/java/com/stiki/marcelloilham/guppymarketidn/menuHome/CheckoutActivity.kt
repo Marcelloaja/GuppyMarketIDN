@@ -1,5 +1,6 @@
 package com.stiki.marcelloilham.guppymarketidn.menuHome
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -283,9 +284,11 @@ class CheckoutActivity : AppCompatActivity() {
                 "SICEPAT" -> "SiCepat BEST"
                 else -> "GoSend / GrabExpress Instan"
             }
-            val paymentText = if (isPayVA) "Transfer Bank (VA)" else "E-wallet"
+            val paymentText = if (isPayVA) "Bank BCA Virtual Account" else "GoPay / E-wallet"
+            val orderNum = "#GM-${(10000..99999).random()}"
 
             val order = FirestoreRepository.OrderModel(
+                id = orderNum,
                 productName = "Red Dragon Delta",
                 sellerName = "Bekasi Aqua Farm",
                 quantity = quantity,
@@ -293,7 +296,7 @@ class CheckoutActivity : AppCompatActivity() {
                 shippingCost = shippingCost,
                 courier = courierText,
                 paymentMethod = paymentText,
-                status = "Dikirim"
+                status = "Menunggu Pembayaran"
             )
 
             btnPay.isEnabled = false
@@ -303,12 +306,16 @@ class CheckoutActivity : AppCompatActivity() {
                 btnPay.isEnabled = true
                 btnPay.text = "Bayar sekarang"
 
-                Toast.makeText(
-                    this,
-                    "Pembayaran ${formatCurrency(total)} via $courierText Berhasil! Pesanan Dicatat ke Sistem.",
-                    Toast.LENGTH_LONG
-                ).show()
-
+                val intent = Intent(this, PaymentPendingActivity::class.java).apply {
+                    putExtra("EXTRA_ORDER_ID", orderNum)
+                    putExtra("EXTRA_PRODUCT_NAME", "Red Dragon Delta")
+                    putExtra("EXTRA_QUANTITY", quantity)
+                    putExtra("EXTRA_TOTAL_AMOUNT", total)
+                    putExtra("EXTRA_SHIPPING_COST", shippingCost)
+                    putExtra("EXTRA_SERVICE_FEE", serviceFee)
+                    putExtra("EXTRA_PAYMENT_METHOD", paymentText)
+                }
+                startActivity(intent)
                 finish()
             }
         }
