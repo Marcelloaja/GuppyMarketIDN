@@ -113,28 +113,38 @@
           <circle cx="16" cy="16" r="6" fill="#FFFFFF"/>
         </svg>`;
 
-        // Add predefined pin markers for all 3 farms
-        const farmsList = [
-            { name: "Jakarta Guppy House", key: "jakarta", lng: 106.8060, lat: -6.2921 },
-            { name: "Bekasi Aqua Farm", key: "bekasi", lng: 106.9896, lat: -6.2383 },
-            { name: "FinFantasy Farm", key: "finfantasy", lng: 106.8685, lat: -6.2215 }
-        ];
-
         const farmElementsMap = {};
 
-        farmsList.forEach(f => {
+        function addRealFarmMarker(id, name, lat, lng) {
+            if (!id || !lat || !lng) return;
             const fEl = document.createElement('div');
             fEl.className = 'pin-marker';
-            fEl.innerHTML = redPinSvg;
+            fEl.innerHTML = greenPinSvg;
             fEl.addEventListener('click', () => {
-                focusFarmByName(f.name);
+                focusFarmByCoords(name, lat, lng);
             });
             new maplibregl.Marker({ element: fEl, anchor: 'bottom' })
-                .setLngLat([f.lng, f.lat])
+                .setLngLat([lng, lat])
                 .addTo(map);
 
-            farmElementsMap[f.key] = fEl;
-        });
+            farmElementsMap[id] = fEl;
+        }
+
+        function focusFarmByCoords(name, lat, lng) {
+            activeDestLng = lng;
+            activeDestLat = lat;
+
+            isRoutingActive = true;
+            isNavigatingMode = false;
+            fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
+
+            map.flyTo({
+                center: [activeDestLng, activeDestLat],
+                zoom: 15.5,
+                pitch: 30,
+                speed: 1.5
+            });
+        }
 
         // Load map sources & layers for Routing Line
         map.on('load', () => {
