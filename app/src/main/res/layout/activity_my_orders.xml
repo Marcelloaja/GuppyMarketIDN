@@ -65,12 +65,132 @@
         android:layout_below="@id/topBarMyOrders"
         android:background="#EEEEEE"/>
 
+    <!-- TOP SUMMARY COUNTERS ROW -->
+    <LinearLayout
+        android:id="@+id/layoutMyOrderCounters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dividerHeader"
+        android:background="#FAFAFA"
+        android:paddingHorizontal="14dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="6dp"
+        android:orientation="horizontal">
+
+        <!-- Counter 1: PERLU DIKEMAS -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_verified_badge"
+                app:tint="#2E7D32"/>
+
+            <TextView
+                android:id="@+id/tvCountMyOrderDikemas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="3"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="PERLU DIKEMAS"
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="10.5sp"/>
+        </LinearLayout>
+
+        <View android:layout_width="1dp" android:layout_height="24dp" android:background="#EEEEEE"/>
+
+        <!-- Counter 2: SIAP KIRIM -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_verified_badge"
+                app:tint="#2E7D32"/>
+
+            <TextView
+                android:id="@+id/tvCountMyOrderSiapKirim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="2"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="SIAP KIRIM"
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="10.5sp"/>
+        </LinearLayout>
+
+        <View android:layout_width="1dp" android:layout_height="24dp" android:background="#EEEEEE"/>
+
+        <!-- Counter 3: DIKIRIM -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_location_pin"
+                app:tint="#124332"/>
+
+            <TextView
+                android:id="@+id/tvCountMyOrderDikirim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="5"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="DIKIRIM"
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="10.5sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
     <!-- HORIZONTAL STATUS FILTER TABS -->
     <HorizontalScrollView
         android:id="@+id/scrollTabsMyOrders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dividerHeader"
+        android:layout_below="@id/layoutMyOrderCounters"
         android:background="@color/white"
         android:scrollbars="none"
         android:paddingVertical="10dp"
@@ -98,23 +218,7 @@
                 android:clickable="true"
                 android:focusable="true"/>
 
-            <!-- Tab 2: Menunggu Bayar -->
-            <TextView
-                android:id="@+id/tabMyOrderMenunggu"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:background="@drawable/bg_btn_solid_gray"
-                android:text="Menunggu Bayar"
-                android:textColor="@color/guppy_text_black"
-                android:fontFamily="@font/inter_bold"
-                android:textSize="13sp"
-                android:gravity="center"
-                android:paddingHorizontal="16dp"
-                android:layout_marginEnd="8dp"
-                android:clickable="true"
-                android:focusable="true"/>
-
-            <!-- Tab 3: Dikirim -->
+            <!-- Tab 2: Dikirim -->
             <TextView
                 android:id="@+id/tabMyOrderDikirim"
                 android:layout_width="wrap_content"
@@ -130,13 +234,29 @@
                 android:clickable="true"
                 android:focusable="true"/>
 
-            <!-- Tab 4: Selesai -->
+            <!-- Tab 3: Selesai -->
             <TextView
                 android:id="@+id/tabMyOrderSelesai"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
                 android:background="@drawable/bg_btn_solid_gray"
                 android:text="Selesai"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <!-- Tab 4: Dibatalkan -->
+            <TextView
+                android:id="@+id/tabMyOrderDibatalkan"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_btn_solid_gray"
+                android:text="Dibatalkan"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_bold"
                 android:textSize="13sp"
