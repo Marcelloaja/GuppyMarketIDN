@@ -188,14 +188,18 @@ class Maps : Fragment() {
         filtered = if (activeFilterMode == "RATING") {
             filtered.sortedByDescending { it.rating }
         } else {
-            filtered.sortedBy {
-                it.distanceKm.replace("km", "").replace(",", ".").trim().toDoubleOrNull() ?: 99.0
+            filtered.sortedBy { farm ->
+                farm.distanceKm.replace("km", "").replace(",", ".").trim().toDoubleOrNull() ?: 1.0
             }
+        }
+
+        if (::tvFarmCountBadge.isInitialized) {
+            tvFarmCountBadge.text = "${filtered.size} Farm"
         }
 
         if (filtered.isEmpty()) {
             recyclerMapsFarms.visibility = View.GONE
-            tvNoFarmFound.text = "Farm '$query' tidak ditemukan.\nCoba kata kunci lokasi lain."
+            tvNoFarmFound.text = if (cleanQuery.isNotEmpty()) "Farm '$query' tidak ditemukan.\nCoba kata kunci lokasi lain." else "Belum ada Farm / Gudang Ikan terdaftar."
             tvNoFarmFound.visibility = View.VISIBLE
         } else {
             recyclerMapsFarms.visibility = View.VISIBLE
@@ -213,6 +217,7 @@ class Maps : Fragment() {
                     startActivity(intent)
                 }
             )
+            recyclerMapsFarms.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
             recyclerMapsFarms.adapter = adapter
         }
     }

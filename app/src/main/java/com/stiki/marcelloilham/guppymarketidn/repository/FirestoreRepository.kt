@@ -541,9 +541,6 @@ object FirestoreRepository {
                                     farmAddr.fullAddress
                                 }
 
-                                val validLat = if (farmAddr.lat != 0.0) farmAddr.lat else -6.2383
-                                val validLng = if (farmAddr.lng != 0.0) farmAddr.lng else 106.9896
-
                                 val farm = FarmModel(
                                     id = farmAddr.id.ifEmpty { uid },
                                     farmName = if (farmAddr.recipientName.contains("Farm", true) || farmAddr.recipientName.contains("Guppy", true)) {
@@ -555,11 +552,11 @@ object FirestoreRepository {
                                     },
                                     ownerName = farmAddr.recipientName.ifEmpty { name },
                                     location = farmLocation,
-                                    distanceKm = "Lokasi Gudang",
+                                    distanceKm = "1,8 km",
                                     rating = 4.9,
                                     variantsCount = 12,
-                                    lat = validLat,
-                                    lng = validLng
+                                    lat = farmAddr.lat,
+                                    lng = farmAddr.lng
                                 )
                                 farmsList.add(farm)
                             }
