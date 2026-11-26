@@ -338,8 +338,6 @@
                 android:visibility="gone"/>
 
             <!-- FARM TERPERCAYA TERDEKAT -->
-
-            <!-- FARM TERPERCAYA TERDEKAT -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -350,215 +348,29 @@
                 android:textColor="@color/guppy_text_black"
                 android:textSize="16sp" />
 
-            <LinearLayout
+            <!-- RECYCLERVIEW HOME FARMS (DYNAMIC REALTIME FROM FIRESTORE) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerHomeFarms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="16dp"
-                android:orientation="vertical"
-                android:background="@drawable/bg_border_card">
+                android:background="@drawable/bg_border_card"/>
 
-                <!-- Farm 1 -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_circle_image"
-                        android:backgroundTint="@color/guppy_primary"
-                        android:text="JG"
-                        android:textColor="@color/white"
-                        android:gravity="center"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:textSize="16sp"/>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Jakarta Guppy House"
-                            android:fontFamily="@font/inter_semi_bold"
-                            android:textColor="@color/guppy_text_black"
-                            android:textSize="14sp"/>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="4dp">
-                            <ImageView
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:src="@drawable/map"
-                                app:tint="@color/guppy_text_gray"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:text="2,4 km"
-                                android:textSize="12sp"
-                                android:textColor="@color/guppy_text_gray"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="4dp">
-                            <ImageView
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:src="@drawable/star"
-                                app:tint="@color/guppy_star"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:text="4,9"
-                                android:fontFamily="@font/inter_semi_bold"
-                                android:textSize="12sp"
-                                android:textColor="@color/guppy_text_black"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:text="18 varian"
-                                android:textSize="12sp"
-                                android:textColor="@color/guppy_text_gray"/>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/btnKunjungiFarm1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="34dp"
-                        android:background="@drawable/bg_kunjungi_btn"
-                        android:text="Kunjungi"
-                        android:textColor="@color/guppy_primary"
-                        android:textSize="12sp"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:gravity="center"
-                        android:paddingHorizontal="16dp"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/guppy_stroke"/>
-
-                <!-- Farm 2 -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_circle_image"
-                        android:backgroundTint="#D85C42"
-                        android:text="BA"
-                        android:textColor="@color/white"
-                        android:gravity="center"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:textSize="16sp"/>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Bekasi Aqua Farm"
-                            android:fontFamily="@font/inter_semi_bold"
-                            android:textColor="@color/guppy_text_black"
-                            android:textSize="14sp"/>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="4dp">
-                            <ImageView
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:src="@drawable/map"
-                                app:tint="@color/guppy_text_gray"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:text="5,1 km"
-                                android:textSize="12sp"
-                                android:textColor="@color/guppy_text_gray"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="4dp">
-                            <ImageView
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:src="@drawable/star"
-                                app:tint="@color/guppy_star"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:text="4,8"
-                                android:fontFamily="@font/inter_semi_bold"
-                                android:textSize="12sp"
-                                android:textColor="@color/guppy_text_black"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:text="12 varian"
-                                android:textSize="12sp"
-                                android:textColor="@color/guppy_text_gray"/>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="34dp"
-                        android:background="@drawable/bg_kunjungi_btn"
-                        android:text="Kunjungi"
-                        android:textColor="@color/guppy_primary"
-                        android:textSize="12sp"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:gravity="center"
-                        android:paddingHorizontal="16dp"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                </LinearLayout>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvEmptyHomeFarms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_variant_card_unselected"
+                android:padding="16dp"
+                android:text="Belum ada farm terdaftar di sekitar lokasi Anda."
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="12.5sp"
+                android:gravity="center"
+                android:visibility="gone"/>
 
             <!-- BARU DITAMBAHKAN -->
             <LinearLayout

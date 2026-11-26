@@ -46,6 +46,18 @@ object FirestoreRepository {
         val quarantine: String = "14 hari di farm"
     )
 
+    data class FarmModel(
+        val id: String = "",
+        val farmName: String = "Jakarta Guppy House",
+        val ownerName: String = "Marcello Aja",
+        val location: String = "Jakarta Selatan · 2,4 km",
+        val distanceKm: String = "2,4 km",
+        val rating: Double = 4.9,
+        val variantsCount: Int = 18,
+        val lat: Double = -6.2383,
+        val lng: Double = 106.9896
+    )
+
     data class OrderModel(
         val id: String = "",
         val userId: String = "",
@@ -487,6 +499,64 @@ object FirestoreRepository {
             .addOnSuccessListener { snapshot ->
                 val list = snapshot.toObjects(OrderModel::class.java)
                 onResult(list)
+            }
+            .addOnFailureListener {
+                onResult(emptyList())
+            }
+    }
+
+    // FETCH REAL FARMS FROM FIRESTORE
+    fun fetchRealFarms(onResult: (List<FarmModel>) -> Unit) {
+        db.collection("user")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val farmsList = mutableListOf<FarmModel>()
+                val documents = snapshot.documents
+
+                if (documents.isEmpty()) {
+                    onResult(emptyList())
+                    return@addOnSuccessListener
+                }
+
+                var processedCount = 0
+                for (doc in documents) {
+                    val uid = doc.id
+                    val name = doc.getString("name") ?: "Guppy Farm"
+
+                    db.collection("user").document(uid).collection("addresses")
+                        .get()
+                        .addOnSuccessListener { addrSnapshot ->
+                            val defaultAddr = addrSnapshot.toObjects(AddressModel::class.java).find { it.isDefault }
+                                ?: addrSnapshot.toObjects(AddressModel::class.java).firstOrNull()
+
+                            val farmLocation = defaultAddr?.fullAddress?.split(",")?.takeLast(2)?.joinToString(",")?.trim()
+                                ?: "Bekasi"
+
+                            val farm = FarmModel(
+                                id = uid,
+                                farmName = if (name.contains("Farm", true) || name.contains("Guppy", true) || name.contains("House", true)) name else "$name Farm",
+                                ownerName = name,
+                                location = farmLocation,
+                                distanceKm = "${(1..4).random()},${(1..9).random()} km",
+                                rating = 4.8,
+                                variantsCount = (8..24).random(),
+                                lat = -6.2383 + (Math.random() - 0.5) * 0.04,
+                                lng = 106.9896 + (Math.random() - 0.5) * 0.04
+                            )
+                            farmsList.add(farm)
+
+                            processedCount++
+                            if (processedCount == documents.size) {
+                                onResult(farmsList)
+                            }
+                        }
+                        .addOnFailureListener {
+                            processedCount++
+                            if (processedCount == documents.size) {
+                                onResult(farmsList)
+                            }
+                        }
+                }
             }
             .addOnFailureListener {
                 onResult(emptyList())

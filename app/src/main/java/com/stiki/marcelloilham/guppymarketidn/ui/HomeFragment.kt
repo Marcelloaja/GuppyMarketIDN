@@ -110,8 +110,41 @@ class HomeFragment : Fragment() {
         setupSearchBar()
         setupGridViewRecycler()
         setupAuctionIntegration(view)
+        setupHomeFarms(view)
 
         return view
+    }
+
+    private fun setupHomeFarms(view: View) {
+        val recyclerHomeFarms = view.findViewById<RecyclerView>(R.id.recyclerHomeFarms) ?: return
+        val tvEmptyHomeFarms = view.findViewById<TextView>(R.id.tvEmptyHomeFarms)
+
+        FirestoreRepository.fetchRealFarms { realFarms ->
+            if (!isAdded) return@fetchRealFarms
+
+            if (realFarms.isEmpty()) {
+                recyclerHomeFarms.visibility = View.GONE
+                tvEmptyHomeFarms?.visibility = View.VISIBLE
+            } else {
+                recyclerHomeFarms.visibility = View.VISIBLE
+                tvEmptyHomeFarms?.visibility = View.GONE
+
+                val adapter = com.stiki.marcelloilham.guppymarketidn.adapter.HomeFarmAdapter(
+                    context = requireContext(),
+                    farms = realFarms,
+                    onVisitClicked = { clickedFarm ->
+                        val intent = Intent(requireContext(), DetailFarmActivity::class.java).apply {
+                            putExtra("farm_title", clickedFarm.farmName)
+                            putExtra("farm_location", clickedFarm.location)
+                            putExtra("farm_rating", clickedFarm.rating.toString())
+                        }
+                        startActivity(intent)
+                    }
+                )
+                recyclerHomeFarms.layoutManager = LinearLayoutManager(requireContext())
+                recyclerHomeFarms.adapter = adapter
+            }
+        }
     }
 
     private fun initViews(view: View) {
@@ -131,13 +164,6 @@ class HomeFragment : Fragment() {
         shimmerCarousel = view.findViewById(R.id.shimmerCarousel)
         shimmerGrid = view.findViewById(R.id.shimmerGrid)
         textNoData = view.findViewById(R.id.textNoData)
-
-        // Setup the new "Kunjungi" button
-        val btnKunjungiFarm1 = view.findViewById<TextView>(R.id.btnKunjungiFarm1)
-        btnKunjungiFarm1?.setOnClickListener {
-            val intent = Intent(requireContext(), DetailFarmActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     private fun setupAuctionIntegration(view: View) {

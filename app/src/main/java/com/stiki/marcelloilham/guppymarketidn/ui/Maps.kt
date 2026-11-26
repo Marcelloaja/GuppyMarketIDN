@@ -201,6 +201,7 @@ class Maps : Fragment() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 checkAndFocusFarmQuery()
+                loadFirestoreFarmMarkers()
             }
         }
         webView.settings.javaScriptEnabled = true
@@ -219,6 +220,19 @@ class Maps : Fragment() {
         }, "AndroidBridge")
 
         webView.loadUrl("file:///android_asset/maps.html")
+    }
+
+    private fun loadFirestoreFarmMarkers() {
+        com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository.fetchRealFarms { farms ->
+            if (isAdded) {
+                activity?.runOnUiThread {
+                    farms.forEach { farm ->
+                        val escapedName = farm.farmName.replace("'", "\\'")
+                        webView.evaluateJavascript("javascript:addRealFarmMarker('${farm.id}', '$escapedName', ${farm.lat}, ${farm.lng})", null)
+                    }
+                }
+            }
+        }
     }
 
     private fun checkAndFocusFarmQuery() {
