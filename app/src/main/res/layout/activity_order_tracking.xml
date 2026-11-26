@@ -177,7 +177,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="18dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -185,14 +185,22 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="42dp"
-                            android:layout_height="42dp"
-                            android:background="@drawable/bg_circle_image"
-                            android:backgroundTint="#E0F2F1"
-                            android:src="@drawable/ic_location_pin"
-                            app:tint="@color/guppy_primary"
-                            android:padding="10dp"/>
+                        <!-- Rounded Square Truck Icon Box -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            app:cardCornerRadius="14dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F8F9FA"
+                            app:strokeWidth="0dp">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/ic_location_pin"
+                                app:tint="#124332"
+                                android:padding="12dp"/>
+                        </androidx.cardview.widget.CardView>
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -208,7 +216,7 @@
                                 android:text="JNE Express"
                                 android:textColor="@color/guppy_text_black"
                                 android:fontFamily="@font/inter_bold"
-                                android:textSize="15sp"/>
+                                android:textSize="15.5sp"/>
 
                             <TextView
                                 android:id="@+id/tvTrackResiNumber"
@@ -218,7 +226,7 @@
                                 android:text="Resi: JP8841"
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
-                                android:textSize="12.5sp"/>
+                                android:textSize="13sp"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -226,19 +234,19 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="16dp"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/btnContactCourier"
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:layout_height="42dp"
-                            android:background="@drawable/bg_btn_outline_pill_gray"
-                            android:text="📞 Hubungi Kurir"
-                            android:textColor="@color/guppy_primary"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_btn_outline"
+                            android:text="Hubungi Kurir"
+                            android:textColor="#124332"
                             android:fontFamily="@font/inter_bold"
-                            android:textSize="13sp"
+                            android:textSize="13.5sp"
                             android:gravity="center"
                             android:layout_marginEnd="6dp"
                             android:clickable="true"
@@ -248,15 +256,16 @@
                             android:id="@+id/btnCopyResiTracking"
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:layout_height="42dp"
-                            android:background="@drawable/bg_btn_outline_pill_gray"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_chip_selected"
+                            android:backgroundTint="#F8F9FA"
                             android:text="Salin Resi"
                             app:drawableStartCompat="@drawable/ic_copy_clipboard"
-                            app:drawableTint="@color/guppy_text_black"
+                            app:drawableTint="#124332"
                             android:drawablePadding="6dp"
-                            android:textColor="@color/guppy_text_black"
+                            android:textColor="#124332"
                             android:fontFamily="@font/inter_bold"
-                            android:textSize="13sp"
+                            android:textSize="13.5sp"
                             android:gravity="center"
                             android:paddingHorizontal="14dp"
                             android:layout_marginStart="6dp"
