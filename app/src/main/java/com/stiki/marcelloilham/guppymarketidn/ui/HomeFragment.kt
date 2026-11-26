@@ -505,46 +505,54 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupGridViewRecycler() {
-        // Simulate data loading delay to show shimmer effect
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (!isAdded) return@postDelayed
+        shimmerCarousel.stopShimmer()
+        shimmerCarousel.visibility = View.GONE
+        carouselRecyclerView.visibility = View.VISIBLE
 
-            // Stop Shimmer
-            shimmerCarousel.stopShimmer()
-            shimmerCarousel.visibility = View.GONE
-            carouselRecyclerView.visibility = View.VISIBLE
+        FirestoreRepository.fetchProducts { realProducts ->
+            if (!isAdded) return@fetchProducts
 
             shimmerGrid.stopShimmer()
             shimmerGrid.visibility = View.GONE
-            gridViewRecycler.visibility = View.VISIBLE
 
-            val items = listOf(
-                Item(R.drawable.skyblue, "Sky Blue","Albino","Rp. 75.000"),
-                Item(R.drawable.gsrts, "GSRTS","Round Tail","Rp. 100.000"),
-                Item(R.drawable.platinumrd,"Platinum RD","Halfmoon","Rp. 125.000"),
-                Item(R.drawable.mssrl, "MSSRL","Metal Head","Rp. 95.000")
-            )
+            if (realProducts.isEmpty()) {
+                gridViewRecycler.visibility = View.GONE
+                textNoData.text = "Belum ada varian produk tersedia."
+                textNoData.visibility = View.VISIBLE
+            } else {
+                gridViewRecycler.visibility = View.VISIBLE
+                textNoData.visibility = View.GONE
 
-            gridAdapter = GridAdapter(requireContext(), items)
-            gridViewRecycler.adapter = gridAdapter
-
-            val layoutManager = GridLayoutManager(requireContext(), 2)
-            gridViewRecycler.layoutManager = layoutManager
-            gridViewRecycler.isNestedScrollingEnabled = false
-
-            runLayoutAnimation(gridViewRecycler)
-
-            gridAdapter.setOnItemClickListener(object : GridAdapter.OnItemClickListener {
-                override fun onItemClick(position: Int) {
-                    val item = gridAdapter.getItem(position)
-                    val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-                        putExtra("ITEM_NAME", item.name)
-                        putExtra("ITEM_IMAGE", item.image)
-                    }
-                    startActivity(intent)
+                val items = realProducts.map { p ->
+                    Item(
+                        image = if (p.imageRes != 0) p.imageRes else R.drawable.skyblue,
+                        name = p.title,
+                        type = p.category,
+                        price = p.price
+                    )
                 }
-            })
-        }, 1500)
+
+                gridAdapter = GridAdapter(requireContext(), items)
+                gridViewRecycler.adapter = gridAdapter
+
+                val layoutManager = GridLayoutManager(requireContext(), 2)
+                gridViewRecycler.layoutManager = layoutManager
+                gridViewRecycler.isNestedScrollingEnabled = false
+
+                runLayoutAnimation(gridViewRecycler)
+
+                gridAdapter.setOnItemClickListener(object : GridAdapter.OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val item = gridAdapter.getItem(position)
+                        val intent = Intent(requireContext(), DetailActivity::class.java).apply {
+                            putExtra("ITEM_NAME", item.name)
+                            putExtra("ITEM_IMAGE", item.image)
+                        }
+                        startActivity(intent)
+                    }
+                })
+            }
+        }
     }
 
     private fun runLayoutAnimation(recyclerView: RecyclerView) {
