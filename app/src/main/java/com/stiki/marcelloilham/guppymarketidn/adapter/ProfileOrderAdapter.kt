@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 
 class ProfileOrderAdapter(
     private val context: Context,
-    private val orders: List<FirestoreRepository.OrderModel>
+    private val orders: List<FirestoreRepository.OrderModel>,
+    private val onOrderClicked: (FirestoreRepository.OrderModel) -> Unit = {}
 ) : RecyclerView.Adapter<ProfileOrderAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -34,9 +34,8 @@ class ProfileOrderAdapter(
         holder.tvOrderInfo.text = "${item.quantity} pasang · Rp $formattedPrice"
         holder.tvStatus.text = "${item.status} · ${item.trackingNumber}"
 
-        holder.btnTrack.setOnClickListener {
-            Toast.makeText(context, "Melacak pesanan resi ${item.trackingNumber}...", Toast.LENGTH_SHORT).show()
-        }
+        holder.itemView.setOnClickListener { onOrderClicked(item) }
+        holder.btnTrack.setOnClickListener { onOrderClicked(item) }
     }
 
     override fun getItemCount(): Int = orders.size

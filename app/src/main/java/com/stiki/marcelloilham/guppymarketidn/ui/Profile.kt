@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.adapter.MyAuctionListAdapter
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.R
+import com.stiki.marcelloilham.guppymarketidn.menuProfile.MyOrdersActivity
+import com.stiki.marcelloilham.guppymarketidn.menuProfile.SellerOrdersActivity
 import com.stiki.marcelloilham.guppymarketidn.menuProfile.MenuProfile
 
 class Profile : Fragment() {
@@ -514,6 +516,18 @@ class Profile : Fragment() {
                 putExtra(Intent.EXTRA_TEXT, "Kunjungi toko guppy ${textName.text} di GuppyMarket: Kualitas kontes & garansi ikan hidup!")
             }
             startActivity(Intent.createChooser(shareIntent, "Bagikan Profil Farm via"))
+        }
+
+        val btnMyOrders = view.findViewById<View>(R.id.btnMyOrders)
+        btnMyOrders?.setOnClickListener {
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            startActivity(intent)
+        }
+
+        val btnSellerOrders = view.findViewById<View>(R.id.btnSellerOrders)
+        btnSellerOrders?.setOnClickListener {
+            val intent = Intent(requireContext(), SellerOrdersActivity::class.java)
+            startActivity(intent)
         }
 
         val btnAddress = view.findViewById<View>(R.id.btnAddressSetting)

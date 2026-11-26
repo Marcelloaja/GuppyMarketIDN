@@ -836,7 +836,124 @@
                             app:tint="@color/guppy_text_gray"/>
                     </LinearLayout>
 
-                    <!-- GROUP 2: PEMBAYARAN -->
+                    <!-- GROUP 2: TRANSAKSI & PESANAN -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="TRANSAKSI &amp; PESANAN"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="11sp"
+                        android:letterSpacing="0.05"/>
+
+                    <!-- Item 1: Pesanan Saya (Mode Pembeli / Buyer) -->
+                    <LinearLayout
+                        android:id="@+id/btnMyOrders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/bg_circle_image"
+                            android:backgroundTint="#E0F2F1"
+                            android:src="@drawable/ic_verified_badge"
+                            app:tint="@color/guppy_primary"
+                            android:padding="8dp"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pesanan Saya (Pembeli)"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="13.5sp"/>
+                            <TextView
+                                android:id="@+id/tvMyOrdersSub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:text="Lacak &amp; pantau transaksi pembelian guppy"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="@color/guppy_text_gray"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="12dp" android:background="@color/guppy_stroke"/>
+
+                    <!-- Item 2: Pesanan Masuk Toko (Mode Penjual / Seller) -->
+                    <LinearLayout
+                        android:id="@+id/btnSellerOrders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/bg_circle_image"
+                            android:backgroundTint="#E0F2F1"
+                            android:src="@drawable/ic_location_pin"
+                            app:tint="@color/guppy_primary"
+                            android:padding="8dp"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pesanan Toko Masuk (Penjual)"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="13.5sp"/>
+                            <TextView
+                                android:id="@+id/tvSellerOrdersSub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:text="Kelola pesanan dari pembeli toko guppy Anda"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="@color/guppy_text_gray"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="12dp" android:background="@color/guppy_stroke"/>
+
+                    <!-- GROUP 3: PEMBAYARAN -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -100,6 +100,12 @@
             android:name=".menuProfile.CourierSettingsActivity"
             android:exported="false" />
         <activity
+            android:name=".menuProfile.MyOrdersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".menuProfile.SellerOrdersActivity"
+            android:exported="false" />
+        <activity
             android:name=".menuProfile.PaymentMethodsActivity"
             android:exported="false" />
         <activity
