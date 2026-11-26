@@ -49,6 +49,7 @@ class Profile : Fragment() {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
+    private var userListenerRegistration: com.google.firebase.firestore.ListenerRegistration? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -140,15 +141,22 @@ class Profile : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        loadUserDataLocally()
+        fetchUserData()
         loadDefaultAddressSub()
         loadDefaultCourierSub()
         loadDefaultPaymentSub()
         if (::recyclerProfileAuctions.isInitialized) {
             loadUserAuctions()
         }
-        if (this::recyclerProfileProducts.isInitialized) {
+        if (::recyclerProfileProducts.isInitialized) {
             loadUserProducts()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        userListenerRegistration?.remove()
     }
 
     private fun initTabs(view: View) {
@@ -216,8 +224,11 @@ class Profile : Fragment() {
             val userId = firebaseUser.uid
             val userDocRef = db.collection("user").document(userId)
 
-            userDocRef.get().addOnSuccessListener { document ->
-                if (isAdded && document != null && document.exists()) {
+            userListenerRegistration?.remove()
+            userListenerRegistration = userDocRef.addSnapshotListener { document, error ->
+                if (error != null || !isAdded) return@addSnapshotListener
+
+                if (document != null && document.exists()) {
                     val name = document.getString("name")
                         ?.ifEmpty { firebaseUser.displayName }
                         ?: firebaseUser.displayName
@@ -300,12 +311,7 @@ class Profile : Fragment() {
                     )
                     userDocRef.set(initialMap, com.google.firebase.firestore.SetOptions.merge())
                 }
-            }.addOnFailureListener { error ->
-                Log.e("Profile", "Error retrieving data: ", error)
-                loadUserDataLocally()
             }
-        } else {
-            loadUserDataLocally()
         }
     }
 
