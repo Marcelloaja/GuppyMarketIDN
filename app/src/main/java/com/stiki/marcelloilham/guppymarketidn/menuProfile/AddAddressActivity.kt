@@ -493,6 +493,22 @@ class AddAddressActivity : AppCompatActivity() {
             return
         }
 
+        val coordsStr = tvCoordinates.text.toString().split(",")
+        var currentLat = coordsStr.getOrNull(0)?.trim()?.toDoubleOrNull() ?: 0.0
+        var currentLng = coordsStr.getOrNull(1)?.trim()?.toDoubleOrNull() ?: 0.0
+
+        if ((currentLat == 0.0 || currentLng == 0.0) && fullAddress.isNotEmpty()) {
+            try {
+                val geocoder = Geocoder(this, Locale.getDefault())
+                @Suppress("DEPRECATION")
+                val matches = geocoder.getFromLocationName(fullAddress, 1)
+                if (!matches.isNullOrEmpty()) {
+                    currentLat = matches[0].latitude
+                    currentLng = matches[0].longitude
+                }
+            } catch (_: Exception) {}
+        }
+
         val phoneFormatted = if (phoneRaw.startsWith("+62")) phoneRaw else "+62 $phoneRaw"
         val isDefaultAddr = switchSetDefault.isChecked
 
@@ -504,7 +520,9 @@ class AddAddressActivity : AppCompatActivity() {
             phone = phoneFormatted,
             fullAddress = fullAddress,
             isDefault = isDefaultAddr,
-            notesForCourier = landmarkNotes
+            notesForCourier = landmarkNotes,
+            lat = currentLat,
+            lng = currentLng
         )
 
         val btnSave = findViewById<TextView>(R.id.btnSaveAddressBottom)

@@ -541,6 +541,9 @@ object FirestoreRepository {
                                     farmAddr.fullAddress
                                 }
 
+                                val validLat = if (farmAddr.lat != 0.0) farmAddr.lat else -7.2800 + (Math.random() - 0.5) * 0.02
+                                val validLng = if (farmAddr.lng != 0.0) farmAddr.lng else 112.7900 + (Math.random() - 0.5) * 0.02
+
                                 val farm = FarmModel(
                                     id = farmAddr.id.ifEmpty { uid },
                                     farmName = if (farmAddr.recipientName.contains("Farm", true) || farmAddr.recipientName.contains("Guppy", true)) {
@@ -555,8 +558,8 @@ object FirestoreRepository {
                                     distanceKm = "1,8 km",
                                     rating = 4.9,
                                     variantsCount = 12,
-                                    lat = farmAddr.lat,
-                                    lng = farmAddr.lng
+                                    lat = validLat,
+                                    lng = validLng
                                 )
                                 farmsList.add(farm)
                             }
