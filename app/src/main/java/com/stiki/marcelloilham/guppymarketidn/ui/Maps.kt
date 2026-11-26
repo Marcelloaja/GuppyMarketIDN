@@ -232,9 +232,31 @@ class Maps : Fragment() {
     }
 
     private fun loadFirestoreFarmMarkers() {
-        com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository.fetchRealFarms { farms ->
+        FirestoreRepository.fetchRealFarms { farms ->
+            realFarmsList = farms
             if (isAdded) {
                 activity?.runOnUiThread {
+                    if (::tvFarmCountBadge.isInitialized) {
+                        tvFarmCountBadge.text = "${farms.size} Farm / Gudang Ikan"
+                    }
+
+                    if (::recyclerMapsFarms.isInitialized) {
+                        val adapter = com.stiki.marcelloilham.guppymarketidn.adapter.HomeFarmAdapter(
+                            context = requireContext(),
+                            farms = farms,
+                            onVisitClicked = { clickedFarm ->
+                                val intent = Intent(requireContext(), DetailFarmActivity::class.java).apply {
+                                    putExtra("farm_title", clickedFarm.farmName)
+                                    putExtra("farm_location", clickedFarm.location)
+                                    putExtra("farm_rating", clickedFarm.rating.toString())
+                                }
+                                startActivity(intent)
+                            }
+                        )
+                        recyclerMapsFarms.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+                        recyclerMapsFarms.adapter = adapter
+                    }
+
                     farms.forEach { farm ->
                         val escapedName = farm.farmName.replace("'", "\\'")
                         webView.evaluateJavascript("javascript:addRealFarmMarker('${farm.id}', '$escapedName', ${farm.lat}, ${farm.lng})", null)

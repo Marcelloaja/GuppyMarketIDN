@@ -415,7 +415,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_chip_selected"
                     android:backgroundTint="#E0F2F1"
-                    android:text="0 Gudang Ikan"
+                    android:text="0 Farm / Gudang Ikan"
                     android:textColor="@color/guppy_primary"
                     android:fontFamily="@font/inter_bold"
                     android:textSize="11.5sp"
@@ -499,12 +499,12 @@
                         android:paddingHorizontal="14dp"
                         android:layout_marginEnd="6dp"/>
 
-                    <!-- Unselected: Gudang Ikan -->
+                    <!-- Unselected: Gudang Ikan / Farm -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="32dp"
                         android:background="@drawable/bg_btn_solid_gray"
-                        android:text="🏢 Gudang Ikan"
+                        android:text="🏢 Farm / Gudang Ikan"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
                         android:textSize="12sp"
