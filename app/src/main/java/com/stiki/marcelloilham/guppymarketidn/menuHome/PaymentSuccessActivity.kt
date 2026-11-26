@@ -166,9 +166,11 @@ class PaymentSuccessActivity : AppCompatActivity() {
 
         val btnTrack = findViewById<View>(R.id.btnTrackOrder)
         btnTrack?.setOnClickListener {
-            Toast.makeText(this, "Membuka lacak pesanan #$trackingNumberText...", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            val intent = Intent(this, OrderTrackingActivity::class.java).apply {
+                putExtra("EXTRA_ORDER_ID", intent.getStringExtra("EXTRA_ORDER_ID") ?: "#GM-20931")
+                putExtra("EXTRA_PRODUCT_NAME", intent.getStringExtra("EXTRA_PRODUCT_NAME") ?: "Red Dragon Delta")
+                putExtra("EXTRA_COURIER", intent.getStringExtra("EXTRA_COURIER") ?: "JNE Express")
+                putExtra("EXTRA_TRACKING_NUMBER", trackingNumberText)
             }
             startActivity(intent)
         }

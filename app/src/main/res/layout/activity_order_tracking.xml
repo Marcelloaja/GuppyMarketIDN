@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA"
+    tools:context=".menuHome.OrderTrackingActivity">
+
+    <!-- TOP BAR HEADER -->
+    <LinearLayout
+        android:id="@+id/topBarOrderTracking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#FAFAFA"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/btnBackOrderTracking"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_white_stroke"
+            android:src="@drawable/ic_chevron_left"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="Lacak Pesanan"
+            android:textColor="@color/guppy_text_black"
+            android:textSize="18sp"/>
+
+        <ImageView
+            android:id="@+id/btnHelpTracking"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@drawable/bg_circle_white_stroke"
+            android:src="@drawable/ic_info"
+            app:tint="@color/guppy_text_gray"
+            android:padding="9dp"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dividerHeader"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/topBarOrderTracking"
+        android:background="#EEEEEE"/>
+
+    <!-- SCROLL CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dividerHeader"
+        android:layout_above="@id/bottomBarTrackingConfirm"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="18dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="30dp">
+
+            <!-- 1. PRODUCT SUMMARY CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/ic_image_gallery"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvTrackProductName"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="Red Dragon Delta"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="15sp"/>
+
+                            <TextView
+                                android:id="@+id/tvTrackStatusBadge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_chip_selected"
+                                android:backgroundTint="#E0F2F1"
+                                android:text="Dikirim"
+                                android:textColor="@color/guppy_primary"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="11.5sp"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="3dp"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvTrackProductDetails"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="2 pasang (4 ekor) · Rp 577.000"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="12.5sp"/>
+
+                        <TextView
+                            android:id="@+id/tvTrackOrderNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="No. Pesanan: #GM-20931"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2. COURIER INFO CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:background="@drawable/bg_circle_image"
+                            android:backgroundTint="#E0F2F1"
+                            android:src="@drawable/ic_location_pin"
+                            app:tint="@color/guppy_primary"
+                            android:padding="10dp"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvTrackCourierName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="JNE Express"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="15sp"/>
+
+                            <TextView
+                                android:id="@+id/tvTrackResiNumber"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Resi: JP8841"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="12.5sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Buttons Row: Hubungi Kurir & Salin Resi -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/btnContactCourier"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="42dp"
+                            android:background="@drawable/bg_btn_outline_pill_gray"
+                            android:text="📞 Hubungi Kurir"
+                            android:textColor="@color/guppy_primary"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="13sp"
+                            android:gravity="center"
+                            android:layout_marginEnd="6dp"
+                            android:clickable="true"
+                            android:focusable="true"/>
+
+                        <TextView
+                            android:id="@+id/btnCopyResiTracking"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="42dp"
+                            android:background="@drawable/bg_btn_outline_pill_gray"
+                            android:text="📋 Salin Resi"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="13sp"
+                            android:gravity="center"
+                            android:layout_marginStart="6dp"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. ESTIMATED DELIVERY CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Estimasi tiba"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12.5sp"/>
+
+                    <TextView
+                        android:id="@+id/tvTrackEtaDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Kamis, 12 Des 2024"
+                        android:textColor="@color/guppy_text_black"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tvTrackEtaSubtext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Diperkirakan tiba hari ini sebelum 17.00"
+                        android:textColor="@color/guppy_primary"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="12.5sp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. TIMELINE STEPPER CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <!-- Step 1: Diterima (Future / Light) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="20dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:background="@drawable/bg_circle_image"
+                                android:backgroundTint="#E0E0E0"/>
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="40dp"
+                                android:background="#E0E0E0"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Diterima"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Menunggu kedatangan"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Step 2: Dikirim (Active Green) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="20dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+                            <View
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:background="@drawable/bg_circle_image"
+                                android:backgroundTint="@color/guppy_primary"/>
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="55dp"
+                                android:background="#E0E0E0"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Dikirim"
+                                    android:textColor="@color/guppy_primary"
+                                    android:fontFamily="@font/inter_bold"
+                                    android:textSize="14sp"/>
+                                <TextView
+                                    android:id="@+id/tvTimelineTimeDikirim"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:text="11 Des, 08.05"
+                                    android:textColor="@color/guppy_text_gray"
+                                    android:fontFamily="@font/inter_bold"
+                                    android:textSize="12sp"/>
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Paket dalam perjalanan ke alamat tujuan."
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="12sp"
+                                android:lineSpacingExtra="2dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Step 3: Dikemas di Farm -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="20dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:background="@drawable/bg_circle_image"
+                                android:backgroundTint="#124332"/>
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="35dp"
+                                android:background="#E0E0E0"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Dikemas di Farm"
+                                    android:textColor="@color/guppy_text_black"
+                                    android:fontFamily="@font/inter_bold"
+                                    android:textSize="13.5sp"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:text="10 Des, 14.40"
+                                    android:textColor="@color/guppy_text_gray"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:textSize="12sp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Step 4: Pembayaran dikonfirmasi -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="20dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:background="@drawable/bg_circle_image"
+                                android:backgroundTint="#124332"/>
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="35dp"
+                                android:background="#E0E0E0"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pembayaran dikonfirmasi"
+                                    android:textColor="@color/guppy_text_black"
+                                    android:fontFamily="@font/inter_bold"
+                                    android:textSize="13.5sp"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:text="10 Des, 09.15"
+                                    android:textColor="@color/guppy_text_gray"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:textSize="12sp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Step 5: Pesanan dibuat -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="20dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:background="@drawable/bg_circle_image"
+                                android:backgroundTint="#124332"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pesanan dibuat"
+                                    android:textColor="@color/guppy_text_black"
+                                    android:fontFamily="@font/inter_bold"
+                                    android:textSize="13.5sp"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:text="10 Des, 09.12"
+                                    android:textColor="@color/guppy_text_gray"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:textSize="12sp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 5. SHIPPING ADDRESS CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/bg_circle_image"
+                        android:backgroundTint="#E0F2F1"
+                        android:src="@drawable/ic_location_pin"
+                        app:tint="@color/guppy_primary"
+                        android:padding="9dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Alamat pengiriman"
+                            android:textColor="@color/guppy_text_black"
+                            android:fontFamily="@font/inter_bold"
+                            android:textSize="14.5sp"/>
+
+                        <TextView
+                            android:id="@+id/tvTrackAddressSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Rumah, Bekasi Selatan"
+                            android:textColor="@color/guppy_text_gray"
+                            android:fontFamily="@font/inter_regular"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 6. GUARANTEE NOTICE CARD -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#F8F9FA"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_verified_badge"
+                        app:tint="#2E7D32"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Garansi sehat 24 jam, karantina 3 hari, kemasan oksigen"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="11.5sp"
+                        android:lineSpacingExtra="2dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- STICKY BOTTOM ACTION BUTTON -->
+    <LinearLayout
+        android:id="@+id/bottomBarTrackingConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:elevation="12dp"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="12dp">
+
+        <TextView
+            android:id="@+id/btnConfirmOrderReceived"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_btn_outline_pill_gray"
+            android:text="Konfirmasi Pesanan Diterima"
+            android:textColor="@color/guppy_text_gray"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="14.5sp"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
+</RelativeLayout>
