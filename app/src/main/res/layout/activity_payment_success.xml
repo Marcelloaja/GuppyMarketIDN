@@ -656,8 +656,8 @@
         <TextView
             android:id="@+id/btnTrackOrder"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/bg_chip_selected"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_btn_primary"
             android:backgroundTint="#124332"
             android:text="Lacak Pesanan"
             android:textColor="@color/white"
@@ -670,13 +670,13 @@
         <TextView
             android:id="@+id/btnBackToHome"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_btn_outline_pill_gray"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_btn_outline"
             android:text="Kembali ke Beranda"
             android:textColor="@color/guppy_text_black"
             android:fontFamily="@font/inter_bold"
-            android:textSize="15sp"
+            android:textSize="14.5sp"
             android:gravity="center"
             android:clickable="true"
             android:focusable="true"/>
