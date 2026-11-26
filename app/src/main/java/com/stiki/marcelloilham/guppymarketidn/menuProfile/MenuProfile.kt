@@ -43,8 +43,20 @@ class MenuProfile : AppCompatActivity() {
     private lateinit var btnDeleteFarmAccount: TextView
     private lateinit var imgEditAvatar: com.google.android.material.imageview.ShapeableImageView
 
-    private lateinit var photoPickerLauncher: androidx.activity.result.ActivityResultLauncher<String>
     private var selectedPhotoUri: android.net.Uri? = null
+    private val photoPickerLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            selectedPhotoUri = uri
+            try {
+                if (::imgEditAvatar.isInitialized) {
+                    imgEditAvatar.setImageURI(uri)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            Toast.makeText(this, "Foto profil dipilih. Klik 'Simpan Profil' untuk menyimpan.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
@@ -53,28 +65,25 @@ class MenuProfile : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_profile)
 
-        photoPickerLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri ->
-            if (uri != null) {
-                selectedPhotoUri = uri
-                imgEditAvatar.setImageURI(uri)
-                Toast.makeText(this, "Foto profil dipilih. Klik 'Simpan Profil' untuk menyimpan.", Toast.LENGTH_SHORT).show()
+        try {
+            val topBar = findViewById<View>(R.id.topBarEditProfile)
+            topBar?.let {
+                ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
+                    val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                    it.updatePadding(
+                        top = systemBars.top + (8 * resources.displayMetrics.density).toInt()
+                    )
+                    insets
+                }
             }
-        }
 
-        val topBar = findViewById<View>(R.id.topBarEditProfile)
-        topBar?.let {
-            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                it.updatePadding(
-                    top = systemBars.top + (8 * resources.displayMetrics.density).toInt()
-                )
-                insets
-            }
+            initViews()
+            setupListeners()
+            loadProfileData()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Terjadi kesalahan saat membuka Edit Profil.", Toast.LENGTH_SHORT).show()
         }
-
-        initViews()
-        setupListeners()
-        loadProfileData()
     }
 
     private fun initViews() {

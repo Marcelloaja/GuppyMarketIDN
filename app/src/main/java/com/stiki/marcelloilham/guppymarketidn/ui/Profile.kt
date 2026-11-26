@@ -69,7 +69,13 @@ class Profile : Fragment() {
         val btnTipsPerawatan = view.findViewById<View>(R.id.btnTipsPerawatanProfile)
 
         btnEditProfile?.setOnClickListener {
-            startActivity(Intent(requireContext(), MenuProfile::class.java))
+            try {
+                val intent = Intent(requireContext(), MenuProfile::class.java)
+                startActivity(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Gagal membuka Edit Profil: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
 
         btnTipsPerawatan?.setOnClickListener {
