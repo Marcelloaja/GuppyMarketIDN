@@ -82,6 +82,12 @@ class Maps : Fragment() {
         setupTTS()
         checkAndRequestLocationPermission()
 
+        val btnChangeMapAddress = view.findViewById<View>(R.id.btnChangeMapAddress)
+        btnChangeMapAddress?.setOnClickListener {
+            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuProfile.ShippingAddressActivity::class.java)
+            startActivity(intent)
+        }
+
         return view
     }
 

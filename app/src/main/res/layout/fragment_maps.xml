@@ -405,21 +405,22 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/inter_bold"
-                    android:text="Farm Terdekat"
+                    android:text="Gudang Ikan &amp; Farm Terdekat"
                     android:textColor="@color/guppy_text_black"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tvFarmCountBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_tag_grade"
+                    android:background="@drawable/bg_chip_selected"
+                    android:backgroundTint="#E0F2F1"
                     android:text="0 Gudang Ikan"
                     android:textColor="@color/guppy_primary"
-                    android:fontFamily="@font/inter_semi_bold"
-                    android:textSize="12sp"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="11.5sp"
                     android:paddingHorizontal="10dp"
-                    android:paddingVertical="5dp"/>
+                    android:paddingVertical="4dp"/>
             </LinearLayout>
 
             <!-- Location Info Row -->
@@ -433,7 +434,7 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/ic_map_folded"
+                    android:src="@drawable/ic_location_pin"
                     app:tint="@color/guppy_primary"/>
 
                 <TextView
@@ -448,6 +449,7 @@
                     android:textSize="13sp" />
 
                 <TextView
+                    android:id="@+id/btnChangeMapAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_bold"
@@ -458,20 +460,11 @@
                     android:focusable="true"/>
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:fontFamily="@font/inter_regular"
-                android:text="Diperbarui 5 menit lalu"
-                android:textColor="@color/guppy_text_gray"
-                android:textSize="11sp"/>
-
-            <!-- Filter Chips -->
+            <!-- Filter Chips (Rounded Box) -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="14dp"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -482,40 +475,41 @@
                     <!-- Selected: Terdekat -->
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_filter_green"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_btn_primary"
+                        android:backgroundTint="#124332"
                         android:text="📍 Terdekat"
                         android:textColor="@color/white"
-                        android:fontFamily="@font/inter_semi_bold"
+                        android:fontFamily="@font/inter_bold"
                         android:textSize="12sp"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:layout_marginEnd="8dp"/>
+                        android:gravity="center"
+                        android:paddingHorizontal="14dp"
+                        android:layout_marginEnd="6dp"/>
 
                     <!-- Unselected: Rating Tertinggi -->
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_chip_outline"
-                        android:text="⭐ Rating tertinggi"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_btn_solid_gray"
+                        android:text="⭐ Rating Tertinggi"
                         android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_medium"
+                        android:fontFamily="@font/inter_bold"
                         android:textSize="12sp"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:layout_marginEnd="8dp"/>
+                        android:gravity="center"
+                        android:paddingHorizontal="14dp"
+                        android:layout_marginEnd="6dp"/>
 
-                    <!-- Unselected: Buka sekarang -->
+                    <!-- Unselected: Gudang Ikan -->
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_chip_outline"
-                        android:text="Buka sekarang"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_btn_solid_gray"
+                        android:text="🏢 Gudang Ikan"
                         android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_medium"
+                        android:fontFamily="@font/inter_bold"
                         android:textSize="12sp"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"/>
+                        android:gravity="center"
+                        android:paddingHorizontal="14dp"/>
                 </LinearLayout>
             </HorizontalScrollView>
 
