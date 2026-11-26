@@ -32,6 +32,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
+import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailFarmActivity
 import com.stiki.marcelloilham.guppymarketidn.R
 import java.util.Locale
 
@@ -53,9 +56,10 @@ class Maps : Fragment() {
 
     private lateinit var etSearchHome: EditText
     private lateinit var btnMicSearch: ImageView
-    private lateinit var cardFarm1: View
-    private lateinit var cardFarm2: View
     private lateinit var tvNoFarmFound: TextView
+    private lateinit var recyclerMapsFarms: RecyclerView
+    private lateinit var tvFarmCountBadge: TextView
+    private var realFarmsList: List<FirestoreRepository.FarmModel> = emptyList()
 
     private var lastGeocodedLat: Double = 0.0
     private var lastGeocodedLng: Double = 0.0
@@ -84,9 +88,9 @@ class Maps : Fragment() {
     private fun setupSearchAndVoice(view: View) {
         etSearchHome = view.findViewById(R.id.etSearchHome)
         btnMicSearch = view.findViewById(R.id.btnMicSearch)
-        cardFarm1 = view.findViewById(R.id.cardFarm1)
-        cardFarm2 = view.findViewById(R.id.cardFarm2)
         tvNoFarmFound = view.findViewById(R.id.tvNoFarmFound)
+        tvFarmCountBadge = view.findViewById(R.id.tvFarmCountBadge)
+        recyclerMapsFarms = view.findViewById(R.id.recyclerMapsFarms)
 
         btnMicSearch.setOnClickListener {
             startVoiceRecognition()
@@ -132,27 +136,35 @@ class Maps : Fragment() {
     private fun filterFarms(query: String) {
         val cleanQuery = query.trim().lowercase()
 
-        if (cleanQuery.isEmpty()) {
-            cardFarm1.visibility = View.VISIBLE
-            cardFarm2.visibility = View.VISIBLE
-            tvNoFarmFound.visibility = View.GONE
-            return
+        val filtered = if (cleanQuery.isEmpty()) {
+            realFarmsList
+        } else {
+            realFarmsList.filter {
+                it.farmName.lowercase().contains(cleanQuery) || it.location.lowercase().contains(cleanQuery)
+            }
         }
 
-        val farm1Name = "guppy king farm jatinegara breeder 150+ varian".lowercase()
-        val farm2Name = "aquatic indo tebet".lowercase()
-
-        val match1 = farm1Name.contains(cleanQuery)
-        val match2 = farm2Name.contains(cleanQuery)
-
-        cardFarm1.visibility = if (match1) View.VISIBLE else View.GONE
-        cardFarm2.visibility = if (match2) View.VISIBLE else View.GONE
-
-        if (!match1 && !match2) {
-            tvNoFarmFound.text = "Farm '$query' tidak ditemukan.\nCoba kata kunci lain seperti 'Guppy King' atau 'Aquatic'."
+        if (filtered.isEmpty()) {
+            recyclerMapsFarms.visibility = View.GONE
+            tvNoFarmFound.text = "Gudang Ikan / Farm '$query' tidak ditemukan.\nCoba kata kunci lokasi lain."
             tvNoFarmFound.visibility = View.VISIBLE
         } else {
+            recyclerMapsFarms.visibility = View.VISIBLE
             tvNoFarmFound.visibility = View.GONE
+
+            val adapter = com.stiki.marcelloilham.guppymarketidn.adapter.HomeFarmAdapter(
+                context = requireContext(),
+                farms = filtered,
+                onVisitClicked = { clickedFarm ->
+                    val intent = Intent(requireContext(), DetailFarmActivity::class.java).apply {
+                        putExtra("farm_title", clickedFarm.farmName)
+                        putExtra("farm_location", clickedFarm.location)
+                        putExtra("farm_rating", clickedFarm.rating.toString())
+                    }
+                    startActivity(intent)
+                }
+            )
+            recyclerMapsFarms.adapter = adapter
         }
     }
 
@@ -238,7 +250,7 @@ class Maps : Fragment() {
         val btnZoomIn = view.findViewById<TextView>(R.id.btnZoomIn)
         val btnZoomOut = view.findViewById<TextView>(R.id.btnZoomOut)
         val btnMyLocation = view.findViewById<CardView>(R.id.btnMyLocation)
-        val btnStartNavigation = view.findViewById<View>(R.id.btnStartNavigation)
+        val btnStartNavigation: View? = null
         val btnEndNav = view.findViewById<ImageView>(R.id.btnEndNav)
         val btnStopNavText = view.findViewById<TextView>(R.id.btnStopNavText)
 
