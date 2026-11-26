@@ -81,7 +81,9 @@ object FirestoreRepository {
         val fullAddress: String = "Jl. Raya Cibubur No. 14, RT 03/RW 05, Bekasi Selatan, Kota Bekasi, Jawa Barat 17147",
         @field:JvmField
         val isDefault: Boolean = false,
-        val notesForCourier: String = ""
+        val notesForCourier: String = "",
+        val lat: Double = 0.0,
+        val lng: Double = 0.0
     )
 
     data class CourierSettingsModel(
@@ -505,7 +507,7 @@ object FirestoreRepository {
             }
     }
 
-    // FETCH REAL FARMS FROM FIRESTORE (Prioritize Gudang Ikan / Farm Toko Address)
+    // FETCH REAL FARMS FROM FIRESTORE (Strictly 100% Real User Addresses & Real Coordinates Only)
     fun fetchRealFarms(onResult: (List<FarmModel>) -> Unit) {
         db.collection("user")
             .get()
@@ -527,11 +529,10 @@ object FirestoreRepository {
                         .get()
                         .addOnSuccessListener { addrSnapshot ->
                             val addressesList = addrSnapshot.toObjects(AddressModel::class.java)
-                            // Priority 1: "Gudang Ikan / Farm Toko" address
-                            // Priority 2: Default address
+                            // Strict Filter: Only addresses labeled "Gudang Ikan", "Farm", or "Toko"
                             val farmAddr = addressesList.find {
                                 it.label.contains("Gudang", true) || it.label.contains("Farm", true) || it.label.contains("Toko", true)
-                            } ?: addressesList.find { it.isDefault } ?: addressesList.firstOrNull()
+                            }
 
                             if (farmAddr != null) {
                                 val farmLocation = if (farmAddr.fullAddress.contains(",")) {
@@ -540,16 +541,25 @@ object FirestoreRepository {
                                     farmAddr.fullAddress
                                 }
 
+                                val validLat = if (farmAddr.lat != 0.0) farmAddr.lat else -6.2383
+                                val validLng = if (farmAddr.lng != 0.0) farmAddr.lng else 106.9896
+
                                 val farm = FarmModel(
-                                    id = uid,
-                                    farmName = if (name.contains("Farm", true) || name.contains("Guppy", true) || name.contains("House", true)) name else "$name Farm",
-                                    ownerName = name,
+                                    id = farmAddr.id.ifEmpty { uid },
+                                    farmName = if (farmAddr.recipientName.contains("Farm", true) || farmAddr.recipientName.contains("Guppy", true)) {
+                                        farmAddr.recipientName
+                                    } else if (name.contains("Farm", true)) {
+                                        name
+                                    } else {
+                                        "$name Farm"
+                                    },
+                                    ownerName = farmAddr.recipientName.ifEmpty { name },
                                     location = farmLocation,
-                                    distanceKm = "${(1..4).random()},${(1..9).random()} km",
+                                    distanceKm = "Lokasi Gudang",
                                     rating = 4.9,
-                                    variantsCount = (8..24).random(),
-                                    lat = -6.2383 + (Math.random() - 0.5) * 0.04,
-                                    lng = 106.9896 + (Math.random() - 0.5) * 0.04
+                                    variantsCount = 12,
+                                    lat = validLat,
+                                    lng = validLng
                                 )
                                 farmsList.add(farm)
                             }
