@@ -296,6 +296,21 @@ class MenuProfile : AppCompatActivity() {
             }
     }
 
+    private fun copyUriToInternalStorage(uri: android.net.Uri): String? {
+        return try {
+            val inputStream = contentResolver.openInputStream(uri) ?: return null
+            val file = java.io.File(filesDir, "avatar_${firebaseAuth.currentUser?.uid ?: "user"}.jpg")
+            val outputStream = java.io.FileOutputStream(file)
+            inputStream.copyTo(outputStream)
+            inputStream.close()
+            outputStream.close()
+            android.net.Uri.fromFile(file).toString()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     private fun saveProfileData() {
         val ownerName = etOwnerName.text.toString().trim()
         val farmName = etFarmName.text.toString().trim()
@@ -308,13 +323,18 @@ class MenuProfile : AppCompatActivity() {
             return
         }
 
+        var savedAvatarUriString: String? = null
+        if (selectedPhotoUri != null) {
+            savedAvatarUriString = copyUriToInternalStorage(selectedPhotoUri!!) ?: selectedPhotoUri.toString()
+        }
+
         val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         prefs.edit().apply {
             putString("name", ownerName)
             putString("farm_name", farmName)
             putString("description", desc)
-            if (selectedPhotoUri != null) {
-                putString("avatar_uri", selectedPhotoUri.toString())
+            if (savedAvatarUriString != null) {
+                putString("avatar_uri", savedAvatarUriString)
             }
             apply()
         }
@@ -328,8 +348,9 @@ class MenuProfile : AppCompatActivity() {
                 "whatsapp" to whatsappStr,
                 "description" to desc
             )
-            if (selectedPhotoUri != null) {
-                userMap["avatar_uri"] = selectedPhotoUri.toString()
+            if (savedAvatarUriString != null) {
+                userMap["avatar_uri"] = savedAvatarUriString
+                userMap["photo_url"] = savedAvatarUriString
             }
             db.collection("user").document(user.uid).set(userMap, com.google.firebase.firestore.SetOptions.merge())
         }

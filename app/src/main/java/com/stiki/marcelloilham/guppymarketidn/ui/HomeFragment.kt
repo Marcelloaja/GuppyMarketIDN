@@ -358,30 +358,44 @@ class HomeFragment : Fragment() {
         val safeContext = context ?: return
         val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
+        val imgAvatarHome = view?.findViewById<ImageView>(R.id.imgAvatarHome)
+
         // 1. INSTANT LOCAL CACHE DISPLAY (0ms Lag)
         val cachedName = prefs.getString("name", null)
+        val cachedAvatar = prefs.getString("avatar_uri", null)
+
         if (!cachedName.isNullOrEmpty()) {
             textUserName.text = "Hi, $cachedName!"
         } else {
             textUserName.text = "Hi, User!"
         }
 
-        // 2. ASYNC BACKGROUND REFRESH FROM FIRESTORE
+        if (!cachedAvatar.isNullOrEmpty()) {
+            try {
+                imgAvatarHome?.setImageURI(android.net.Uri.parse(cachedAvatar))
+            } catch (_: Exception) {}
+        }
+
+        // 2. REALTIME BACKGROUND LISTEN FROM FIRESTORE
         val userId = auth.currentUser?.uid
         if (userId != null) {
-            db.collection("user").document(userId).get()
-                .addOnSuccessListener { document ->
-                    if (!isAdded) return@addOnSuccessListener
-                    val freshName = document.getString("name")
-                    if (!freshName.isNullOrEmpty()) {
-                        textUserName.text = "Hi, $freshName!"
-                        prefs.edit().putString("name", freshName).apply()
-                    }
+            db.collection("user").document(userId).addSnapshotListener { document, error ->
+                if (!isAdded || error != null || document == null || !document.exists()) return@addSnapshotListener
+                val freshName = document.getString("name")
+                val freshAvatar = document.getString("avatar_uri") ?: document.getString("photo_url")
+
+                if (!freshName.isNullOrEmpty()) {
+                    textUserName.text = "Hi, $freshName!"
+                    prefs.edit().putString("name", freshName).apply()
                 }
-                .addOnFailureListener { exception ->
-                    if (!isAdded) return@addOnFailureListener
-                    println("Error getting documents: $exception")
+
+                if (!freshAvatar.isNullOrEmpty()) {
+                    try {
+                        imgAvatarHome?.setImageURI(android.net.Uri.parse(freshAvatar))
+                        prefs.edit().putString("avatar_uri", freshAvatar).apply()
+                    } catch (_: Exception) {}
                 }
+            }
         }
     }
 

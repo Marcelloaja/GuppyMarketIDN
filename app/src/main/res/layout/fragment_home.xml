@@ -45,11 +45,12 @@
                     android:orientation="horizontal">
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgAvatarHome"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/marcello"
+                    android:src="@drawable/ic_default_user_avatar"
                     android:scaleType="centerCrop"
-                    android:padding="3dp"
+                    android:padding="2dp"
                     app:shapeAppearanceOverlay="@style/CircleImageStyle"
                     app:strokeColor="@color/guppy_primary"
                     app:strokeWidth="2dp"/>
