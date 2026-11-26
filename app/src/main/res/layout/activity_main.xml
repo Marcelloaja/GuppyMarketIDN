@@ -15,18 +15,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- MODERN LIQUID BLOATING BOTTOM NAV BAR -->
+    <!-- 100% ACCURATE FLOATING CIRCLE PILL BOTTOM NAV BAR -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="66dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="24dp"
-        app:cardCornerRadius="36dp"
-        app:cardElevation="16dp"
-        app:cardBackgroundColor="#1D2024"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="22dp"
+        app:cardCornerRadius="33dp"
+        app:cardElevation="12dp"
+        app:cardBackgroundColor="#F2F3F5"
         app:strokeWidth="0dp">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -38,14 +38,10 @@
             app:elevation="0dp"
             app:menu="@menu/menu"
             app:itemIconSize="24dp"
-            app:itemIconTint="@color/bottom_nav_color_liquid"
-            app:itemTextColor="@color/bottom_nav_color_liquid"
+            app:itemIconTint="@color/bottom_nav_color_circle"
             app:itemRippleColor="@color/guppy_primary_light"
-            app:itemPaddingTop="14dp"
-            app:itemPaddingBottom="10dp"
-            app:itemIconPadding="4dp"
-            app:labelVisibilityMode="labeled"
-            app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"/>
+            app:labelVisibilityMode="unlabeled"
+            app:itemActiveIndicatorStyle="@style/App.CircleNav.Indicator"/>
 
     </com.google.android.material.card.MaterialCardView>
 
