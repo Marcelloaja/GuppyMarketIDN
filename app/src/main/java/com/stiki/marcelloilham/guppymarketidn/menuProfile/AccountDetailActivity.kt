@@ -2,6 +2,7 @@ package com.stiki.marcelloilham.guppymarketidn.menuProfile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -132,9 +133,11 @@ class AccountDetailActivity : AppCompatActivity() {
                 if (accountNumber.isNotEmpty() && (accountNumber.startsWith("file://") || accountNumber.startsWith("content://") || accountNumber.startsWith("/"))) {
                     try {
                         val uri = android.net.Uri.parse(accountNumber)
-                        ivBarcode.setImageURI(uri)
                         ivBarcode.colorFilter = null
-                    } catch (_: Throwable) {
+                        ivBarcode.imageTintList = null
+                        ivBarcode.setImageURI(uri)
+                    } catch (e: Exception) {
+                        Log.e("AccountDetail", "Error loading QRIS image: ${e.message}")
                         ivBarcode.setImageResource(R.drawable.ic_qris)
                     }
                 } else {
