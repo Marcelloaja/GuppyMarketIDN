@@ -150,7 +150,16 @@ class HomeFragment : Fragment() {
         }
 
         FirestoreRepository.fetchAuctions { firebaseAuctions ->
+            if (!isAdded) return@fetchAuctions
+            val now = System.currentTimeMillis()
+
             val liveItems = firebaseAuctions.mapIndexed { idx, a ->
+                val calculatedStatus = when {
+                    a.endTimeMillis == 0L -> "UPCOMING"
+                    a.endTimeMillis <= now -> "FINISHED"
+                    else -> "LIVE"
+                }
+
                 AuctionGridAdapter.AuctionItem(
                     id = idx + 1,
                     title = a.title,
@@ -161,12 +170,12 @@ class HomeFragment : Fragment() {
                     endTimeMillis = a.endTimeMillis,
                     imageRes = a.imageRes,
                     grade = a.grade,
-                    status = "LIVE",
+                    status = calculatedStatus,
                     rawModel = a
                 )
-            }
+            }.filter { it.status == "LIVE" && it.endTimeMillis > now }
 
-            if (isAdded && ::recyclerHomeAuctions.isInitialized) {
+            if (::recyclerHomeAuctions.isInitialized) {
                 homeAuctionAdapter = AuctionGridAdapter(
                     context = requireContext(),
                     rawItems = liveItems,

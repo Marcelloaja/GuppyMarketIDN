@@ -15,33 +15,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- 100% ACCURATE FLOATING CIRCLE PILL BOTTOM NAV BAR -->
+    <!-- SLEEK MODERN FLOATING BOTTOM NAV BAR -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="66dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="22dp"
-        app:cardCornerRadius="33dp"
-        app:cardElevation="12dp"
-        app:cardBackgroundColor="#F2F3F5"
-        app:strokeWidth="0dp">
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="10dp"
+        app:cardBackgroundColor="@color/white"
+        app:strokeWidth="1dp"
+        app:strokeColor="#15000000">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
             style="@style/Widget.MaterialComponents.BottomNavigationView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="62dp"
             android:background="@android:color/transparent"
             app:elevation="0dp"
             app:menu="@menu/menu"
-            app:itemIconSize="24dp"
-            app:itemIconTint="@color/bottom_nav_color_circle"
+            app:itemIconSize="22dp"
+            app:itemIconTint="@color/bottom_nav_color"
+            app:itemTextColor="@color/bottom_nav_color"
             app:itemRippleColor="@color/guppy_primary_light"
-            app:labelVisibilityMode="unlabeled"
-            app:itemActiveIndicatorStyle="@style/App.CircleNav.Indicator"/>
+            app:itemPaddingTop="8dp"
+            app:itemPaddingBottom="6dp"
+            app:itemIconPadding="4dp"
+            app:labelVisibilityMode="labeled"/>
 
     </com.google.android.material.card.MaterialCardView>
 
