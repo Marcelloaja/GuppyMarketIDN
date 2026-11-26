@@ -215,23 +215,28 @@ class Profile : Fragment() {
 
             userDocRef.get().addOnSuccessListener { document ->
                 if (isAdded && document != null && document.exists()) {
-                    val name = document.getString("name").orEmpty()
+                    val name = document.getString("name")
+                        ?.ifEmpty { firebaseUser.displayName }
+                        ?: firebaseUser.displayName
+                        ?: firebaseUser.email?.substringBefore("@")
+                        ?: "Pengguna Guppy"
+
                     val description = document.getString("description").orEmpty()
 
-                    val totalChats = document.getLong("total_chats") ?: 3L
-                    val totalResponseMin = document.getLong("total_response_time_minutes") ?: 30L
-                    val totalOrders = document.getLong("total_orders") ?: 100L
-                    val ontimeOrders = document.getLong("ontime_orders_count") ?: 98L
+                    val totalChats = document.getLong("total_chats") ?: 0L
+                    val totalResponseMin = document.getLong("total_response_time_minutes") ?: 0L
+                    val totalOrders = document.getLong("total_orders") ?: 0L
+                    val ontimeOrders = document.getLong("ontime_orders_count") ?: 0L
 
                     val activeBalance = document.getLong("active_balance") ?: 0L
                     val pendingBalance = document.getLong("pending_balance") ?: 0L
                     val pendingOrdersCount = document.getLong("pending_orders_count") ?: 0L
 
                     val avgMin = if (totalChats > 0) totalResponseMin / totalChats else 10L
-                    val deliveryRate = if (totalOrders > 0) ((ontimeOrders.toDouble() / totalOrders.toDouble()) * 100).toInt() else 98
+                    val deliveryRate = if (totalOrders > 0) ((ontimeOrders.toDouble() / totalOrders.toDouble()) * 100).toInt() else 100
 
-                    if (name.isNotEmpty()) textName.text = name
-                    if (description.isNotEmpty()) textDescription.text = description
+                    textName.text = name
+                    textDescription.text = description.ifEmpty { "Belum ada deskripsi farm toko. Ketuk 'Ubah Profil' untuk menambahkan." }
 
                     val formatter = java.text.NumberFormat.getCurrencyInstance(java.util.Locale("in", "ID"))
                     val tvSaldo = view?.findViewById<TextView>(R.id.tvProfileSaldoAktif)
@@ -246,7 +251,7 @@ class Profile : Fragment() {
                     val followers = document.getLong("followers_count") ?: 0L
                     val totalSold = document.getLong("total_sold_count") ?: 0L
                     val totalReviews = document.getLong("total_reviews_count") ?: 0L
-                    val ratingVal = document.getDouble("average_rating") ?: 0.0
+                    val ratingVal = document.getDouble("average_rating") ?: 5.0
 
                     tvSaldo?.text = formatter.format(activeBalance).replace("Rp", "Rp ").replace(",00", "")
                     tvTertahan?.text = "Dana tertahan ${formatter.format(pendingBalance).replace("Rp", "Rp ").replace(",00", "")} ($pendingOrdersCount pesanan dikirim)"
@@ -261,14 +266,21 @@ class Profile : Fragment() {
                     tvReviewsLabel?.text = "dari $totalReviews ulasan"
 
                     saveUserDataLocally(name, description)
-                    Log.d("Profile", "Data retrieved: Name=$name, Description=$description")
+                } else if (isAdded) {
+                    val fallbackName = firebaseUser.displayName
+                        ?.ifEmpty { firebaseUser.email?.substringBefore("@") }
+                        ?: firebaseUser.email?.substringBefore("@")
+                        ?: "Pengguna Guppy"
 
-                    FirestoreRepository.fetchUserOrders { userOrders ->
-                        Log.d("ProfileOrders", "Fetched ${userOrders.size} user orders from Firestore")
-                    }
-                } else {
-                    Log.e("Profile", "No document exists for user.")
-                    loadUserDataLocally()
+                    textName.text = fallbackName
+                    textDescription.text = "Belum ada deskripsi farm toko. Ketuk 'Ubah Profil' untuk menambahkan."
+
+                    val initialMap = hashMapOf<String, Any>(
+                        "name" to fallbackName,
+                        "email" to (firebaseUser.email ?: ""),
+                        "createdAt" to System.currentTimeMillis()
+                    )
+                    userDocRef.set(initialMap, com.google.firebase.firestore.SetOptions.merge())
                 }
             }.addOnFailureListener { error ->
                 Log.e("Profile", "Error retrieving data: ", error)
