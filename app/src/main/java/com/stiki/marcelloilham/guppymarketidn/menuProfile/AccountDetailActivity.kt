@@ -258,9 +258,6 @@ class AccountDetailActivity : AppCompatActivity() {
 
         val btnDelete = findViewById<View>(R.id.btnDeleteAccount)
         btnDelete?.setOnClickListener { showDeleteConfirmDialog() }
-
-        val btnSave = findViewById<TextView>(R.id.btnSaveAccountDetails)
-        btnSave?.setOnClickListener { saveChangesToFirestore() }
     }
 
     private fun updateMainPaymentInFirestore() {
@@ -314,46 +311,5 @@ class AccountDetailActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-    private fun saveChangesToFirestore() {
-        val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-        val isNewMain = switchMainAccount.isChecked
 
-        val updatedItem = FirestoreRepository.PaymentMethodModel(
-            id = methodId,
-            type = if (providerName.contains("BCA", true) || providerName.contains("BNI", true) || providerName.contains("Mandiri", true)) "Bank" else "E-Wallet",
-            providerName = providerName,
-            accountNumber = accountNumber,
-            accountOwner = accountOwner,
-            isMain = isNewMain
-        )
-
-        val btnSave = findViewById<TextView>(R.id.btnSaveAccountDetails)
-        btnSave?.isEnabled = false
-        btnSave?.text = "Menyimpan Perubahan..."
-
-        if (isNewMain) {
-            FirestoreRepository.fetchUserPaymentMethods(currentUserId) { existingList ->
-                val updatedList = existingList.map {
-                    if (it.id == methodId) updatedItem.copy(isMain = true) else it.copy(isMain = false)
-                }
-                FirestoreRepository.updateAllPaymentMethods(currentUserId, updatedList) {
-                    btnSave?.isEnabled = true
-                    btnSave?.text = "Simpan Perubahan"
-                    Toast.makeText(this, "Detail rekening $providerName berhasil diperbarui!", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-            }
-        } else {
-            FirestoreRepository.saveUserPaymentMethod(currentUserId, updatedItem) { success ->
-                btnSave?.isEnabled = true
-                btnSave?.text = "Simpan Perubahan"
-                if (success) {
-                    Toast.makeText(this, "Detail rekening $providerName berhasil diperbarui!", Toast.LENGTH_SHORT).show()
-                    finish()
-                } else {
-                    Toast.makeText(this, "Gagal menyimpan. Coba lagi.", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
 }

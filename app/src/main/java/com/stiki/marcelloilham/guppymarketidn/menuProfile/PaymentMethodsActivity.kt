@@ -135,12 +135,6 @@ class PaymentMethodsActivity : AppCompatActivity() {
 
         val btnAddPayment = findViewById<View>(R.id.btnAddNewPaymentMethod)
         btnAddPayment?.setOnClickListener { showAddPaymentBottomSheet() }
-
-        val btnSave = findViewById<TextView>(R.id.btnSavePaymentSettings)
-        btnSave?.setOnClickListener {
-            Toast.makeText(this, "Seluruh perubahan metode pembayaran telah tersinkronisasi!", Toast.LENGTH_SHORT).show()
-            finish()
-        }
     }
 
     private fun loadRealUserPaymentMethods() {

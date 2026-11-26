@@ -72,7 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/dividerHeader"
-        android:layout_above="@id/bottomBarAccountSave"
+        android:layout_alignParentBottom="true"
         android:fillViewport="true">
 
         <LinearLayout
@@ -890,31 +890,5 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <!-- STICKY BOTTOM ACTION BAR -->
-    <LinearLayout
-        android:id="@+id/bottomBarAccountSave"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:elevation="12dp"
-        android:paddingHorizontal="18dp"
-        android:paddingVertical="14dp">
-
-        <TextView
-            android:id="@+id/btnSaveAccountDetails"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/bg_chip_selected"
-            android:backgroundTint="#124332"
-            android:text="Simpan Perubahan"
-            android:textColor="@color/white"
-            android:fontFamily="@font/inter_bold"
-            android:textSize="15sp"
-            android:gravity="center"
-            android:clickable="true"
-            android:focusable="true"/>
-    </LinearLayout>
 
 </RelativeLayout>
