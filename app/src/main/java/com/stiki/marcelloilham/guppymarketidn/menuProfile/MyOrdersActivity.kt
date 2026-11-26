@@ -88,11 +88,11 @@ class MyOrdersActivity : AppCompatActivity() {
         val tabs = listOf(tabSemua, tabMenunggu, tabDikirim, tabSelesai)
         tabs.forEach { tab ->
             if (tab == selectedTab) {
-                tab.setBackgroundResource(R.drawable.bg_chip_selected)
+                tab.setBackgroundResource(R.drawable.bg_btn_primary)
                 tab.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#124332"))
                 tab.setTextColor(ContextCompat.getColor(this, R.color.white))
             } else {
-                tab.setBackgroundResource(R.drawable.bg_btn_outline_pill_gray)
+                tab.setBackgroundResource(R.drawable.bg_btn_solid_gray)
                 tab.backgroundTintList = null
                 tab.setTextColor(ContextCompat.getColor(this, R.color.guppy_text_black))
             }
