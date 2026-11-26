@@ -41,6 +41,10 @@ class MenuProfile : AppCompatActivity() {
     private lateinit var btnChangePhoto: TextView
     private lateinit var btnChangePhotoCamera: ImageView
     private lateinit var btnDeleteFarmAccount: TextView
+    private lateinit var imgEditAvatar: com.google.android.material.imageview.ShapeableImageView
+
+    private lateinit var photoPickerLauncher: androidx.activity.result.ActivityResultLauncher<String>
+    private var selectedPhotoUri: android.net.Uri? = null
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
@@ -48,6 +52,14 @@ class MenuProfile : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_profile)
+
+        photoPickerLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri ->
+            if (uri != null) {
+                selectedPhotoUri = uri
+                imgEditAvatar.setImageURI(uri)
+                Toast.makeText(this, "Foto profil dipilih. Klik 'Simpan Profil' untuk menyimpan.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         val topBar = findViewById<View>(R.id.topBarEditProfile)
         topBar?.let {
@@ -69,6 +81,8 @@ class MenuProfile : AppCompatActivity() {
         btnBackProfile = findViewById(R.id.btnBackProfile)
         btnSaveBottom = findViewById(R.id.btnSaveBottom)
         btnCancel = findViewById(R.id.btnCancel)
+
+        imgEditAvatar = findViewById(R.id.imgEditAvatar)
 
         etOwnerName = findViewById(R.id.etOwnerName)
         etFarmName = findViewById(R.id.etFarmName)
@@ -100,10 +114,10 @@ class MenuProfile : AppCompatActivity() {
         })
 
         btnChangePhoto.setOnClickListener {
-            Toast.makeText(this, "Membuka galeri untuk ganti foto profil...", Toast.LENGTH_SHORT).show()
+            photoPickerLauncher.launch("image/*")
         }
         btnChangePhotoCamera.setOnClickListener {
-            Toast.makeText(this, "Membuka kamera untuk foto profil...", Toast.LENGTH_SHORT).show()
+            photoPickerLauncher.launch("image/*")
         }
 
         val btnBankAccount = findViewById<View>(R.id.btnBankAccountSetting)
@@ -250,6 +264,7 @@ class MenuProfile : AppCompatActivity() {
                 val wa = doc.getString("whatsapp") ?: doc.getString("phone") ?: ""
                 val desc = doc.getString("description") ?: ""
                 val bank = doc.getString("bank_account_info") ?: "Belum diatur"
+                val avatarUriStr = doc.getString("avatar_uri") ?: doc.getString("photo_url")
 
                 etOwnerName.setText(name)
                 etFarmName.setText(farmName)
@@ -257,6 +272,12 @@ class MenuProfile : AppCompatActivity() {
                 etFarmDescription.setText(desc)
                 tvCharCount.text = "${desc.length}/300"
                 tvBankAccountInfoSub.text = bank
+
+                if (!avatarUriStr.isNullOrEmpty()) {
+                    try {
+                        imgEditAvatar.setImageURI(android.net.Uri.parse(avatarUriStr))
+                    } catch (_: Exception) {}
+                }
 
                 if (loc.isNotEmpty()) {
                     tvFarmLocation.text = loc
@@ -292,6 +313,9 @@ class MenuProfile : AppCompatActivity() {
             putString("name", ownerName)
             putString("farm_name", farmName)
             putString("description", desc)
+            if (selectedPhotoUri != null) {
+                putString("avatar_uri", selectedPhotoUri.toString())
+            }
             apply()
         }
 
@@ -304,6 +328,9 @@ class MenuProfile : AppCompatActivity() {
                 "whatsapp" to whatsappStr,
                 "description" to desc
             )
+            if (selectedPhotoUri != null) {
+                userMap["avatar_uri"] = selectedPhotoUri.toString()
+            }
             db.collection("user").document(user.uid).set(userMap, com.google.firebase.firestore.SetOptions.merge())
         }
 

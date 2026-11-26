@@ -37,7 +37,7 @@
                         android:id="@+id/imgAvatarProfile"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:src="@drawable/marcello"
+                        android:src="@drawable/ic_default_user_avatar"
                         android:scaleType="centerCrop"
                         app:shapeAppearanceOverlay="@style/CircleImageStyle"/>
 

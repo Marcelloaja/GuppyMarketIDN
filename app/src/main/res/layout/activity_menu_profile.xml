@@ -82,7 +82,7 @@
                         android:id="@+id/imgEditAvatar"
                         android:layout_width="96dp"
                         android:layout_height="96dp"
-                        android:src="@drawable/marcello"
+                        android:src="@drawable/ic_default_user_avatar"
                         android:scaleType="centerCrop"
                         app:shapeAppearanceOverlay="@style/CircleImageStyle"
                         app:strokeColor="@color/guppy_primary"

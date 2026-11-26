@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -26,6 +27,7 @@ class Profile : Fragment() {
 
     private lateinit var textName: TextView
     private lateinit var textDescription: TextView
+    private var tvFarmTitle: TextView? = null
 
     private var tvAvgResponseTime: TextView? = null
     private var tvOnTimeDeliveryRate: TextView? = null
@@ -55,6 +57,7 @@ class Profile : Fragment() {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         textName = view.findViewById(R.id.namaProfile)
+        tvFarmTitle = view.findViewById(R.id.tvFarmTitle)
         textDescription = view.findViewById(R.id.descriptionProfile)
 
         tvAvgResponseTime = view.findViewById(R.id.tvAvgResponseTime)
@@ -221,6 +224,10 @@ class Profile : Fragment() {
                         ?: firebaseUser.email?.substringBefore("@")
                         ?: "Pengguna Guppy"
 
+                    val farmName = document.getString("farm_name")
+                        ?.ifEmpty { "$name Farm" }
+                        ?: "$name Farm"
+
                     val description = document.getString("description").orEmpty()
 
                     val totalChats = document.getLong("total_chats") ?: 0L
@@ -236,7 +243,16 @@ class Profile : Fragment() {
                     val deliveryRate = if (totalOrders > 0) ((ontimeOrders.toDouble() / totalOrders.toDouble()) * 100).toInt() else 100
 
                     textName.text = name
+                    tvFarmTitle?.text = farmName
                     textDescription.text = description.ifEmpty { "Belum ada deskripsi farm toko. Ketuk 'Ubah Profil' untuk menambahkan." }
+
+                    val avatarUriStr = document.getString("avatar_uri") ?: document.getString("photo_url")
+                    val imgAvatar = view?.findViewById<ImageView>(R.id.imgAvatarProfile)
+                    if (!avatarUriStr.isNullOrEmpty()) {
+                        try {
+                            imgAvatar?.setImageURI(android.net.Uri.parse(avatarUriStr))
+                        } catch (_: Exception) {}
+                    }
 
                     val formatter = java.text.NumberFormat.getCurrencyInstance(java.util.Locale("in", "ID"))
                     val tvSaldo = view?.findViewById<TextView>(R.id.tvProfileSaldoAktif)
@@ -265,7 +281,7 @@ class Profile : Fragment() {
                     tvRating?.text = ratingVal.toString()
                     tvReviewsLabel?.text = "dari $totalReviews ulasan"
 
-                    saveUserDataLocally(name, description)
+                    saveUserDataLocally(name, farmName, description)
                 } else if (isAdded) {
                     val fallbackName = firebaseUser.displayName
                         ?.ifEmpty { firebaseUser.email?.substringBefore("@") }
@@ -273,10 +289,12 @@ class Profile : Fragment() {
                         ?: "Pengguna Guppy"
 
                     textName.text = fallbackName
+                    tvFarmTitle?.text = "$fallbackName Farm"
                     textDescription.text = "Belum ada deskripsi farm toko. Ketuk 'Ubah Profil' untuk menambahkan."
 
                     val initialMap = hashMapOf<String, Any>(
                         "name" to fallbackName,
+                        "farm_name" to "$fallbackName Farm",
                         "email" to (firebaseUser.email ?: ""),
                         "createdAt" to System.currentTimeMillis()
                     )
@@ -291,11 +309,12 @@ class Profile : Fragment() {
         }
     }
 
-    private fun saveUserDataLocally(name: String, description: String) {
+    private fun saveUserDataLocally(name: String, farmName: String, description: String) {
         val safeContext = context ?: return
         val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         prefs.edit().apply {
             putString("name", name)
+            putString("farm_name", farmName)
             putString("description", description)
             apply()
         }
@@ -305,12 +324,14 @@ class Profile : Fragment() {
         val safeContext = context ?: return
         val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         val savedName = prefs.getString("name", "")
+        val savedFarmName = prefs.getString("farm_name", "")
         val savedDesc = prefs.getString("description", "")
         val savedAddrSub = prefs.getString("address_sub", "")
         val savedCourierSub = prefs.getString("courier_sub", "")
         val savedPaymentSub = prefs.getString("payment_sub", "")
 
         if (!savedName.isNullOrEmpty()) textName.text = savedName
+        if (!savedFarmName.isNullOrEmpty()) tvFarmTitle?.text = savedFarmName
         if (!savedDesc.isNullOrEmpty()) textDescription.text = savedDesc
 
         val tvAddrSub = view?.findViewById<TextView>(R.id.tvProfileAddressSub)
