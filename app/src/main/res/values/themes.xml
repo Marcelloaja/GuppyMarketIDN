@@ -25,4 +25,12 @@
     <style name="App.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@android:color/transparent</item>
     </style>
+
+    <!-- Liquid Blob Active Indicator Style for Bottom Navigation -->
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#F4F4F4</item>
+        <!-- Adjust the height and width to make a perfectly round circle that engulfs the icon/text -->
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">60dp</item>
+    </style>
 </resources>
