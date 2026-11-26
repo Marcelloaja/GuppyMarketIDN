@@ -335,7 +335,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -350,7 +349,8 @@
                                 android:backgroundTint="#E0E0E0"/>
                             <View
                                 android:layout_width="2dp"
-                                android:layout_height="50dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
                                 android:background="#E0E0E0"/>
                         </LinearLayout>
 
@@ -359,6 +359,7 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:paddingBottom="20dp"
                             android:orientation="vertical">
                             <TextView
                                 android:layout_width="wrap_content"
@@ -382,7 +383,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -398,7 +398,8 @@
                                 android:backgroundTint="@color/guppy_primary"/>
                             <View
                                 android:layout_width="2dp"
-                                android:layout_height="65dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
                                 android:background="#E0E0E0"/>
                         </LinearLayout>
 
@@ -407,28 +408,24 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:paddingBottom="20dp"
                             android:orientation="vertical">
-                            <LinearLayout
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Dikirim"
-                                    android:textColor="@color/guppy_primary"
-                                    android:fontFamily="@font/inter_bold"
-                                    android:textSize="14.5sp"/>
-                                <TextView
-                                    android:id="@+id/tvTimelineTimeDikirim"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="10dp"
-                                    android:text="11 Des, 08.05"
-                                    android:textColor="@color/guppy_text_gray"
-                                    android:fontFamily="@font/inter_bold"
-                                    android:textSize="12.5sp"/>
-                            </LinearLayout>
+                                android:text="Dikirim"
+                                android:textColor="@color/guppy_primary"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="14.5sp"/>
+                            <TextView
+                                android:id="@+id/tvTimelineTimeDikirim"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="11 Des, 08.05"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="12sp"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -445,7 +442,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -460,7 +456,8 @@
                                 android:backgroundTint="#124332"/>
                             <View
                                 android:layout_width="2dp"
-                                android:layout_height="45dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
                                 android:background="#E0E0E0"/>
                         </LinearLayout>
 
@@ -469,27 +466,23 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:paddingBottom="20dp"
                             android:orientation="vertical">
-                            <LinearLayout
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Dikemas di Farm"
-                                    android:textColor="@color/guppy_text_black"
-                                    android:fontFamily="@font/inter_bold"
-                                    android:textSize="14sp"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="10dp"
-                                    android:text="10 Des, 14.40"
-                                    android:textColor="@color/guppy_text_gray"
-                                    android:fontFamily="@font/inter_regular"
-                                    android:textSize="12sp"/>
-                            </LinearLayout>
+                                android:text="Dikemas di Farm"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="10 Des, 14.40"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="12sp"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -497,7 +490,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -512,7 +504,8 @@
                                 android:backgroundTint="#124332"/>
                             <View
                                 android:layout_width="2dp"
-                                android:layout_height="45dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
                                 android:background="#E0E0E0"/>
                         </LinearLayout>
 
@@ -521,27 +514,23 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:paddingBottom="20dp"
                             android:orientation="vertical">
-                            <LinearLayout
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Pembayaran dikonfirmasi"
-                                    android:textColor="@color/guppy_text_black"
-                                    android:fontFamily="@font/inter_bold"
-                                    android:textSize="14sp"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="10dp"
-                                    android:text="10 Des, 09.15"
-                                    android:textColor="@color/guppy_text_gray"
-                                    android:fontFamily="@font/inter_regular"
-                                    android:textSize="12sp"/>
-                            </LinearLayout>
+                                android:text="Pembayaran dikonfirmasi"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="10 Des, 09.15"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="12sp"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -569,26 +558,21 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:orientation="vertical">
-                            <LinearLayout
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Pesanan dibuat"
-                                    android:textColor="@color/guppy_text_black"
-                                    android:fontFamily="@font/inter_bold"
-                                    android:textSize="13.5sp"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
-                                    android:text="10 Des, 09.12"
-                                    android:textColor="@color/guppy_text_gray"
-                                    android:fontFamily="@font/inter_regular"
-                                    android:textSize="12sp"/>
-                            </LinearLayout>
+                                android:text="Pesanan dibuat"
+                                android:textColor="@color/guppy_text_black"
+                                android:fontFamily="@font/inter_bold"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="10 Des, 09.12"
+                                android:textColor="@color/guppy_text_gray"
+                                android:fontFamily="@font/inter_regular"
+                                android:textSize="12sp"/>
                         </LinearLayout>
                     </LinearLayout>
 
