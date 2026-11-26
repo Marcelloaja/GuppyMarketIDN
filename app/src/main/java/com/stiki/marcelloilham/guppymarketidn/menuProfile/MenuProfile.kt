@@ -120,6 +120,12 @@ class MenuProfile : AppCompatActivity() {
             photoPickerLauncher.launch("image/*")
         }
 
+        val btnSelectLocation = findViewById<View>(R.id.btnSelectLocation)
+        btnSelectLocation?.setOnClickListener {
+            val intent = Intent(this, ShippingAddressActivity::class.java)
+            startActivity(intent)
+        }
+
         val btnBankAccount = findViewById<View>(R.id.btnBankAccountSetting)
         btnBankAccount?.setOnClickListener {
             showBankAccountDialog()
@@ -252,48 +258,59 @@ class MenuProfile : AppCompatActivity() {
     }
 
     private fun loadProfileData() {
-        val currentUser = firebaseAuth.currentUser ?: return
-        etEmail.setText(currentUser.email ?: "")
+        try {
+            val currentUser = firebaseAuth.currentUser ?: return
+            etEmail.setText(currentUser.email ?: "")
 
-        val userId = currentUser.uid
-        db.collection("user").document(userId).get()
-            .addOnSuccessListener { doc ->
-                val name = doc.getString("name") ?: currentUser.displayName ?: ""
-                val farmName = doc.getString("farm_name") ?: ""
-                val loc = doc.getString("location") ?: doc.getString("full_address") ?: ""
-                val wa = doc.getString("whatsapp") ?: doc.getString("phone") ?: ""
-                val desc = doc.getString("description") ?: ""
-                val bank = doc.getString("bank_account_info") ?: "Belum diatur"
-                val avatarUriStr = doc.getString("avatar_uri") ?: doc.getString("photo_url")
-
-                etOwnerName.setText(name)
-                etFarmName.setText(farmName)
-                etWhatsapp.setText(wa)
-                etFarmDescription.setText(desc)
-                tvCharCount.text = "${desc.length}/300"
-                tvBankAccountInfoSub.text = bank
-
-                if (!avatarUriStr.isNullOrEmpty()) {
+            val userId = currentUser.uid
+            db.collection("user").document(userId).get()
+                .addOnSuccessListener { doc ->
                     try {
-                        imgEditAvatar.setImageURI(android.net.Uri.parse(avatarUriStr))
-                    } catch (_: Exception) {}
-                }
+                        if (isFinishing || isDestroyed) return@addOnSuccessListener
+                        val name = doc.getString("name") ?: currentUser.displayName ?: ""
+                        val farmName = doc.getString("farm_name") ?: ""
+                        val loc = doc.getString("location") ?: doc.getString("full_address") ?: ""
+                        val wa = doc.getString("whatsapp") ?: doc.getString("phone") ?: ""
+                        val desc = doc.getString("description") ?: ""
+                        val bank = doc.getString("bank_account_info") ?: "Belum diatur"
+                        val avatarUriStr = doc.getString("avatar_uri") ?: doc.getString("photo_url")
 
-                if (loc.isNotEmpty()) {
-                    tvFarmLocation.text = loc
-                } else {
-                    // Fetch real addresses if location field is empty
-                    FirestoreRepository.fetchUserAddresses(userId) { addresses ->
-                        val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
-                        if (defaultAddr != null) {
-                            tvFarmLocation.text = defaultAddr.fullAddress
-                            db.collection("user").document(userId).update("location", defaultAddr.fullAddress)
-                        } else {
-                            tvFarmLocation.text = "Belum ada alamat terdaftar"
+                        etOwnerName.setText(name)
+                        etFarmName.setText(farmName)
+                        etWhatsapp.setText(wa)
+                        etFarmDescription.setText(desc)
+                        tvCharCount.text = "${desc.length}/300"
+                        tvBankAccountInfoSub.text = bank
+
+                        if (!avatarUriStr.isNullOrEmpty()) {
+                            try {
+                                imgEditAvatar.setImageURI(android.net.Uri.parse(avatarUriStr))
+                            } catch (_: Exception) {}
                         }
+
+                        if (loc.isNotEmpty()) {
+                            tvFarmLocation.text = loc
+                        } else {
+                            // Fetch real addresses if location field is empty
+                            FirestoreRepository.fetchUserAddresses(userId) { addresses ->
+                                if (!isFinishing && !isDestroyed) {
+                                    val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
+                                    if (defaultAddr != null) {
+                                        tvFarmLocation.text = defaultAddr.fullAddress
+                                        db.collection("user").document(userId).update("location", defaultAddr.fullAddress)
+                                    } else {
+                                        tvFarmLocation.text = "Belum ada alamat terdaftar"
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
-            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun copyUriToInternalStorage(uri: android.net.Uri): String? {
