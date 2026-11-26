@@ -70,6 +70,9 @@
             android:name=".menuHome.PaymentSuccessActivity"
             android:exported="false" />
         <activity
+            android:name=".menuHome.OrderTrackingActivity"
+            android:exported="false" />
+        <activity
             android:name=".adapter.GridAdapter"
             android:exported="false" />
         <activity

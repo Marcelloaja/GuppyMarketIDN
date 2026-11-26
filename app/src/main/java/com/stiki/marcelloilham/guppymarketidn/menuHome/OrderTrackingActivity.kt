@@ -85,10 +85,10 @@ class OrderTrackingActivity : AppCompatActivity() {
     }
 
     private fun readIntentData() {
-        val orderId = intent.getStringExtra("EXTRA_ORDER_ID") ?: "#GM-20931"
-        val productName = intent.getStringExtra("EXTRA_PRODUCT_NAME") ?: "Red Dragon Delta"
-        val courier = intent.getStringExtra("EXTRA_COURIER") ?: "JNE Express"
-        trackingNumber = intent.getStringExtra("EXTRA_TRACKING_NUMBER") ?: "JP8841"
+        val orderId = intent?.getStringExtra("EXTRA_ORDER_ID") ?: "#GM-20931"
+        val productName = intent?.getStringExtra("EXTRA_PRODUCT_NAME") ?: "Red Dragon Delta"
+        val courier = intent?.getStringExtra("EXTRA_COURIER") ?: "JNE Express"
+        trackingNumber = intent?.getStringExtra("EXTRA_TRACKING_NUMBER") ?: "JP8841"
 
         tvOrderNumber.text = "No. Pesanan: $orderId"
         tvProductName.text = productName
@@ -104,9 +104,11 @@ class OrderTrackingActivity : AppCompatActivity() {
 
         val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: "user_default"
         FirestoreRepository.fetchUserAddresses(currentUserId) { addresses ->
-            val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
-            if (defaultAddr != null) {
-                tvAddressSub.text = "${defaultAddr.label}, ${defaultAddr.recipientName}"
+            if (!isFinishing && !isDestroyed) {
+                val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
+                if (defaultAddr != null) {
+                    tvAddressSub.text = "${defaultAddr.label}, ${defaultAddr.recipientName}"
+                }
             }
         }
     }
@@ -154,25 +156,35 @@ class OrderTrackingActivity : AppCompatActivity() {
     }
 
     private fun fetchLiveBiteshipTracking() {
-        BiteshipClient.instance.getTracking(
-            authorization = BiteshipClient.API_KEY,
-            waybillId = trackingNumber,
-            courierCode = courierCode
-        ).enqueue(object : Callback<TrackingResponse> {
-            override fun onResponse(call: Call<TrackingResponse>, response: Response<TrackingResponse>) {
-                if (response.isSuccessful && response.body()?.success == true) {
-                    val histories = response.body()?.history ?: emptyList()
-                    val latestStatus = histories.lastOrNull()?.status ?: "Dikirim"
-                    runOnUiThread {
-                        tvStatusBadge.text = latestStatus.replace("_", " ").replaceFirstChar { it.uppercase() }
+        try {
+            BiteshipClient.instance.getTracking(
+                authorization = BiteshipClient.API_KEY,
+                waybillId = trackingNumber,
+                courierCode = courierCode
+            ).enqueue(object : Callback<TrackingResponse> {
+                override fun onResponse(call: Call<TrackingResponse>, response: Response<TrackingResponse>) {
+                    try {
+                        if (response.isSuccessful && response.body()?.success == true) {
+                            val histories = response.body()?.history ?: emptyList()
+                            val latestStatus = histories.lastOrNull()?.status ?: "Dikirim"
+                            runOnUiThread {
+                                if (!isFinishing && !isDestroyed) {
+                                    tvStatusBadge.text = latestStatus.replace("_", " ").replaceFirstChar { it.uppercase() }
+                                }
+                            }
+                            Log.d("OrderTracking", "Biteship tracking loaded: $latestStatus")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("OrderTracking", "Error parsing tracking response: ${e.message}")
                     }
-                    Log.d("OrderTracking", "Biteship tracking loaded: $latestStatus")
                 }
-            }
 
-            override fun onFailure(call: Call<TrackingResponse>, t: Throwable) {
-                Log.e("OrderTracking", "Tracking call failed: ${t.message}")
-            }
-        })
+                override fun onFailure(call: Call<TrackingResponse>, t: Throwable) {
+                    Log.e("OrderTracking", "Tracking call failed: ${t.message}")
+                }
+            })
+        } catch (e: Exception) {
+            Log.e("OrderTracking", "Error starting tracking request: ${e.message}")
+        }
     }
 }
