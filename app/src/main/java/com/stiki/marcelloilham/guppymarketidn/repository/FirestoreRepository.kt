@@ -505,7 +505,7 @@ object FirestoreRepository {
             }
     }
 
-    // FETCH REAL FARMS FROM FIRESTORE
+    // FETCH REAL FARMS FROM FIRESTORE (Prioritize Gudang Ikan / Farm Toko Address)
     fun fetchRealFarms(onResult: (List<FarmModel>) -> Unit) {
         db.collection("user")
             .get()
@@ -526,24 +526,33 @@ object FirestoreRepository {
                     db.collection("user").document(uid).collection("addresses")
                         .get()
                         .addOnSuccessListener { addrSnapshot ->
-                            val defaultAddr = addrSnapshot.toObjects(AddressModel::class.java).find { it.isDefault }
-                                ?: addrSnapshot.toObjects(AddressModel::class.java).firstOrNull()
+                            val addressesList = addrSnapshot.toObjects(AddressModel::class.java)
+                            // Priority 1: "Gudang Ikan / Farm Toko" address
+                            // Priority 2: Default address
+                            val farmAddr = addressesList.find {
+                                it.label.contains("Gudang", true) || it.label.contains("Farm", true) || it.label.contains("Toko", true)
+                            } ?: addressesList.find { it.isDefault } ?: addressesList.firstOrNull()
 
-                            val farmLocation = defaultAddr?.fullAddress?.split(",")?.takeLast(2)?.joinToString(",")?.trim()
-                                ?: "Bekasi"
+                            if (farmAddr != null) {
+                                val farmLocation = if (farmAddr.fullAddress.contains(",")) {
+                                    farmAddr.fullAddress.split(",").takeLast(2).joinToString(",").trim()
+                                } else {
+                                    farmAddr.fullAddress
+                                }
 
-                            val farm = FarmModel(
-                                id = uid,
-                                farmName = if (name.contains("Farm", true) || name.contains("Guppy", true) || name.contains("House", true)) name else "$name Farm",
-                                ownerName = name,
-                                location = farmLocation,
-                                distanceKm = "${(1..4).random()},${(1..9).random()} km",
-                                rating = 4.8,
-                                variantsCount = (8..24).random(),
-                                lat = -6.2383 + (Math.random() - 0.5) * 0.04,
-                                lng = 106.9896 + (Math.random() - 0.5) * 0.04
-                            )
-                            farmsList.add(farm)
+                                val farm = FarmModel(
+                                    id = uid,
+                                    farmName = if (name.contains("Farm", true) || name.contains("Guppy", true) || name.contains("House", true)) name else "$name Farm",
+                                    ownerName = name,
+                                    location = farmLocation,
+                                    distanceKm = "${(1..4).random()},${(1..9).random()} km",
+                                    rating = 4.9,
+                                    variantsCount = (8..24).random(),
+                                    lat = -6.2383 + (Math.random() - 0.5) * 0.04,
+                                    lng = 106.9896 + (Math.random() - 0.5) * 0.04
+                                )
+                                farmsList.add(farm)
+                            }
 
                             processedCount++
                             if (processedCount == documents.size) {
