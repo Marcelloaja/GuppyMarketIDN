@@ -143,6 +143,7 @@ class HomeFragment : Fragment() {
     private fun setupAuctionIntegration(view: View) {
         val btnSeeAllAuctions = view.findViewById<TextView>(R.id.btnSeeAllHomeAuctions)
         recyclerHomeAuctions = view.findViewById(R.id.recyclerHomeAuctions)
+        val tvEmptyHomeAuctions = view.findViewById<TextView>(R.id.tvEmptyHomeAuctions)
 
         btnSeeAllAuctions?.setOnClickListener {
             val bottomNav = activity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.nav_view)
@@ -175,33 +176,41 @@ class HomeFragment : Fragment() {
                 )
             }.filter { it.status == "LIVE" && it.endTimeMillis > now }
 
-            if (::recyclerHomeAuctions.isInitialized) {
-                homeAuctionAdapter = AuctionGridAdapter(
-                    context = requireContext(),
-                    rawItems = liveItems,
-                    itemLayoutResId = R.layout.item_home_auction_card
-                ) { item ->
-                    val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java).apply {
-                        putExtra("auction_title", item.title)
-                        putExtra("EXTRA_AUCTION_SELLER", item.seller)
-                        putExtra("EXTRA_AUCTION_LOCATION", item.location)
-                        putExtra("EXTRA_AUCTION_PRICE", item.price)
-                        putExtra("EXTRA_AUCTION_GRADE", item.grade)
-                        putExtra("EXTRA_AUCTION_IMAGE", item.imageRes)
-                        putExtra("EXTRA_AUCTION_END_TIME_MILLIS", item.endTimeMillis)
-                        putExtra("EXTRA_AUCTION_DESCRIPTION", item.rawModel?.description ?: "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes.")
-                        putExtra("EXTRA_AUCTION_STRAIN", item.rawModel?.strain ?: "Mosaic")
-                        putExtra("EXTRA_AUCTION_GENDER", item.rawModel?.gender ?: "1 Pasang (Pair)")
-                        putExtra("EXTRA_AUCTION_AGE", item.rawModel?.age ?: "3.5 Bulan")
-                        putExtra("EXTRA_AUCTION_QUANTITY", item.rawModel?.quantity ?: "1 Pasang")
-                        putExtra("EXTRA_AUCTION_CONDITION", item.rawModel?.condition ?: "Sangat Lincah, Bebas Jamur")
-                        putExtra("EXTRA_AUCTION_QUARANTINE", item.rawModel?.quarantine ?: "14 hari di farm")
-                    }
-                    startActivity(intent)
-                }
+            if (liveItems.isEmpty()) {
+                recyclerHomeAuctions.visibility = View.GONE
+                tvEmptyHomeAuctions?.visibility = View.VISIBLE
+            } else {
+                recyclerHomeAuctions.visibility = View.VISIBLE
+                tvEmptyHomeAuctions?.visibility = View.GONE
 
-                recyclerHomeAuctions.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                recyclerHomeAuctions.adapter = homeAuctionAdapter
+                if (::recyclerHomeAuctions.isInitialized) {
+                    homeAuctionAdapter = AuctionGridAdapter(
+                        context = requireContext(),
+                        rawItems = liveItems,
+                        itemLayoutResId = R.layout.item_home_auction_card
+                    ) { item ->
+                        val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java).apply {
+                            putExtra("auction_title", item.title)
+                            putExtra("EXTRA_AUCTION_SELLER", item.seller)
+                            putExtra("EXTRA_AUCTION_LOCATION", item.location)
+                            putExtra("EXTRA_AUCTION_PRICE", item.price)
+                            putExtra("EXTRA_AUCTION_GRADE", item.grade)
+                            putExtra("EXTRA_AUCTION_IMAGE", item.imageRes)
+                            putExtra("EXTRA_AUCTION_END_TIME_MILLIS", item.endTimeMillis)
+                            putExtra("EXTRA_AUCTION_DESCRIPTION", item.rawModel?.description ?: "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes.")
+                            putExtra("EXTRA_AUCTION_STRAIN", item.rawModel?.strain ?: "Mosaic")
+                            putExtra("EXTRA_AUCTION_GENDER", item.rawModel?.gender ?: "1 Pasang (Pair)")
+                            putExtra("EXTRA_AUCTION_AGE", item.rawModel?.age ?: "3.5 Bulan")
+                            putExtra("EXTRA_AUCTION_QUANTITY", item.rawModel?.quantity ?: "1 Pasang")
+                            putExtra("EXTRA_AUCTION_CONDITION", item.rawModel?.condition ?: "Sangat Lincah, Bebas Jamur")
+                            putExtra("EXTRA_AUCTION_QUARANTINE", item.rawModel?.quarantine ?: "14 hari di farm")
+                        }
+                        startActivity(intent)
+                    }
+
+                    recyclerHomeAuctions.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    recyclerHomeAuctions.adapter = homeAuctionAdapter
+                }
             }
         }
     }

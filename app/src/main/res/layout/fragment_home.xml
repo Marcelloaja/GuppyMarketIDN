@@ -321,6 +321,22 @@
                 android:paddingHorizontal="20dp"
                 android:scrollbars="none"/>
 
+            <!-- EMPTY STATE FOR HOME AUCTIONS -->
+            <TextView
+                android:id="@+id/tvEmptyHomeAuctions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_variant_card_unselected"
+                android:padding="16dp"
+                android:text="Belum ada lelang aktif saat ini. Buka menu Lelang untuk membuat lelang baru!"
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="12.5sp"
+                android:gravity="center"
+                android:visibility="gone"/>
+
             <!-- FARM TERPERCAYA TERDEKAT -->
 
             <!-- FARM TERPERCAYA TERDEKAT -->
