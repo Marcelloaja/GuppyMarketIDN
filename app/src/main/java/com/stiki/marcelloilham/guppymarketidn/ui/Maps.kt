@@ -302,6 +302,11 @@ class Maps : Fragment() {
         val actualRating = realFarm?.rating ?: 4.9
         val actualVariants = realFarm?.variantsCount ?: 12
 
+        val calendar = java.util.Calendar.getInstance()
+        val currentHour = calendar.get(java.util.Calendar.HOUR_OF_DAY)
+        val isOpenStatus = currentHour in 8..21
+        val openStatusText = if (isOpenStatus) "● Buka · Tutup 21.00" else "● Tutup · Buka 08.00"
+
         val tvInitials = dialogView.findViewById<TextView>(R.id.tvDialogFarmInitials)
         val tvName = dialogView.findViewById<TextView>(R.id.tvDialogFarmName)
         val tvLocation = dialogView.findViewById<TextView>(R.id.tvDialogFarmLocation)
@@ -319,7 +324,8 @@ class Maps : Fragment() {
         tvInitials?.text = initials.ifEmpty { "GF" }
         tvName?.text = actualName
         tvLocation?.text = "$actualLocation · Gudang Ikan Resmi"
-        tvSubtext?.text = "⭐ $actualRating · $actualVariants varian aktif · Garansi sehat 24 jam"
+        val formattedRating = String.format(java.util.Locale.US, "%.1f", actualRating)
+        tvSubtext?.text = "⭐ $formattedRating · $actualVariants varian aktif · $openStatusText"
 
         btnNavigate?.setOnClickListener {
             dialog.dismiss()
