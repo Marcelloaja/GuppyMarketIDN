@@ -37,12 +37,24 @@ class PaymentMethodAdapter(
         val item = methodList[position]
         holder.tvProviderName.text = item.providerName
 
-        if (item.type.contains("QRIS", true) || item.providerName.contains("QRIS", true)) {
+        val isQrisItem = item.type.contains("QRIS", true) || item.providerName.contains("QRIS", true)
+        val isBankItem = item.type.contains("Bank", true) ||
+                item.providerName.contains("BCA", true) ||
+                item.providerName.contains("BNI", true) ||
+                item.providerName.contains("Mandiri", true) ||
+                item.providerName.contains("BRI", true) ||
+                item.providerName.contains("CIMB", true) ||
+                item.providerName.contains("Permata", true) ||
+                item.providerName.contains("BSI", true) ||
+                item.providerName.contains("Danamon", true) ||
+                item.providerName.contains("Bank", true)
+
+        if (isQrisItem) {
             holder.imgTypeIcon.setImageResource(R.drawable.ic_qris)
-        } else if (item.type.contains("E-Wallet", true) || item.providerName.contains("GoPay", true) || item.providerName.contains("OVO", true) || item.providerName.contains("DANA", true)) {
-            holder.imgTypeIcon.setImageResource(R.drawable.ic_ewallet)
-        } else {
+        } else if (isBankItem) {
             holder.imgTypeIcon.setImageResource(R.drawable.ic_payment_card)
+        } else {
+            holder.imgTypeIcon.setImageResource(R.drawable.ic_ewallet)
         }
 
         val last4 = if (item.accountNumber.length >= 4) item.accountNumber.takeLast(4) else item.accountNumber

@@ -491,9 +491,26 @@ class PaymentMethodsActivity : AppCompatActivity() {
             val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
             val isMain = switchMain?.isChecked == true
 
+            val isBank = selectedTypeIsBank ||
+                    selectedProviderName.contains("BCA", true) ||
+                    selectedProviderName.contains("BNI", true) ||
+                    selectedProviderName.contains("Mandiri", true) ||
+                    selectedProviderName.contains("BRI", true) ||
+                    selectedProviderName.contains("CIMB", true) ||
+                    selectedProviderName.contains("Permata", true) ||
+                    selectedProviderName.contains("BSI", true) ||
+                    selectedProviderName.contains("Danamon", true) ||
+                    selectedProviderName.contains("Bank", true)
+
+            val calculatedType = when {
+                isQris -> "QRIS"
+                isBank -> "Bank"
+                else -> "E-Wallet"
+            }
+
             val newMethod = FirestoreRepository.PaymentMethodModel(
                 id = "pay_${System.currentTimeMillis()}",
-                type = if (isQris) "QRIS" else if (selectedTypeIsBank) "Bank" else "E-Wallet",
+                type = calculatedType,
                 providerName = selectedProviderName,
                 accountNumber = finalAccNumber,
                 accountOwner = owner,
