@@ -55,7 +55,6 @@ class Maps : Fragment() {
     private lateinit var tvUserLocationAddress: TextView
 
     private lateinit var etSearchHome: EditText
-    private lateinit var btnMicSearch: ImageView
     private lateinit var tvNoFarmFound: TextView
     private lateinit var recyclerMapsFarms: RecyclerView
     private lateinit var tvFarmCountBadge: TextView
@@ -97,7 +96,6 @@ class Maps : Fragment() {
 
     private fun setupSearchAndVoice(view: View) {
         etSearchHome = view.findViewById(R.id.etSearchHome)
-        btnMicSearch = view.findViewById(R.id.btnMicSearch)
         tvNoFarmFound = view.findViewById(R.id.tvNoFarmFound)
         tvFarmCountBadge = view.findViewById(R.id.tvFarmCountBadge)
         recyclerMapsFarms = view.findViewById(R.id.recyclerMapsFarms)
@@ -115,10 +113,6 @@ class Maps : Fragment() {
             activeFilterMode = "RATING"
             updateFilterTabStyle()
             filterFarms(etSearchHome.text.toString())
-        }
-
-        btnMicSearch.setOnClickListener {
-            startVoiceRecognition()
         }
 
         etSearchHome.addTextChangedListener(object : TextWatcher {

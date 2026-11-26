@@ -64,16 +64,6 @@
                         android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textSize="13sp"/>
-
-                    <ImageView
-                        android:id="@+id/btnMicSearch"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_mic"
-                        app:tint="@color/guppy_primary"
-                        android:padding="2dp"
-                        android:clickable="true"
-                        android:focusable="true"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
