@@ -96,7 +96,7 @@
                         android:layout_gravity="bottom|end"
                         android:background="@drawable/bg_circle_image"
                         android:backgroundTint="@color/guppy_primary"
-                        android:src="@drawable/ic_mic"
+                        android:src="@drawable/ic_camera_photo"
                         app:tint="@color/white"
                         android:padding="6dp"
                         android:clickable="true"
