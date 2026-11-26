@@ -122,6 +122,9 @@
             fEl.innerHTML = greenPinSvg;
             fEl.addEventListener('click', () => {
                 focusFarmByCoords(name, lat, lng);
+                if (window.AndroidBridge && window.AndroidBridge.onFarmMarkerClicked) {
+                    window.AndroidBridge.onFarmMarkerClicked(id, name, lat, lng);
+                }
             });
             new maplibregl.Marker({ element: fEl, anchor: 'bottom' })
                 .setLngLat([lng, lat])

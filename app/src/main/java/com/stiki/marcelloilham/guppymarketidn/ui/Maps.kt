@@ -274,9 +274,64 @@ class Maps : Fragment() {
                     }
                 }
             }
+
+            @JavascriptInterface
+            fun onFarmMarkerClicked(id: String, name: String, lat: Double, lng: Double) {
+                activity?.runOnUiThread {
+                    if (isAdded) {
+                        showFarmDetailModal(id, name, lat, lng)
+                    }
+                }
+            }
         }, "AndroidBridge")
 
         webView.loadUrl("file:///android_asset/maps.html")
+    }
+
+    private fun showFarmDetailModal(id: String, farmName: String, lat: Double, lng: Double) {
+        val safeContext = context ?: return
+        val dialogView = LayoutInflater.from(safeContext).inflate(R.layout.dialog_farm_marker_detail, null)
+
+        val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(safeContext)
+        dialog.setContentView(dialogView)
+
+        val tvInitials = dialogView.findViewById<TextView>(R.id.tvDialogFarmInitials)
+        val tvName = dialogView.findViewById<TextView>(R.id.tvDialogFarmName)
+        val tvLocation = dialogView.findViewById<TextView>(R.id.tvDialogFarmLocation)
+        val btnNavigate = dialogView.findViewById<TextView>(R.id.btnDialogNavigate)
+        val btnVisitStore = dialogView.findViewById<TextView>(R.id.btnDialogVisitStore)
+        val btnClose = dialogView.findViewById<TextView>(R.id.btnDialogClose)
+
+        val initials = farmName.split(" ")
+            .mapNotNull { it.firstOrNull()?.toString() }
+            .take(2)
+            .joinToString("")
+            .uppercase()
+
+        tvInitials?.text = initials.ifEmpty { "GF" }
+        tvName?.text = farmName
+        tvLocation?.text = "Lokasi Farm Toko · Terverifikasi"
+
+        btnNavigate?.setOnClickListener {
+            dialog.dismiss()
+            enterNavigationMode()
+            speakText("Navigasi ke $farmName dimulai.")
+        }
+
+        btnVisitStore?.setOnClickListener {
+            dialog.dismiss()
+            val intent = Intent(safeContext, DetailFarmActivity::class.java).apply {
+                putExtra("farm_title", farmName)
+                putExtra("farm_id", id)
+            }
+            startActivity(intent)
+        }
+
+        btnClose?.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun loadFirestoreFarmMarkers() {
