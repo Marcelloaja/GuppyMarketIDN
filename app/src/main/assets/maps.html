@@ -137,9 +137,8 @@
             activeDestLng = lng;
             activeDestLat = lat;
 
-            isRoutingActive = true;
+            isRoutingActive = false;
             isNavigatingMode = false;
-            fetchRoute(currentLng, currentLat, activeDestLng, activeDestLat);
 
             map.flyTo({
                 center: [activeDestLng, activeDestLat],
