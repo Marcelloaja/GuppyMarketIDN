@@ -174,13 +174,33 @@ class Maps : Fragment() {
         }
     }
 
+    private fun calculateRealDistanceKm(userLat: Double, userLng: Double, farmLat: Double, farmLng: Double): Double {
+        if (userLat == 0.0 || userLng == 0.0 || farmLat == 0.0 || farmLng == 0.0) return 1.5
+        val results = FloatArray(1)
+        Location.distanceBetween(userLat, userLng, farmLat, farmLng, results)
+        return (results[0] / 1000.0)
+    }
+
+    private fun formatDistanceText(distKm: Double): String {
+        return if (distKm < 1.0) {
+            "${(distKm * 1000).toInt()} m"
+        } else {
+            String.format(java.util.Locale.US, "%.1f km", distKm).replace(".", ",")
+        }
+    }
+
     private fun filterFarms(query: String) {
         val cleanQuery = query.trim().lowercase()
 
+        val updatedFarms = realFarmsList.map { farm ->
+            val dist = calculateRealDistanceKm(lastGeocodedLat, lastGeocodedLng, farm.lat, farm.lng)
+            farm.copy(distanceKm = formatDistanceText(dist))
+        }
+
         var filtered = if (cleanQuery.isEmpty()) {
-            realFarmsList
+            updatedFarms
         } else {
-            realFarmsList.filter {
+            updatedFarms.filter {
                 it.farmName.lowercase().contains(cleanQuery) || it.location.lowercase().contains(cleanQuery)
             }
         }
@@ -189,7 +209,7 @@ class Maps : Fragment() {
             filtered.sortedByDescending { it.rating }
         } else {
             filtered.sortedBy { farm ->
-                farm.distanceKm.replace("km", "").replace(",", ".").trim().toDoubleOrNull() ?: 1.0
+                calculateRealDistanceKm(lastGeocodedLat, lastGeocodedLng, farm.lat, farm.lng)
             }
         }
 
@@ -637,6 +657,12 @@ class Maps : Fragment() {
             webView.evaluateJavascript("javascript:updateUserLocation($lng, $lat)", null)
         }
         updateAddressFromCoordinates(lat, lng)
+
+        if (isAdded && ::recyclerMapsFarms.isInitialized) {
+            activity?.runOnUiThread {
+                filterFarms(etSearchHome.text.toString())
+            }
+        }
     }
 
     private fun updateAddressFromCoordinates(lat: Double, lng: Double) {
