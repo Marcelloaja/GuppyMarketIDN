@@ -152,11 +152,20 @@ class PaymentPendingActivity : AppCompatActivity() {
 
         val btnCheckStatus = findViewById<View>(R.id.btnCheckPaymentStatus)
         btnCheckStatus?.setOnClickListener {
-            Toast.makeText(this, "Mengecek status pembayaran ke sistem...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Mengecek status verifikasi pembayaran...", Toast.LENGTH_SHORT).show()
             findViewById<View>(R.id.btnCheckPaymentStatus)?.postDelayed({
-                Toast.makeText(this, "Pembayaran Berhasil Dikonfirmasi! Pesanan Sedang Diproses Seller.", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, PaymentSuccessActivity::class.java).apply {
+                    putExtra("EXTRA_ORDER_ID", intent.getStringExtra("EXTRA_ORDER_ID") ?: "#GM-20931")
+                    putExtra("EXTRA_PRODUCT_NAME", intent.getStringExtra("EXTRA_PRODUCT_NAME") ?: "Red Dragon Delta")
+                    putExtra("EXTRA_QUANTITY", intent.getIntExtra("EXTRA_QUANTITY", 2))
+                    putExtra("EXTRA_TOTAL_AMOUNT", intent.getLongExtra("EXTRA_TOTAL_AMOUNT", 577000L))
+                    putExtra("EXTRA_SHIPPING_COST", intent.getLongExtra("EXTRA_SHIPPING_COST", 25000L))
+                    putExtra("EXTRA_SERVICE_FEE", intent.getLongExtra("EXTRA_SERVICE_FEE", 2000L))
+                    putExtra("EXTRA_PAYMENT_METHOD", paymentMethodText)
+                }
+                startActivity(intent)
                 finish()
-            }, 1200)
+            }, 1000)
         }
     }
 
