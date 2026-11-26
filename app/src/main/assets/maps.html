@@ -290,6 +290,8 @@
             map.flyTo({ center: [currentLng, currentLat], zoom: 15.5, pitch: isNavigatingMode ? 60 : 25, bearing: targetBearing, speed: 1.2 });
         }
 
+        let isFirstGpsLock = true;
+
         function updateUserLocation(lng, lat) {
             let nLng = parseFloat(lng);
             let nLat = parseFloat(lat);
@@ -311,6 +313,15 @@
                 })
                 .setLngLat([currentLng, currentLat])
                 .addTo(map);
+            }
+
+            if (isFirstGpsLock) {
+                isFirstGpsLock = false;
+                map.flyTo({
+                    center: [currentLng, currentLat],
+                    zoom: 15.5,
+                    speed: 1.5
+                });
             }
 
             if (isRoutingActive) {
