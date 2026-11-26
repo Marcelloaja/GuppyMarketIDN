@@ -295,33 +295,44 @@ class Maps : Fragment() {
         val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(safeContext)
         dialog.setContentView(dialogView)
 
+        val realFarm = realFarmsList.find { it.id == id || it.farmName.equals(farmName, ignoreCase = true) }
+
+        val actualName = realFarm?.farmName ?: farmName
+        val actualLocation = realFarm?.location ?: "Lokasi Farm Toko"
+        val actualRating = realFarm?.rating ?: 4.9
+        val actualVariants = realFarm?.variantsCount ?: 12
+
         val tvInitials = dialogView.findViewById<TextView>(R.id.tvDialogFarmInitials)
         val tvName = dialogView.findViewById<TextView>(R.id.tvDialogFarmName)
         val tvLocation = dialogView.findViewById<TextView>(R.id.tvDialogFarmLocation)
+        val tvSubtext = dialogView.findViewById<TextView>(R.id.tvDialogFarmSubtext)
         val btnNavigate = dialogView.findViewById<TextView>(R.id.btnDialogNavigate)
         val btnVisitStore = dialogView.findViewById<TextView>(R.id.btnDialogVisitStore)
         val btnClose = dialogView.findViewById<TextView>(R.id.btnDialogClose)
 
-        val initials = farmName.split(" ")
+        val initials = actualName.split(" ")
             .mapNotNull { it.firstOrNull()?.toString() }
             .take(2)
             .joinToString("")
             .uppercase()
 
         tvInitials?.text = initials.ifEmpty { "GF" }
-        tvName?.text = farmName
-        tvLocation?.text = "Lokasi Farm Toko · Terverifikasi"
+        tvName?.text = actualName
+        tvLocation?.text = "$actualLocation · Gudang Ikan Resmi"
+        tvSubtext?.text = "⭐ $actualRating · $actualVariants varian aktif · Garansi sehat 24 jam"
 
         btnNavigate?.setOnClickListener {
             dialog.dismiss()
             enterNavigationMode()
-            speakText("Navigasi ke $farmName dimulai.")
+            speakText("Navigasi ke $actualName dimulai.")
         }
 
         btnVisitStore?.setOnClickListener {
             dialog.dismiss()
             val intent = Intent(safeContext, DetailFarmActivity::class.java).apply {
-                putExtra("farm_title", farmName)
+                putExtra("farm_title", actualName)
+                putExtra("farm_location", actualLocation)
+                putExtra("farm_rating", actualRating.toString())
                 putExtra("farm_id", id)
             }
             startActivity(intent)

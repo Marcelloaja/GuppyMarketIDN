@@ -85,6 +85,7 @@
                     android:textSize="12.5sp"/>
 
                 <TextView
+                    android:id="@+id/tvDialogFarmSubtext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
