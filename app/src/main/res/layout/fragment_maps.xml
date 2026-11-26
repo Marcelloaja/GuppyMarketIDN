@@ -405,7 +405,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/inter_bold"
-                    android:text="Gudang Ikan &amp; Farm Terdekat"
+                    android:text="Farm Terdekat"
                     android:textColor="@color/guppy_text_black"
                     android:textSize="18sp" />
 
@@ -415,7 +415,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_chip_selected"
                     android:backgroundTint="#E0F2F1"
-                    android:text="0 Farm / Gudang Ikan"
+                    android:text="0 Farm"
                     android:textColor="@color/guppy_primary"
                     android:fontFamily="@font/inter_bold"
                     android:textSize="11.5sp"
@@ -460,58 +460,45 @@
                     android:focusable="true"/>
             </LinearLayout>
 
-            <!-- Filter Chips (Rounded Box) -->
-            <HorizontalScrollView
+            <!-- Filter Chips (2 Tabs Only: Terdekat & Rating Tertinggi) -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:scrollbars="none">
+                android:orientation="horizontal">
 
-                <LinearLayout
+                <!-- Tab 1: Terdekat -->
+                <TextView
+                    android:id="@+id/chipMapsTerdekat"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_btn_primary"
+                    android:backgroundTint="#124332"
+                    android:text="📍 Terdekat"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="12.5sp"
+                    android:gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
 
-                    <!-- Selected: Terdekat -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_btn_primary"
-                        android:backgroundTint="#124332"
-                        android:text="📍 Terdekat"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:paddingHorizontal="14dp"
-                        android:layout_marginEnd="6dp"/>
-
-                    <!-- Unselected: Rating Tertinggi -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_btn_solid_gray"
-                        android:text="⭐ Rating Tertinggi"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:paddingHorizontal="14dp"
-                        android:layout_marginEnd="6dp"/>
-
-                    <!-- Unselected: Gudang Ikan / Farm -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_btn_solid_gray"
-                        android:text="🏢 Farm / Gudang Ikan"
-                        android:textColor="@color/guppy_text_black"
-                        android:fontFamily="@font/inter_bold"
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:paddingHorizontal="14dp"/>
-                </LinearLayout>
-            </HorizontalScrollView>
+                <!-- Tab 2: Rating Tertinggi -->
+                <TextView
+                    android:id="@+id/chipMapsRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_btn_solid_gray"
+                    android:text="⭐ Rating Tertinggi"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="12.5sp"
+                    android:gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
 
             <!-- DYNAMIC FIRESTORE GUDANG IKAN / FARM RECYCLERVIEW -->
             <androidx.recyclerview.widget.RecyclerView

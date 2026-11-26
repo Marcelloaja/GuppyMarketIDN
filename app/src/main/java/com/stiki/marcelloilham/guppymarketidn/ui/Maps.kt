@@ -91,12 +91,31 @@ class Maps : Fragment() {
         return view
     }
 
+    private lateinit var chipTerdekat: TextView
+    private lateinit var chipRating: TextView
+    private var activeFilterMode = "TERDEKAT"
+
     private fun setupSearchAndVoice(view: View) {
         etSearchHome = view.findViewById(R.id.etSearchHome)
         btnMicSearch = view.findViewById(R.id.btnMicSearch)
         tvNoFarmFound = view.findViewById(R.id.tvNoFarmFound)
         tvFarmCountBadge = view.findViewById(R.id.tvFarmCountBadge)
         recyclerMapsFarms = view.findViewById(R.id.recyclerMapsFarms)
+
+        chipTerdekat = view.findViewById(R.id.chipMapsTerdekat)
+        chipRating = view.findViewById(R.id.chipMapsRating)
+
+        chipTerdekat?.setOnClickListener {
+            activeFilterMode = "TERDEKAT"
+            updateFilterTabStyle()
+            filterFarms(etSearchHome.text.toString())
+        }
+
+        chipRating?.setOnClickListener {
+            activeFilterMode = "RATING"
+            updateFilterTabStyle()
+            filterFarms(etSearchHome.text.toString())
+        }
 
         btnMicSearch.setOnClickListener {
             startVoiceRecognition()
@@ -109,6 +128,28 @@ class Maps : Fragment() {
             }
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
+
+    private fun updateFilterTabStyle() {
+        if (::chipTerdekat.isInitialized && ::chipRating.isInitialized) {
+            if (activeFilterMode == "TERDEKAT") {
+                chipTerdekat.setBackgroundResource(R.drawable.bg_btn_primary)
+                chipTerdekat.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#124332"))
+                chipTerdekat.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+
+                chipRating.setBackgroundResource(R.drawable.bg_btn_solid_gray)
+                chipRating.backgroundTintList = null
+                chipRating.setTextColor(ContextCompat.getColor(requireContext(), R.color.guppy_text_black))
+            } else {
+                chipRating.setBackgroundResource(R.drawable.bg_btn_primary)
+                chipRating.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#124332"))
+                chipRating.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+
+                chipTerdekat.setBackgroundResource(R.drawable.bg_btn_solid_gray)
+                chipTerdekat.backgroundTintList = null
+                chipTerdekat.setTextColor(ContextCompat.getColor(requireContext(), R.color.guppy_text_black))
+            }
+        }
     }
 
     private fun startVoiceRecognition() {
@@ -142,7 +183,7 @@ class Maps : Fragment() {
     private fun filterFarms(query: String) {
         val cleanQuery = query.trim().lowercase()
 
-        val filtered = if (cleanQuery.isEmpty()) {
+        var filtered = if (cleanQuery.isEmpty()) {
             realFarmsList
         } else {
             realFarmsList.filter {
@@ -150,9 +191,17 @@ class Maps : Fragment() {
             }
         }
 
+        filtered = if (activeFilterMode == "RATING") {
+            filtered.sortedByDescending { it.rating }
+        } else {
+            filtered.sortedBy {
+                it.distanceKm.replace("km", "").replace(",", ".").trim().toDoubleOrNull() ?: 99.0
+            }
+        }
+
         if (filtered.isEmpty()) {
             recyclerMapsFarms.visibility = View.GONE
-            tvNoFarmFound.text = "Gudang Ikan / Farm '$query' tidak ditemukan.\nCoba kata kunci lokasi lain."
+            tvNoFarmFound.text = "Farm '$query' tidak ditemukan.\nCoba kata kunci lokasi lain."
             tvNoFarmFound.visibility = View.VISIBLE
         } else {
             recyclerMapsFarms.visibility = View.VISIBLE
@@ -237,25 +286,10 @@ class Maps : Fragment() {
             if (isAdded) {
                 activity?.runOnUiThread {
                     if (::tvFarmCountBadge.isInitialized) {
-                        tvFarmCountBadge.text = "${farms.size} Farm / Gudang Ikan"
+                        tvFarmCountBadge.text = "${farms.size} Farm"
                     }
 
-                    if (::recyclerMapsFarms.isInitialized) {
-                        val adapter = com.stiki.marcelloilham.guppymarketidn.adapter.HomeFarmAdapter(
-                            context = requireContext(),
-                            farms = farms,
-                            onVisitClicked = { clickedFarm ->
-                                val intent = Intent(requireContext(), DetailFarmActivity::class.java).apply {
-                                    putExtra("farm_title", clickedFarm.farmName)
-                                    putExtra("farm_location", clickedFarm.location)
-                                    putExtra("farm_rating", clickedFarm.rating.toString())
-                                }
-                                startActivity(intent)
-                            }
-                        )
-                        recyclerMapsFarms.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
-                        recyclerMapsFarms.adapter = adapter
-                    }
+                    filterFarms(etSearchHome.text.toString())
 
                     farms.forEach { farm ->
                         val escapedName = farm.farmName.replace("'", "\\'")
