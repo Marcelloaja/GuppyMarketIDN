@@ -38,12 +38,21 @@ class MainActivity : AppCompatActivity() {
         navview = findViewById(R.id.nav_view)
         val cardBottomNav = findViewById<View>(R.id.cardBottomNav)
 
-        // Responsif Window Insets: Menyesuaikan posisi Navigasi Melayang terhadap Gesture Bar / Nav Bar HP
+        // Responsif Window Insets: Menyesuaikan posisi Navigasi Melayang terhadap Gesture Bar / Nav Bar HP & Layar Lebar/Tablet
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             cardBottomNav.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 val baseBottomMargin = (16 * resources.displayMetrics.density).toInt()
                 bottomMargin = systemBars.bottom + baseBottomMargin
+
+                // Responsive width handling for tablets, foldables, and wide screen phones
+                val screenWidthPx = resources.displayMetrics.widthPixels
+                val maxNavWidthPx = (520 * resources.displayMetrics.density).toInt()
+                if (screenWidthPx > maxNavWidthPx) {
+                    width = maxNavWidthPx
+                } else {
+                    width = ViewGroup.LayoutParams.MATCH_PARENT
+                }
             }
             insets
         }
