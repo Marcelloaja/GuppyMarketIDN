@@ -445,7 +445,7 @@ object FirestoreRepository {
         val currentUserId = auth.currentUser?.uid ?: "guest"
         val orderWithUser = order.copy(userId = currentUserId)
         val docRef = db.collection("orders").document()
-        val finalOrder = orderWithUser.copy(id = docRef.id)
+        val finalOrder = if (order.id.isEmpty()) orderWithUser.copy(id = docRef.id) else orderWithUser
 
         docRef.set(finalOrder)
             .addOnSuccessListener {
@@ -455,6 +455,23 @@ object FirestoreRepository {
                 }
                 onComplete(true)
             }
+            .addOnFailureListener {
+                onComplete(false)
+            }
+    }
+
+    // UPDATE ORDER STATUS AND TRACKING NUMBER IN FIRESTORE
+    fun updateOrderStatusAndResi(orderId: String, newStatus: String, trackingNumber: String, onComplete: (Boolean) -> Unit) {
+        if (orderId.isEmpty()) {
+            onComplete(false)
+            return
+        }
+        db.collection("orders").document(orderId)
+            .update(mapOf(
+                "status" to newStatus,
+                "trackingNumber" to trackingNumber
+            ))
+            .addOnSuccessListener { onComplete(true) }
             .addOnFailureListener {
                 onComplete(false)
             }

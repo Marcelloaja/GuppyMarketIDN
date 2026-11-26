@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_bold"
-                android:text="Pesanan Toko Masuk"
+                android:text="Pesanan Keluar"
                 android:textColor="@color/guppy_text_black"
                 android:textSize="18sp"/>
 
@@ -52,10 +52,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:fontFamily="@font/inter_regular"
-                android:text="Kelola pesanan dari pembeli toko guppy Anda"
+                android:text="Kirim pesanan ke pembeli"
                 android:textColor="@color/guppy_text_gray"
                 android:textSize="12.5sp"/>
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btnHelpSellerOrders"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@drawable/bg_circle_white_stroke"
+            android:src="@drawable/ic_info"
+            app:tint="@color/guppy_text_gray"
+            android:padding="9dp"
+            android:clickable="true"
+            android:focusable="true"/>
     </LinearLayout>
 
     <View
@@ -65,12 +76,134 @@
         android:layout_below="@id/topBarSellerOrders"
         android:background="#EEEEEE"/>
 
+    <!-- TOP SUMMARY COUNTERS -->
+    <LinearLayout
+        android:id="@+id/layoutTopCounters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dividerHeader"
+        android:background="#FAFAFA"
+        android:paddingHorizontal="14dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="6dp"
+        android:orientation="horizontal">
+
+        <!-- Counter 1: Perlu Dikemas -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="64dp"
+            android:layout_marginEnd="5dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/white"
+            app:strokeColor="#E2E8F0"
+            app:strokeWidth="1dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="12dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Perlu Dikemas"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="11sp"/>
+                <TextView
+                    android:id="@+id/tvCountPerluDikemas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="2"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Counter 2: Siap Kirim -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="64dp"
+            android:layout_marginHorizontal="3dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/white"
+            app:strokeColor="#E2E8F0"
+            app:strokeWidth="1dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="12dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Siap Kirim"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="11sp"/>
+                <TextView
+                    android:id="@+id/tvCountSiapKirim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="1"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Counter 3: Dikirim -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="64dp"
+            android:layout_marginStart="5dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/white"
+            app:strokeColor="#E2E8F0"
+            app:strokeWidth="1dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="12dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dikirim"
+                    android:textColor="@color/guppy_text_gray"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="11sp"/>
+                <TextView
+                    android:id="@+id/tvCountDikirim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="5"
+                    android:textColor="@color/guppy_text_black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
     <!-- HORIZONTAL STATUS FILTER TABS -->
     <HorizontalScrollView
         android:id="@+id/scrollTabsSellerOrders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dividerHeader"
+        android:layout_below="@id/layoutTopCounters"
         android:background="@color/white"
         android:scrollbars="none"
         android:paddingVertical="10dp"
@@ -114,13 +247,13 @@
                 android:clickable="true"
                 android:focusable="true"/>
 
-            <!-- Tab 3: Dikirim -->
+            <!-- Tab 3: Siap Kirim -->
             <TextView
-                android:id="@+id/tabSellerOrderDikirim"
+                android:id="@+id/tabSellerOrderSiapKirim"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
                 android:background="@drawable/bg_btn_outline_pill_gray"
-                android:text="Dalam Pengiriman"
+                android:text="Siap Kirim"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_bold"
                 android:textSize="13sp"
@@ -130,7 +263,23 @@
                 android:clickable="true"
                 android:focusable="true"/>
 
-            <!-- Tab 4: Selesai -->
+            <!-- Tab 4: Dikirim -->
+            <TextView
+                android:id="@+id/tabSellerOrderDikirim"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_btn_outline_pill_gray"
+                android:text="Dikirim"
+                android:textColor="@color/guppy_text_black"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <!-- Tab 5: Selesai -->
             <TextView
                 android:id="@+id/tabSellerOrderSelesai"
                 android:layout_width="wrap_content"
@@ -154,16 +303,57 @@
         android:layout_below="@id/scrollTabsSellerOrders"
         android:background="#EEEEEE"/>
 
+    <!-- BOTTOM NOTICE CARD -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardBottomNotice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="18dp"
+        android:layout_marginBottom="14dp"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#F8F9FA"
+        app:strokeColor="#E2E8F0"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_verified_badge"
+                app:tint="#2E7D32"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Kemas ikan dalam wadah oksigen dan kirim paling lambat H+1 pengiriman untuk menjaga kualitas ikan sampai tujuan."
+                android:textColor="@color/guppy_text_gray"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="11.5sp"
+                android:lineSpacingExtra="2dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
     <!-- ORDERS RECYCLER VIEW -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSellerOrders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/dividerTabs"
+        android:layout_above="@id/cardBottomNotice"
         android:clipToPadding="false"
         android:paddingHorizontal="18dp"
         android:paddingTop="14dp"
-        android:paddingBottom="20dp"/>
+        android:paddingBottom="10dp"/>
 
     <!-- EMPTY STATE -->
     <TextView
