@@ -242,7 +242,7 @@ class AccountDetailActivity : AppCompatActivity() {
 
         val btnDownload = findViewById<View>(R.id.btnDownloadQris)
         btnDownload?.setOnClickListener {
-            Toast.makeText(this, "Foto Barcode QRIS disalin ke folder Unduhan!", Toast.LENGTH_SHORT).show()
+            saveQrisToGallery()
         }
 
         val btnShare = findViewById<View>(R.id.btnShareQris)
@@ -278,6 +278,61 @@ class AccountDetailActivity : AppCompatActivity() {
                 if (it.id == methodId) it.copy(isMain = true) else it.copy(isMain = false)
             }
             FirestoreRepository.updateAllPaymentMethods(currentUserId, updated) {}
+        }
+    }
+
+    private fun saveQrisToGallery() {
+        val ivBarcode = findViewById<ImageView>(R.id.ivQrisBarcodeImage) ?: return
+        ivBarcode.isDrawingCacheEnabled = true
+
+        val bitmap = try {
+            (ivBarcode.drawable as? android.graphics.drawable.BitmapDrawable)?.bitmap
+                ?: android.graphics.Bitmap.createBitmap(
+                    ivBarcode.width.coerceAtLeast(300),
+                    ivBarcode.height.coerceAtLeast(300),
+                    android.graphics.Bitmap.Config.ARGB_8888
+                ).also { bmp ->
+                    val canvas = android.graphics.Canvas(bmp)
+                    ivBarcode.draw(canvas)
+                }
+        } catch (_: Exception) {
+            null
+        }
+
+        if (bitmap == null) {
+            Toast.makeText(this, "Gagal memuat gambar QRIS", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val filename = "QRIS_GuppyFarm_${System.currentTimeMillis()}.jpg"
+
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                val resolver = contentResolver
+                val contentValues = android.content.ContentValues().apply {
+                    put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                    put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                    put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, android.os.Environment.DIRECTORY_PICTURES + "/GuppyMarket")
+                }
+                val imageUri = resolver.insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                if (imageUri != null) {
+                    resolver.openOutputStream(imageUri)?.use { outputStream ->
+                        bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, outputStream)
+                    }
+                    Toast.makeText(this, "QRIS berhasil disimpan ke Galeri Foto! 📸", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Gagal menyimpan QRIS ke Galeri", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                val imagesDir = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PICTURES)
+                val imageFile = java.io.File(imagesDir, filename)
+                java.io.FileOutputStream(imageFile).use { outputStream ->
+                    bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, outputStream)
+                }
+                Toast.makeText(this, "QRIS berhasil disimpan ke Galeri Foto! 📸", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Gagal menyimpan QRIS: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
