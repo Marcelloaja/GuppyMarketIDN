@@ -74,6 +74,7 @@ class CheckoutActivity : AppCompatActivity() {
     private lateinit var icRadioPayEWallet: ImageView
     private lateinit var tvPayVATitle: TextView
     private lateinit var tvPayEWalletTitle: TextView
+    private var selectedPaymentMethodText: String = "Bank BCA Virtual Account"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,10 +98,44 @@ class CheckoutActivity : AppCompatActivity() {
         setupPaymentOptions()
         setupPayButton()
 
-        // Fetch real-time Biteship shipping rates in background
+        loadCheckoutPaymentMethods()
         fetchBiteshipShippingRates()
-
         updateCalculations()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadCheckoutPaymentMethods()
+    }
+
+    private fun loadCheckoutPaymentMethods() {
+        val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: "user_default"
+        FirestoreRepository.fetchUserPaymentMethods(currentUserId) { methods ->
+            val mainMethod = methods.find { it.isMain } ?: methods.firstOrNull()
+            val secondMethod = methods.find { !it.isMain } ?: methods.getOrNull(1)
+
+            if (mainMethod != null) {
+                val last4 = if (mainMethod.accountNumber.length >= 4) mainMethod.accountNumber.takeLast(4) else mainMethod.accountNumber
+                tvPayVATitle.text = "${mainMethod.providerName} (${mainMethod.type}) •••• $last4"
+                if (isPayVA) {
+                    selectedPaymentMethodText = tvPayVATitle.text.toString()
+                }
+
+                if (secondMethod != null) {
+                    val secLast4 = if (secondMethod.accountNumber.length >= 4) secondMethod.accountNumber.takeLast(4) else secondMethod.accountNumber
+                    tvPayEWalletTitle.text = "${secondMethod.providerName} (${secondMethod.type}) •••• $secLast4"
+                    if (!isPayVA) {
+                        selectedPaymentMethodText = tvPayEWalletTitle.text.toString()
+                    }
+                } else {
+                    tvPayEWalletTitle.text = "GoPay / QRIS Tambahan"
+                }
+            } else {
+                tvPayVATitle.text = "Bank BCA Virtual Account (Utama)"
+                tvPayEWalletTitle.text = "GoPay / QRIS"
+                selectedPaymentMethodText = "Bank BCA Virtual Account"
+            }
+        }
     }
 
     private fun initViews() {
@@ -224,11 +259,13 @@ class CheckoutActivity : AppCompatActivity() {
     private fun setupPaymentOptions() {
         optionPayVA.setOnClickListener {
             isPayVA = true
+            selectedPaymentMethodText = tvPayVATitle.text.toString()
             updatePaymentUI()
         }
 
         optionPayEWallet.setOnClickListener {
             isPayVA = false
+            selectedPaymentMethodText = tvPayEWalletTitle.text.toString()
             updatePaymentUI()
         }
     }
@@ -284,7 +321,6 @@ class CheckoutActivity : AppCompatActivity() {
                 "SICEPAT" -> "SiCepat BEST"
                 else -> "GoSend / GrabExpress Instan"
             }
-            val paymentText = if (isPayVA) "Bank BCA Virtual Account" else "GoPay / E-wallet"
             val orderNum = "#GM-${(10000..99999).random()}"
 
             val order = FirestoreRepository.OrderModel(
@@ -295,7 +331,7 @@ class CheckoutActivity : AppCompatActivity() {
                 totalAmount = total,
                 shippingCost = shippingCost,
                 courier = courierText,
-                paymentMethod = paymentText,
+                paymentMethod = selectedPaymentMethodText,
                 status = "Menunggu Pembayaran"
             )
 
@@ -313,7 +349,7 @@ class CheckoutActivity : AppCompatActivity() {
                     putExtra("EXTRA_TOTAL_AMOUNT", total)
                     putExtra("EXTRA_SHIPPING_COST", shippingCost)
                     putExtra("EXTRA_SERVICE_FEE", serviceFee)
-                    putExtra("EXTRA_PAYMENT_METHOD", paymentText)
+                    putExtra("EXTRA_PAYMENT_METHOD", selectedPaymentMethodText)
                 }
                 startActivity(intent)
                 finish()
