@@ -452,7 +452,7 @@
                 android:layout_marginStart="10dp"
                 android:background="@drawable/bg_circle_image"
                 android:backgroundTint="@color/guppy_primary"
-                android:src="@drawable/ic_send_plane"
+                android:src="@drawable/ic_send_message_btn"
                 app:tint="@color/white"
                 android:padding="12dp"
                 android:clickable="true"
