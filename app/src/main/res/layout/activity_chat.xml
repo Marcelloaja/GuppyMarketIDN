@@ -438,7 +438,7 @@
                     android:id="@+id/btnGallery"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_map_folded"
+                    android:src="@drawable/ic_picture_gallery"
                     app:tint="@color/guppy_text_gray"
                     android:clickable="true"
                     android:focusable="true"/>
