@@ -81,7 +81,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/bg_circle_white_stroke"
-            android:src="@drawable/ic_notifications_black_24dp"
+            android:src="@drawable/ic_three_dots_setting"
             android:padding="10dp"
             app:tint="@color/guppy_text_black"
             android:clickable="true"
