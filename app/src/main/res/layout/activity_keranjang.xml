@@ -146,11 +146,12 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tvCartSellerInitials"
                             android:layout_width="36dp"
                             android:layout_height="36dp"
                             android:background="@drawable/bg_circle_image"
                             android:backgroundTint="#D85C42"
-                            android:text="BA"
+                            android:text="TG"
                             android:textColor="@color/white"
                             android:gravity="center"
                             android:fontFamily="@font/inter_semi_bold"
@@ -169,9 +170,10 @@
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical">
                                 <TextView
+                                    android:id="@+id/tvCartSellerName"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Bekasi Aqua Farm"
+                                    android:text="Memuat toko..."
                                     android:fontFamily="@font/inter_bold"
                                     android:textColor="@color/guppy_text_black"
                                     android:textSize="13sp"
@@ -184,7 +186,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="4dp"
-                                    android:text="TERVERIFIKASI"
+                                    android:text="PENJUAL"
                                     android:textColor="@color/guppy_primary"
                                     android:fontFamily="@font/inter_bold"
                                     android:textSize="9sp"/>
@@ -199,41 +201,14 @@
                                 <ImageView
                                     android:layout_width="10dp"
                                     android:layout_height="10dp"
-                                    android:src="@drawable/star"
-                                    app:tint="@color/guppy_star"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="2dp"
-                                    android:text="4,8"
-                                    android:fontFamily="@font/inter_semi_bold"
-                                    android:textSize="11sp"
-                                    android:textColor="@color/guppy_text_black"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="2dp"
-                                    android:text="(126 ulasan)"
-                                    android:textSize="11sp"
-                                    android:textColor="@color/guppy_text_gray"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="4dp"
-                                    android:text="·"
-                                    android:textSize="11sp"
-                                    android:textColor="@color/guppy_text_gray"/>
-                                <ImageView
-                                    android:layout_width="10dp"
-                                    android:layout_height="10dp"
-                                    android:layout_marginStart="4dp"
                                     android:src="@drawable/map"
                                     app:tint="@color/guppy_text_gray"/>
                                 <TextView
+                                    android:id="@+id/tvCartSellerLocation"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="2dp"
-                                    android:text="Bekasi, 5,1 km"
+                                    android:layout_marginStart="4dp"
+                                    android:text="-"
                                     android:textSize="11sp"
                                     android:textColor="@color/guppy_text_gray"/>
                             </LinearLayout>
@@ -269,6 +244,7 @@
                                 android:layout_gravity="center_vertical"/>
 
                             <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/ivCartItem1"
                                 android:layout_width="72dp"
                                 android:layout_height="72dp"
                                 android:layout_marginStart="10dp"
@@ -288,10 +264,11 @@
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal">
                                     <TextView
+                                        android:id="@+id/tvCartTitle1"
                                         android:layout_width="0dp"
                                         android:layout_weight="1"
                                         android:layout_height="wrap_content"
-                                        android:text="Red Dragon Delta"
+                                        android:text="Produk"
                                         android:textColor="@color/guppy_text_black"
                                         android:fontFamily="@font/inter_bold"
                                         android:textSize="14sp"/>
@@ -306,21 +283,23 @@
                                 </LinearLayout>
 
                                 <TextView
+                                    android:id="@+id/tvCartMeta1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="Jantan &amp; betina · 3–4 cm · Usia 3 bulan"
+                                    android:text="-"
                                     android:textColor="@color/guppy_text_gray"
                                     android:fontFamily="@font/inter_regular"
                                     android:textSize="11sp"/>
 
                                 <TextView
+                                    android:id="@+id/tvCartBadge1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="6dp"
                                     android:background="@drawable/bg_tag_photo_count"
                                     android:backgroundTint="#E8F5E9"
-                                    android:text="PASANG"
+                                    android:text="STOK TERSEDIA"
                                     android:textColor="@color/guppy_primary"
                                     android:fontFamily="@font/inter_bold"
                                     android:textSize="9sp"
@@ -334,13 +313,15 @@
                                     android:gravity="bottom"
                                     android:layout_marginTop="6dp">
                                     <TextView
+                                        android:id="@+id/tvCartPrice1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Rp 275.000"
+                                        android:text="Rp 0"
                                         android:textColor="@color/guppy_text_black"
                                         android:fontFamily="@font/inter_bold"
                                         android:textSize="14sp"/>
                                     <TextView
+                                        android:id="@+id/tvCartUnit1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="4dp"
@@ -361,10 +342,11 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/tvCartEquiv1"
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:text="Setara 4 ekor"
+                                android:text="1 pasang"
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="11sp"
@@ -452,10 +434,11 @@
                                 android:layout_gravity="center_vertical"/>
 
                             <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/ivCartItem2"
                                 android:layout_width="72dp"
                                 android:layout_height="72dp"
                                 android:layout_marginStart="10dp"
-                                android:src="@drawable/skyblue"
+                                android:src="@drawable/bg_image_grid"
                                 android:scaleType="centerCrop"
                                 app:cornerSize="12dp"/>
 
@@ -471,10 +454,11 @@
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal">
                                     <TextView
+                                        android:id="@+id/tvCartTitle2"
                                         android:layout_width="0dp"
                                         android:layout_weight="1"
                                         android:layout_height="wrap_content"
-                                        android:text="Half Moon Plakat"
+                                        android:text="Produk"
                                         android:textColor="@color/guppy_text_black"
                                         android:fontFamily="@font/inter_bold"
                                         android:textSize="14sp"/>
@@ -489,21 +473,23 @@
                                 </LinearLayout>
 
                                 <TextView
+                                    android:id="@+id/tvCartMeta2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="Jantan · 4–5 cm · Usia 4 bulan"
+                                    android:text="-"
                                     android:textColor="@color/guppy_text_gray"
                                     android:fontFamily="@font/inter_regular"
                                     android:textSize="11sp"/>
 
                                 <TextView
+                                    android:id="@+id/tvCartBadge2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="6dp"
                                     android:background="@drawable/bg_tag_photo_count"
                                     android:backgroundTint="#E8F5E9"
-                                    android:text="PASANG"
+                                    android:text="STOK TERSEDIA"
                                     android:textColor="@color/guppy_primary"
                                     android:fontFamily="@font/inter_bold"
                                     android:textSize="9sp"
@@ -517,13 +503,15 @@
                                     android:gravity="bottom"
                                     android:layout_marginTop="6dp">
                                     <TextView
+                                        android:id="@+id/tvCartPrice2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Rp 137.500"
+                                        android:text="Rp 0"
                                         android:textColor="@color/guppy_text_black"
                                         android:fontFamily="@font/inter_bold"
                                         android:textSize="14sp"/>
                                     <TextView
+                                        android:id="@+id/tvCartUnit2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="4dp"

@@ -24,7 +24,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.adapter.PaymentMethodAdapter
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 import java.util.Locale
+import java.util.concurrent.Executors
 
 class PaymentMethodsActivity : AppCompatActivity() {
 
@@ -40,9 +42,11 @@ class PaymentMethodsActivity : AppCompatActivity() {
     private lateinit var tvAdminFeeNotice: TextView
 
     private val firebaseAuth = FirebaseAuth.getInstance()
+    private val qrisEncodeExecutor = Executors.newSingleThreadExecutor()
     private var realPaymentMethodsList: MutableList<FirestoreRepository.PaymentMethodModel> = mutableListOf()
     private var currentBottomSheetView: View? = null
     private var tempQrisImageUri: Uri? = null
+    private var tempQrisDataUrl: String = ""
     private lateinit var qrisImagePickerLauncher: ActivityResultLauncher<String>
 
     private fun saveImageToInternalStorage(uri: Uri): String {
@@ -67,12 +71,21 @@ class PaymentMethodsActivity : AppCompatActivity() {
             if (uri != null) {
                 val permanentUriString = saveImageToInternalStorage(uri)
                 tempQrisImageUri = Uri.parse(permanentUriString)
+                tempQrisDataUrl = ""
+                qrisEncodeExecutor.execute {
+                    val encoded = SafeImageLoader.encodeImageUriToDataUrl(this, permanentUriString)
+                    runOnUiThread {
+                        if (!isFinishing && !isDestroyed) {
+                            tempQrisDataUrl = encoded
+                        }
+                    }
+                }
                 val ivPreview = currentBottomSheetView?.findViewById<ImageView>(R.id.ivQrisPreview)
                 val placeholder = currentBottomSheetView?.findViewById<View>(R.id.layoutQrisPlaceholder)
                 ivPreview?.setImageURI(tempQrisImageUri)
                 ivPreview?.visibility = View.VISIBLE
                 placeholder?.visibility = View.GONE
-                Toast.makeText(this, "Foto Barcode QRIS berhasil diunggah! ✓", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Foto Barcode QRIS berhasil diunggah", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -189,6 +202,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
                         putExtra("EXTRA_TYPE", selected.type)
                         putExtra("EXTRA_ACCOUNT_NUMBER", selected.accountNumber)
                         putExtra("EXTRA_OWNER_NAME", selected.accountOwner)
+                        putExtra("EXTRA_QRIS_DATA_URL", selected.qrisDataUrl)
                         putExtra("EXTRA_IS_MAIN", selected.isMain)
                     }
                     startActivity(intent)
@@ -362,6 +376,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_add_payment_method, null)
         currentBottomSheetView = bottomSheetView
         tempQrisImageUri = null
+        tempQrisDataUrl = ""
 
         val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
         dialog.setContentView(bottomSheetView)
@@ -393,7 +408,7 @@ class PaymentMethodsActivity : AppCompatActivity() {
             com.google.firebase.firestore.FirebaseFirestore.getInstance()
                 .collection("user").document(currentUser.uid)
                 .get().addOnSuccessListener { doc ->
-                    val name = doc.getString("name") ?: currentUser.displayName ?: "Marcello Aja"
+                    val name = doc.getString("name") ?: currentUser.displayName ?: ""
                     etOwnerName?.setText(name)
                 }
         }
@@ -502,26 +517,43 @@ class PaymentMethodsActivity : AppCompatActivity() {
                 else -> "E-Wallet"
             }
 
-            val newMethod = FirestoreRepository.PaymentMethodModel(
-                id = "pay_${System.currentTimeMillis()}",
-                type = calculatedType,
-                providerName = selectedProviderName,
-                accountNumber = finalAccNumber,
-                accountOwner = owner,
-                isMain = isMain
-            )
+            val commitSave: (String) -> Unit = { resolvedQrisDataUrl ->
+                val newMethod = FirestoreRepository.PaymentMethodModel(
+                    id = "pay_${System.currentTimeMillis()}",
+                    type = calculatedType,
+                    providerName = selectedProviderName,
+                    accountNumber = finalAccNumber,
+                    accountOwner = owner,
+                    qrisDataUrl = resolvedQrisDataUrl,
+                    isMain = isMain
+                )
 
-            Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Metode pembayaran '$selectedProviderName' berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
 
-            if (isMain) {
-                val updatedList = realPaymentMethodsList.map { it.copy(isMain = false) } + newMethod
-                FirestoreRepository.updateAllPaymentMethods(currentUserId, updatedList) {
-                    loadRealUserPaymentMethods()
+                if (isMain) {
+                    val updatedList = realPaymentMethodsList.map { it.copy(isMain = false) } + newMethod
+                    FirestoreRepository.updateAllPaymentMethods(currentUserId, updatedList) {
+                        loadRealUserPaymentMethods()
+                    }
+                } else {
+                    FirestoreRepository.saveUserPaymentMethod(currentUserId, newMethod) {
+                        loadRealUserPaymentMethods()
+                    }
+                }
+            }
+
+            if (isQris && tempQrisDataUrl.isBlank() && tempQrisImageUri != null) {
+                val uriStr = tempQrisImageUri.toString()
+                qrisEncodeExecutor.execute {
+                    val encoded = SafeImageLoader.encodeImageUriToDataUrl(this, uriStr)
+                    runOnUiThread {
+                        if (!isFinishing && !isDestroyed) {
+                            commitSave(encoded)
+                        }
+                    }
                 }
             } else {
-                FirestoreRepository.saveUserPaymentMethod(currentUserId, newMethod) {
-                    loadRealUserPaymentMethods()
-                }
+                commitSave(if (isQris) tempQrisDataUrl else "")
             }
         }
 

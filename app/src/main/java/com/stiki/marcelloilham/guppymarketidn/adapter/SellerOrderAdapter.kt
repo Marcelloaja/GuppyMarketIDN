@@ -53,9 +53,13 @@ class SellerOrderAdapter(
         val item = orders[position]
 
         holder.tvOrderNumber.text = item.id
-        holder.tvBuyerName.text = item.sellerName.ifEmpty { "Pembeli Guppy" }
+        holder.tvBuyerName.text = item.recipientName.ifBlank { "Pembeli" }
+        holder.tvBuyerCity.text = item.shippingAddress.takeIf { it.isNotBlank() }?.let {
+            if (it.contains(",")) it.split(",").takeLast(2).joinToString(",").trim() else it
+        } ?: "-"
         holder.tvProductName.text = item.productName
-        holder.tvProductVariant.text = "${item.quantity} pasang (${item.quantity * 2} ekor)"
+        val unitShort = item.unit.removePrefix("per ").trim().ifBlank { "pasang" }
+        holder.tvProductVariant.text = "${item.quantity} $unitShort"
 
         val formattedPrice = NumberFormat.getCurrencyInstance(Locale("in", "ID")).format(item.totalAmount).replace(",00", "").replace("Rp", "Rp ")
         holder.tvTotalPrice.text = formattedPrice

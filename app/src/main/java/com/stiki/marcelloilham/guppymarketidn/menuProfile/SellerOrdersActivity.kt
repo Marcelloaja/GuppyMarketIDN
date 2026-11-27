@@ -124,7 +124,8 @@ class SellerOrdersActivity : AppCompatActivity() {
     }
 
     private fun loadSellerOrders() {
-        FirestoreRepository.fetchUserOrders { orders ->
+        val currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: "user_default"
+        FirestoreRepository.fetchSellerOrders(currentUid) { orders ->
             allOrdersList = orders
 
             val countDikemas = orders.count { it.status.contains("Dikemas", true) || it.status.contains("Perlu", true) || it.status.contains("Menunggu", true) }

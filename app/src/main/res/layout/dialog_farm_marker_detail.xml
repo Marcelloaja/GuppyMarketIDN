@@ -62,7 +62,7 @@
                         android:id="@+id/tvDialogFarmName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Marcello Aja Farm"
+                        android:text="Guppy Farm"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
                         android:textSize="16sp"/>
@@ -89,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="⭐ 4.9 · Buka · Garansi sehat 24 jam"
+                    android:text="⭐ 0.0 · Buka · Garansi sehat 24 jam"
                     android:textColor="#2E7D32"
                     android:fontFamily="@font/inter_medium"
                     android:textSize="12sp"/>

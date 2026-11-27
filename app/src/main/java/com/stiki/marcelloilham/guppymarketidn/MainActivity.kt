@@ -1,31 +1,43 @@
 package com.stiki.marcelloilham.guppymarketidn
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.ui.AuctionFragment
 import com.stiki.marcelloilham.guppymarketidn.ui.Community
 import com.stiki.marcelloilham.guppymarketidn.ui.HomeFragment
 import com.stiki.marcelloilham.guppymarketidn.ui.Maps
 import com.stiki.marcelloilham.guppymarketidn.ui.Profile
+import com.stiki.marcelloilham.guppymarketidn.util.AuctionNotificationHelper
+import com.stiki.marcelloilham.guppymarketidn.util.ChatNotificationHelper
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navview: BottomNavigationView
     private var backPressedTime: Long = 0
     private var currentFragmentTag: String? = null
+
+    private val requestNotificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ -> }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +46,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         FirestoreRepository.seedInitialDataIfEmpty()
+        requestNotificationPermissionIfNeeded()
+        FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
+            ChatNotificationHelper.startListening(this, uid)
+            ChatNotificationHelper.syncFcmToken(uid)
+            AuctionNotificationHelper.startListening(this, uid)
+        }
 
         navview = findViewById(R.id.nav_view)
         val cardBottomNav = findViewById<View>(R.id.cardBottomNav)
@@ -125,6 +143,18 @@ class MainActivity : AppCompatActivity() {
         if (navigateToTab == "MAPS") {
             navview.selectedItemId = R.id.navigation_map
             replaceFragment(Maps(), "MapsFragment", false)
+        }
+    }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+            if (!granted) {
+                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
         }
     }
 

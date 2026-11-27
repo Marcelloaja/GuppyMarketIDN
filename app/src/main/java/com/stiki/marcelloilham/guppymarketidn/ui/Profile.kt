@@ -22,12 +22,14 @@ import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.menuProfile.MyOrdersActivity
 import com.stiki.marcelloilham.guppymarketidn.menuProfile.SellerOrdersActivity
 import com.stiki.marcelloilham.guppymarketidn.menuProfile.MenuProfile
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 
 class Profile : Fragment() {
 
     private lateinit var textName: TextView
     private lateinit var textDescription: TextView
     private var tvFarmTitle: TextView? = null
+    private var imgAvatarProfile: ImageView? = null
 
     private var tvAvgResponseTime: TextView? = null
     private var tvOnTimeDeliveryRate: TextView? = null
@@ -50,6 +52,7 @@ class Profile : Fragment() {
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
     private var userListenerRegistration: com.google.firebase.firestore.ListenerRegistration? = null
+    private var productsListenerRegistration: com.google.firebase.firestore.ListenerRegistration? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,6 +63,7 @@ class Profile : Fragment() {
         textName = view.findViewById(R.id.namaProfile)
         tvFarmTitle = view.findViewById(R.id.tvFarmTitle)
         textDescription = view.findViewById(R.id.descriptionProfile)
+        imgAvatarProfile = view.findViewById(R.id.imgAvatarProfile)
 
         tvAvgResponseTime = view.findViewById(R.id.tvAvgResponseTime)
         tvOnTimeDeliveryRate = view.findViewById(R.id.tvOnTimeDeliveryRate)
@@ -100,6 +104,13 @@ class Profile : Fragment() {
                 .setMessage("Apakah Anda yakin ingin keluar dari akun GuppyMarket?")
                 .setPositiveButton("Keluar") { _, _ ->
                     firebaseAuth.signOut()
+                    try {
+                        val gso = com.google.android.gms.auth.api.signin.GoogleSignInOptions.Builder(
+                            com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN
+                        ).build()
+                        com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(requireContext(), gso).signOut()
+                    } catch (_: Throwable) {
+                    }
                     val prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                     prefs.edit().clear().apply()
 
@@ -163,6 +174,17 @@ class Profile : Fragment() {
     override fun onStop() {
         super.onStop()
         userListenerRegistration?.remove()
+        productsListenerRegistration?.remove()
+        productsListenerRegistration = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        userListenerRegistration?.remove()
+        userListenerRegistration = null
+        productsListenerRegistration?.remove()
+        productsListenerRegistration = null
+        imgAvatarProfile = null
     }
 
     private fun initTabs(view: View) {
@@ -264,11 +286,40 @@ class Profile : Fragment() {
                     textDescription.text = description.ifEmpty { "Belum ada deskripsi farm toko. Ketuk 'Ubah Profil' untuk menambahkan." }
 
                     val avatarUriStr = document.getString("avatar_uri") ?: document.getString("photo_url")
-                    val imgAvatar = view?.findViewById<ImageView>(R.id.imgAvatarProfile)
-                    if (!avatarUriStr.isNullOrEmpty()) {
-                        try {
-                            imgAvatar?.setImageURI(android.net.Uri.parse(avatarUriStr))
-                        } catch (_: Exception) {}
+                    val avatarDataUrl = document.getString("avatar_data_url")
+                    val imgAvatar = imgAvatarProfile ?: view?.findViewById(R.id.imgAvatarProfile)
+                    val safeContext = context
+                    var validAvatarUri: String? = null
+                    if (imgAvatar != null && safeContext != null) {
+                        val localLoaded = SafeImageLoader.loadUriSafely(
+                            safeContext,
+                            imgAvatar,
+                            avatarUriStr,
+                            R.drawable.ic_default_user_avatar
+                        )
+                        if (localLoaded) {
+                            validAvatarUri = avatarUriStr
+                            if (avatarDataUrl.isNullOrBlank()) {
+                                val bmp = SafeImageLoader.decodeBitmapSafely(safeContext, avatarUriStr, 256)
+                                if (bmp != null) {
+                                    val encoded = SafeImageLoader.encodeBitmapToDataUrl(bmp, maxDimPx = 220, initialQuality = 62)
+                                    if (encoded.isNotBlank()) {
+                                        db.collection("user").document(firebaseUser.uid)
+                                            .update("avatar_data_url", encoded)
+                                    }
+                                }
+                            }
+                        } else if (!avatarDataUrl.isNullOrBlank()) {
+                            val cloudLoaded = SafeImageLoader.loadUriSafely(
+                                safeContext,
+                                imgAvatar,
+                                avatarDataUrl,
+                                R.drawable.ic_default_user_avatar
+                            )
+                            if (cloudLoaded) {
+                                validAvatarUri = avatarDataUrl
+                            }
+                        }
                     }
 
                     val formatter = java.text.NumberFormat.getCurrencyInstance(java.util.Locale("in", "ID"))
@@ -284,7 +335,7 @@ class Profile : Fragment() {
                     val followers = document.getLong("followers_count") ?: 0L
                     val totalSold = document.getLong("total_sold_count") ?: 0L
                     val totalReviews = document.getLong("total_reviews_count") ?: 0L
-                    val ratingVal = document.getDouble("average_rating") ?: 5.0
+                    val ratingVal = if (totalReviews > 0L) (document.getDouble("average_rating") ?: 0.0) else 0.0
 
                     tvSaldo?.text = formatter.format(activeBalance).replace("Rp", "Rp ").replace(",00", "")
                     tvTertahan?.text = "Dana tertahan ${formatter.format(pendingBalance).replace("Rp", "Rp ").replace(",00", "")} ($pendingOrdersCount pesanan dikirim)"
@@ -295,10 +346,10 @@ class Profile : Fragment() {
                     tvFollowers?.text = followers.toString()
                     tvSoldItems?.text = totalSold.toString()
                     tvReviewCountMain?.text = totalReviews.toString()
-                    tvRating?.text = ratingVal.toString()
+                    tvRating?.text = String.format(java.util.Locale.US, "%.1f", ratingVal)
                     tvReviewsLabel?.text = "dari $totalReviews ulasan"
 
-                    saveUserDataLocally(name, farmName, description)
+                    saveUserDataLocally(name, farmName, description, validAvatarUri)
                 } else if (isAdded) {
                     val fallbackName = firebaseUser.displayName
                         ?.ifEmpty { firebaseUser.email?.substringBefore("@") }
@@ -321,13 +372,16 @@ class Profile : Fragment() {
         }
     }
 
-    private fun saveUserDataLocally(name: String, farmName: String, description: String) {
+    private fun saveUserDataLocally(name: String, farmName: String, description: String, avatarUri: String? = null) {
         val safeContext = context ?: return
         val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         prefs.edit().apply {
             putString("name", name)
             putString("farm_name", farmName)
             putString("description", description)
+            if (!avatarUri.isNullOrEmpty()) {
+                putString("avatar_uri", avatarUri)
+            }
             apply()
         }
     }
@@ -338,6 +392,7 @@ class Profile : Fragment() {
         val savedName = prefs.getString("name", "")
         val savedFarmName = prefs.getString("farm_name", "")
         val savedDesc = prefs.getString("description", "")
+        val savedAvatarUri = prefs.getString("avatar_uri", null)
         val savedAddrSub = prefs.getString("address_sub", "")
         val savedCourierSub = prefs.getString("courier_sub", "")
         val savedPaymentSub = prefs.getString("payment_sub", "")
@@ -345,6 +400,9 @@ class Profile : Fragment() {
         if (!savedName.isNullOrEmpty()) textName.text = savedName
         if (!savedFarmName.isNullOrEmpty()) tvFarmTitle?.text = savedFarmName
         if (!savedDesc.isNullOrEmpty()) textDescription.text = savedDesc
+        imgAvatarProfile?.let { avatarView ->
+            SafeImageLoader.loadUriSafely(safeContext, avatarView, savedAvatarUri, R.drawable.ic_default_user_avatar)
+        }
 
         val tvAddrSub = view?.findViewById<TextView>(R.id.tvProfileAddressSub)
         val tvCourierSub = view?.findViewById<TextView>(R.id.tvProfileCourierSub)
@@ -467,7 +525,8 @@ class Profile : Fragment() {
     private fun loadUserProducts() {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
 
-        FirestoreRepository.fetchUserProducts(currentUserId) { products ->
+        productsListenerRegistration?.remove()
+        productsListenerRegistration = FirestoreRepository.listenUserProducts(currentUserId) { products ->
             if (isAdded && ::recyclerProfileProducts.isInitialized) {
                 val tvEmptyProducts = view?.findViewById<TextView>(R.id.tvEmptyProfileProducts)
                 if (products.isEmpty()) {
@@ -484,9 +543,8 @@ class Profile : Fragment() {
                         },
                         onDeleteClicked = { productToDelete ->
                             FirestoreRepository.deleteProduct(productToDelete.id) { success ->
-                                if (success) {
-                                    Toast.makeText(requireContext(), "Varian '${productToDelete.title}' Berhasil Dihapus", Toast.LENGTH_SHORT).show()
-                                    loadUserProducts()
+                                if (success && isAdded) {
+                                    Toast.makeText(requireContext(), "Varian '${productToDelete.title}' berhasil dihapus", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
@@ -508,10 +566,13 @@ class Profile : Fragment() {
             setTextColor(ContextCompat.getColor(safeContext, R.color.guppy_text_black))
             typeface = androidx.core.content.res.ResourcesCompat.getFont(safeContext, R.font.inter_bold)
         }
+        val currentNumeric = if (product.priceNumeric > 0L) product.priceNumeric else {
+            product.price.replace("Rp", "").replace(".", "").replace(",", "").replace(" ", "").trim().toLongOrNull() ?: 0L
+        }
         val etPrice = android.widget.EditText(safeContext).apply {
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
             hint = "misal: 150000"
-            setText(product.price.replace("Rp", "").replace(".", "").replace(" ", "").trim())
+            setText(if (currentNumeric > 0L) currentNumeric.toString() else "")
         }
 
         val tvStockLabel = TextView(safeContext).apply {
@@ -523,7 +584,7 @@ class Profile : Fragment() {
         val etStock = android.widget.EditText(safeContext).apply {
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
             hint = "misal: 10"
-            setText(product.sold)
+            setText(product.effectiveStock().toString())
         }
 
         layout.addView(tvPriceLabel)
@@ -538,13 +599,13 @@ class Profile : Fragment() {
                 val newPriceInput = etPrice.text.toString().trim()
                 val newStockInput = etStock.text.toString().trim()
 
-                val parsedPrice = newPriceInput.toLongOrNull() ?: 150000L
+                val parsedPrice = newPriceInput.toLongOrNull() ?: currentNumeric
+                val parsedStock = newStockInput.toIntOrNull()?.coerceAtLeast(0) ?: product.effectiveStock()
                 val formattedPrice = "Rp ${java.text.NumberFormat.getInstance(java.util.Locale("in", "ID")).format(parsedPrice)}"
 
-                FirestoreRepository.updateProductPriceAndStock(product.id, formattedPrice, newStockInput) { success ->
-                    if (success) {
-                        Toast.makeText(safeContext, "Stok & Harga ${product.title} Berhasil Diperbarui!", Toast.LENGTH_SHORT).show()
-                        loadUserProducts()
+                FirestoreRepository.updateProductPriceAndStock(product.id, formattedPrice, parsedPrice, parsedStock) { success ->
+                    if (success && isAdded) {
+                        Toast.makeText(safeContext, "Stok dan harga ${product.title} diperbarui.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

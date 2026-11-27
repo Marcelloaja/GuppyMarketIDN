@@ -12,17 +12,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import com.google.firebase.auth.FirebaseAuth
 import com.stiki.marcelloilham.guppymarketidn.R
+import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
+import com.google.android.material.imageview.ShapeableImageView
 
 class KeranjangHome : AppCompatActivity() {
 
-    private var qty1: Int = 2
-    private val price1: Long = 275000L
-    private var hasItem1: Boolean = true
+    private var cartItems: MutableList<FirestoreRepository.CartItemModel> = mutableListOf()
+    private var qty1: Int = 1
+    private var price1: Long = 0L
+    private var hasItem1: Boolean = false
 
     private var qty2: Int = 1
-    private val price2: Long = 137500L
-    private var hasItem2: Boolean = true
+    private var price2: Long = 0L
+    private var hasItem2: Boolean = false
 
     private lateinit var cbSelectAll: CheckBox
     private lateinit var cbItem1: CheckBox
@@ -49,6 +54,25 @@ class KeranjangHome : AppCompatActivity() {
     private lateinit var tvTotalHarga: TextView
     private lateinit var tvTotalSubtext: TextView
 
+    private lateinit var tvCartSellerInitials: TextView
+    private lateinit var tvCartSellerName: TextView
+    private lateinit var tvCartSellerLocation: TextView
+
+    private lateinit var ivCartItem1: ShapeableImageView
+    private lateinit var tvCartTitle1: TextView
+    private lateinit var tvCartMeta1: TextView
+    private lateinit var tvCartBadge1: TextView
+    private lateinit var tvCartPrice1: TextView
+    private lateinit var tvCartUnit1: TextView
+    private lateinit var tvCartEquiv1: TextView
+
+    private lateinit var ivCartItem2: ShapeableImageView
+    private lateinit var tvCartTitle2: TextView
+    private lateinit var tvCartMeta2: TextView
+    private lateinit var tvCartBadge2: TextView
+    private lateinit var tvCartPrice2: TextView
+    private lateinit var tvCartUnit2: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_keranjang)
@@ -72,6 +96,104 @@ class KeranjangHome : AppCompatActivity() {
         setupCheckoutButton()
 
         updateCalculations()
+        loadRealCartFromFirestore()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadRealCartFromFirestore()
+    }
+
+    private fun loadRealCartFromFirestore() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid.isNullOrBlank()) {
+            cartItems.clear()
+            hasItem1 = false
+            hasItem2 = false
+            updateCalculations()
+            return
+        }
+        FirestoreRepository.fetchCartItems(uid) { list ->
+            if (isFinishing || isDestroyed) return@fetchCartItems
+            cartItems = list.toMutableList()
+            hasItem1 = cartItems.isNotEmpty()
+            hasItem2 = cartItems.size >= 2
+            if (hasItem1) {
+                val item1 = cartItems[0]
+                qty1 = item1.quantity.coerceAtLeast(1)
+                price1 = item1.unitPrice
+                val sellerDisplay = item1.sellerName.ifBlank { "Peternak" }
+                tvCartSellerName.text = sellerDisplay
+                tvCartSellerInitials.text = buildInitials(sellerDisplay)
+                tvCartSellerLocation.text = item1.sellerLocation.ifBlank { "Indonesia" }
+                bindCartSlot(
+                    item1,
+                    ivCartItem1,
+                    tvCartTitle1,
+                    tvCartMeta1,
+                    tvCartBadge1,
+                    tvCartPrice1,
+                    tvCartUnit1
+                )
+                layoutItem1.visibility = View.VISIBLE
+            } else {
+                layoutItem1.visibility = View.GONE
+            }
+            if (hasItem2) {
+                val item2 = cartItems[1]
+                qty2 = item2.quantity.coerceAtLeast(1)
+                price2 = item2.unitPrice
+                bindCartSlot(
+                    item2,
+                    ivCartItem2,
+                    tvCartTitle2,
+                    tvCartMeta2,
+                    tvCartBadge2,
+                    tvCartPrice2,
+                    tvCartUnit2
+                )
+                layoutItem2.visibility = View.VISIBLE
+                dividerItem1.visibility = View.VISIBLE
+            } else {
+                layoutItem2.visibility = View.GONE
+                dividerItem1.visibility = View.GONE
+            }
+            updateCalculations()
+        }
+    }
+
+    private fun bindCartSlot(
+        item: FirestoreRepository.CartItemModel,
+        ivPhoto: ShapeableImageView,
+        tvTitle: TextView,
+        tvMeta: TextView,
+        tvBadge: TextView,
+        tvPrice: TextView,
+        tvUnit: TextView
+    ) {
+        SafeImageLoader.loadWithFallbackSafely(
+            this,
+            ivPhoto,
+            item.imageUrl,
+            item.imageDataUrl,
+            item.imageRes
+        )
+        tvTitle.text = item.title.ifBlank { "Produk" }
+        val metaParts = listOf(item.category, item.strain).filter { it.isNotBlank() && it != "Semua" }
+        tvMeta.text = if (metaParts.isNotEmpty()) metaParts.joinToString(" · ") else item.sellerName.ifBlank { "Guppy" }
+        tvBadge.text = if (item.stock > 0) "STOK ${item.stock}" else "PRE-ORDER"
+        tvPrice.text = formatCurrency(item.unitPrice)
+        val normalizedUnit = item.unit.removePrefix("per ").trim().ifBlank { "pasang" }
+        tvUnit.text = "/ $normalizedUnit"
+    }
+
+    private fun buildInitials(name: String): String {
+        val parts = name.trim().split(Regex("\\s+")).filter { it.isNotBlank() }
+        return when {
+            parts.size >= 2 -> "${parts[0].first().uppercaseChar()}${parts[1].first().uppercaseChar()}"
+            parts.isNotEmpty() -> parts[0].take(2).uppercase()
+            else -> "GM"
+        }
     }
 
     private fun initViews() {
@@ -99,6 +221,25 @@ class KeranjangHome : AppCompatActivity() {
         tvTotalSummaryAmount = findViewById(R.id.tvTotalSummaryAmount)
         tvTotalHarga = findViewById(R.id.tvTotalHarga)
         tvTotalSubtext = findViewById(R.id.tvTotalSubtext)
+
+        tvCartSellerInitials = findViewById(R.id.tvCartSellerInitials)
+        tvCartSellerName = findViewById(R.id.tvCartSellerName)
+        tvCartSellerLocation = findViewById(R.id.tvCartSellerLocation)
+
+        ivCartItem1 = findViewById(R.id.ivCartItem1)
+        tvCartTitle1 = findViewById(R.id.tvCartTitle1)
+        tvCartMeta1 = findViewById(R.id.tvCartMeta1)
+        tvCartBadge1 = findViewById(R.id.tvCartBadge1)
+        tvCartPrice1 = findViewById(R.id.tvCartPrice1)
+        tvCartUnit1 = findViewById(R.id.tvCartUnit1)
+        tvCartEquiv1 = findViewById(R.id.tvCartEquiv1)
+
+        ivCartItem2 = findViewById(R.id.ivCartItem2)
+        tvCartTitle2 = findViewById(R.id.tvCartTitle2)
+        tvCartMeta2 = findViewById(R.id.tvCartMeta2)
+        tvCartBadge2 = findViewById(R.id.tvCartBadge2)
+        tvCartPrice2 = findViewById(R.id.tvCartPrice2)
+        tvCartUnit2 = findViewById(R.id.tvCartUnit2)
     }
 
     private fun setupCheckboxes() {
@@ -122,25 +263,48 @@ class KeranjangHome : AppCompatActivity() {
         btnMin1?.setOnClickListener {
             if (qty1 > 1) {
                 qty1--
+                syncCartQuantityToFirestore(0, qty1)
                 updateCalculations()
             }
         }
 
         btnPlus1?.setOnClickListener {
-            qty1++
-            updateCalculations()
+            val maxStock = cartItems.getOrNull(0)?.stock ?: Int.MAX_VALUE
+            if (maxStock <= 0 || qty1 < maxStock) {
+                qty1++
+                syncCartQuantityToFirestore(0, qty1)
+                updateCalculations()
+            } else {
+                Toast.makeText(this, "Stok maksimal tersedia $maxStock", Toast.LENGTH_SHORT).show()
+            }
         }
 
         btnMin2?.setOnClickListener {
             if (qty2 > 1) {
                 qty2--
+                syncCartQuantityToFirestore(1, qty2)
                 updateCalculations()
             }
         }
 
         btnPlus2?.setOnClickListener {
-            qty2++
-            updateCalculations()
+            val maxStock = cartItems.getOrNull(1)?.stock ?: Int.MAX_VALUE
+            if (maxStock <= 0 || qty2 < maxStock) {
+                qty2++
+                syncCartQuantityToFirestore(1, qty2)
+                updateCalculations()
+            } else {
+                Toast.makeText(this, "Stok maksimal tersedia $maxStock", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun syncCartQuantityToFirestore(index: Int, newQty: Int) {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+        val item = cartItems.getOrNull(index) ?: return
+        cartItems[index] = item.copy(quantity = newQty)
+        if (uid.isNotBlank() && item.id.isNotBlank()) {
+            FirestoreRepository.updateCartItemQuantity(uid, item.id, newQty)
         }
     }
 
@@ -151,7 +315,12 @@ class KeranjangHome : AppCompatActivity() {
 
         // Single Item 1 Delete
         btnDelete1?.setOnClickListener {
-            showSingleDeleteDialog("Red Dragon Delta") {
+            val itemName = cartItems.getOrNull(0)?.title ?: "item ini"
+            showSingleDeleteDialog(itemName) {
+                val uid = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+                cartItems.getOrNull(0)?.id?.let { id ->
+                    if (uid.isNotBlank()) FirestoreRepository.deleteCartItems(uid, listOf(id)) {}
+                }
                 hasItem1 = false
                 layoutItem1.visibility = View.GONE
                 dividerItem1.visibility = View.GONE
@@ -161,7 +330,12 @@ class KeranjangHome : AppCompatActivity() {
 
         // Single Item 2 Delete
         btnDelete2?.setOnClickListener {
-            showSingleDeleteDialog("Half Moon Plakat") {
+            val itemName = cartItems.getOrNull(1)?.title ?: "item ini"
+            showSingleDeleteDialog(itemName) {
+                val uid = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+                cartItems.getOrNull(1)?.id?.let { id ->
+                    if (uid.isNotBlank()) FirestoreRepository.deleteCartItems(uid, listOf(id)) {}
+                }
                 hasItem2 = false
                 layoutItem2.visibility = View.GONE
                 dividerItem1.visibility = View.GONE
@@ -172,8 +346,19 @@ class KeranjangHome : AppCompatActivity() {
         // Batch Selected Delete
         btnDeleteSelected?.setOnClickListener {
             val itemsToDelete = mutableListOf<String>()
-            if (hasItem1 && cbItem1.isChecked) itemsToDelete.add("Red Dragon Delta")
-            if (hasItem2 && cbItem2.isChecked) itemsToDelete.add("Half Moon Plakat")
+            val idsToDelete = mutableListOf<String>()
+            if (hasItem1 && cbItem1.isChecked) {
+                cartItems.getOrNull(0)?.let {
+                    itemsToDelete.add(it.title)
+                    idsToDelete.add(it.id)
+                }
+            }
+            if (hasItem2 && cbItem2.isChecked) {
+                cartItems.getOrNull(1)?.let {
+                    itemsToDelete.add(it.title)
+                    idsToDelete.add(it.id)
+                }
+            }
 
             if (itemsToDelete.isEmpty()) {
                 Toast.makeText(this, "Pilih setidaknya 1 item untuk dihapus", Toast.LENGTH_SHORT).show()
@@ -181,6 +366,10 @@ class KeranjangHome : AppCompatActivity() {
             }
 
             showBatchDeleteDialog(itemsToDelete) {
+                val uid = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+                if (uid.isNotBlank() && idsToDelete.isNotEmpty()) {
+                    FirestoreRepository.deleteCartItems(uid, idsToDelete) {}
+                }
                 if (hasItem1 && cbItem1.isChecked) {
                     hasItem1 = false
                     layoutItem1.visibility = View.GONE
@@ -260,6 +449,10 @@ class KeranjangHome : AppCompatActivity() {
         tvQty1.text = qty1.toString()
         tvQty2.text = qty2.toString()
 
+        val unit1 = cartItems.getOrNull(0)?.unit?.removePrefix("per ")?.trim().orEmpty().ifBlank { "pasang" }
+        val unit2 = cartItems.getOrNull(1)?.unit?.removePrefix("per ")?.trim().orEmpty().ifBlank { "pasang" }
+        tvCartEquiv1.text = "$qty1 $unit1"
+
         tvSelectedCount.text = "$selectedItemCount item dipilih"
 
         val activeCount = (if (hasItem1) 1 else 0) + (if (hasItem2) 1 else 0)
@@ -267,21 +460,56 @@ class KeranjangHome : AppCompatActivity() {
 
         cbSelectAll.isChecked = (activeCount > 0 && selectedActiveCount == activeCount)
 
-        val totalPairs = (if (hasItem1 && cbItem1.isChecked) qty1 else 0) + (if (hasItem2 && cbItem2.isChecked) qty2 else 0)
-        val totalEkor = (if (hasItem1 && cbItem1.isChecked) qty1 * 2 else 0) + (if (hasItem2 && cbItem2.isChecked) qty2 else 0)
+        val totalQty = (if (hasItem1 && cbItem1.isChecked) qty1 else 0) + (if (hasItem2 && cbItem2.isChecked) qty2 else 0)
+        val totalEkor = (if (hasItem1 && cbItem1.isChecked) qty1 * fishCountPerUnit(unit1) else 0) +
+            (if (hasItem2 && cbItem2.isChecked) qty2 * fishCountPerUnit(unit2) else 0)
 
         tvSubtotalItemLabel.text = "Subtotal ($selectedItemCount item)"
         tvSubtotalAmount.text = formatCurrency(totalAmount)
         tvTotalSummaryAmount.text = formatCurrency(totalAmount)
 
         tvTotalHarga.text = formatCurrency(totalAmount)
-        tvTotalSubtext.text = "$totalPairs pasang · $totalEkor ekor"
+        tvTotalSubtext.text = "$totalQty unit · $totalEkor ekor"
+    }
+
+    private fun fishCountPerUnit(unitLabel: String): Int {
+        val lower = unitLabel.lowercase()
+        return when {
+            lower.contains("trio") -> 3
+            lower.contains("pasang") -> 2
+            else -> 1
+        }
     }
 
     private fun setupCheckoutButton() {
         val btnCheckout = findViewById<TextView>(R.id.btnCheckout)
         btnCheckout?.setOnClickListener {
-            val intent = Intent(this, CheckoutActivity::class.java)
+            val selectedCart = when {
+                hasItem1 && cbItem1.isChecked -> cartItems.getOrNull(0)?.copy(quantity = qty1)
+                hasItem2 && cbItem2.isChecked -> cartItems.getOrNull(1)?.copy(quantity = qty2)
+                else -> null
+            }
+            if (selectedCart == null) {
+                Toast.makeText(this, "Pilih minimal 1 produk untuk checkout.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val intent = Intent(this, CheckoutActivity::class.java).apply {
+                putExtra("EXTRA_PRODUCT_ID", selectedCart.productId)
+                putExtra("EXTRA_SELLER_ID", selectedCart.sellerId)
+                putExtra("EXTRA_PRODUCT_NAME", selectedCart.title)
+                putExtra("EXTRA_UNIT_PRICE", selectedCart.unitPrice)
+                putExtra("EXTRA_UNIT_LABEL", selectedCart.unit)
+                putExtra("EXTRA_QUANTITY", selectedCart.quantity)
+                putExtra("EXTRA_STOCK", selectedCart.stock)
+                putExtra("EXTRA_CATEGORY", selectedCart.category)
+                putExtra("EXTRA_STRAIN", selectedCart.strain)
+                putExtra("EXTRA_IMAGE_URL", selectedCart.imageUrl)
+                putExtra("EXTRA_IMAGE_DATA_URL", selectedCart.imageDataUrl)
+                putExtra("EXTRA_IMAGE_RES", selectedCart.imageRes)
+                putExtra("EXTRA_SELLER_NAME", selectedCart.sellerName)
+                putExtra("EXTRA_SELLER_LOCATION", selectedCart.sellerLocation)
+                putStringArrayListExtra("EXTRA_CART_ITEM_IDS", arrayListOf(selectedCart.id))
+            }
             startActivity(intent)
         }
     }

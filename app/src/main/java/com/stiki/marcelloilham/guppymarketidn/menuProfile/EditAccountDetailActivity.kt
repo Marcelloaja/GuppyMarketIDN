@@ -22,6 +22,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 
 class EditAccountDetailActivity : AppCompatActivity() {
 
@@ -36,7 +37,7 @@ class EditAccountDetailActivity : AppCompatActivity() {
     private var methodId: String = ""
     private var providerName: String = "BCA"
     private var accountNumber: String = ""
-    private var accountOwner: String = "Marcello Aja"
+    private var accountOwner: String = ""
     private var methodType: String = "Bank"
     private var isMain: Boolean = false
 
@@ -51,7 +52,9 @@ class EditAccountDetailActivity : AppCompatActivity() {
             if (uri != null) {
                 tempQrisImageUri = saveImageToInternalStorage(uri)
                 val ivPreview = findViewById<ImageView>(R.id.ivEditQrisPreview)
-                ivPreview?.setImageURI(tempQrisImageUri)
+                if (ivPreview != null) {
+                    SafeImageLoader.loadUriSafely(this, ivPreview, tempQrisImageUri?.toString(), R.drawable.ic_qris, 1024)
+                }
                 Toast.makeText(this, "Foto Barcode QRIS diperbarui!", Toast.LENGTH_SHORT).show()
             }
         }
@@ -106,7 +109,7 @@ class EditAccountDetailActivity : AppCompatActivity() {
         providerName = intent.getStringExtra("EXTRA_PROVIDER_NAME") ?: "BCA"
         val passedType = intent.getStringExtra("EXTRA_TYPE") ?: ""
         accountNumber = intent.getStringExtra("EXTRA_ACCOUNT_NUMBER") ?: ""
-        accountOwner = intent.getStringExtra("EXTRA_OWNER_NAME") ?: "Marcello Aja"
+        accountOwner = intent.getStringExtra("EXTRA_OWNER_NAME") ?: ""
         isMain = intent.getBooleanExtra("EXTRA_IS_MAIN", false)
 
         val isQrisCheck = providerName.contains("QRIS", true) || passedType.equals("QRIS", true)
@@ -164,12 +167,8 @@ class EditAccountDetailActivity : AppCompatActivity() {
             layoutQris?.visibility = View.VISIBLE
 
             val ivPreview = findViewById<ImageView>(R.id.ivEditQrisPreview)
-            if (accountNumber.startsWith("content://") || accountNumber.startsWith("file://") || accountNumber.startsWith("/")) {
-                try {
-                    ivPreview?.setImageURI(Uri.parse(accountNumber))
-                } catch (_: Exception) {
-                    ivPreview?.setImageResource(R.drawable.ic_qris)
-                }
+            if (ivPreview != null && (accountNumber.startsWith("content://") || accountNumber.startsWith("file://") || accountNumber.startsWith("/"))) {
+                SafeImageLoader.loadUriSafely(this, ivPreview, accountNumber, R.drawable.ic_qris, 1024)
             }
         } else if (isEWallet) {
             tvHeaderTitle?.text = "Ubah Data E-Wallet"

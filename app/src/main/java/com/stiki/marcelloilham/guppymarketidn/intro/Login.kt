@@ -4,19 +4,19 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.JsonToken
-import android.util.Log
 import android.util.Patterns
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,6 +24,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.stiki.marcelloilham.guppymarketidn.MainActivity
 import com.stiki.marcelloilham.guppymarketidn.R
 
@@ -47,6 +49,51 @@ class Login : AppCompatActivity() {
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val prefs by lazy { getSharedPreferences("login_prefs", Context.MODE_PRIVATE) }
     private val userprefs by lazy { getSharedPreferences("user_prefs", Context.MODE_PRIVATE) }
+    private val loginTimeoutHandler = Handler(Looper.getMainLooper())
+    private var isGoogleAuthInProgress = false
+    private val loginTimeoutRunnable = Runnable {
+        if (!isFinishing && !isDestroyed && progressDialog.isShowing) {
+            isGoogleAuthInProgress = false
+            dismissProgressSafely()
+            Toast.makeText(this, "Waktu login habis, periksa koneksi internet Anda.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private val googleSignInLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.data == null && result.resultCode == RESULT_CANCELED) {
+            isGoogleAuthInProgress = false
+            dismissProgressSafely()
+            return@registerForActivityResult
+        }
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.getResult(ApiException::class.java)
+            val idToken = account?.idToken
+            if (idToken.isNullOrBlank()) {
+                isGoogleAuthInProgress = false
+                dismissProgressSafely()
+                Toast.makeText(
+                    this,
+                    "Token Google tidak ditemukan. Pastikan Play Services aktif & konfigurasi SHA-1 sesuai.",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@registerForActivityResult
+            }
+            firebaseAuthWithGoogle(idToken, account.displayName, account.email)
+        } catch (e: ApiException) {
+            isGoogleAuthInProgress = false
+            dismissProgressSafely()
+            if (e.statusCode != 12501) { // 12501 = user cancelled account picker
+                Toast.makeText(this, "Login Google gagal (kode ${e.statusCode}): ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            isGoogleAuthInProgress = false
+            dismissProgressSafely()
+            Toast.makeText(this, "Login Google gagal: ${e.localizedMessage}", LENGTH_SHORT).show()
+        }
+    }
 
     override fun onStart() {
         super.onStart()
@@ -75,6 +122,7 @@ class Login : AppCompatActivity() {
         progressDialog = ProgressDialog(this).apply {
             setTitle("Logging")
             setMessage("Please wait...")
+            setCancelable(false)
         }
 
         loadLoginData()
@@ -96,8 +144,12 @@ class Login : AppCompatActivity() {
         }
 
         btnGoogle.setOnClickListener {
-            val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+            if (isGoogleAuthInProgress) return@setOnClickListener
+            isGoogleAuthInProgress = true
+            googleSignInClient.signOut().addOnCompleteListener {
+                if (isFinishing || isDestroyed) return@addOnCompleteListener
+                googleSignInLauncher.launch(googleSignInClient.signInIntent)
+            }
         }
 
         btnBackLogin.setOnClickListener {
@@ -181,8 +233,34 @@ class Login : AppCompatActivity() {
             }
     }
 
+    private fun showProgressSafely() {
+        if (!isFinishing && !isDestroyed) {
+            if (!progressDialog.isShowing) {
+                progressDialog.show()
+            }
+            loginTimeoutHandler.removeCallbacks(loginTimeoutRunnable)
+            loginTimeoutHandler.postDelayed(loginTimeoutRunnable, 15_000L)
+        }
+    }
+
+    private fun dismissProgressSafely() {
+        loginTimeoutHandler.removeCallbacks(loginTimeoutRunnable)
+        try {
+            if (progressDialog.isShowing) {
+                progressDialog.dismiss()
+            }
+        } catch (_: Throwable) {
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dismissProgressSafely()
+    }
+
     private fun navigateToHome() {
-        progressDialog.dismiss()
+        isGoogleAuthInProgress = false
+        dismissProgressSafely()
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("navigate_to", "HomeFragment")
         startActivity(intent)
@@ -208,33 +286,23 @@ class Login : AppCompatActivity() {
         prefs.edit().clear().apply()
     }
 
-    // LOGIN WITH GOOGLE
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == RC_SIGN_IN) {
-            //Menangani Proses Login Google
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Jika berhasil
-                val account = task.getResult(ApiException::class.java)
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                e.printStackTrace()
-                Toast.makeText(applicationContext, e.localizedMessage, LENGTH_SHORT).show()
-            }
-        }
-    }
-    fun firebaseAuthWithGoogle(idToken: String) {
-        progressDialog.show()
+    fun firebaseAuthWithGoogle(
+        idToken: String,
+        googleDisplayName: String? = null,
+        googleEmail: String? = null
+    ) {
+        showProgressSafely()
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth.signInWithCredential(credential)
-            .addOnSuccessListener {
-//                val user = firebaseAuth.currentUser
+            .addOnSuccessListener { authResult ->
+                val fbUser = authResult.user ?: firebaseAuth.currentUser
                 val account = GoogleSignIn.getLastSignedInAccount(this)
-                val displayName = account?.displayName
-                val email = account?.email
+                val displayName = googleDisplayName?.takeIf { it.isNotBlank() }
+                    ?: account?.displayName?.takeIf { it.isNotBlank() }
+                    ?: fbUser?.displayName?.takeIf { it.isNotBlank() }
+                    ?: (googleEmail ?: fbUser?.email)?.substringBefore("@")
+                    ?: "Pengguna Guppy"
+                val email = googleEmail ?: account?.email ?: fbUser?.email ?: ""
 
                 userprefs.edit().apply {
                     putString("name", displayName)
@@ -242,16 +310,37 @@ class Login : AppCompatActivity() {
                     apply()
                 }
 
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("navigate_to", "HomeFragment")
-                startActivity(intent)
-                finish()
+                val uid = fbUser?.uid
+                if (!uid.isNullOrBlank()) {
+                    val userRef = FirebaseFirestore.getInstance().collection("user").document(uid)
+                    userRef.get()
+                        .addOnSuccessListener { doc ->
+                            if (!doc.exists()) {
+                                val initialData = hashMapOf<String, Any>(
+                                    "name" to displayName,
+                                    "farm_name" to "$displayName Farm",
+                                    "email" to email,
+                                    "createdAt" to System.currentTimeMillis()
+                                )
+                                userRef.set(initialData, SetOptions.merge())
+                            }
+                            navigateToHome()
+                        }
+                        .addOnFailureListener {
+                            navigateToHome()
+                        }
+                } else {
+                    navigateToHome()
+                }
             }
             .addOnFailureListener { error ->
-                Toast.makeText(this, error.localizedMessage, LENGTH_SHORT).show()
+                isGoogleAuthInProgress = false
+                dismissProgressSafely()
+                Toast.makeText(this, "Login Google gagal: ${error.localizedMessage}", LENGTH_SHORT).show()
             }
-            .addOnCompleteListener {
-                progressDialog.dismiss()
+            .addOnCanceledListener {
+                isGoogleAuthInProgress = false
+                dismissProgressSafely()
             }
     }
 }

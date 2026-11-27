@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 
 class CategoryProductAdapter(
     private val context: Context,
@@ -17,13 +18,18 @@ class CategoryProductAdapter(
 ) : RecyclerView.Adapter<CategoryProductAdapter.ViewHolder>() {
 
     data class CategoryProduct(
+        val id: String = "",
+        val sellerId: String = "",
         val title: String,
         val seller: String,
         val price: String,
         val unit: String,
         val sold: String,
         val imageRes: Int,
-        val strain: String = "Semua"
+        val strain: String = "Semua",
+        val imageUrl: String = "",
+        val photoDataUrl: String = "",
+        val priceNumeric: Long = 0L
     )
 
     private var filteredList: List<CategoryProduct> = productList
@@ -44,7 +50,15 @@ class CategoryProductAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val product = filteredList[position]
-        holder.imgProduct.setImageResource(product.imageRes)
+        val fallback = if (product.imageRes != 0) product.imageRes else R.drawable.bg_image_grid
+        SafeImageLoader.loadWithFallbackSafely(
+            context,
+            holder.imgProduct,
+            product.imageUrl,
+            product.photoDataUrl,
+            fallback,
+            360
+        )
         holder.tvName.text = product.title
         holder.tvSeller.text = product.seller
         holder.tvPrice.text = product.price
@@ -53,8 +67,10 @@ class CategoryProductAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DetailActivity::class.java).apply {
+                putExtra("EXTRA_PRODUCT_ID", product.id)
+                putExtra("EXTRA_SELLER_ID", product.sellerId)
                 putExtra("ITEM_NAME", product.title)
-                putExtra("ITEM_IMAGE", product.imageRes)
+                putExtra("ITEM_IMAGE", fallback)
             }
             context.startActivity(intent)
         }

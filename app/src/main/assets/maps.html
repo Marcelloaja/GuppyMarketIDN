@@ -114,9 +114,16 @@
         </svg>`;
 
         const farmElementsMap = {};
+        let farmMarkersList = [];
+
+        function clearFarmMarkers() {
+            farmMarkersList.forEach(m => m.remove());
+            farmMarkersList = [];
+            Object.keys(farmElementsMap).forEach(k => delete farmElementsMap[k]);
+        }
 
         function addRealFarmMarker(id, name, lat, lng) {
-            if (!id || !lat || !lng) return;
+            if (!id || !lat || !lng || isNaN(lat) || isNaN(lng)) return;
             const fEl = document.createElement('div');
             fEl.className = 'pin-marker';
             fEl.innerHTML = greenPinSvg;
@@ -126,11 +133,30 @@
                     window.AndroidBridge.onFarmMarkerClicked(id, name, lat, lng);
                 }
             });
-            new maplibregl.Marker({ element: fEl, anchor: 'bottom' })
+            const marker = new maplibregl.Marker({ element: fEl, anchor: 'bottom' })
                 .setLngLat([lng, lat])
                 .addTo(map);
 
+            farmMarkersList.push(marker);
             farmElementsMap[id] = fEl;
+        }
+
+        function setRouteTargetCoords(id, name, lat, lng) {
+            if (!lat || !lng || isNaN(lat) || isNaN(lng)) return;
+            activeDestLng = lng;
+            activeDestLat = lat;
+            Object.keys(farmElementsMap).forEach(key => {
+                const el = farmElementsMap[key];
+                if (el) {
+                    if (key === id) {
+                        el.innerHTML = greenPinSvg;
+                        el.classList.add('active-pin');
+                    } else {
+                        el.innerHTML = redPinSvg;
+                        el.classList.remove('active-pin');
+                    }
+                }
+            });
         }
 
         function focusFarmByCoords(name, lat, lng) {
@@ -229,32 +255,16 @@
 
         function focusFarmByName(name) {
             if (!name) return;
-            let targetLng = 106.8685;
-            let targetLat = -6.2215;
-            let selectedKey = "finfantasy";
-
-            if (name.toLowerCase().includes('jakarta')) {
-                targetLng = 106.8060;
-                targetLat = -6.2921;
-                selectedKey = "jakarta";
-            } else if (name.toLowerCase().includes('bekasi')) {
-                targetLng = 106.9896;
-                targetLat = -6.2383;
-                selectedKey = "bekasi";
-            } else if (name.toLowerCase().includes('fin') || name.toLowerCase().includes('fantasy')) {
-                targetLng = 106.8685;
-                targetLat = -6.2215;
-                selectedKey = "finfantasy";
-            }
-
-            activeDestLng = targetLng;
-            activeDestLat = targetLat;
+            const targetKey = Object.keys(farmElementsMap).find(k =>
+                k.toLowerCase().includes(name.toLowerCase())
+            ) || "";
+            if (!targetKey) return;
 
             // Highlight selected pin green, reset others to red pin
             Object.keys(farmElementsMap).forEach(key => {
                 const el = farmElementsMap[key];
                 if (el) {
-                    if (key === selectedKey) {
+                    if (key === targetKey) {
                         el.innerHTML = greenPinSvg;
                         el.classList.add('active-pin');
                     } else {

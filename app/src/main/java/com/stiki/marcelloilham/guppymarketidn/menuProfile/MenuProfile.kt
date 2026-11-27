@@ -17,11 +17,20 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 import com.stiki.marcelloilham.guppymarketidn.intro.Login
+import com.stiki.marcelloilham.guppymarketidn.util.AuctionNotificationHelper
+import com.stiki.marcelloilham.guppymarketidn.util.ChatNotificationHelper
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 
 class MenuProfile : AppCompatActivity() {
 
@@ -44,17 +53,62 @@ class MenuProfile : AppCompatActivity() {
     private lateinit var imgEditAvatar: com.google.android.material.imageview.ShapeableImageView
 
     private var selectedPhotoUri: android.net.Uri? = null
+    private var pendingDeleteDialog: AlertDialog? = null
+    private var pendingDeleteConfirmInput: EditText? = null
+    private var hasJustReauthenticated = false
+    private val reauthGoogleLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val user = firebaseAuth.currentUser
+        if (user == null) {
+            dismissPendingDeleteDialog()
+            finalizeLocalAccountCleanupAndExit(null)
+            return@registerForActivityResult
+        }
+        try {
+            val account = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                .getResult(ApiException::class.java)
+            val idToken = account?.idToken
+            if (idToken.isNullOrBlank()) {
+                resetDeleteDialogButtons()
+                Toast.makeText(this, "Verifikasi Google dibatalkan.", Toast.LENGTH_SHORT).show()
+                return@registerForActivityResult
+            }
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            user.reauthenticate(credential)
+                .addOnSuccessListener {
+                    hasJustReauthenticated = true
+                    performAuthAndDbDelete(user)
+                }
+                .addOnFailureListener { e ->
+                    resetDeleteDialogButtons()
+                    Toast.makeText(this, "Verifikasi ulang gagal: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                }
+        } catch (e: ApiException) {
+            resetDeleteDialogButtons()
+            if (e.statusCode != 12501) {
+                Toast.makeText(this, "Verifikasi Google gagal: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            resetDeleteDialogButtons()
+            Toast.makeText(this, "Verifikasi Google gagal: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+        }
+    }
     private val photoPickerLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
-            selectedPhotoUri = uri
-            try {
-                if (::imgEditAvatar.isInitialized) {
-                    imgEditAvatar.setImageURI(uri)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            val uid = firebaseAuth.currentUser?.uid ?: "user"
+            val pendingFileName = "avatar_pending_$uid.jpg"
+            val copiedUri = SafeImageLoader.copyUriToInternalStorage(this, uri, pendingFileName)
+            selectedPhotoUri = copiedUri ?: uri
+            if (::imgEditAvatar.isInitialized) {
+                SafeImageLoader.loadUriSafely(
+                    this,
+                    imgEditAvatar,
+                    selectedPhotoUri.toString(),
+                    R.drawable.ic_default_user_avatar
+                )
             }
-            Toast.makeText(this, "Foto profil dipilih. Klik 'Simpan Profil' untuk menyimpan.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Foto profil dipilih. Klik 'Simpan perubahan' untuk menyimpan.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -84,6 +138,11 @@ class MenuProfile : AppCompatActivity() {
             e.printStackTrace()
             Toast.makeText(this, "Terjadi kesalahan saat membuka Edit Profil.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        syncLocationFromDefaultAddress()
     }
 
     private fun initViews() {
@@ -227,7 +286,7 @@ class MenuProfile : AppCompatActivity() {
         }
 
         val tvNotice = TextView(this).apply {
-            text = "Ketik 'HAPUS AKUN' di bawah ini untuk memverifikasi penghapusan permanen seluruh data farm Anda:"
+            text = "Ketik 'HAPUS AKUN' di bawah ini untuk menghapus permanen akun, profil farm, alamat, produk, lelang, dan metode pembayaran Anda:"
             setTextColor(ContextCompat.getColor(context, R.color.guppy_red))
             textSize = 13f
         }
@@ -239,31 +298,237 @@ class MenuProfile : AppCompatActivity() {
         layout.addView(tvNotice)
         layout.addView(etConfirmText)
 
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle("⚠️ Hapus Permanen Akun Farm")
             .setView(layout)
-            .setPositiveButton("HAPUS SEKARANG") { _, _ ->
-                val inputStr = etConfirmText.text.toString().trim()
-                if (inputStr.equals("HAPUS AKUN", ignoreCase = true)) {
-                    val user = firebaseAuth.currentUser
-                    if (user != null) {
-                        db.collection("user").document(user.uid).delete()
-                        user.delete()
-                    }
-                    firebaseAuth.signOut()
-                    Toast.makeText(this, "Akun farm Anda telah berhasil dihapus.", Toast.LENGTH_LONG).show()
+            .setPositiveButton("HAPUS SEKARANG", null)
+            .setNegativeButton("Batal", null)
+            .create()
 
-                    val intent = Intent(this, Login::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                    startActivity(intent)
-                    finish()
+        pendingDeleteDialog = dialog
+        pendingDeleteConfirmInput = etConfirmText
+
+        dialog.setOnShowListener {
+            val btnConfirm = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val btnCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.guppy_red))
+
+            btnConfirm.setOnClickListener {
+                val inputStr = etConfirmText.text.toString().trim()
+                if (!inputStr.equals("HAPUS AKUN", ignoreCase = true)) {
+                    etConfirmText.error = "Ketik 'HAPUS AKUN' dengan benar"
+                    Toast.makeText(this, "Teks konfirmasi tidak cocok.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                val user = firebaseAuth.currentUser
+                if (user == null) {
+                    dialog.dismiss()
+                    finalizeLocalAccountCleanupAndExit(null)
+                    return@setOnClickListener
+                }
+
+                btnConfirm.isEnabled = false
+                btnCancel.isEnabled = false
+                etConfirmText.isEnabled = false
+                btnConfirm.text = "Menghapus..."
+
+                val lastSignIn = user.metadata?.lastSignInTimestamp ?: 0L
+                val isRecentLogin = hasJustReauthenticated ||
+                    (lastSignIn > 0L && (System.currentTimeMillis() - lastSignIn) < 4 * 60_000L)
+
+                if (isRecentLogin) {
+                    performAuthAndDbDelete(user)
                 } else {
-                    Toast.makeText(this, "Teks konfirmasi tidak cocok. Penghapusan dibatalkan.", Toast.LENGTH_SHORT).show()
+                    promptReauthenticationForAccountDelete(user)
                 }
             }
-            .setNegativeButton("Batal", null)
-            .show()
+        }
+
+        dialog.setOnDismissListener {
+            if (pendingDeleteDialog == dialog) {
+                pendingDeleteDialog = null
+                pendingDeleteConfirmInput = null
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun performAuthAndDbDelete(user: com.google.firebase.auth.FirebaseUser) {
+        val uid = user.uid
+        FirestoreRepository.deleteUserAccountData(uid) { dbSuccess, errorMsg ->
+            if (isFinishing || isDestroyed) return@deleteUserAccountData
+            if (!dbSuccess) {
+                resetDeleteDialogButtons()
+                Toast.makeText(
+                    this,
+                    "Gagal menghapus data akun dari database: ${errorMsg ?: "Coba lagi"}",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@deleteUserAccountData
+            }
+
+            user.delete()
+                .addOnSuccessListener {
+                    if (isFinishing || isDestroyed) return@addOnSuccessListener
+                    dismissPendingDeleteDialog()
+                    finalizeLocalAccountCleanupAndExit(uid)
+                }
+                .addOnFailureListener { error ->
+                    if (isFinishing || isDestroyed) return@addOnFailureListener
+                    if (error is FirebaseAuthRecentLoginRequiredException) {
+                        promptReauthenticationForAccountDelete(user)
+                    } else {
+                        resetDeleteDialogButtons()
+                        Toast.makeText(
+                            this,
+                            "Data database dihapus, tetapi akun login gagal dihapus: ${error.localizedMessage}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+        }
+    }
+
+    private fun promptReauthenticationForAccountDelete(user: com.google.firebase.auth.FirebaseUser) {
+        val isGoogleProvider = user.providerData.any {
+            it.providerId == GoogleAuthProvider.PROVIDER_ID
+        }
+        val email = user.email.orEmpty()
+
+        if (isGoogleProvider) {
+            AlertDialog.Builder(this)
+                .setTitle("Verifikasi Ulang Diperlukan")
+                .setMessage("Demi keamanan, silakan verifikasi akun Google Anda sekali lagi untuk menghapus permanen akun login.")
+                .setCancelable(false)
+                .setPositiveButton("Verifikasi Google") { _, _ ->
+                    try {
+                        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken(getString(R.string.default_web_client_id))
+                            .requestEmail()
+                            .build()
+                        val client = GoogleSignIn.getClient(this, gso)
+                        reauthGoogleLauncher.launch(client.signInIntent)
+                    } catch (e: Exception) {
+                        resetDeleteDialogButtons()
+                        Toast.makeText(this, "Gagal membuka verifikasi Google: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                    }
+                }
+                .setNegativeButton("Batal") { _, _ ->
+                    resetDeleteDialogButtons()
+                }
+                .show()
+            return
+        }
+
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 24, 50, 10)
+        }
+        val tvInfo = TextView(this).apply {
+            text = "Masukkan password akun ($email) untuk menyelesaikan penghapusan permanen:"
+            textSize = 13f
+            setTextColor(ContextCompat.getColor(context, R.color.guppy_text_black))
+        }
+        val etPassword = EditText(this).apply {
+            hint = "Password"
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+        container.addView(tvInfo)
+        container.addView(etPassword)
+
+        val reauthDialog = AlertDialog.Builder(this)
+            .setTitle("Verifikasi Password")
+            .setView(container)
+            .setCancelable(false)
+            .setPositiveButton("Verifikasi & Hapus", null)
+            .setNegativeButton("Batal") { _, _ ->
+                resetDeleteDialogButtons()
+            }
+            .create()
+
+        reauthDialog.setOnShowListener {
+            val btnOk = reauthDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val btnCancel = reauthDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            btnOk.setOnClickListener {
+                val password = etPassword.text.toString()
+                if (password.isBlank() || email.isBlank()) {
+                    etPassword.error = "Password wajib diisi"
+                    return@setOnClickListener
+                }
+                btnOk.isEnabled = false
+                btnCancel.isEnabled = false
+                btnOk.text = "Memverifikasi..."
+
+                val credential = EmailAuthProvider.getCredential(email, password)
+                user.reauthenticate(credential)
+                    .addOnSuccessListener {
+                        hasJustReauthenticated = true
+                        reauthDialog.dismiss()
+                        performAuthAndDbDelete(user)
+                    }
+                    .addOnFailureListener { e ->
+                        btnOk.isEnabled = true
+                        btnCancel.isEnabled = true
+                        btnOk.text = "Verifikasi & Hapus"
+                        Toast.makeText(this, "Password salah atau gagal verifikasi: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                    }
+            }
+        }
+        reauthDialog.show()
+    }
+
+    private fun resetDeleteDialogButtons() {
+        val dialog = pendingDeleteDialog ?: return
+        if (!dialog.isShowing) return
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.apply {
+            isEnabled = true
+            text = "HAPUS SEKARANG"
+        }
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.isEnabled = true
+        pendingDeleteConfirmInput?.isEnabled = true
+    }
+
+    private fun dismissPendingDeleteDialog() {
+        try {
+            pendingDeleteDialog?.dismiss()
+        } catch (_: Throwable) {
+        }
+        pendingDeleteDialog = null
+        pendingDeleteConfirmInput = null
+    }
+
+    private fun finalizeLocalAccountCleanupAndExit(deletedUid: String?) {
+        ChatNotificationHelper.stopListening()
+        AuctionNotificationHelper.stopListening()
+
+        if (!deletedUid.isNullOrBlank()) {
+            filesDir.listFiles()?.forEach { file ->
+                if (file.name.contains(deletedUid)) {
+                    file.delete()
+                }
+            }
+        }
+
+        getSharedPreferences("user_prefs", Context.MODE_PRIVATE).edit().clear().apply()
+        getSharedPreferences("login_prefs", Context.MODE_PRIVATE).edit().clear().apply()
+        getSharedPreferences("auction_notif_prefs", Context.MODE_PRIVATE).edit().clear().apply()
+
+        try {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+            GoogleSignIn.getClient(this, gso).signOut()
+        } catch (_: Throwable) {
+        }
+
+        firebaseAuth.signOut()
+        Toast.makeText(this, "Akun farm dan seluruh data berhasil dihapus permanen.", Toast.LENGTH_LONG).show()
+
+        val intent = Intent(this, Login::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish()
     }
 
     private fun loadProfileData() {
@@ -283,6 +548,7 @@ class MenuProfile : AppCompatActivity() {
                         val desc = doc.getString("description") ?: ""
                         val bank = doc.getString("bank_account_info") ?: "Belum diatur"
                         val avatarUriStr = doc.getString("avatar_uri") ?: doc.getString("photo_url")
+                        val avatarDataUrl = doc.getString("avatar_data_url")
 
                         etOwnerName.setText(name)
                         etFarmName.setText(farmName)
@@ -291,28 +557,20 @@ class MenuProfile : AppCompatActivity() {
                         tvCharCount.text = "${desc.length}/300"
                         tvBankAccountInfoSub.text = bank
 
-                        if (!avatarUriStr.isNullOrEmpty()) {
-                            try {
-                                imgEditAvatar.setImageURI(android.net.Uri.parse(avatarUriStr))
-                            } catch (_: Exception) {}
-                        }
+                        SafeImageLoader.loadWithFallbackSafely(
+                            this,
+                            imgEditAvatar,
+                            avatarUriStr,
+                            avatarDataUrl,
+                            R.drawable.ic_default_user_avatar
+                        )
 
                         if (loc.isNotEmpty()) {
                             tvFarmLocation.text = loc
                         } else {
-                            // Fetch real addresses if location field is empty
-                            FirestoreRepository.fetchUserAddresses(userId) { addresses ->
-                                if (!isFinishing && !isDestroyed) {
-                                    val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
-                                    if (defaultAddr != null) {
-                                        tvFarmLocation.text = defaultAddr.fullAddress
-                                        db.collection("user").document(userId).update("location", defaultAddr.fullAddress)
-                                    } else {
-                                        tvFarmLocation.text = "Belum ada alamat terdaftar"
-                                    }
-                                }
-                            }
+                            tvFarmLocation.text = "Belum ada alamat terdaftar"
                         }
+                        syncLocationFromDefaultAddress(loc)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -322,19 +580,46 @@ class MenuProfile : AppCompatActivity() {
         }
     }
 
-    private fun copyUriToInternalStorage(uri: android.net.Uri): String? {
-        return try {
-            val inputStream = contentResolver.openInputStream(uri) ?: return null
-            val file = java.io.File(filesDir, "avatar_${firebaseAuth.currentUser?.uid ?: "user"}.jpg")
-            val outputStream = java.io.FileOutputStream(file)
-            inputStream.copyTo(outputStream)
-            inputStream.close()
-            outputStream.close()
-            android.net.Uri.fromFile(file).toString()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
+    private fun syncLocationFromDefaultAddress(fallbackLoc: String = "") {
+        val currentUser = firebaseAuth.currentUser ?: return
+        val userId = currentUser.uid
+        FirestoreRepository.fetchUserAddresses(userId) { addresses ->
+            if (isFinishing || isDestroyed) return@fetchUserAddresses
+            val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
+            if (defaultAddr != null) {
+                tvFarmLocation.text = defaultAddr.fullAddress
+                val shortSub = if (defaultAddr.fullAddress.contains(",")) {
+                    defaultAddr.fullAddress.split(",").takeLast(2).joinToString(",").trim()
+                } else {
+                    defaultAddr.fullAddress
+                }
+                getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    .edit()
+                    .putString("address_sub", shortSub)
+                    .apply()
+            } else if (fallbackLoc.isNotEmpty()) {
+                tvFarmLocation.text = fallbackLoc
+            } else {
+                tvFarmLocation.text = "Belum ada alamat terdaftar"
+            }
         }
+    }
+
+    private fun copyUriToInternalStorage(uri: android.net.Uri): String? {
+        val uid = firebaseAuth.currentUser?.uid ?: "user"
+        val newFileName = "avatar_${uid}_${System.currentTimeMillis()}.jpg"
+        val copiedUri = SafeImageLoader.copyUriToInternalStorage(this, uri, newFileName) ?: return null
+
+        // Clean up older avatar files for this user after the new file is safely written
+        filesDir.listFiles()?.forEach { file ->
+            val name = file.name
+            if (name != newFileName &&
+                (name == "avatar_$uid.jpg" || name == "avatar_pending_$uid.jpg" || name.startsWith("avatar_${uid}_"))
+            ) {
+                file.delete()
+            }
+        }
+        return copiedUri.toString()
     }
 
     private fun saveProfileData() {
@@ -350,8 +635,15 @@ class MenuProfile : AppCompatActivity() {
         }
 
         var savedAvatarUriString: String? = null
+        var savedAvatarDataUrl: String? = null
         if (selectedPhotoUri != null) {
-            savedAvatarUriString = copyUriToInternalStorage(selectedPhotoUri!!) ?: selectedPhotoUri.toString()
+            savedAvatarUriString = copyUriToInternalStorage(selectedPhotoUri!!)
+            if (savedAvatarUriString != null) {
+                val bmp = SafeImageLoader.decodeBitmapSafely(this, savedAvatarUriString, 256)
+                if (bmp != null) {
+                    savedAvatarDataUrl = SafeImageLoader.encodeBitmapToDataUrl(bmp, maxDimPx = 220, initialQuality = 62)
+                }
+            }
         }
 
         val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
@@ -367,18 +659,28 @@ class MenuProfile : AppCompatActivity() {
 
         val user = firebaseAuth.currentUser
         if (user != null) {
+            val cleanLocation = if (locationStr == "Belum ada alamat terdaftar") "" else locationStr
             val userMap = hashMapOf<String, Any>(
                 "name" to ownerName,
                 "farm_name" to farmName,
-                "location" to locationStr,
                 "whatsapp" to whatsappStr,
                 "description" to desc
             )
+            if (cleanLocation.isNotBlank()) {
+                userMap["location"] = cleanLocation
+                userMap["full_address"] = cleanLocation
+            }
             if (savedAvatarUriString != null) {
                 userMap["avatar_uri"] = savedAvatarUriString
                 userMap["photo_url"] = savedAvatarUriString
             }
+            if (!savedAvatarDataUrl.isNullOrBlank()) {
+                userMap["avatar_data_url"] = savedAvatarDataUrl
+            }
             db.collection("user").document(user.uid).set(userMap, com.google.firebase.firestore.SetOptions.merge())
+                .addOnSuccessListener {
+                    FirestoreRepository.syncUserFarmLocationToPublic(user.uid)
+                }
         }
 
         Toast.makeText(this, "Profil farm berhasil diperbarui!", Toast.LENGTH_SHORT).show()

@@ -50,7 +50,6 @@ class ShippingAddressActivity : AppCompatActivity() {
         btnBack.setOnClickListener { finish() }
 
         initViews()
-        loadAddresses()
     }
 
     private fun initViews() {
@@ -132,6 +131,8 @@ class ShippingAddressActivity : AppCompatActivity() {
                         putExtra("EXTRA_FULL_ADDRESS", addr.fullAddress)
                         putExtra("EXTRA_IS_DEFAULT", addr.isDefault)
                         putExtra("EXTRA_NOTES", addr.notesForCourier)
+                        putExtra("EXTRA_LAT", addr.lat)
+                        putExtra("EXTRA_LNG", addr.lng)
                     }
                     startActivity(intent)
                 },
@@ -213,16 +214,39 @@ class ShippingAddressActivity : AppCompatActivity() {
 
         btnConfirm?.setOnClickListener {
             val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-            FirestoreRepository.deleteUserAddress(currentUserId, addr.id) { _ ->
-                addressesList.removeIf { it.id == addr.id }
+            if (addr.id.isBlank()) {
+                Toast.makeText(this, "ID alamat tidak valid. Muat ulang halaman dan coba lagi.", Toast.LENGTH_SHORT).show()
+                alertDialog.dismiss()
+                loadAddresses()
+                return@setOnClickListener
+            }
+
+            btnConfirm.isEnabled = false
+            btnConfirm.text = "Menghapus..."
+            btnCancel?.isEnabled = false
+
+            FirestoreRepository.deleteUserAddress(currentUserId, addr.id) { success ->
+                if (isFinishing || isDestroyed) return@deleteUserAddress
+
+                if (!success) {
+                    btnConfirm.isEnabled = true
+                    btnConfirm.text = "Ya, Hapus"
+                    btnCancel?.isEnabled = true
+                    Toast.makeText(this, "Gagal menghapus alamat. Periksa koneksi dan coba lagi.", Toast.LENGTH_SHORT).show()
+                    return@deleteUserAddress
+                }
+
+                addressesList.removeAll { it.id == addr.id }
 
                 if (addr.isDefault && addressesList.isNotEmpty()) {
                     addressesList[0] = addressesList[0].copy(isDefault = true)
-                    FirestoreRepository.addUserAddress(currentUserId, addressesList[0]) {}
+                    FirestoreRepository.updateAllAddresses(currentUserId, addressesList) {}
                 }
 
                 addressesList = addressesList.sortedByDescending { it.isDefault }.toMutableList()
-                adapter.updateData(addressesList)
+                if (::adapter.isInitialized) {
+                    adapter.updateData(addressesList)
+                }
                 updateEmptyStateView()
                 Toast.makeText(this, "Alamat '${addr.label}' berhasil dihapus", Toast.LENGTH_SHORT).show()
                 alertDialog.dismiss()
@@ -244,12 +268,12 @@ class ShippingAddressActivity : AppCompatActivity() {
         }
         val etName = EditText(this).apply {
             hint = "Nama Penerima"
-            setText(existingAddr?.recipientName ?: "Marcello Aja")
+            setText(existingAddr?.recipientName ?: "")
         }
         val etPhone = EditText(this).apply {
             inputType = android.text.InputType.TYPE_CLASS_PHONE
             hint = "Nomor Telepon / WhatsApp"
-            setText(existingAddr?.phone ?: "(0812-3456-7890)")
+            setText(existingAddr?.phone ?: "")
         }
         val etFullAddr = EditText(this).apply {
             hint = "Alamat Lengkap (Jl, No, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos)"
@@ -269,8 +293,10 @@ class ShippingAddressActivity : AppCompatActivity() {
             .setView(layout)
             .setPositiveButton("Simpan Alamat") { _, _ ->
                 val label = etLabel.text.toString().trim().ifEmpty { "Rumah" }
-                val name = etName.text.toString().trim().ifEmpty { "Marcello Aja" }
-                val phone = etPhone.text.toString().trim().ifEmpty { "(0812-3456-7890)" }
+                val name = etName.text.toString().trim().ifEmpty {
+                    firebaseAuth.currentUser?.displayName?.ifBlank { null } ?: "Pengguna Guppy"
+                }
+                val phone = etPhone.text.toString().trim()
                 val addressText = etFullAddr.text.toString().trim()
 
                 if (addressText.isEmpty()) {
@@ -283,7 +309,7 @@ class ShippingAddressActivity : AppCompatActivity() {
                 val isDefaultVal = existingAddr?.isDefault ?: isFirstAddress
 
                 val newModel = FirestoreRepository.AddressModel(
-                    id = existingAddr?.id ?: "addr_${System.currentTimeMillis()}",
+                    id = existingAddr?.id?.takeIf { it.isNotBlank() } ?: "addr_${System.currentTimeMillis()}",
                     label = label,
                     recipientName = name,
                     phone = phone,

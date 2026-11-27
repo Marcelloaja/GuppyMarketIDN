@@ -22,7 +22,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 import com.google.firebase.auth.FirebaseAuth
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
 
 class AddProductActivity : AppCompatActivity() {
 
@@ -42,6 +45,14 @@ class AddProductActivity : AppCompatActivity() {
     private lateinit var takeCameraLauncher: ActivityResultLauncher<Intent>
     private var currentMediaSlot: String = "Foto 1"
     private var isSelectingVideo: Boolean = false
+
+    private val selectedPhotoUris = arrayOfNulls<String>(3)
+    private val selectedPhotoDataUrls = arrayOfNulls<String>(3)
+    private var selectedVideoUri: String = ""
+    private val mediaExecutor = Executors.newSingleThreadExecutor()
+    private val pendingMediaJobs = AtomicInteger(0)
+    private var publishAfterMediaReady = false
+    private var realSellerProfile: FirestoreRepository.UserProfileModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +75,19 @@ class AddProductActivity : AppCompatActivity() {
         initMediaLaunchers()
         initViews()
         setupListeners()
+
+        FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
+            FirestoreRepository.fetchUserProfileById(uid) { profile ->
+                if (!isFinishing && !isDestroyed) {
+                    realSellerProfile = profile
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaExecutor.shutdownNow()
     }
 
     private fun initMediaLaunchers() {
@@ -144,33 +168,25 @@ class AddProductActivity : AppCompatActivity() {
                 ivPreview?.setImageURI(uri)
                 ivPreview?.visibility = View.VISIBLE
                 layoutPlaceholder?.visibility = View.GONE
+                val persisted = SafeImageLoader.copyUriToInternalStorage(
+                    this, uri, "prod_video_${System.currentTimeMillis()}.mp4"
+                )
+                selectedVideoUri = persisted?.toString() ?: uri.toString()
             } else if (bitmap != null) {
                 ivPreview?.setImageBitmap(bitmap)
                 ivPreview?.visibility = View.VISIBLE
                 layoutPlaceholder?.visibility = View.GONE
             }
-
-            if (realSizeMB > 10.0f) {
-                val targetCompressedSizeMB = realSizeMB * 0.35f
-                val formattedCompressed = String.format(java.util.Locale.US, "%.1f", targetCompressedSizeMB)
-
-                val progressDialog = AlertDialog.Builder(this)
-                    .setTitle("Mengompresi Video...")
-                    .setMessage("Sistem sedang mengompresi video (Ukuran asli: $formattedRealSize MB > 10 MB)\nMengompresi ke 720p 30fps...")
-                    .setCancelable(false)
-                    .show()
-
-                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                    progressDialog.dismiss()
-                    Toast.makeText(this, "Kompresi Selesai! Video diompres dari $formattedRealSize MB ➔ $formattedCompressed MB (Siap Di-stream) ✓", Toast.LENGTH_LONG).show()
-                }, 1800)
-            } else {
-                Toast.makeText(this, "Video $formattedRealSize MB Berhasil Diupload! ✓", Toast.LENGTH_SHORT).show()
-            }
+            Toast.makeText(this, "Video $formattedRealSize MB dipilih.", Toast.LENGTH_SHORT).show()
         } else {
-            val (ivPreview, layoutPlaceholder) = when (currentMediaSlot) {
-                "Foto 2" -> Pair(findViewById<ImageView>(R.id.ivPhotoPreview2), findViewById<View>(R.id.layoutPhotoPlaceholder2))
-                "Foto 3" -> Pair(findViewById<ImageView>(R.id.ivPhotoPreview3), findViewById<View>(R.id.layoutPhotoPlaceholder3))
+            val slotIndex = when (currentMediaSlot) {
+                "Foto 2" -> 1
+                "Foto 3" -> 2
+                else -> 0
+            }
+            val (ivPreview, layoutPlaceholder) = when (slotIndex) {
+                1 -> Pair(findViewById<ImageView>(R.id.ivPhotoPreview2), findViewById<View>(R.id.layoutPhotoPlaceholder2))
+                2 -> Pair(findViewById<ImageView>(R.id.ivPhotoPreview3), findViewById<View>(R.id.layoutPhotoPlaceholder3))
                 else -> Pair(findViewById<ImageView>(R.id.ivPhotoPreview1), findViewById<View>(R.id.layoutPhotoPlaceholder1))
             }
 
@@ -184,7 +200,36 @@ class AddProductActivity : AppCompatActivity() {
                 layoutPlaceholder?.visibility = View.GONE
             }
 
-            Toast.makeText(this, "$currentMediaSlot ($formattedRealSize MB) Berhasil Diupload & Tampil Preview Asli! ✓", Toast.LENGTH_SHORT).show()
+            pendingMediaJobs.incrementAndGet()
+            mediaExecutor.execute {
+                val persistedUri = when {
+                    bitmap != null -> SafeImageLoader.saveBitmapToInternalStorage(
+                        this, bitmap, "prod_photo_${slotIndex}_${System.currentTimeMillis()}.jpg"
+                    )?.toString().orEmpty()
+                    uri != null -> SafeImageLoader.copyUriToInternalStorage(
+                        this, uri, "prod_photo_${slotIndex}_${System.currentTimeMillis()}.jpg"
+                    )?.toString() ?: uri.toString()
+                    else -> ""
+                }
+                val encodedDataUrl = when {
+                    bitmap != null -> SafeImageLoader.encodeBitmapToDataUrl(bitmap)
+                    persistedUri.isNotBlank() -> SafeImageLoader.encodeImageUriToDataUrl(this, persistedUri)
+                    uri != null -> SafeImageLoader.encodeImageUriToDataUrl(this, uri.toString())
+                    else -> ""
+                }
+                selectedPhotoUris[slotIndex] = persistedUri
+                selectedPhotoDataUrls[slotIndex] = encodedDataUrl
+
+                val remaining = pendingMediaJobs.decrementAndGet()
+                runOnUiThread {
+                    if (!isFinishing && !isDestroyed && remaining == 0 && publishAfterMediaReady) {
+                        publishAfterMediaReady = false
+                        publishProduct()
+                    }
+                }
+            }
+
+            Toast.makeText(this, "$currentMediaSlot ($formattedRealSize MB) dipilih.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -412,24 +457,72 @@ class AddProductActivity : AppCompatActivity() {
             return
         }
 
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: "user_default"
-        val currentUserName = FirebaseAuth.getInstance().currentUser?.displayName
-            ?.ifEmpty { "Toko Saya" } ?: "Toko Saya"
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            Toast.makeText(this, "Silakan masuk ke akun Anda terlebih dahulu.", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-        val priceAmount = priceText.replace(".", "").replace(",", "").toLongOrNull() ?: 150000L
+        if (pendingMediaJobs.get() > 0) {
+            publishAfterMediaReady = true
+            findViewById<TextView>(R.id.btnPublishProductBottom)?.apply {
+                isEnabled = false
+                text = "Memproses Foto..."
+            }
+            Toast.makeText(this, "Menunggu foto selesai diproses...", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val currentUserId = currentUser.uid
+        val prefs = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        val profile = realSellerProfile
+        val currentUserName = profile?.farmName?.takeIf { it.isNotBlank() }
+            ?: prefs.getString("farm_name", null)?.takeIf { it.isNotBlank() }
+            ?: profile?.name?.takeIf { it.isNotBlank() }
+            ?: prefs.getString("name", null)?.takeIf { it.isNotBlank() }
+            ?: currentUser.displayName?.takeIf { it.isNotBlank() }
+            ?: currentUser.email?.substringBefore("@")
+            ?: "Toko Saya"
+        val sellerLocation = profile?.location?.takeIf { it.isNotBlank() }
+            ?: prefs.getString("address_sub", null)?.takeIf { it.isNotBlank() }
+            ?: ""
+        val sellerAvatar = profile?.avatarUri?.takeIf { it.isNotBlank() }
+            ?: prefs.getString("avatar_uri", null)
+            ?: ""
+
+        val priceAmount = priceText.replace(".", "").replace(",", "").toLongOrNull() ?: 0L
+        if (priceAmount <= 0L) {
+            Toast.makeText(this, "Masukkan harga jual yang valid.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val stockAmount = stockText.toIntOrNull()?.coerceAtLeast(1) ?: 1
         val formattedPrice = "Rp ${java.text.NumberFormat.getInstance(java.util.Locale("in", "ID")).format(priceAmount)}"
+        val descriptionText = etDescription.text.toString().trim()
+
+        val filledIndices = (0..2).filter { !selectedPhotoUris[it].isNullOrBlank() || !selectedPhotoDataUrls[it].isNullOrBlank() }
+        val validPhotoUris = filledIndices.map { selectedPhotoUris[it].orEmpty() }
+        val validPhotoDataUrls = filledIndices.map { selectedPhotoDataUrls[it].orEmpty() }
 
         val newProduct = FirestoreRepository.ProductModel(
-            id = "prod_${System.currentTimeMillis()}",
+            id = "",
             sellerId = currentUserId,
             title = titleText,
             seller = currentUserName,
             price = formattedPrice,
             unit = selectedUnit,
             sold = "0",
+            stock = stockAmount,
+            soldCount = 0,
             imageRes = R.drawable.bg_image_grid,
             category = selectedCategory,
             strain = selectedStrain,
+            grade = "Grade A",
+            description = descriptionText,
+            location = sellerLocation,
+            sellerAvatarUri = sellerAvatar,
+            photoUris = validPhotoUris,
+            photoDataUrls = validPhotoDataUrls,
+            videoUri = selectedVideoUri,
             priceNumeric = priceAmount,
             createdAt = System.currentTimeMillis()
         )
@@ -439,11 +532,16 @@ class AddProductActivity : AppCompatActivity() {
         btnPublishBottom?.text = "Menyimpan Produk..."
 
         FirestoreRepository.createProduct(newProduct) { success ->
+            if (isFinishing || isDestroyed) return@createProduct
             btnPublishBottom?.isEnabled = true
             btnPublishBottom?.text = "Tambahkan Varian Sekarang"
 
-            Toast.makeText(this, "Varian '$titleText' Berhasil Ditambahkan ke Etalase Toko!", Toast.LENGTH_LONG).show()
-            finish()
+            if (success) {
+                Toast.makeText(this, "Varian '$titleText' berhasil ditambahkan ke etalase.", Toast.LENGTH_LONG).show()
+                finish()
+            } else {
+                Toast.makeText(this, "Gagal menyimpan varian. Periksa koneksi Anda dan coba lagi.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

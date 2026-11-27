@@ -125,7 +125,7 @@
                         android:id="@+id/tvFarmTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Marcello Guppy Farm"
+                        android:text="Guppy Farm"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
                         android:textSize="22sp"/>
@@ -159,7 +159,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            android:text="4.9"
+                            android:text="0.0"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="13sp"
                             android:textColor="@color/guppy_text_black"/>
@@ -543,12 +543,13 @@
                     <TextView
                         android:id="@+id/btnAddProductProfile"
                         android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:background="@drawable/bg_btn_primary"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_chip_selected"
+                        android:backgroundTint="#124332"
                         android:text="+ Tambah Varian Baru"
                         android:textColor="@color/white"
                         android:fontFamily="@font/inter_bold"
-                        android:textSize="13.5sp"
+                        android:textSize="14sp"
                         android:gravity="center"
                         android:clickable="true"
                         android:focusable="true"/>
@@ -573,12 +574,14 @@
                         android:id="@+id/tvEmptyProfileProducts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/bg_variant_card_unselected"
+                        android:padding="16dp"
                         android:gravity="center"
-                        android:text="Belum ada varian produk yang ditambahkan"
+                        android:text="Belum ada varian produk yang ditambahkan. Ketuk '+ Tambah Varian Baru' untuk mulai berjualan!"
                         android:textColor="@color/guppy_text_gray"
                         android:fontFamily="@font/inter_medium"
-                        android:textSize="13sp"
+                        android:textSize="12.5sp"
                         android:visibility="gone"/>
                 </LinearLayout>
 
@@ -593,12 +596,13 @@
                     <TextView
                         android:id="@+id/btnCreateAuctionProfile"
                         android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:background="@drawable/bg_btn_primary"
-                        android:text="+ Buat Lelang Baru"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_chip_selected"
+                        android:backgroundTint="#124332"
+                        android:text="+ Buat Sesi Lelang Baru"
                         android:textColor="@color/white"
                         android:fontFamily="@font/inter_bold"
-                        android:textSize="13.5sp"
+                        android:textSize="14sp"
                         android:gravity="center"
                         android:clickable="true"
                         android:focusable="true"/>
@@ -623,12 +627,14 @@
                         android:id="@+id/tvEmptyProfileAuctions"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/bg_variant_card_unselected"
+                        android:padding="16dp"
                         android:gravity="center"
-                        android:text="Anda belum menerbitkan lelang."
+                        android:text="Belum ada sesi lelang aktif. Ketuk '+ Buat Sesi Lelang Baru' untuk menerbitkan lelang!"
                         android:textColor="@color/guppy_text_gray"
                         android:fontFamily="@font/inter_medium"
-                        android:textSize="13sp"
+                        android:textSize="12.5sp"
                         android:visibility="gone"/>
                 </LinearLayout>
 

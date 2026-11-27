@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:fontFamily="@font/inter_regular"
-                android:text="18 penawaran masuk"
+                android:text="0 penawaran masuk"
                 android:textColor="@color/guppy_text_gray"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -78,5 +78,16 @@
         android:layout_height="420dp"
         android:layout_marginTop="8dp"
         android:scrollbars="vertical"/>
+
+    <TextView
+        android:id="@+id/tvEmptyBidHistory"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:gravity="center"
+        android:text="Belum ada penawaran masuk untuk lelang ini."
+        android:textColor="@color/guppy_text_gray"
+        android:fontFamily="@font/inter_regular"
+        android:textSize="13sp"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -82,6 +82,7 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivCheckoutProductImage"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:src="@drawable/bg_image_grid"
@@ -96,23 +97,26 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/tvCheckoutProductTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Red Dragon Delta"
+                                android:text="Memuat produk..."
                                 android:textColor="@color/guppy_text_black"
                                 android:fontFamily="@font/inter_bold"
                                 android:textSize="15sp"/>
 
                             <TextView
+                                android:id="@+id/tvCheckoutProductMeta"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Jantan &amp; betina · 3–4 cm · Usia 3 bulan"
+                                android:text=""
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="12sp"/>
 
                             <TextView
+                                android:id="@+id/tvCheckoutUnitBadge"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
@@ -132,13 +136,15 @@
                                 android:gravity="bottom"
                                 android:layout_marginTop="6dp">
                                 <TextView
+                                    android:id="@+id/tvCheckoutUnitPrice"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Rp 275.000"
+                                    android:text="Rp 0"
                                     android:textColor="@color/guppy_text_black"
                                     android:fontFamily="@font/inter_bold"
                                     android:textSize="14sp"/>
                                 <TextView
+                                    android:id="@+id/tvCheckoutUnitSuffix"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="4dp"
@@ -256,16 +262,28 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <FrameLayout
                         android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_circle_image"
-                        android:backgroundTint="#D85C42"
-                        android:text="BA"
-                        android:textColor="@color/white"
-                        android:gravity="center"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:textSize="14sp"/>
+                        android:layout_height="40dp">
+                        <TextView
+                            android:id="@+id/tvCheckoutSellerInitials"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_circle_image"
+                            android:backgroundTint="#124332"
+                            android:text="GF"
+                            android:textColor="@color/white"
+                            android:gravity="center"
+                            android:fontFamily="@font/inter_semi_bold"
+                            android:textSize="14sp"/>
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivCheckoutSellerAvatar"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
+                            android:visibility="gone"/>
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -280,9 +298,10 @@
                             android:orientation="horizontal"
                             android:gravity="center_vertical">
                             <TextView
+                                android:id="@+id/tvCheckoutSellerName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Bekasi Aqua Farm"
+                                android:text="Memuat toko..."
                                 android:fontFamily="@font/inter_bold"
                                 android:textColor="@color/guppy_text_black"
                                 android:textSize="13sp"
@@ -295,7 +314,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="4dp"
-                                android:text="TERVERIFIKASI"
+                                android:text="TERDAFTAR"
                                 android:textColor="@color/guppy_primary"
                                 android:fontFamily="@font/inter_bold"
                                 android:textSize="9sp"/>
@@ -308,17 +327,19 @@
                             android:gravity="center_vertical"
                             android:layout_marginTop="2dp">
                             <TextView
+                                android:id="@+id/tvCheckoutSellerRating"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="4,8"
+                                android:text="0.0"
                                 android:fontFamily="@font/inter_semi_bold"
                                 android:textSize="11sp"
                                 android:textColor="@color/guppy_text_black"/>
                             <TextView
+                                android:id="@+id/tvCheckoutSellerReviews"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="2dp"
-                                android:text="(126 ulasan)"
+                                android:text="(0 ulasan)"
                                 android:textSize="11sp"
                                 android:textColor="@color/guppy_text_gray"/>
                             <TextView
@@ -335,10 +356,11 @@
                                 android:src="@drawable/map"
                                 app:tint="@color/guppy_text_gray"/>
                             <TextView
+                                android:id="@+id/tvCheckoutSellerLocation"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="2dp"
-                                android:text="Bekasi, 5,1 km"
+                                android:text="Indonesia"
                                 android:textSize="11sp"
                                 android:textColor="@color/guppy_text_gray"/>
                         </LinearLayout>
@@ -394,7 +416,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Andi Saputra (+62 812 3456 7890)"
+                        android:text="Memuat alamat..."
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
                         android:textSize="14sp"/>
@@ -404,7 +426,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Jl. Melati No. 45, Komplek Permata Indah, Kel. Margajaya, Bekasi Selatan, Kota Bekasi, Jawa Barat 17141"
+                        android:text="Mengambil alamat pengiriman utama Anda..."
                         android:textColor="@color/guppy_text_gray"
                         android:fontFamily="@font/inter_regular"
                         android:textSize="13sp"
@@ -438,6 +460,18 @@
                         android:textSize="11sp"
                         android:letterSpacing="0.05"/>
 
+                    <TextView
+                        android:id="@+id/tvShippingStatusNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Menghitung tarif Biteship..."
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="11.5sp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
                     <!-- Option 1: J&T Express (Selected by default) -->
                     <LinearLayout
                         android:id="@+id/optionShipJNT"
@@ -467,7 +501,7 @@
                                 android:id="@+id/tvShipJNTTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="J&amp;T Express (Reguler EZ)"
+                                android:text="J&amp;T Express"
                                 android:textColor="@color/guppy_primary"
                                 android:fontFamily="@font/inter_bold"
                                 android:textSize="14sp"/>
@@ -476,7 +510,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Estimasi 2–3 hari (Kemasan Oksigen)"
+                                android:text="Memuat estimasi Biteship..."
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="12sp"/>
@@ -485,7 +519,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
-                                android:text="Rp 18.000"
+                                android:text="-"
                                 android:textColor="@color/guppy_primary"
                                 android:fontFamily="@font/inter_bold"
                                 android:textSize="13.5sp"/>
@@ -521,7 +555,7 @@
                                 android:id="@+id/tvShipJNETitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="JNE Express (YES / Reguler)"
+                                android:text="JNE Express"
                                 android:textColor="@color/guppy_text_black"
                                 android:fontFamily="@font/inter_medium"
                                 android:textSize="14sp"/>
@@ -530,7 +564,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Estimasi 1–2 hari"
+                                android:text="Memuat estimasi Biteship..."
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="12sp"/>
@@ -539,7 +573,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
-                                android:text="Rp 22.000"
+                                android:text="-"
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_medium"
                                 android:textSize="13.5sp"/>
@@ -575,7 +609,7 @@
                                 android:id="@+id/tvShipSicepatTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="SiCepat Express (BEST)"
+                                android:text="SiCepat Express"
                                 android:textColor="@color/guppy_text_black"
                                 android:fontFamily="@font/inter_medium"
                                 android:textSize="14sp"/>
@@ -584,7 +618,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Estimasi 1–2 hari"
+                                android:text="Memuat estimasi Biteship..."
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="12sp"/>
@@ -593,7 +627,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
-                                android:text="Rp 20.000"
+                                android:text="-"
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_medium"
                                 android:textSize="13.5sp"/>
@@ -638,7 +672,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Estimasi tiba 1–3 jam"
+                                android:text="Memuat estimasi Biteship..."
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="12sp"/>
@@ -647,7 +681,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
-                                android:text="Rp 35.000"
+                                android:text="-"
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_medium"
                                 android:textSize="13.5sp"/>
@@ -804,7 +838,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- PAYMENT METHOD CARD -->
+            <!-- PAYMENT METHOD CARD (FROM SELLER ACCOUNT) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -824,112 +858,28 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="METODE PEMBAYARAN"
+                        android:text="METODE PEMBAYARAN PENJUAL"
                         android:textColor="@color/guppy_text_gray"
                         android:fontFamily="@font/inter_bold"
                         android:textSize="11sp"
                         android:letterSpacing="0.05"/>
 
-                    <!-- Option 1: Transfer Bank (VA) (Selected) -->
-                    <LinearLayout
-                        android:id="@+id/optionPayVA"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:background="@drawable/bg_variant_card_selected"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <TextView
-                            android:id="@+id/tvPayVATitle"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:text="Transfer Bank (VA)"
-                            android:textColor="@color/guppy_primary"
-                            android:fontFamily="@font/inter_bold"
-                            android:textSize="14sp"/>
-
-                        <ImageView
-                            android:id="@+id/icRadioPayVA"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_radio_selected"/>
-                    </LinearLayout>
-
-                    <!-- Option 2: E-wallet (Unselected) -->
-                    <LinearLayout
-                        android:id="@+id/optionPayEWallet"
+                    <TextView
+                        android:id="@+id/tvCheckoutPaymentStatus"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/bg_variant_card_unselected"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:text="Memuat metode pembayaran dari penjual..."
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="12.5sp"/>
 
-                        <TextView
-                            android:id="@+id/tvPayEWalletTitle"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:text="E-wallet"
-                            android:textColor="@color/guppy_text_black"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="14sp"/>
-
-                        <ImageView
-                            android:id="@+id/icRadioPayEWallet"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_radio_unselected"/>
-                    </LinearLayout>
-
-                    <!-- Option 3: COD (Disabled) -->
                     <LinearLayout
+                        android:id="@+id/layoutSellerPaymentMethods"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/bg_variant_card_unselected"
-                        android:backgroundTint="#FAFAFA"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:alpha="0.6">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="COD"
-                                android:textColor="@color/guppy_text_gray"
-                                android:fontFamily="@font/inter_medium"
-                                android:textSize="14sp"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Tidak tersedia untuk wilayah ini"
-                                android:textColor="@color/guppy_text_gray"
-                                android:fontFamily="@font/inter_regular"
-                                android:textSize="11sp"/>
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_radio_unselected"
-                            app:tint="#CCCCCC"/>
-                    </LinearLayout>
+                        android:layout_marginTop="4dp"
+                        android:orientation="vertical"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -976,7 +926,7 @@
                             android:id="@+id/tvSummarySubtotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 550.000"
+                            android:text="Rp 0"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_medium"
                             android:textSize="13sp"/>
@@ -999,7 +949,7 @@
                             android:id="@+id/tvSummaryShipping"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 25.000"
+                            android:text="Rp 0"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_medium"
                             android:textSize="13sp"/>
@@ -1019,6 +969,7 @@
                             android:fontFamily="@font/inter_regular"
                             android:textSize="13sp"/>
                         <TextView
+                            android:id="@+id/tvSummaryServiceFee"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Rp 2.000"
@@ -1049,7 +1000,7 @@
                             android:id="@+id/tvSummaryTotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 577.000"
+                            android:text="Rp 0"
                             android:textColor="@color/guppy_primary"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="16sp"/>
@@ -1101,7 +1052,7 @@
                 android:id="@+id/tvBottomTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp 577.000"
+                android:text="Rp 0"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_black"
                 android:textSize="18sp"/>
@@ -1109,7 +1060,7 @@
                 android:id="@+id/tvBottomSubtext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2 pasang · 4 ekor"
+                android:text="1 item"
                 android:textColor="@color/guppy_text_gray"
                 android:fontFamily="@font/inter_regular"
                 android:textSize="10sp"/>

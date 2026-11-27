@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.menuHome.DetailActivity
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 
 class ProfileProductAdapter(
     private val context: Context,
@@ -35,9 +36,17 @@ class ProfileProductAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = products[position]
-        holder.imgThumb.setImageResource(if (item.imageRes != 0) item.imageRes else R.drawable.bg_image_grid)
+        val fallback = if (item.imageRes != 0) item.imageRes else R.drawable.bg_image_grid
+        SafeImageLoader.loadWithFallbackSafely(
+            context,
+            holder.imgThumb,
+            item.photoUris.firstOrNull(),
+            item.photoDataUrls.firstOrNull(),
+            fallback,
+            256
+        )
         holder.tvTitle.text = item.title
-        holder.tvStockInfo.text = "${item.unit} · Stok ${item.sold}"
+        holder.tvStockInfo.text = "${item.unit} · Stok ${item.effectiveStock()} · Terjual ${item.soldCount}"
         holder.tvPrice.text = item.price
 
         holder.btnManage.setOnClickListener {
@@ -50,10 +59,10 @@ class ProfileProductAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DetailActivity::class.java).apply {
-                putExtra("item_name", item.title)
-                putExtra("item_price", item.price)
-                putExtra("item_image", item.imageRes)
-                putExtra("item_seller", item.seller)
+                putExtra("EXTRA_PRODUCT_ID", item.id)
+                putExtra("EXTRA_SELLER_ID", item.sellerId)
+                putExtra("ITEM_NAME", item.title)
+                putExtra("ITEM_IMAGE", fallback)
             }
             context.startActivity(intent)
         }

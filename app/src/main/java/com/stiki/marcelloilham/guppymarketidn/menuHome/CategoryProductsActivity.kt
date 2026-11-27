@@ -30,6 +30,7 @@ class CategoryProductsActivity : AppCompatActivity() {
     private lateinit var tvEmpty: TextView
     private lateinit var adapter: CategoryProductAdapter
 
+    private var activeCategoryName: String = "Semua"
     private var activeStrain: String = "Semua"
     private var activeQuery: String = ""
     private var activeSort: String = "DEFAULT"
@@ -53,7 +54,8 @@ class CategoryProductsActivity : AppCompatActivity() {
             insets
         }
 
-        val categoryName = intent.getStringExtra("EXTRA_CATEGORY_NAME") ?: "Kontes"
+        val categoryName = intent.getStringExtra("EXTRA_CATEGORY_NAME") ?: "Semua"
+        activeCategoryName = categoryName
 
         tvTitle = findViewById(R.id.tvCategoryPageTitle)
         tvCount = findViewById(R.id.tvCategoryPageCount)
@@ -150,26 +152,31 @@ class CategoryProductsActivity : AppCompatActivity() {
 
     private fun setupProductsGrid() {
         FirestoreRepository.fetchProducts { firebaseList ->
-            val finalItems = if (firebaseList.isNotEmpty()) {
-                firebaseList.map { p ->
-                    CategoryProductAdapter.CategoryProduct(
-                        title = p.title,
-                        seller = p.seller,
-                        price = p.price,
-                        unit = p.unit,
-                        sold = p.sold,
-                        imageRes = p.imageRes,
-                        strain = p.strain
-                    )
-                }
+            val categoryFiltered = if (activeCategoryName.equals("Semua", ignoreCase = true)) {
+                firebaseList
             } else {
-                listOf(
-                    CategoryProductAdapter.CategoryProduct("Red Dragon Delta", "Bekasi Aqua Farm", "Rp 275.000", "per pasang", "120", R.drawable.bg_image_grid, "Dragon"),
-                    CategoryProductAdapter.CategoryProduct("Sky Blue High Dorsal", "Jakarta Guppy House", "Rp 150.000", "per ekor", "86", R.drawable.skyblue, "Blue"),
-                    CategoryProductAdapter.CategoryProduct("Blue Moscow Full", "Depok Tail Studio", "Rp 90.000", "per ekor", "54", R.drawable.gsrts, "Moscow"),
-                    CategoryProductAdapter.CategoryProduct("Albino Full White", "Bogor Guppy Lab", "Rp 320.000", "per pasang", "33", R.drawable.platinumrd, "Albino"),
-                    CategoryProductAdapter.CategoryProduct("Blue Grass Full Red", "Jakarta Guppy House", "Rp 450.000", "per ekor", "21", R.drawable.bg_image_grid, "Grass"),
-                    CategoryProductAdapter.CategoryProduct("Mosaic Premium", "Bekasi Aqua Farm", "Rp 380.000", "per pasang", "17", R.drawable.mssrl, "Mosaic")
+                firebaseList.filter { p ->
+                    p.category.equals(activeCategoryName, ignoreCase = true) ||
+                        p.category.contains(activeCategoryName, ignoreCase = true) ||
+                        p.strain.contains(activeCategoryName, ignoreCase = true) ||
+                        p.title.contains(activeCategoryName, ignoreCase = true)
+                }
+            }
+
+            val finalItems = categoryFiltered.map { p ->
+                CategoryProductAdapter.CategoryProduct(
+                    id = p.id,
+                    sellerId = p.sellerId,
+                    title = p.title,
+                    seller = p.seller,
+                    price = p.price,
+                    unit = p.unit,
+                    sold = p.soldCount.toString(),
+                    imageRes = p.imageRes,
+                    strain = p.strain,
+                    imageUrl = p.photoUris.firstOrNull().orEmpty(),
+                    photoDataUrl = p.photoDataUrls.firstOrNull().orEmpty(),
+                    priceNumeric = p.priceNumeric
                 )
             }
 

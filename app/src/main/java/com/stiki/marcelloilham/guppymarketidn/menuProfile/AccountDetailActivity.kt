@@ -18,6 +18,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 import java.util.Locale
 
 class AccountDetailActivity : AppCompatActivity() {
@@ -34,7 +35,8 @@ class AccountDetailActivity : AppCompatActivity() {
     private var methodId: String = ""
     private var providerName: String = "BCA"
     private var accountNumber: String = ""
-    private var accountOwner: String = "Marcello Aja"
+    private var accountOwner: String = ""
+    private var qrisDataUrl: String = ""
     private var methodType: String = "Bank"
     private var isMain: Boolean = false
 
@@ -77,7 +79,8 @@ class AccountDetailActivity : AppCompatActivity() {
         providerName = intent.getStringExtra("EXTRA_PROVIDER_NAME") ?: "BCA"
         val passedType = intent.getStringExtra("EXTRA_TYPE") ?: ""
         accountNumber = intent.getStringExtra("EXTRA_ACCOUNT_NUMBER") ?: ""
-        accountOwner = intent.getStringExtra("EXTRA_OWNER_NAME") ?: "Marcello Aja"
+        accountOwner = intent.getStringExtra("EXTRA_OWNER_NAME") ?: ""
+        qrisDataUrl = intent.getStringExtra("EXTRA_QRIS_DATA_URL") ?: ""
         isMain = intent.getBooleanExtra("EXTRA_IS_MAIN", false)
 
         val isQrisCheck = providerName.contains("QRIS", true) || passedType.equals("QRIS", true)
@@ -138,16 +141,17 @@ class AccountDetailActivity : AppCompatActivity() {
 
             val ivBarcode = findViewById<ImageView>(R.id.ivQrisBarcodeImage)
             if (ivBarcode != null) {
-                if (accountNumber.isNotEmpty() && (accountNumber.startsWith("file://") || accountNumber.startsWith("content://") || accountNumber.startsWith("/"))) {
-                    try {
-                        val uri = android.net.Uri.parse(accountNumber)
-                        ivBarcode.colorFilter = null
-                        ivBarcode.imageTintList = null
-                        ivBarcode.setImageURI(uri)
-                    } catch (e: Exception) {
-                        Log.e("AccountDetail", "Error loading QRIS image: ${e.message}")
-                        ivBarcode.setImageResource(R.drawable.ic_qris)
-                    }
+                if (accountNumber.isNotEmpty() || qrisDataUrl.isNotEmpty()) {
+                    ivBarcode.colorFilter = null
+                    ivBarcode.imageTintList = null
+                    SafeImageLoader.loadWithFallbackSafely(
+                        this,
+                        ivBarcode,
+                        accountNumber,
+                        qrisDataUrl,
+                        R.drawable.ic_qris,
+                        1024
+                    )
                 } else {
                     ivBarcode.setImageResource(R.drawable.ic_qris)
                 }
@@ -219,6 +223,7 @@ class AccountDetailActivity : AppCompatActivity() {
                     providerName = updated.providerName
                     accountNumber = updated.accountNumber
                     accountOwner = updated.accountOwner
+                    qrisDataUrl = updated.qrisDataUrl
                     isMain = updated.isMain
                     updateUI()
                 }

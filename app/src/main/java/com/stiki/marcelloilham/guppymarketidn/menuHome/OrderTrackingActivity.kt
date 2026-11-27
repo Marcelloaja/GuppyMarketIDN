@@ -104,10 +104,10 @@ class OrderTrackingActivity : AppCompatActivity() {
     }
 
     private fun readIntentData() {
-        val orderId = intent?.getStringExtra("EXTRA_ORDER_ID") ?: "#GM-20931"
-        val productName = intent?.getStringExtra("EXTRA_PRODUCT_NAME") ?: "Red Dragon Delta"
-        val courier = intent?.getStringExtra("EXTRA_COURIER") ?: "JNE Express"
-        trackingNumber = intent?.getStringExtra("EXTRA_TRACKING_NUMBER") ?: "JP8841"
+        val orderId = intent?.getStringExtra("EXTRA_ORDER_ID") ?: "-"
+        val productName = intent?.getStringExtra("EXTRA_PRODUCT_NAME") ?: "Pesanan Guppy"
+        val courier = intent?.getStringExtra("EXTRA_COURIER") ?: "Kurir Pengiriman"
+        trackingNumber = intent?.getStringExtra("EXTRA_TRACKING_NUMBER").orEmpty().ifBlank { "-" }
 
         tvOrderNumber.text = "No. Pesanan: $orderId"
         tvProductName.text = productName

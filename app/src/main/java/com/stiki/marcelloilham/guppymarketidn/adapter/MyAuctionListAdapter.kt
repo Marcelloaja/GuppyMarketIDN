@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 
 class MyAuctionListAdapter(
     private val context: Context,
@@ -35,7 +36,20 @@ class MyAuctionListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = rawItems[position]
-        holder.imgThumb.setImageResource(if (item.imageRes != 0) item.imageRes else R.drawable.bg_image_grid)
+        val safeImage = if (item.imageRes != 0) item.imageRes else R.drawable.bg_image_grid
+        val firstPhoto = item.photoUris.firstOrNull()
+        val firstPhotoData = item.photoDataUrls.firstOrNull()
+        val loadedPhoto = SafeImageLoader.loadWithFallbackSafely(
+            context, holder.imgThumb, firstPhoto, firstPhotoData, safeImage, 256
+        )
+        if (!loadedPhoto) {
+            val loadedVideo = SafeImageLoader.loadVideoThumbnailSafely(
+                context, holder.imgThumb, item.videoUri, safeImage
+            )
+            if (!loadedVideo && item.videoThumbDataUrl.isNotBlank()) {
+                SafeImageLoader.loadUriSafely(context, holder.imgThumb, item.videoThumbDataUrl, safeImage, 256)
+            }
+        }
         holder.tvTitle.text = item.title
         holder.tvBidInfo.text = "Bid ${item.currentBid} · ${item.bidsCount} penawar"
 
@@ -47,12 +61,21 @@ class MyAuctionListAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DetailAuctionActivity::class.java).apply {
+                putExtra("EXTRA_AUCTION_ID", item.id)
+                putExtra("EXTRA_AUCTION_SELLER_ID", item.sellerId)
                 putExtra("auction_title", item.title)
                 putExtra("EXTRA_AUCTION_SELLER", item.seller)
                 putExtra("EXTRA_AUCTION_LOCATION", item.location)
                 putExtra("EXTRA_AUCTION_PRICE", item.currentBid)
+                putExtra("EXTRA_AUCTION_PRICE_NUMERIC", item.currentBidNumeric)
+                putExtra("EXTRA_AUCTION_BIDS_COUNT", item.bidsCount)
+                putExtra("EXTRA_AUCTION_HIGHEST_BIDDER", item.highestBidderName)
+                putExtra("EXTRA_AUCTION_INCREMENT", item.bidIncrementNumeric)
                 putExtra("EXTRA_AUCTION_GRADE", item.grade)
                 putExtra("EXTRA_AUCTION_IMAGE", item.imageRes)
+                putExtra("EXTRA_AUCTION_VIDEO_URI", item.videoUri)
+                putStringArrayListExtra("EXTRA_AUCTION_PHOTO_URIS", ArrayList(item.photoUris))
+                putExtra("EXTRA_AUCTION_SELLER_AVATAR", item.sellerAvatarUri)
                 putExtra("EXTRA_AUCTION_END_TIME_MILLIS", item.endTimeMillis)
                 putExtra("EXTRA_AUCTION_DESCRIPTION", item.description)
                 putExtra("EXTRA_AUCTION_STRAIN", item.strain)

@@ -52,6 +52,13 @@ class AddAddressActivity : AppCompatActivity() {
     private var selectedLabel: String = "Rumah"
     private var isEditMode = false
     private var existingAddressId: String? = null
+    private var existingLat: Double = 0.0
+    private var existingLng: Double = 0.0
+    private var lastSearchFullAddress: String = ""
+    private var isProgrammaticAddressUpdate = false
+    private var isMapPageLoaded = false
+    private var pendingMapLat: Double? = null
+    private var pendingMapLng: Double? = null
     private val firebaseAuth = FirebaseAuth.getInstance()
     private lateinit var locationPermissionLauncher: ActivityResultLauncher<Array<String>>
 
@@ -78,17 +85,21 @@ class AddAddressActivity : AppCompatActivity() {
 
         initLocationPermissionLauncher()
         initViews()
-        initOpenStreetMap()
         setupListeners()
-        loadDefaultProfileName()
-        checkAddressCountForDefaultToggle()
         checkEditModeIntent()
-        requestLocationPermission()
+        initOpenStreetMap()
+        checkAddressCountForDefaultToggle()
+
+        if (!isEditMode) {
+            loadDefaultProfileName()
+            requestLocationPermission()
+        }
     }
 
     private fun checkAddressCountForDefaultToggle() {
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-        FirestoreRepository.fetchUserAddresses(currentUserId) { addresses ->
+        FirestoreRepository.fetchUserAddresses(currentUserId, preferServer = false) { addresses ->
+            if (isFinishing || isDestroyed) return@fetchUserAddresses
             val hasExistingAddress = addresses.isNotEmpty()
             val tvSubNotice = findViewById<TextView>(R.id.tvSetDefaultSubNotice)
 
@@ -116,6 +127,8 @@ class AddAddressActivity : AppCompatActivity() {
             val addressText = intent.getStringExtra("EXTRA_FULL_ADDRESS") ?: ""
             val isDefault = intent.getBooleanExtra("EXTRA_IS_DEFAULT", false)
             val notes = intent.getStringExtra("EXTRA_NOTES") ?: ""
+            existingLat = intent.getDoubleExtra("EXTRA_LAT", 0.0)
+            existingLng = intent.getDoubleExtra("EXTRA_LNG", 0.0)
 
             // Update Header & Button Titles
             val tvHeaderTitle = findViewById<TextView>(R.id.tvAddAddressHeaderTitle)
@@ -124,19 +137,34 @@ class AddAddressActivity : AppCompatActivity() {
             val btnSave = findViewById<TextView>(R.id.btnSaveAddressBottom)
             btnSave?.text = "Simpan Perubahan"
 
-            // Pre-fill fields
+            // Pre-fill all existing data without triggering map overwrite
             if (name.isNotEmpty()) etRecipientName.setText(name)
             val cleanPhone = phone.replace("+62", "").replace("-", "").replace(" ", "").trim()
             if (cleanPhone.isNotEmpty()) etPhoneNumber.setText(cleanPhone)
-            if (addressText.isNotEmpty()) etDetailAddress.setText(addressText)
+            if (addressText.isNotEmpty()) {
+                isProgrammaticAddressUpdate = true
+                etDetailAddress.setText(addressText)
+                isProgrammaticAddressUpdate = false
+                lastSearchFullAddress = addressText
+
+                val parts = addressText.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                tvAreaMain.text = parts.firstOrNull() ?: "Alamat Tersimpan"
+                tvAreaSub.text = parts.drop(1).take(2).joinToString(", ").ifBlank { addressText }
+                tvLandmarkTitle.text = label
+                tvLandmarkSub.text = addressText
+            }
             if (notes.isNotEmpty()) etLandmarkNotes.setText(notes)
             switchSetDefault.isChecked = isDefault
 
             selectChipByLabel(label)
 
-            // Geocode address
-            if (addressText.isNotEmpty()) {
-                performMapSearch(addressText)
+            if (existingLat != 0.0 && existingLng != 0.0) {
+                tvCoordinates.text = String.format(Locale.US, "%.4f, %.4f", existingLat, existingLng)
+                pendingMapLat = existingLat
+                pendingMapLng = existingLng
+            } else if (addressText.isNotEmpty()) {
+                // Only sync coordinates/map pin quietly from saved address; never overwrite etDetailAddress
+                geocodeAddressToPinOnly(addressText, updateAreaPreview = false)
             }
         }
     }
@@ -213,7 +241,7 @@ class AddAddressActivity : AppCompatActivity() {
 
             userDocRef.get().addOnSuccessListener { doc ->
                 if (doc.exists()) {
-                    val name = doc.getString("name") ?: currentUser.displayName ?: "Marcello Aja"
+                    val name = doc.getString("name") ?: currentUser.displayName ?: "Pengguna Guppy"
                     val phone = doc.getString("whatsapp")?.replace("+62", "")?.replace("-", "")?.trim() ?: "81234567890"
                     etRecipientName.setText(name)
                     etPhoneNumber.setText(phone)
@@ -235,25 +263,53 @@ class AddAddressActivity : AppCompatActivity() {
 
         row1?.setOnClickListener {
             highlightSelectedLocationRow(1)
-            val addrText = "${tvAreaMain.text}, ${tvAreaSub.text}"
+            val addrText = lastSearchFullAddress.takeIf { it.isNotBlank() }
+                ?: "${tvAreaMain.text}, ${tvAreaSub.text}"
+            isProgrammaticAddressUpdate = true
             etDetailAddress.setText(addrText)
+            isProgrammaticAddressUpdate = false
             Toast.makeText(this, "Rekomendasi lokasi '${tvAreaMain.text}' dipilih!", Toast.LENGTH_SHORT).show()
         }
 
         row2?.setOnClickListener {
             highlightSelectedLocationRow(2)
             val landmarkText = "${tvLandmarkTitle.text}, ${tvLandmarkSub.text}"
+            isProgrammaticAddressUpdate = true
             etDetailAddress.setText(landmarkText)
+            isProgrammaticAddressUpdate = false
             Toast.makeText(this, "Rekomendasi lokasi '${tvLandmarkTitle.text}' dipilih!", Toast.LENGTH_SHORT).show()
         }
 
-        // Search Map Input Listener
+        // Search Map Input Listener (updates map preview & suggestions; user selects row or edits full address to apply)
         etSearchMap.addTextChangedListener(object : TextWatcher {
+            private val searchHandler = android.os.Handler(android.os.Looper.getMainLooper())
+            private var searchRunnable: Runnable? = null
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s?.toString()?.trim() ?: ""
-                if (query.isNotEmpty() && query.length > 3) {
-                    performMapSearch(query)
+                searchRunnable?.let { searchHandler.removeCallbacks(it) }
+                if (query.length > 3) {
+                    searchRunnable = Runnable { performMapSearch(query) }
+                    searchHandler.postDelayed(searchRunnable!!, 400L)
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // Sync map pin automatically when user edits detailed full address manually
+        etDetailAddress.addTextChangedListener(object : TextWatcher {
+            private val addrHandler = android.os.Handler(android.os.Looper.getMainLooper())
+            private var addrRunnable: Runnable? = null
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (isProgrammaticAddressUpdate) return
+                val fullAddr = s?.toString()?.trim() ?: ""
+                addrRunnable?.let { addrHandler.removeCallbacks(it) }
+                if (fullAddr.length >= 8) {
+                    addrRunnable = Runnable {
+                        geocodeAddressToPinOnly(fullAddr, updateAreaPreview = true)
+                    }
+                    addrHandler.postDelayed(addrRunnable!!, 700L)
                 }
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -368,12 +424,30 @@ class AddAddressActivity : AppCompatActivity() {
         webViewOsmMap.settings.domStorageEnabled = true
         webViewOsmMap.settings.userAgentString = "GuppyMarketIDN/1.0 (Android; MobileApp)"
 
+        val initialLat = if (isEditMode && existingLat != 0.0) existingLat else -6.2349
+        val initialLng = if (isEditMode && existingLng != 0.0) existingLng else 106.9924
+
+        isMapPageLoaded = false
+        webViewOsmMap.webViewClient = object : android.webkit.WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                isMapPageLoaded = true
+                val latToSync = pendingMapLat
+                val lngToSync = pendingMapLng
+                if (latToSync != null && lngToSync != null) {
+                    view?.evaluateJavascript("updateMapLocation($latToSync, $lngToSync)", null)
+                }
+            }
+        }
+
         webViewOsmMap.addJavascriptInterface(object {
             @android.webkit.JavascriptInterface
             fun onMapDragged(lat: Double, lng: Double) {
                 runOnUiThread {
+                    pendingMapLat = lat
+                    pendingMapLng = lng
                     tvCoordinates.text = String.format(Locale.US, "%.4f, %.4f", lat, lng)
-                    reverseGeocodeLocation(lat, lng, syncOsm = false)
+                    reverseGeocodeLocation(lat, lng, syncOsm = false, overwriteDetailAddress = true)
                 }
             }
         }, "AndroidInterface")
@@ -393,12 +467,12 @@ class AddAddressActivity : AppCompatActivity() {
             <body>
                 <div id="map"></div>
                 <script>
-                    var map = L.map('map', { zoomControl: false }).setView([-6.2349, 106.9924], 15);
+                    var map = L.map('map', { zoomControl: false }).setView([$initialLat, $initialLng], 15);
                     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
                         maxZoom: 19
                     }).addTo(map);
 
-                    var marker = L.marker([-6.2349, 106.9924], { draggable: true }).addTo(map);
+                    var marker = L.marker([$initialLat, $initialLng], { draggable: true }).addTo(map);
 
                     function updateMapLocation(lat, lng) {
                         var newLatLng = new L.LatLng(lat, lng);
@@ -428,53 +502,121 @@ class AddAddressActivity : AppCompatActivity() {
     }
 
     private fun updateOsmMapCenter(lat: Double, lng: Double) {
-        if (::webViewOsmMap.isInitialized) {
+        pendingMapLat = lat
+        pendingMapLng = lng
+        if (::webViewOsmMap.isInitialized && isMapPageLoaded) {
             webViewOsmMap.evaluateJavascript("updateMapLocation($lat, $lng)", null)
         }
     }
 
-    private fun reverseGeocodeLocation(lat: Double, lng: Double, syncOsm: Boolean = true) {
+    private val geocodeExecutor = java.util.concurrent.Executors.newSingleThreadExecutor()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        geocodeExecutor.shutdownNow()
+    }
+
+    private fun reverseGeocodeLocation(
+        lat: Double,
+        lng: Double,
+        syncOsm: Boolean = true,
+        overwriteDetailAddress: Boolean = true
+    ) {
         if (syncOsm) {
             updateOsmMapCenter(lat, lng)
         }
-        try {
-            val geocoder = Geocoder(this, Locale.getDefault())
-            @Suppress("DEPRECATION")
-            val addresses = geocoder.getFromLocation(lat, lng, 1)
-            if (!addresses.isNullOrEmpty()) {
-                val address = addresses[0]
-                val area = address.subLocality ?: address.locality ?: "Bekasi Selatan"
-                val cityAndProvince = "${address.subAdminArea ?: "Kota Bekasi"}, ${address.adminArea ?: "Jawa Barat"}"
-                val thoroughfare = address.thoroughfare ?: address.featureName ?: "Summarecon Mall Bekasi"
-                val fullAddrText = address.getAddressLine(0) ?: "$thoroughfare, $area, $cityAndProvince"
+        geocodeExecutor.execute {
+            try {
+                val geocoder = Geocoder(this, Locale.getDefault())
+                @Suppress("DEPRECATION")
+                val addresses = geocoder.getFromLocation(lat, lng, 1)
+                if (!addresses.isNullOrEmpty() && !isFinishing && !isDestroyed) {
+                    val address = addresses[0]
+                    val area = address.subLocality ?: address.locality ?: "Bekasi Selatan"
+                    val cityAndProvince = "${address.subAdminArea ?: "Kota Bekasi"}, ${address.adminArea ?: "Jawa Barat"}"
+                    val thoroughfare = address.thoroughfare ?: address.featureName ?: "Lokasi Pin"
+                    val fullAddrText = address.getAddressLine(0) ?: "$thoroughfare, $area, $cityAndProvince"
 
-                tvAreaMain.text = area
-                tvAreaSub.text = cityAndProvince
-                tvLandmarkTitle.text = thoroughfare
-                tvLandmarkSub.text = "$thoroughfare, $area"
-
-                etDetailAddress.setText(fullAddrText)
+                    runOnUiThread {
+                        if (isFinishing || isDestroyed) return@runOnUiThread
+                        lastSearchFullAddress = fullAddrText
+                        tvAreaMain.text = area
+                        tvAreaSub.text = cityAndProvince
+                        tvLandmarkTitle.text = thoroughfare
+                        tvLandmarkSub.text = "$thoroughfare, $area"
+                        if (overwriteDetailAddress) {
+                            isProgrammaticAddressUpdate = true
+                            etDetailAddress.setText(fullAddrText)
+                            isProgrammaticAddressUpdate = false
+                        }
+                    }
+                }
+            } catch (_: Exception) {
+                runOnUiThread {
+                    if (!isFinishing && !isDestroyed && overwriteDetailAddress) {
+                        tvAreaMain.text = "Lokasi Terpilih"
+                        tvAreaSub.text = "Indonesia"
+                    }
+                }
             }
-        } catch (_: Exception) {
-            tvAreaMain.text = "Bekasi Selatan"
-            tvAreaSub.text = "Kota Bekasi, Jawa Barat"
         }
     }
 
     private fun performMapSearch(query: String) {
-        try {
-            val geocoder = Geocoder(this, Locale.getDefault())
-            @Suppress("DEPRECATION")
-            val addresses = geocoder.getFromLocationName(query, 1)
-            if (!addresses.isNullOrEmpty()) {
-                val address = addresses[0]
-                val lat = address.latitude
-                val lng = address.longitude
-                tvCoordinates.text = String.format(Locale.US, "%.4f, %.4f", lat, lng)
-                reverseGeocodeLocation(lat, lng)
+        geocodeExecutor.execute {
+            try {
+                val geocoder = Geocoder(this, Locale.getDefault())
+                @Suppress("DEPRECATION")
+                val addresses = geocoder.getFromLocationName(query, 1)
+                if (!addresses.isNullOrEmpty() && !isFinishing && !isDestroyed) {
+                    val address = addresses[0]
+                    val lat = address.latitude
+                    val lng = address.longitude
+                    runOnUiThread {
+                        if (!isFinishing && !isDestroyed) {
+                            tvCoordinates.text = String.format(Locale.US, "%.4f, %.4f", lat, lng)
+                            highlightSelectedLocationRow(0)
+                            reverseGeocodeLocation(lat, lng, syncOsm = true, overwriteDetailAddress = false)
+                        }
+                    }
+                }
+            } catch (_: Exception) {
+                runOnUiThread {
+                    if (!isFinishing && !isDestroyed) {
+                        tvAreaMain.text = query
+                    }
+                }
             }
-        } catch (_: Exception) {
-            tvAreaMain.text = query
+        }
+    }
+
+    private fun geocodeAddressToPinOnly(addressQuery: String, updateAreaPreview: Boolean) {
+        geocodeExecutor.execute {
+            try {
+                val geocoder = Geocoder(this, Locale.getDefault())
+                @Suppress("DEPRECATION")
+                val addresses = geocoder.getFromLocationName(addressQuery, 1)
+                if (!addresses.isNullOrEmpty() && !isFinishing && !isDestroyed) {
+                    val address = addresses[0]
+                    val lat = address.latitude
+                    val lng = address.longitude
+                    val area = address.subLocality ?: address.locality
+                    val cityAndProvince = listOfNotNull(address.subAdminArea, address.adminArea)
+                        .filter { it.isNotBlank() }
+                        .joinToString(", ")
+
+                    runOnUiThread {
+                        if (isFinishing || isDestroyed) return@runOnUiThread
+                        tvCoordinates.text = String.format(Locale.US, "%.4f, %.4f", lat, lng)
+                        updateOsmMapCenter(lat, lng)
+                        if (updateAreaPreview) {
+                            if (!area.isNullOrBlank()) tvAreaMain.text = area
+                            if (cityAndProvince.isNotBlank()) tvAreaSub.text = cityAndProvince
+                        }
+                    }
+                }
+            } catch (_: Exception) {
+            }
         }
     }
 
@@ -494,61 +636,122 @@ class AddAddressActivity : AppCompatActivity() {
         }
 
         val coordsStr = tvCoordinates.text.toString().split(",")
-        var currentLat = coordsStr.getOrNull(0)?.trim()?.toDoubleOrNull() ?: 0.0
-        var currentLng = coordsStr.getOrNull(1)?.trim()?.toDoubleOrNull() ?: 0.0
-
-        if ((currentLat == 0.0 || currentLng == 0.0) && fullAddress.isNotEmpty()) {
-            try {
-                val geocoder = Geocoder(this, Locale.getDefault())
-                @Suppress("DEPRECATION")
-                val matches = geocoder.getFromLocationName(fullAddress, 1)
-                if (!matches.isNullOrEmpty()) {
-                    currentLat = matches[0].latitude
-                    currentLng = matches[0].longitude
-                }
-            } catch (_: Exception) {}
-        }
-
+        val initialLat = coordsStr.getOrNull(0)?.trim()?.toDoubleOrNull() ?: 0.0
+        val initialLng = coordsStr.getOrNull(1)?.trim()?.toDoubleOrNull() ?: 0.0
         val phoneFormatted = if (phoneRaw.startsWith("+62")) phoneRaw else "+62 $phoneRaw"
         val isDefaultAddr = switchSetDefault.isChecked
-
         val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
+
+        val btnSave = findViewById<TextView>(R.id.btnSaveAddressBottom)
+        btnSave?.isEnabled = false
+        btnSave?.text = if (isEditMode) "Menyimpan Perubahan..." else "Menyimpan Alamat..."
+
+        if (initialLat != 0.0 && initialLng != 0.0) {
+            persistAddressWithCoords(currentUserId, recipientName, phoneFormatted, fullAddress, landmarkNotes, isDefaultAddr, initialLat, initialLng)
+        } else {
+            // Resolve geocoding on a dedicated background thread with a fast 1s cap so save never queues behind map searches
+            val completed = java.util.concurrent.atomic.AtomicBoolean(false)
+            val fallbackHandler = android.os.Handler(android.os.Looper.getMainLooper())
+            val timeoutTask = Runnable {
+                if (completed.compareAndSet(false, true) && !isFinishing && !isDestroyed) {
+                    persistAddressWithCoords(currentUserId, recipientName, phoneFormatted, fullAddress, landmarkNotes, isDefaultAddr, 0.0, 0.0)
+                }
+            }
+            fallbackHandler.postDelayed(timeoutTask, 1000L)
+
+            Thread {
+                var lat = 0.0
+                var lng = 0.0
+                try {
+                    val geocoder = Geocoder(this, Locale.getDefault())
+                    @Suppress("DEPRECATION")
+                    val matches = geocoder.getFromLocationName(fullAddress, 1)
+                    if (!matches.isNullOrEmpty()) {
+                        lat = matches[0].latitude
+                        lng = matches[0].longitude
+                    }
+                } catch (_: Exception) {
+                }
+                if (completed.compareAndSet(false, true)) {
+                    fallbackHandler.removeCallbacks(timeoutTask)
+                    runOnUiThread {
+                        if (!isFinishing && !isDestroyed) {
+                            persistAddressWithCoords(currentUserId, recipientName, phoneFormatted, fullAddress, landmarkNotes, isDefaultAddr, lat, lng)
+                        }
+                    }
+                }
+            }.start()
+        }
+    }
+
+    private fun persistAddressWithCoords(
+        currentUserId: String,
+        recipientName: String,
+        phoneFormatted: String,
+        fullAddress: String,
+        landmarkNotes: String,
+        isDefaultAddr: Boolean,
+        lat: Double,
+        lng: Double
+    ) {
+        val btnSave = findViewById<TextView>(R.id.btnSaveAddressBottom)
         val newAddress = FirestoreRepository.AddressModel(
-            id = existingAddressId ?: "addr_${System.currentTimeMillis()}",
+            id = existingAddressId?.takeIf { it.isNotBlank() } ?: "addr_${System.currentTimeMillis()}",
             label = selectedLabel,
             recipientName = recipientName,
             phone = phoneFormatted,
             fullAddress = fullAddress,
             isDefault = isDefaultAddr,
             notesForCourier = landmarkNotes,
-            lat = currentLat,
-            lng = currentLng
+            lat = lat,
+            lng = lng
         )
 
-        val btnSave = findViewById<TextView>(R.id.btnSaveAddressBottom)
-        btnSave?.isEnabled = false
-        btnSave?.text = if (isEditMode) "Menyimpan Perubahan..." else "Menyimpan Alamat..."
-
-        val executeSave = {
-            FirestoreRepository.addUserAddress(currentUserId, newAddress) { success ->
+        val saveFinished = java.util.concurrent.atomic.AtomicBoolean(false)
+        val finishSaveFlow: (Boolean, String?) -> Unit = { success, customMsg ->
+            if (saveFinished.compareAndSet(false, true) && !isFinishing && !isDestroyed) {
                 btnSave?.isEnabled = true
                 btnSave?.text = if (isEditMode) "Simpan Perubahan" else "Simpan Alamat"
 
                 if (success) {
-                    if (isDefaultAddr) {
+                    if (isDefaultAddr && currentUserId != "user_default") {
                         com.google.firebase.firestore.FirebaseFirestore.getInstance()
                             .collection("user").document(currentUserId)
-                            .update(mapOf("location" to fullAddress, "full_address" to fullAddress))
+                            .set(
+                                mapOf("location" to fullAddress, "full_address" to fullAddress),
+                                com.google.firebase.firestore.SetOptions.merge()
+                            )
                     }
-                    showAddressSuccessDialog(newAddress)
+                    val toastMsg = customMsg ?: if (isEditMode) {
+                        "Perubahan alamat berhasil disimpan!"
+                    } else {
+                        "Alamat berhasil disimpan!"
+                    }
+                    Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
+                    finish()
                 } else {
                     Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
+        // Firestore local persistence queues offline/slow writes immediately; never trap user waiting >2s on server ACK
+        val slowNetworkHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        val slowFallbackRunnable = Runnable {
+            finishSaveFlow(true, "Alamat disimpan & sedang disinkronkan...")
+        }
+
+        val executeSave = {
+            slowNetworkHandler.postDelayed(slowFallbackRunnable, 2000L)
+            FirestoreRepository.addUserAddress(currentUserId, newAddress) { success ->
+                slowNetworkHandler.removeCallbacks(slowFallbackRunnable)
+                finishSaveFlow(success, null)
+            }
+        }
+
         if (!isEditMode) {
-            FirestoreRepository.fetchUserAddresses(currentUserId) { existingAddresses ->
+            FirestoreRepository.fetchUserAddresses(currentUserId, preferServer = false) { existingAddresses ->
+                if (isFinishing || isDestroyed) return@fetchUserAddresses
                 if (existingAddresses.size >= 5) {
                     btnSave?.isEnabled = true
                     btnSave?.text = "Simpan Alamat"
@@ -565,14 +768,10 @@ class AddAddressActivity : AppCompatActivity() {
                         it.copy(isDefault = false)
                     } + newAddress.copy(isDefault = true)
 
+                    slowNetworkHandler.postDelayed(slowFallbackRunnable, 2000L)
                     FirestoreRepository.updateAllAddresses(currentUserId, updatedList) { success ->
-                        btnSave?.isEnabled = true
-                        btnSave?.text = "Simpan Alamat"
-                        if (success) {
-                            showAddressSuccessDialog(newAddress)
-                        } else {
-                            Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
-                        }
+                        slowNetworkHandler.removeCallbacks(slowFallbackRunnable)
+                        finishSaveFlow(success, null)
                     }
                 } else {
                     executeSave()
@@ -580,19 +779,16 @@ class AddAddressActivity : AppCompatActivity() {
             }
         } else {
             if (isDefaultAddr) {
-                FirestoreRepository.fetchUserAddresses(currentUserId) { existingAddresses ->
+                FirestoreRepository.fetchUserAddresses(currentUserId, preferServer = false) { existingAddresses ->
+                    if (isFinishing || isDestroyed) return@fetchUserAddresses
                     val updatedList = existingAddresses.filterNot { it.id == newAddress.id }.map {
                         it.copy(isDefault = false)
                     } + newAddress.copy(isDefault = true)
 
+                    slowNetworkHandler.postDelayed(slowFallbackRunnable, 2000L)
                     FirestoreRepository.updateAllAddresses(currentUserId, updatedList) { success ->
-                        btnSave?.isEnabled = true
-                        btnSave?.text = "Simpan Perubahan"
-                        if (success) {
-                            showAddressSuccessDialog(newAddress)
-                        } else {
-                            Toast.makeText(this, "Gagal menyimpan alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
-                        }
+                        slowNetworkHandler.removeCallbacks(slowFallbackRunnable)
+                        finishSaveFlow(success, null)
                     }
                 }
             } else {
@@ -682,7 +878,19 @@ class AddAddressActivity : AppCompatActivity() {
 
         btnConfirm?.setOnClickListener {
             val currentUserId = firebaseAuth.currentUser?.uid ?: "user_default"
-            FirestoreRepository.deleteUserAddress(currentUserId, savedAddress.id) { _ ->
+            btnConfirm.isEnabled = false
+            btnConfirm.text = "Menghapus..."
+            btnCancel?.isEnabled = false
+
+            FirestoreRepository.deleteUserAddress(currentUserId, savedAddress.id) { success ->
+                if (isFinishing || isDestroyed) return@deleteUserAddress
+                if (!success) {
+                    btnConfirm.isEnabled = true
+                    btnConfirm.text = "Ya, Hapus"
+                    btnCancel?.isEnabled = true
+                    Toast.makeText(this, "Gagal menghapus alamat. Coba lagi.", Toast.LENGTH_SHORT).show()
+                    return@deleteUserAddress
+                }
                 Toast.makeText(this, "Alamat '${savedAddress.label}' berhasil dihapus", Toast.LENGTH_SHORT).show()
                 deleteAlertDialog.dismiss()
                 parentSuccessDialog.dismiss()

@@ -167,7 +167,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:background="@null"
-                    android:text="Marcello Guppy Farm"
+                    android:text="Guppy Farm"
                     android:textColor="@color/guppy_text_black"
                     android:fontFamily="@font/inter_bold"
                     android:textSize="15sp"

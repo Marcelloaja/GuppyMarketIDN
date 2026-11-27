@@ -73,6 +73,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("com.google.firebase:firebase-firestore-ktx:25.0.0")
+    implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
     implementation("androidx.viewpager2:viewpager2:1.0.0")

@@ -48,11 +48,12 @@
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/tvDetailLotSubtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:fontFamily="@font/inter_regular"
-                android:text="Lot #GPY-2841 · Sesi 14"
+                android:text="Lot Lelang"
                 android:textColor="@color/guppy_text_gray"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -159,6 +160,7 @@
 
                     <!-- Live Tag Overlay -->
                     <LinearLayout
+                        android:id="@+id/layoutDetailStatusBadge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="12dp"
@@ -168,6 +170,7 @@
                         android:gravity="center_vertical">
 
                         <View
+                            android:id="@+id/dotDetailStatusBadge"
                             android:layout_width="6dp"
                             android:layout_height="6dp"
                             android:background="@drawable/bg_circle_image"
@@ -175,6 +178,7 @@
                             android:layout_marginEnd="6dp"/>
 
                         <TextView
+                            android:id="@+id/tvDetailStatusBadge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="LIVE"
@@ -258,6 +262,7 @@
                                 android:focusable="true"/>
 
                             <ImageView
+                                android:id="@+id/ivThumbVideoPlayIcon"
                                 android:layout_width="22dp"
                                 android:layout_height="22dp"
                                 android:layout_gravity="center"
@@ -377,9 +382,10 @@
 
                     <!-- Profil Farm Mini -->
                     <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivDetailSellerMiniAvatar"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/marcello"
+                        android:src="@drawable/ic_default_user_avatar"
                         android:scaleType="centerCrop"
                         app:shapeAppearanceOverlay="@style/CircleImageStyle"/>
 
@@ -413,19 +419,21 @@
                         app:tint="@color/guppy_star"/>
 
                     <TextView
+                        android:id="@+id/tvDetailSellerRating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:text="4.9"
+                        android:text="0.0"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
                         android:textSize="13sp"/>
 
                     <TextView
+                        android:id="@+id/tvDetailSellerReviewCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:text="(128 ulasan)"
+                        android:text="(0 ulasan)"
                         android:textColor="@color/guppy_text_gray"
                         android:fontFamily="@font/inter_regular"
                         android:textSize="12sp"/>
@@ -509,10 +517,11 @@
                             </LinearLayout>
 
                             <TextView
+                                android:id="@+id/tvDetailHighestBidMeta"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="18 penawaran · dari\n@bimaguppy"
+                                android:text="0 penawaran"
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="11sp"
@@ -557,6 +566,7 @@
 
                     <!-- Bottom Warning Banner -->
                     <LinearLayout
+                        android:id="@+id/layoutAntiSnipeBanner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_warning_banner"
@@ -570,6 +580,7 @@
                             android:src="@drawable/ic_info"/>
 
                         <TextView
+                            android:id="@+id/tvDetailAuctionNoticeText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -623,6 +634,7 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
+                            android:id="@+id/tvDetailStrain"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -648,6 +660,7 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
+                            android:id="@+id/tvDetailGender"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -680,6 +693,7 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
+                            android:id="@+id/tvDetailAge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -705,6 +719,7 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
+                            android:id="@+id/tvDetailQuantity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -737,6 +752,7 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
+                            android:id="@+id/tvDetailCondition"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -762,6 +778,7 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10sp"/>
                         <TextView
+                            android:id="@+id/tvDetailQuarantine"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -915,7 +932,7 @@
                     android:id="@+id/btnViewAllBidHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lihat semua (18)"
+                    android:text="Lihat semua (0)"
                     android:textColor="@color/guppy_primary"
                     android:fontFamily="@font/inter_medium"
                     android:textSize="13sp"
@@ -939,189 +956,22 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <!-- Bid Item 1 (Highest) -->
                     <LinearLayout
+                        android:id="@+id/layoutRecentBidsContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="vertical" />
 
-                        <TextView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/bg_circle_letter_green"
-                            android:text="BK"
-                            android:textColor="@color/guppy_primary"
-                            android:textSize="14sp"
-                            android:fontFamily="@font/inter_bold"
-                            android:gravity="center"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="12dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="bima***"
-                                    android:textColor="@color/guppy_text_black"
-                                    android:fontFamily="@font/inter_bold"
-                                    android:textSize="14sp"/>
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
-                                    android:background="@drawable/bg_tag_tertinggi"
-                                    android:text="TERTINGGI"
-                                    android:textColor="@color/guppy_primary"
-                                    android:fontFamily="@font/inter_bold"
-                                    android:textSize="9sp"
-                                    android:paddingHorizontal="6dp"
-                                    android:paddingVertical="3dp"/>
-                            </LinearLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="2 menit lalu"
-                                android:textColor="@color/guppy_text_gray"
-                                android:fontFamily="@font/inter_regular"
-                                android:textSize="12sp"/>
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rp 1.275.000"
-                            android:textColor="@color/guppy_text_black"
-                            android:fontFamily="@font/inter_bold"
-                            android:textSize="14sp"/>
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@drawable/bg_line_horizontal"/>
-
-                    <!-- Bid Item 2 -->
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tvEmptyRecentBids"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/bg_circle_letter"
-                            android:text="RY"
-                            android:textColor="@color/guppy_text_gray"
-                            android:textSize="14sp"
-                            android:fontFamily="@font/inter_bold"
-                            android:gravity="center"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="12dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="ryan***"
-                                android:textColor="@color/guppy_text_black"
-                                android:fontFamily="@font/inter_medium"
-                                android:textSize="14sp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="5 menit lalu"
-                                android:textColor="@color/guppy_text_gray"
-                                android:fontFamily="@font/inter_regular"
-                                android:textSize="12sp"/>
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rp 1.250.000"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="14sp"/>
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@drawable/bg_line_horizontal"/>
-
-                    <!-- Bid Item 3 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/bg_circle_letter"
-                            android:text="AS"
-                            android:textColor="@color/guppy_text_gray"
-                            android:textSize="14sp"
-                            android:fontFamily="@font/inter_bold"
-                            android:gravity="center"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="12dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="adi_s***"
-                                android:textColor="@color/guppy_text_black"
-                                android:fontFamily="@font/inter_medium"
-                                android:textSize="14sp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="12 menit lalu"
-                                android:textColor="@color/guppy_text_gray"
-                                android:fontFamily="@font/inter_regular"
-                                android:textSize="12sp"/>
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rp 1.225.000"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="14sp"/>
-                    </LinearLayout>
+                        android:padding="20dp"
+                        android:gravity="center"
+                        android:text="Belum ada penawaran masuk. Jadilah penawar pertama!"
+                        android:textColor="@color/guppy_text_gray"
+                        android:fontFamily="@font/inter_regular"
+                        android:textSize="13sp" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -1138,17 +988,21 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tvDetailDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="12dp"
-                android:text="Ikan Guppy Mosaic Grade A+ ini memiliki corak ekor yang sangat rapi dan lebar. Warna tubuh metalik dengan kombinasi pattern mosaic yang solid dan simetris. Ikan sangat lincah, rakus..."
+                android:text="Ikan Guppy berkualitas tinggi dengan standar penilaian kontes."
                 android:textColor="@color/guppy_text_gray"
                 android:fontFamily="@font/inter_regular"
                 android:textSize="14sp"
+                android:maxLines="4"
+                android:ellipsize="end"
                 android:lineSpacingExtra="4dp"/>
 
             <TextView
+                android:id="@+id/btnReadMoreDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -1185,9 +1039,10 @@
                         android:gravity="center_vertical">
 
                         <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivDetailStoreAvatar"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@drawable/marcello"
+                            android:src="@drawable/ic_default_user_avatar"
                             android:scaleType="centerCrop"
                             app:shapeAppearanceOverlay="@style/CircleImageStyle"/>
 
@@ -1204,6 +1059,7 @@
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical">
                                 <TextView
+                                    android:id="@+id/tvDetailStoreName"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Indo Guppy Farm"
@@ -1218,10 +1074,11 @@
                             </LinearLayout>
 
                             <TextView
+                                android:id="@+id/tvDetailStoreStats"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="342 lot terjual · Respon &lt; 1 jam · 4.9 rating"
+                                android:text="Farm Terverifikasi"
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="12sp"/>
@@ -1266,6 +1123,7 @@
 
         <!-- Bid Presets -->
         <LinearLayout
+            android:id="@+id/layoutBidPresetsRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -1317,6 +1175,7 @@
 
         <!-- Bid Input Control -->
         <LinearLayout
+            android:id="@+id/layoutBidInputControls"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_marginTop="12dp"
@@ -1364,6 +1223,7 @@
                     android:textSize="18sp"/>
 
                 <TextView
+                    android:id="@+id/tvDetailMinIncrementHint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
@@ -1385,6 +1245,18 @@
                 android:clickable="true"
                 android:focusable="true"/>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvAuctionClosedNotice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="Sesi lelang ini telah berakhir. Penawaran sudah ditutup."
+            android:textColor="@color/guppy_text_gray"
+            android:fontFamily="@font/inter_medium"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <!-- Primary Action Button -->
         <TextView

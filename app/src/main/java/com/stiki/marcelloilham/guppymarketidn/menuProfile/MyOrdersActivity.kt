@@ -141,10 +141,30 @@ class MyOrdersActivity : AppCompatActivity() {
             val adapter = MyOrderAdapter(this, filtered) { clickedOrder ->
                 if (clickedOrder.status.contains("Menunggu", true)) {
                     val intent = Intent(this, PaymentPendingActivity::class.java).apply {
+                        putExtra("EXTRA_ORDER_DOC_ID", clickedOrder.docId)
                         putExtra("EXTRA_ORDER_ID", clickedOrder.id)
+                        putExtra("EXTRA_SELLER_ID", clickedOrder.sellerId)
+                        putExtra("EXTRA_PRODUCT_ID", clickedOrder.productId)
                         putExtra("EXTRA_PRODUCT_NAME", clickedOrder.productName)
+                        putExtra("EXTRA_PRODUCT_IMAGE_URL", clickedOrder.productImageUrl)
+                        putExtra("EXTRA_PRODUCT_IMAGE_DATA_URL", clickedOrder.productImageDataUrl)
+                        putExtra("EXTRA_UNIT_PRICE", clickedOrder.unitPrice)
+                        putExtra("EXTRA_UNIT_LABEL", clickedOrder.unit)
                         putExtra("EXTRA_QUANTITY", clickedOrder.quantity)
                         putExtra("EXTRA_TOTAL_AMOUNT", clickedOrder.totalAmount)
+                        putExtra("EXTRA_SHIPPING_COST", clickedOrder.shippingCost)
+                        putExtra("EXTRA_SERVICE_FEE", clickedOrder.serviceFee)
+                        putExtra("EXTRA_COURIER", clickedOrder.courier)
+                        putExtra("EXTRA_SHIPPING_ETA", clickedOrder.shippingEta)
+                        putExtra("EXTRA_SELLER_NAME", clickedOrder.sellerName)
+                        putExtra("EXTRA_ADDRESS_TEXT", clickedOrder.shippingAddress)
+                        putExtra("EXTRA_PAYMENT_METHOD", clickedOrder.paymentMethod)
+                        putExtra("EXTRA_PAYMENT_TYPE", clickedOrder.paymentType)
+                        putExtra("EXTRA_PAYMENT_PROVIDER", clickedOrder.paymentProvider)
+                        putExtra("EXTRA_PAYMENT_ACCOUNT_NUMBER", clickedOrder.paymentAccountNumber)
+                        putExtra("EXTRA_PAYMENT_ACCOUNT_OWNER", clickedOrder.paymentAccountOwner)
+                        putExtra("EXTRA_PAYMENT_QRIS_DATA_URL", clickedOrder.paymentQrisDataUrl)
+                        putExtra("EXTRA_PAYMENT_DEADLINE", clickedOrder.paymentDeadline)
                     }
                     startActivity(intent)
                 } else {

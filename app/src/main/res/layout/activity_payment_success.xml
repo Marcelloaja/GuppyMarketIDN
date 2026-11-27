@@ -152,7 +152,7 @@
                             android:id="@+id/tvSuccessOrderNumber"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#GM-20931"
+                            android:text="#GM"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="14sp"/>
@@ -180,7 +180,7 @@
                             android:id="@+id/tvSuccessPaymentMethod"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Transfer Bank"
+                            android:text="-"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="13.5sp"/>
@@ -192,7 +192,7 @@
                             android:layout_marginStart="6dp"
                             android:background="@drawable/bg_chip_selected"
                             android:backgroundTint="#F8F9FA"
-                            android:text="BCA VA"
+                            android:text="PAY"
                             android:textColor="@color/guppy_text_gray"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="10.5sp"
@@ -220,7 +220,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="Kamis, 24 Juli 2025 · 14:32 WIB"
+                            android:text="-"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="13sp"
@@ -247,7 +247,7 @@
                             android:id="@+id/tvSuccessTotalPaid"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 577.000"
+                            android:text="Rp 0"
                             android:textColor="@color/guppy_primary"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="15.5sp"/>
@@ -301,7 +301,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="Guppy Farm Bahagia"
+                            android:text="-"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="13sp"
@@ -326,7 +326,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="Jl. Melati No. 12, Bandung"
+                            android:text="-"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="13sp"
@@ -351,7 +351,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="J&amp;T Express Reguler"
+                            android:text="-"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="13sp"
@@ -377,7 +377,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="JT0012398765"
+                            android:text="-"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="13sp"
@@ -413,7 +413,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="27–28 Juli 2025"
+                            android:text="-"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="13sp"
@@ -456,9 +456,10 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivSuccessProductImage"
                             android:layout_width="56dp"
                             android:layout_height="56dp"
-                            android:src="@drawable/ic_image_gallery"
+                            android:src="@drawable/bg_image_grid"
                             android:scaleType="centerCrop"
                             app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"/>
 
@@ -473,7 +474,7 @@
                                 android:id="@+id/tvSuccessProductName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Red Dragon Delta"
+                                android:text="Produk Guppy"
                                 android:textColor="@color/guppy_text_black"
                                 android:fontFamily="@font/inter_bold"
                                 android:textSize="14.5sp"/>
@@ -483,7 +484,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Grade A+ · 1 Pasang"
+                                android:text="1 item"
                                 android:textColor="@color/guppy_text_gray"
                                 android:fontFamily="@font/inter_regular"
                                 android:textSize="12sp"/>
@@ -493,7 +494,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Rp 550.000"
+                                android:text="Rp 0"
                                 android:textColor="@color/guppy_text_black"
                                 android:fontFamily="@font/inter_bold"
                                 android:textSize="13.5sp"/>
@@ -519,7 +520,7 @@
                             android:id="@+id/tvSuccessSubtotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 550.000"
+                            android:text="Rp 0"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_medium"
                             android:textSize="13sp"/>
@@ -543,7 +544,7 @@
                             android:id="@+id/tvSuccessShipping"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 22.000"
+                            android:text="Rp 0"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_medium"
                             android:textSize="13sp"/>
@@ -567,7 +568,7 @@
                             android:id="@+id/tvSuccessServiceFee"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 5.000"
+                            android:text="Rp 2.000"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_medium"
                             android:textSize="13sp"/>
@@ -592,7 +593,7 @@
                             android:id="@+id/tvSuccessTotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 577.000"
+                            android:text="Rp 0"
                             android:textColor="@color/guppy_primary"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="15sp"/>

@@ -62,6 +62,9 @@ class Maps : Fragment() {
 
     private var lastGeocodedLat: Double = 0.0
     private var lastGeocodedLng: Double = 0.0
+    private var activeDestFarmName: String = "Lokasi Farm"
+    private var farmListeners: List<com.google.firebase.firestore.ListenerRegistration> = emptyList()
+    private var isWebViewReady: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -230,11 +233,15 @@ class Maps : Fragment() {
                 farms = filtered,
                 onVisitClicked = { clickedFarm ->
                     val intent = Intent(requireContext(), DetailFarmActivity::class.java).apply {
+                        putExtra("farm_id", clickedFarm.id)
                         putExtra("farm_title", clickedFarm.farmName)
                         putExtra("farm_location", clickedFarm.location)
                         putExtra("farm_rating", clickedFarm.rating.toString())
                     }
                     startActivity(intent)
+                },
+                onRouteClicked = { clickedFarm ->
+                    routeDirectlyToFarm(clickedFarm)
                 }
             )
             recyclerMapsFarms.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
@@ -272,13 +279,29 @@ class Maps : Fragment() {
         }
     }
 
+    private fun routeDirectlyToFarm(farm: FirestoreRepository.FarmModel) {
+        activeDestFarmName = farm.farmName
+        val escapedId = org.json.JSONObject.quote(farm.id)
+        val escapedName = org.json.JSONObject.quote(farm.farmName)
+        if (isWebViewReady) {
+            webView.evaluateJavascript(
+                "javascript:setRouteTargetCoords($escapedId, $escapedName, ${farm.lat}, ${farm.lng})",
+                null
+            )
+            enterNavigationMode()
+        } else {
+            Toast.makeText(requireContext(), "Peta sedang dimuat...", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+                isWebViewReady = true
+                syncMarkersToWebView()
                 checkAndFocusFarmQuery()
-                loadFirestoreFarmMarkers()
             }
         }
         webView.settings.javaScriptEnabled = true
@@ -319,8 +342,9 @@ class Maps : Fragment() {
 
         val actualName = realFarm?.farmName ?: farmName
         val actualLocation = realFarm?.location ?: "Lokasi Farm Toko"
-        val actualRating = realFarm?.rating ?: 4.9
-        val actualVariants = realFarm?.variantsCount ?: 12
+        val actualRating = realFarm?.rating ?: 0.0
+        val actualVariants = realFarm?.variantsCount ?: 0
+        activeDestFarmName = actualName
 
         val calendar = java.util.Calendar.getInstance()
         val currentHour = calendar.get(java.util.Calendar.HOUR_OF_DAY)
@@ -371,30 +395,64 @@ class Maps : Fragment() {
         dialog.show()
     }
 
-    private fun loadFirestoreFarmMarkers() {
-        FirestoreRepository.fetchRealFarms { farms ->
+    private fun startRealtimeFarmListener() {
+        com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
+            FirestoreRepository.syncUserFarmLocationToPublic(uid)
+        }
+        farmListeners.forEach { it.remove() }
+        farmListeners = FirestoreRepository.listenRealFarms { farms ->
             realFarmsList = farms
             if (isAdded) {
                 activity?.runOnUiThread {
                     if (::tvFarmCountBadge.isInitialized) {
                         tvFarmCountBadge.text = "${farms.size} Farm"
                     }
-
                     filterFarms(etSearchHome.text.toString())
-
-                    farms.forEach { farm ->
-                        val escapedName = farm.farmName.replace("'", "\\'")
-                        webView.evaluateJavascript("javascript:addRealFarmMarker('${farm.id}', '$escapedName', ${farm.lat}, ${farm.lng})", null)
-                    }
+                    syncMarkersToWebView()
+                    checkAndFocusFarmQuery()
                 }
             }
         }
     }
 
+    private fun syncMarkersToWebView() {
+        if (!isWebViewReady || !::webView.isInitialized) return
+        android.util.Log.d("FirestoreFarms", "syncMarkersToWebView: pushing ${realFarmsList.size} markers to WebView")
+        webView.evaluateJavascript("javascript:clearFarmMarkers()", null)
+        realFarmsList.forEach { farm ->
+            val escapedName = org.json.JSONObject.quote(farm.farmName)
+            val escapedId = org.json.JSONObject.quote(farm.id)
+            webView.evaluateJavascript(
+                "javascript:addRealFarmMarker($escapedId, $escapedName, ${farm.lat}, ${farm.lng})",
+                null
+            )
+        }
+    }
+
     private fun checkAndFocusFarmQuery() {
+        val routeFarmId = activity?.intent?.getStringExtra("ROUTE_FARM_ID")
+        if (!routeFarmId.isNullOrEmpty() && isWebViewReady) {
+            val targetFarm = realFarmsList.find { it.id == routeFarmId }
+            if (targetFarm != null) {
+                activity?.intent?.removeExtra("ROUTE_FARM_ID")
+                routeDirectlyToFarm(targetFarm)
+                return
+            }
+        }
         val farmQuery = activity?.intent?.getStringExtra("SEARCH_FARM_QUERY")
-        if (!farmQuery.isNullOrEmpty()) {
-            webView.evaluateJavascript("javascript:focusFarmByName('$farmQuery')", null)
+        if (!farmQuery.isNullOrEmpty() && isWebViewReady) {
+            val matched = realFarmsList.find { it.farmName.contains(farmQuery, ignoreCase = true) }
+            if (matched != null) {
+                val escapedName = org.json.JSONObject.quote(matched.farmName)
+                val escapedId = org.json.JSONObject.quote(matched.id)
+                webView.evaluateJavascript(
+                    "javascript:setRouteTargetCoords($escapedId, $escapedName, ${matched.lat}, ${matched.lng}); focusFarmByCoords($escapedName, ${matched.lat}, ${matched.lng});",
+                    null
+                )
+            } else {
+                val escapedQuery = org.json.JSONObject.quote(farmQuery)
+                webView.evaluateJavascript("javascript:focusFarmByName($escapedQuery)", null)
+            }
             activity?.intent?.removeExtra("SEARCH_FARM_QUERY")
         }
     }
@@ -513,8 +571,11 @@ class Maps : Fragment() {
         // Trigger MapLibre 3D Turn-by-Turn Navigation
         webView.evaluateJavascript("javascript:startNavigation()", null)
 
+        val targetFarmTitle = activeDestFarmName.ifBlank { "Lokasi Farm" }
+        view?.findViewById<TextView>(R.id.tvNavInfoTitle)?.text = "Menuju $targetFarmTitle"
+
         // Indonesian Voice Announcement
-        speakText("Navigasi dimulai. Ikuti rute menuju Guppy King Farm.")
+        speakText("Navigasi dimulai. Ikuti rute menuju $targetFarmTitle.")
     }
 
     private fun exitNavigationMode() {
@@ -570,6 +631,17 @@ class Maps : Fragment() {
                 checkGpsAndStartTracking()
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        startRealtimeFarmListener()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        farmListeners.forEach { it.remove() }
+        farmListeners = emptyList()
     }
 
     override fun onResume() {

@@ -12,7 +12,8 @@ import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
 class HomeFarmAdapter(
     private val context: Context,
     private val farms: List<FirestoreRepository.FarmModel>,
-    private val onVisitClicked: (FirestoreRepository.FarmModel) -> Unit
+    private val onVisitClicked: (FirestoreRepository.FarmModel) -> Unit,
+    private val onRouteClicked: ((FirestoreRepository.FarmModel) -> Unit)? = null
 ) : RecyclerView.Adapter<HomeFarmAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -22,6 +23,7 @@ class HomeFarmAdapter(
         val tvRating: TextView = view.findViewById(R.id.tvHomeFarmRating)
         val tvVariants: TextView = view.findViewById(R.id.tvHomeFarmVariants)
         val btnVisit: TextView = view.findViewById(R.id.btnHomeFarmVisit)
+        val btnRoute: TextView? = view.findViewById(R.id.btnHomeFarmRoute)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,10 +43,16 @@ class HomeFarmAdapter(
         holder.tvInitials.text = initials.ifEmpty { "GF" }
         holder.tvName.text = item.farmName
         holder.tvDistance.text = item.distanceKm
-        holder.tvRating.text = item.rating.toString()
+        holder.tvRating.text = String.format(java.util.Locale.US, "%.1f", item.rating)
         holder.tvVariants.text = "${item.variantsCount} varian"
 
         holder.btnVisit.setOnClickListener { onVisitClicked(item) }
+        if (onRouteClicked != null) {
+            holder.btnRoute?.visibility = View.VISIBLE
+            holder.btnRoute?.setOnClickListener { onRouteClicked.invoke(item) }
+        } else {
+            holder.btnRoute?.visibility = View.GONE
+        }
         holder.itemView.setOnClickListener { onVisitClicked(item) }
     }
 

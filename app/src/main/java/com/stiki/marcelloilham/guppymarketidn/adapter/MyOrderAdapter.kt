@@ -44,8 +44,9 @@ class MyOrderAdapter(
 
         holder.tvOrderNumber.text = item.id
         holder.tvProductName.text = item.productName
-        holder.tvProductVariant.text = "${item.quantity} pasang (${item.quantity * 2} ekor)"
-        holder.tvSellerName.text = "Penjual: ${item.sellerName.ifEmpty { "Guppy Farm Bahagia" }}"
+        val unitShort = item.unit.removePrefix("per ").trim().ifBlank { "pasang" }
+        holder.tvProductVariant.text = "${item.quantity} $unitShort"
+        holder.tvSellerName.text = "Penjual: ${item.sellerName.ifEmpty { "Penjual Guppy" }}"
 
         val formattedPrice = NumberFormat.getCurrencyInstance(Locale("in", "ID")).format(item.totalAmount).replace(",00", "").replace("Rp", "Rp ")
         holder.tvTotalPrice.text = formattedPrice

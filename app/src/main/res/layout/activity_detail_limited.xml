@@ -44,6 +44,7 @@
             android:gravity="center"/>
 
         <ImageView
+            android:id="@+id/btnShareDetail"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/bg_circle_white_stroke"
@@ -89,11 +90,12 @@
                 </androidx.cardview.widget.CardView>
 
                 <TextView
+                    android:id="@+id/tvDetailGradeBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:background="@drawable/bg_tag_grade_white"
-                    android:text="Grade A"
+                    android:text="Ikan Kontes"
                     android:textColor="@color/guppy_primary"
                     android:fontFamily="@font/inter_semi_bold"
                     android:textSize="12sp"
@@ -101,21 +103,25 @@
                     android:paddingVertical="6dp"/>
 
                 <ImageView
+                    android:id="@+id/btnFavoriteDetail"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_gravity="top|end"
                     android:layout_margin="16dp"
                     android:src="@drawable/fi_ss_heart_full"
                     app:tint="@color/white"
-                    android:scaleType="fitCenter"/>
+                    android:scaleType="fitCenter"
+                    android:clickable="true"
+                    android:focusable="true"/>
 
                 <TextView
+                    android:id="@+id/tvDetailPhotoCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
                     android:layout_margin="16dp"
                     android:background="@drawable/bg_tag_photo_count"
-                    android:text="1/3"
+                    android:text="1/1"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:fontFamily="@font/inter_medium"
@@ -125,14 +131,17 @@
 
             <!-- MINI IMAGE THUMBNAILS -->
             <LinearLayout
+                android:id="@+id/layoutDetailThumbnails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <!-- Selected Thumbnail -->
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/thumbDetail1"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/bg_image_grid"
@@ -141,9 +150,12 @@
                     app:strokeColor="@color/guppy_primary"
                     app:strokeWidth="2dp"
                     android:layout_marginEnd="12dp"
-                    android:padding="2dp"/>
+                    android:padding="2dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/thumbDetail2"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/bg_image_grid"
@@ -151,9 +163,12 @@
                     app:cornerSize="8dp"
                     app:strokeColor="@android:color/transparent"
                     app:strokeWidth="0dp"
-                    android:layout_marginEnd="12dp"/>
+                    android:layout_marginEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/thumbDetail3"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/bg_image_grid"
@@ -161,7 +176,9 @@
                     app:cornerSize="8dp"
                     app:strokeColor="@android:color/transparent"
                     app:strokeWidth="0dp"
-                    android:layout_marginEnd="12dp"/>
+                    android:layout_marginEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
             </LinearLayout>
 
             <!-- TITLES & INFO -->
@@ -176,16 +193,17 @@
                     android:id="@+id/tvDetailTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Red Dragon Delta"
+                    android:text="Memuat produk..."
                     android:textColor="@color/guppy_text_black"
                     android:fontFamily="@font/inter_bold"
                     android:textSize="22sp"/>
 
                 <TextView
+                    android:id="@+id/tvDetailSpecSubtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Jantan &amp; betina · 3-4 cm · Usia 3 bulan"
+                    android:text=""
                     android:textColor="@color/guppy_text_gray"
                     android:fontFamily="@font/inter_regular"
                     android:textSize="14sp"/>
@@ -210,22 +228,35 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <FrameLayout
                         android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_circle_image"
-                        android:backgroundTint="#D85C42"
-                        android:text="BA"
-                        android:textColor="@color/white"
-                        android:gravity="center"
-                        android:fontFamily="@font/inter_semi_bold"
-                        android:textSize="16sp"/>
+                        android:layout_height="48dp">
+                        <TextView
+                            android:id="@+id/tvDetailSellerInitials"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_circle_image"
+                            android:backgroundTint="#124332"
+                            android:text="GF"
+                            android:textColor="@color/white"
+                            android:gravity="center"
+                            android:fontFamily="@font/inter_semi_bold"
+                            android:textSize="16sp"/>
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivDetailSellerAvatar"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/CircleImageStyle"
+                            android:visibility="gone"/>
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
+                        android:layout_marginEnd="8dp"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -235,9 +266,10 @@
                             android:gravity="center_vertical">
 
                             <TextView
+                                android:id="@+id/tvDetailSellerName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Bekasi Aqua Farm"
+                                android:text="Memuat toko..."
                                 android:fontFamily="@font/inter_bold"
                                 android:textColor="@color/guppy_text_black"
                                 android:textSize="14sp"
@@ -245,18 +277,11 @@
                                 android:layout_marginEnd="6dp"/>
 
                             <ImageView
+                                android:id="@+id/ivDetailSellerVerified"
                                 android:layout_width="14dp"
                                 android:layout_height="14dp"
-                                android:src="@drawable/ic_verified_badge"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:text="TERVERIFIKASI"
-                                android:textColor="@color/guppy_primary"
-                                android:fontFamily="@font/inter_bold"
-                                android:textSize="10sp"/>
+                                android:src="@drawable/ic_verified_badge"
+                                android:visibility="gone"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -271,24 +296,26 @@
                                 android:src="@drawable/star"
                                 app:tint="@color/guppy_star"/>
                             <TextView
+                                android:id="@+id/tvDetailSellerRating"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="4dp"
-                                android:text="4.8"
+                                android:text="0.0"
                                 android:fontFamily="@font/inter_semi_bold"
                                 android:textSize="12sp"
                                 android:textColor="@color/guppy_text_black"/>
                             <TextView
+                                android:id="@+id/tvDetailSellerReviewCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="4dp"
-                                android:text="(126 ulasan)"
+                                android:text="(0 ulasan)"
                                 android:textSize="12sp"
                                 android:textColor="@color/guppy_text_gray"/>
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
@@ -299,16 +326,21 @@
                                 android:src="@drawable/map"
                                 app:tint="@color/guppy_text_gray"/>
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:id="@+id/tvDetailSellerLocation"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="4dp"
-                                android:text="Bekasi, Jawa Barat · 5.1 km"
+                                android:text="Indonesia"
+                                android:maxLines="1"
+                                android:ellipsize="end"
                                 android:textSize="11sp"
                                 android:textColor="@color/guppy_text_gray"/>
                         </LinearLayout>
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/btnDetailVisitStore"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_chip_outline"
@@ -317,7 +349,9 @@
                         android:textSize="12sp"
                         android:fontFamily="@font/inter_medium"
                         android:paddingHorizontal="12dp"
-                        android:paddingVertical="8dp"/>
+                        android:paddingVertical="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -340,31 +374,39 @@
                     android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/tvDetailAboutHeading"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Tentang ikan ini"
+                        android:text="Tentang produk ini"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_bold"
                         android:textSize="16sp"/>
 
                     <TextView
+                        android:id="@+id/tvDetailDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Ikan guppy dengan perpaduan warna merah dan biru yang sehat. Dibesarkan dalam air terkontrol dan diberi pakan pelet tinggi protein. Sangat selektif untuk sirip yang kuat dan aktif."
+                        android:text=""
+                        android:maxLines="3"
+                        android:ellipsize="end"
                         android:textColor="@color/guppy_text_gray"
                         android:fontFamily="@font/inter_regular"
                         android:textSize="14sp"
                         android:lineSpacingExtra="4dp"/>
 
                     <TextView
+                        android:id="@+id/btnDetailReadMore"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:text="Baca selengkapnya"
                         android:textColor="@color/guppy_primary"
                         android:fontFamily="@font/inter_medium"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp"
+                        android:visibility="gone"
+                        android:clickable="true"
+                        android:focusable="true"/>
 
                     <View
                         android:layout_width="match_parent"
@@ -379,69 +421,79 @@
                         android:orientation="vertical">
 
                         <LinearLayout
+                            android:id="@+id/rowDetailSpec1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingVertical="4dp">
                             <TextView
+                                android:id="@+id/tvDetailSpec1Label"
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:text="Jenis kelamin"
+                                android:text="Kategori"
                                 android:textColor="@color/guppy_text_gray"
                                 android:textSize="14sp"/>
                             <TextView
+                                android:id="@+id/tvDetailSpec1Value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Jantan &amp; Betina"
+                                android:text="-"
                                 android:textColor="@color/guppy_text_black"
                                 android:fontFamily="@font/inter_medium"
                                 android:textSize="14sp"/>
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/rowDetailSpec2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingVertical="4dp">
                             <TextView
+                                android:id="@+id/tvDetailSpec2Label"
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:text="Usia"
+                                android:text="Galur / Varian"
                                 android:textColor="@color/guppy_text_gray"
                                 android:textSize="14sp"/>
                             <TextView
+                                android:id="@+id/tvDetailSpec2Value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="3 bulan"
+                                android:text="-"
                                 android:textColor="@color/guppy_text_black"
                                 android:fontFamily="@font/inter_medium"
                                 android:textSize="14sp"/>
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/rowDetailSpec3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingVertical="4dp">
                             <TextView
+                                android:id="@+id/tvDetailSpec3Label"
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:text="Ukuran"
+                                android:text="Stok tersedia"
                                 android:textColor="@color/guppy_text_gray"
                                 android:textSize="14sp"/>
                             <TextView
+                                android:id="@+id/tvDetailSpec3Value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="3-4 cm"
+                                android:text="-"
                                 android:textColor="@color/guppy_text_black"
                                 android:fontFamily="@font/inter_medium"
                                 android:textSize="14sp"/>
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/rowDetailSpec4"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -454,6 +506,7 @@
                                 android:textColor="@color/guppy_text_gray"
                                 android:textSize="14sp"/>
                             <TextView
+                                android:id="@+id/tvDetailSpecGrade"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="A"
@@ -463,6 +516,7 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/rowDetailSpec5"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -475,6 +529,7 @@
                                 android:textColor="@color/guppy_text_gray"
                                 android:textSize="14sp"/>
                             <TextView
+                                android:id="@+id/tvDetailSpecCondition"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Sehat, bebas penyakit"
@@ -618,11 +673,12 @@
 
             <!-- PILIH JENIS -->
             <TextView
+                android:id="@+id/tvDetailVariantHeading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
-                android:text="Pilih Jenis"
+                android:text="Paket Tersedia"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_bold"
                 android:textSize="16sp"/>
@@ -634,103 +690,21 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="12dp">
 
-                <!-- Unselected Variant 1 -->
                 <LinearLayout
                     android:id="@+id/variantJantan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_variant_card_unselected"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:layout_marginBottom="12dp">
+                    android:visibility="gone"
+                    android:orientation="horizontal" />
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_radio_unselected"/>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Jantan"
-                            android:textColor="@color/guppy_text_black"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="14sp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Rp 150.000 per ekor"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_regular"
-                            android:textSize="13sp"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Stok 4 ekor"
-                        android:textColor="@color/guppy_text_gray"
-                        android:fontFamily="@font/inter_regular"
-                        android:textSize="12sp"/>
-                </LinearLayout>
-
-                <!-- Unselected Variant 2 -->
                 <LinearLayout
                     android:id="@+id/variantBetina"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_variant_card_unselected"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:layout_marginBottom="12dp">
+                    android:visibility="gone"
+                    android:orientation="horizontal" />
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_radio_unselected"/>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Betina"
-                            android:textColor="@color/guppy_text_black"
-                            android:fontFamily="@font/inter_medium"
-                            android:textSize="14sp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Rp 125.000 per ekor"
-                            android:textColor="@color/guppy_text_gray"
-                            android:fontFamily="@font/inter_regular"
-                            android:textSize="13sp"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Stok 5 ekor"
-                        android:textColor="@color/guppy_text_gray"
-                        android:fontFamily="@font/inter_regular"
-                        android:textSize="12sp"/>
-                </LinearLayout>
-
-                <!-- Selected Variant 3 -->
+                <!-- Active Product Pricing Option -->
                 <LinearLayout
                     android:id="@+id/variantPasang"
                     android:layout_width="match_parent"
@@ -752,17 +726,19 @@
                         android:layout_marginStart="12dp"
                         android:orientation="vertical">
                         <TextView
+                            android:id="@+id/tvDetailVariantTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pasang"
+                            android:text="Satuan Produk"
                             android:textColor="@color/guppy_primary"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="14sp"/>
                         <TextView
+                            android:id="@+id/tvDetailVariantPriceUnit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Rp 275.000 per pasang"
+                            android:text="Rp 0"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_regular"
                             android:textSize="13sp"/>
@@ -774,20 +750,23 @@
                         android:orientation="vertical"
                         android:gravity="end">
                         <TextView
+                            android:id="@+id/tvDetailVariantStock"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Stok 6 pasang"
+                            android:text="Stok 0"
                             android:textColor="@color/guppy_text_gray"
                             android:fontFamily="@font/inter_regular"
                             android:textSize="12sp"/>
                         <TextView
+                            android:id="@+id/tvDetailVariantSubNote"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="1 pasang = 2 ekor"
                             android:textColor="@color/guppy_primary"
                             android:fontFamily="@font/inter_medium"
                             android:textSize="10sp"
-                            android:layout_marginTop="2dp"/>
+                            android:layout_marginTop="2dp"
+                            android:visibility="gone"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -843,7 +822,7 @@
                             android:layout_width="40dp"
                             android:layout_height="match_parent"
                             android:background="@null"
-                            android:text="2"
+                            android:text="1"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_semi_bold"
                             android:textSize="14sp"
@@ -872,22 +851,25 @@
                         android:orientation="horizontal"
                         android:layout_marginTop="4dp">
                         <TextView
+                            android:id="@+id/tvDetailQtyUnitLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="pasang"
                             android:textColor="@color/guppy_text_gray"
                             android:textSize="11sp"/>
                         <TextView
+                            android:id="@+id/tvDetailQtyEquivalentBadge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
                             android:background="@drawable/bg_tag_photo_count"
                             android:backgroundTint="#EEEEEE"
-                            android:text="Setara 4 ekor"
+                            android:text="Setara 2 ekor"
                             android:textColor="@color/guppy_text_gray"
                             android:textSize="10sp"
                             android:paddingHorizontal="6dp"
-                            android:paddingVertical="2dp"/>
+                            android:paddingVertical="2dp"
+                            android:visibility="gone"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -915,16 +897,18 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
                         <TextView
+                            android:id="@+id/tvDetailUnitMultiplier"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="Rp 275.000 × 2 pasang"
+                            android:text="Rp 0 × 1"
                             android:textColor="@color/guppy_text_gray"
                             android:textSize="13sp"/>
                         <TextView
+                            android:id="@+id/tvDetailUnitMultiplierTotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 550.000"
+                            android:text="Rp 0"
                             android:textColor="@color/guppy_text_black"
                             android:fontFamily="@font/inter_medium"
                             android:textSize="13sp"/>
@@ -944,9 +928,10 @@
                             android:fontFamily="@font/inter_bold"
                             android:textSize="15sp"/>
                         <TextView
+                            android:id="@+id/tvDetailSubtotalCard"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 550.000"
+                            android:text="Rp 0"
                             android:textColor="@color/guppy_primary"
                             android:fontFamily="@font/inter_bold"
                             android:textSize="16sp"/>
@@ -975,7 +960,7 @@
         android:background="@color/white"
         android:elevation="16dp"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="12dp"
         android:paddingVertical="12dp"
         android:gravity="center_vertical">
 
@@ -984,6 +969,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
@@ -994,45 +980,72 @@
                 android:textSize="10sp"
                 android:letterSpacing="0.05"/>
             <TextView
+                android:id="@+id/tvDetailBottomTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp 550.000"
+                android:text="Rp 0"
                 android:textColor="@color/guppy_text_black"
                 android:fontFamily="@font/inter_black"
-                android:textSize="18sp"/>
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
             <TextView
+                android:id="@+id/tvDetailBottomSubtext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2 pasang · 4 ekor"
+                android:text="1 item"
                 android:textColor="@color/guppy_text_gray"
                 android:fontFamily="@font/inter_regular"
-                android:textSize="10sp"/>
+                android:textSize="10sp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
         </LinearLayout>
 
-        <!-- Chat Button -->
+        <!-- Chat Icon Button -->
         <LinearLayout
+            android:id="@+id/btnChatSellerDetail"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_btn_outline"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginEnd="6dp"
+            android:contentDescription="Chat penjual"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_chat"
+                app:tint="@color/guppy_primary"/>
+        </LinearLayout>
+
+        <!-- Add to Cart Button -->
+        <LinearLayout
+            android:id="@+id/btnAddToCartDetail"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:background="@drawable/bg_btn_outline"
-            android:paddingHorizontal="16dp"
+            android:paddingHorizontal="10dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="6dp"
             android:clickable="true"
             android:focusable="true">
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_chat"
+                android:src="@drawable/fi_rr_shopping_cart"
                 app:tint="@color/guppy_primary"/>
             <TextView
+                android:id="@+id/tvAddToCartDetailLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:text="Chat"
+                android:layout_marginStart="5dp"
+                android:text="+ Keranjang"
                 android:textColor="@color/guppy_primary"
-                android:fontFamily="@font/inter_semi_bold"
-                android:textSize="14sp"/>
+                android:fontFamily="@font/inter_bold"
+                android:textSize="13sp"/>
         </LinearLayout>
 
         <!-- Buy Button -->
@@ -1041,10 +1054,10 @@
             android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:background="@drawable/bg_btn_primary"
-            android:text="Beli sekarang"
+            android:text="Beli"
             android:textColor="@color/white"
             android:fontFamily="@font/inter_bold"
-            android:textSize="14sp"
+            android:textSize="13.5sp"
             android:gravity="center"
             android:paddingHorizontal="16dp"
             android:clickable="true"

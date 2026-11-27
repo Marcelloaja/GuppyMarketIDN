@@ -55,6 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/dividerHeader"
+        android:layout_above="@id/bottomBarChatSelection"
         android:fillViewport="true">
 
         <LinearLayout
@@ -112,7 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="34dp"
                         android:background="@drawable/bg_chip_selected"
-                        android:text="Semua (3)"
+                        android:text="Semua (0)"
                         android:textColor="@color/guppy_primary"
                         android:fontFamily="@font/inter_bold"
                         android:textSize="12sp"
@@ -127,7 +128,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="34dp"
                         android:background="@drawable/bg_chip_outline"
-                        android:text="Belum Dibaca (1)"
+                        android:text="Belum Dibaca (0)"
                         android:textColor="@color/guppy_text_black"
                         android:fontFamily="@font/inter_medium"
                         android:textSize="12sp"
@@ -174,5 +175,78 @@
                 android:visibility="gone"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <!-- CONTEXTUAL MULTI-SELECT DELETE BAR (visible on long-press) -->
+    <LinearLayout
+        android:id="@+id/bottomBarChatSelection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:elevation="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvSelectedChatCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="1 chat dipilih"
+                android:textColor="@color/guppy_text_black"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/btnSelectAllChats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Pilih semua"
+                android:textColor="@color/guppy_primary"
+                android:textSize="12sp"
+                android:clickable="true"
+                android:focusable="true"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/btnCancelChatSelection"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_btn_outline_pill_gray"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/inter_bold"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:text="Batal"
+            android:textColor="@color/guppy_text_black"
+            android:textSize="13sp"/>
+
+        <TextView
+            android:id="@+id/btnDeleteSelectedChats"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_chip_selected"
+            android:backgroundTint="#E53935"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/inter_bold"
+            android:gravity="center"
+            android:paddingHorizontal="18dp"
+            android:text="Hapus"
+            android:textColor="@color/white"
+            android:textSize="13sp"/>
+    </LinearLayout>
 
 </RelativeLayout>

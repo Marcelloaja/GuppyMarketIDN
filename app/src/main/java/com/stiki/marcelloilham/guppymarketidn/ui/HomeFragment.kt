@@ -23,7 +23,9 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.stiki.marcelloilham.guppymarketidn.R
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 import com.stiki.marcelloilham.guppymarketidn.adapter.BestSellerAdapter
 import com.stiki.marcelloilham.guppymarketidn.adapter.AuctionGridAdapter
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
@@ -47,14 +49,21 @@ import java.util.Calendar
 class HomeFragment : Fragment() {
     private lateinit var textUserName: TextView
     private lateinit var textGreeting: TextView
+    private var imgAvatarHome: ImageView? = null
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
+    private var userListenerRegistration: ListenerRegistration? = null
+    private var auctionListenerRegistration: ListenerRegistration? = null
+    private var chatBadgeListenerRegistration: ListenerRegistration? = null
+    private var productsListenerRegistration: ListenerRegistration? = null
+    private var farmListeners: List<ListenerRegistration> = emptyList()
     private lateinit var carouselRecyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var filterHome: ImageView
     private lateinit var btnCartHome: ImageView
     private lateinit var btnNotifHome: ImageView
     private lateinit var btnChatHome: View
+    private var dotUnreadChatHome: View? = null
     private lateinit var filterRecyclerView: RecyclerView
     private lateinit var gridViewRecycler: RecyclerView
     private lateinit var categoryHorizontalRecycler: RecyclerView
@@ -108,7 +117,7 @@ class HomeFragment : Fragment() {
         setupCategoriesButton()
         setupHorizontalCategories()
         setupSearchBar()
-        setupGridViewRecycler()
+        setupGridViewRecycler(view)
         setupAuctionIntegration(view)
         setupHomeFarms(view)
 
@@ -119,8 +128,12 @@ class HomeFragment : Fragment() {
         val recyclerHomeFarms = view.findViewById<RecyclerView>(R.id.recyclerHomeFarms) ?: return
         val tvEmptyHomeFarms = view.findViewById<TextView>(R.id.tvEmptyHomeFarms)
 
-        FirestoreRepository.fetchRealFarms { realFarms ->
-            if (!isAdded) return@fetchRealFarms
+        auth.currentUser?.uid?.let { uid ->
+            FirestoreRepository.syncUserFarmLocationToPublic(uid)
+        }
+        farmListeners.forEach { it.remove() }
+        farmListeners = FirestoreRepository.listenRealFarms { realFarms ->
+            if (!isAdded) return@listenRealFarms
 
             if (realFarms.isEmpty()) {
                 recyclerHomeFarms.visibility = View.GONE
@@ -134,11 +147,17 @@ class HomeFragment : Fragment() {
                     farms = realFarms,
                     onVisitClicked = { clickedFarm ->
                         val intent = Intent(requireContext(), DetailFarmActivity::class.java).apply {
+                            putExtra("farm_id", clickedFarm.id)
                             putExtra("farm_title", clickedFarm.farmName)
                             putExtra("farm_location", clickedFarm.location)
                             putExtra("farm_rating", clickedFarm.rating.toString())
                         }
                         startActivity(intent)
+                    },
+                    onRouteClicked = { clickedFarm ->
+                        activity?.intent?.putExtra("ROUTE_FARM_ID", clickedFarm.id)
+                        val bottomNav = activity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.nav_view)
+                        bottomNav?.selectedItemId = R.id.navigation_map
                     }
                 )
                 recyclerHomeFarms.layoutManager = LinearLayoutManager(requireContext())
@@ -151,11 +170,13 @@ class HomeFragment : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         textUserName = view.findViewById(R.id.textUserName)
         textGreeting = view.findViewById(R.id.textGreeting)
+        imgAvatarHome = view.findViewById(R.id.imgAvatarHome)
         carouselRecyclerView = view.findViewById(R.id.carouselRecyclerView)
         filterHome = view.findViewById(R.id.filterHome)
         btnCartHome = view.findViewById(R.id.btnCartHome)
         btnNotifHome = view.findViewById(R.id.btnNotifHome)
         btnChatHome = view.findViewById(R.id.btnChatHome)
+        dotUnreadChatHome = view.findViewById(R.id.dotUnreadChatHome)
         etSearchHome = view.findViewById(R.id.etSearchHome)
         btnSeeAllCategories = view.findViewById(R.id.btnSeeAllCategories)
         categoryHorizontalRecycler = view.findViewById(R.id.categoryHorizontalRecycler)
@@ -176,13 +197,14 @@ class HomeFragment : Fragment() {
             bottomNav?.selectedItemId = R.id.navigation_bid
         }
 
-        FirestoreRepository.fetchAuctions { firebaseAuctions ->
-            if (!isAdded) return@fetchAuctions
+        auctionListenerRegistration?.remove()
+        auctionListenerRegistration = FirestoreRepository.listenAuctions { firebaseAuctions ->
+            if (!isAdded) return@listenAuctions
             val now = System.currentTimeMillis()
 
             val liveItems = firebaseAuctions.mapIndexed { idx, a ->
                 val calculatedStatus = when {
-                    a.endTimeMillis == 0L -> "UPCOMING"
+                    a.endTimeMillis <= 0L -> "UPCOMING"
                     a.endTimeMillis <= now -> "FINISHED"
                     else -> "LIVE"
                 }
@@ -197,6 +219,7 @@ class HomeFragment : Fragment() {
                     endTimeMillis = a.endTimeMillis,
                     imageRes = a.imageRes,
                     grade = a.grade,
+                    category = a.strain,
                     status = calculatedStatus,
                     rawModel = a
                 )
@@ -210,32 +233,45 @@ class HomeFragment : Fragment() {
                 tvEmptyHomeAuctions?.visibility = View.GONE
 
                 if (::recyclerHomeAuctions.isInitialized) {
-                    homeAuctionAdapter = AuctionGridAdapter(
-                        context = requireContext(),
-                        rawItems = liveItems,
-                        itemLayoutResId = R.layout.item_home_auction_card
-                    ) { item ->
-                        val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java).apply {
-                            putExtra("auction_title", item.title)
-                            putExtra("EXTRA_AUCTION_SELLER", item.seller)
-                            putExtra("EXTRA_AUCTION_LOCATION", item.location)
-                            putExtra("EXTRA_AUCTION_PRICE", item.price)
-                            putExtra("EXTRA_AUCTION_GRADE", item.grade)
-                            putExtra("EXTRA_AUCTION_IMAGE", item.imageRes)
-                            putExtra("EXTRA_AUCTION_END_TIME_MILLIS", item.endTimeMillis)
-                            putExtra("EXTRA_AUCTION_DESCRIPTION", item.rawModel?.description ?: "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes.")
-                            putExtra("EXTRA_AUCTION_STRAIN", item.rawModel?.strain ?: "Mosaic")
-                            putExtra("EXTRA_AUCTION_GENDER", item.rawModel?.gender ?: "1 Pasang (Pair)")
-                            putExtra("EXTRA_AUCTION_AGE", item.rawModel?.age ?: "3.5 Bulan")
-                            putExtra("EXTRA_AUCTION_QUANTITY", item.rawModel?.quantity ?: "1 Pasang")
-                            putExtra("EXTRA_AUCTION_CONDITION", item.rawModel?.condition ?: "Sangat Lincah, Bebas Jamur")
-                            putExtra("EXTRA_AUCTION_QUARANTINE", item.rawModel?.quarantine ?: "14 hari di farm")
+                    if (::homeAuctionAdapter.isInitialized) {
+                        homeAuctionAdapter.updateItems(liveItems)
+                    } else {
+                        homeAuctionAdapter = AuctionGridAdapter(
+                            context = requireContext(),
+                            rawItems = liveItems,
+                            itemLayoutResId = R.layout.item_home_auction_card
+                        ) { item ->
+                            val intent = Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuAuction.DetailAuctionActivity::class.java).apply {
+                                putExtra("EXTRA_AUCTION_ID", item.rawModel?.id ?: "")
+                                putExtra("EXTRA_AUCTION_SELLER_ID", item.rawModel?.sellerId ?: "")
+                                putExtra("auction_title", item.title)
+                                putExtra("EXTRA_AUCTION_SELLER", item.seller)
+                                putExtra("EXTRA_AUCTION_LOCATION", item.location)
+                                putExtra("EXTRA_AUCTION_PRICE", item.price)
+                                putExtra("EXTRA_AUCTION_PRICE_NUMERIC", item.rawModel?.currentBidNumeric ?: 0L)
+                                putExtra("EXTRA_AUCTION_BIDS_COUNT", item.bids)
+                                putExtra("EXTRA_AUCTION_HIGHEST_BIDDER", item.rawModel?.highestBidderName ?: "")
+                                putExtra("EXTRA_AUCTION_INCREMENT", item.rawModel?.bidIncrementNumeric ?: 25000L)
+                                putExtra("EXTRA_AUCTION_GRADE", item.grade)
+                                putExtra("EXTRA_AUCTION_IMAGE", item.imageRes)
+                                putExtra("EXTRA_AUCTION_VIDEO_URI", item.rawModel?.videoUri ?: "")
+                                putStringArrayListExtra("EXTRA_AUCTION_PHOTO_URIS", ArrayList(item.rawModel?.photoUris ?: emptyList()))
+                                putExtra("EXTRA_AUCTION_SELLER_AVATAR", item.rawModel?.sellerAvatarUri ?: "")
+                                putExtra("EXTRA_AUCTION_END_TIME_MILLIS", item.endTimeMillis)
+                                putExtra("EXTRA_AUCTION_DESCRIPTION", item.rawModel?.description ?: "Ikan Guppy berkualitas tinggi dengan standar penilaian kontes.")
+                                putExtra("EXTRA_AUCTION_STRAIN", item.rawModel?.strain ?: "Mosaic")
+                                putExtra("EXTRA_AUCTION_GENDER", item.rawModel?.gender ?: "1 Pasang (Pair)")
+                                putExtra("EXTRA_AUCTION_AGE", item.rawModel?.age ?: "3.5 Bulan")
+                                putExtra("EXTRA_AUCTION_QUANTITY", item.rawModel?.quantity ?: "1 Pasang")
+                                putExtra("EXTRA_AUCTION_CONDITION", item.rawModel?.condition ?: "Sangat Lincah, Bebas Jamur")
+                                putExtra("EXTRA_AUCTION_QUARANTINE", item.rawModel?.quarantine ?: "14 hari di farm")
+                            }
+                            startActivity(intent)
                         }
-                        startActivity(intent)
-                    }
 
-                    recyclerHomeAuctions.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    recyclerHomeAuctions.adapter = homeAuctionAdapter
+                        recyclerHomeAuctions.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                        recyclerHomeAuctions.adapter = homeAuctionAdapter
+                    }
                 }
             }
         }
@@ -319,6 +355,8 @@ class HomeFragment : Fragment() {
             startActivity(Intent(requireContext(), ChatListActivity::class.java))
         }
 
+        setupUnreadChatBadge()
+
         btnCartHome.setOnClickListener { button ->
             button.startAnimation(clickAnimation)
             val intent = Intent(requireContext(), KeranjangHome::class.java)
@@ -330,11 +368,72 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        view?.let { setupHomeFarms(it) }
+        startRealtimeProductsListener()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        userListenerRegistration?.remove()
+        userListenerRegistration = null
+        auctionListenerRegistration?.remove()
+        auctionListenerRegistration = null
+        chatBadgeListenerRegistration?.remove()
+        chatBadgeListenerRegistration = null
+        productsListenerRegistration?.remove()
+        productsListenerRegistration = null
+        farmListeners.forEach { it.remove() }
+        farmListeners = emptyList()
+        if (::homeAuctionAdapter.isInitialized) {
+            homeAuctionAdapter.stopTimer()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        userListenerRegistration?.remove()
+        userListenerRegistration = null
+        auctionListenerRegistration?.remove()
+        auctionListenerRegistration = null
+        chatBadgeListenerRegistration?.remove()
+        chatBadgeListenerRegistration = null
+        productsListenerRegistration?.remove()
+        productsListenerRegistration = null
+        farmListeners.forEach { it.remove() }
+        farmListeners = emptyList()
+        if (::homeAuctionAdapter.isInitialized) {
+            homeAuctionAdapter.stopTimer()
+        }
+        carouselRunnable?.let { carouselHandler.removeCallbacks(it) }
+        imgAvatarHome = null
+        dotUnreadChatHome = null
+    }
+
+    private fun setupUnreadChatBadge() {
+        val dotUnread = dotUnreadChatHome ?: return
+        val uid = auth.currentUser?.uid
+        if (uid.isNullOrBlank()) {
+            dotUnread.visibility = View.GONE
+            return
+        }
+        chatBadgeListenerRegistration?.remove()
+        chatBadgeListenerRegistration = FirestoreRepository.listenUserChatRooms(uid) { rooms ->
+            if (!isAdded) return@listenUserChatRooms
+            val hasUnread = rooms.any { (it.unreadCounts[uid] ?: 0L) > 0L }
+            dotUnread.visibility = if (hasUnread) View.VISIBLE else View.GONE
+        }
+    }
+
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.guppy_primary)
         swipeRefreshLayout.setOnRefreshListener {
             val content = swipeRefreshLayout.getChildAt(0)
             content?.animate()?.alpha(0.6f)?.setDuration(200)?.start()
+
+            loadCachedUserHeader()
+            setupUserName()
 
             Handler(Looper.getMainLooper()).postDelayed({
                 swipeRefreshLayout.isRefreshing = false
@@ -354,13 +453,10 @@ class HomeFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
     }
 
-    private fun setupUserName() {
+    private fun loadCachedUserHeader() {
         val safeContext = context ?: return
         val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
-        val imgAvatarHome = view?.findViewById<ImageView>(R.id.imgAvatarHome)
-
-        // 1. INSTANT LOCAL CACHE DISPLAY (0ms Lag)
         val cachedName = prefs.getString("name", null)
         val cachedAvatar = prefs.getString("avatar_uri", null)
 
@@ -370,30 +466,57 @@ class HomeFragment : Fragment() {
             textUserName.text = "Hi, User!"
         }
 
-        if (!cachedAvatar.isNullOrEmpty()) {
-            try {
-                imgAvatarHome?.setImageURI(android.net.Uri.parse(cachedAvatar))
-            } catch (_: Exception) {}
+        imgAvatarHome?.let { avatarView ->
+            SafeImageLoader.loadUriSafely(safeContext, avatarView, cachedAvatar, R.drawable.ic_default_user_avatar)
         }
+    }
+
+    private fun setupUserName() {
+        val safeContext = context ?: return
+        val prefs = safeContext.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+
+        // 1. INSTANT LOCAL CACHE DISPLAY (0ms Lag)
+        loadCachedUserHeader()
 
         // 2. REALTIME BACKGROUND LISTEN FROM FIRESTORE
         val userId = auth.currentUser?.uid
         if (userId != null) {
-            db.collection("user").document(userId).addSnapshotListener { document, error ->
+            userListenerRegistration?.remove()
+            userListenerRegistration = db.collection("user").document(userId).addSnapshotListener { document, error ->
                 if (!isAdded || error != null || document == null || !document.exists()) return@addSnapshotListener
                 val freshName = document.getString("name")
                 val freshAvatar = document.getString("avatar_uri") ?: document.getString("photo_url")
+                val freshAvatarDataUrl = document.getString("avatar_data_url")
 
                 if (!freshName.isNullOrEmpty()) {
                     textUserName.text = "Hi, $freshName!"
                     prefs.edit().putString("name", freshName).apply()
                 }
 
-                if (!freshAvatar.isNullOrEmpty()) {
-                    try {
-                        imgAvatarHome?.setImageURI(android.net.Uri.parse(freshAvatar))
-                        prefs.edit().putString("avatar_uri", freshAvatar).apply()
-                    } catch (_: Exception) {}
+                if (!freshAvatar.isNullOrEmpty() || !freshAvatarDataUrl.isNullOrEmpty()) {
+                    val avatarView = imgAvatarHome
+                    val currentCtx = context
+                    if (avatarView != null && currentCtx != null) {
+                        val localLoaded = SafeImageLoader.loadUriSafely(
+                            currentCtx,
+                            avatarView,
+                            freshAvatar,
+                            R.drawable.ic_default_user_avatar
+                        )
+                        if (localLoaded && !freshAvatar.isNullOrBlank()) {
+                            prefs.edit().putString("avatar_uri", freshAvatar).apply()
+                        } else if (!freshAvatarDataUrl.isNullOrBlank()) {
+                            val cloudLoaded = SafeImageLoader.loadUriSafely(
+                                currentCtx,
+                                avatarView,
+                                freshAvatarDataUrl,
+                                R.drawable.ic_default_user_avatar
+                            )
+                            if (cloudLoaded) {
+                                prefs.edit().putString("avatar_uri", freshAvatarDataUrl).apply()
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -479,6 +602,13 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         startAutoSlide()
+        loadCachedUserHeader()
+        setupUserName()
+        if (::homeAuctionAdapter.isInitialized) {
+            homeAuctionAdapter.startTimer()
+        }
+        setupUnreadChatBadge()
+        view?.let { setupAuctionIntegration(it) }
     }
 
     override fun onPause() {
@@ -518,53 +648,81 @@ class HomeFragment : Fragment() {
         filterRecyclerView.addItemDecoration(spaceDecoration)
     }
 
-    private fun setupGridViewRecycler() {
+    private fun setupGridViewRecycler(rootView: View) {
         shimmerCarousel.stopShimmer()
         shimmerCarousel.visibility = View.GONE
         carouselRecyclerView.visibility = View.VISIBLE
 
-        FirestoreRepository.fetchProducts { realProducts ->
-            if (!isAdded) return@fetchProducts
+        rootView.findViewById<View>(R.id.btnSeeAllHomeProducts)?.setOnClickListener {
+            val intent = Intent(requireContext(), CategoryProductsActivity::class.java).apply {
+                putExtra("EXTRA_CATEGORY_NAME", "Semua")
+            }
+            startActivity(intent)
+        }
+
+        rootView.findViewById<View>(R.id.btnSeeAllHomeTips)?.setOnClickListener {
+            startActivity(Intent(requireContext(), com.stiki.marcelloilham.guppymarketidn.menuProfile.TipsPerawatanActivity::class.java))
+        }
+
+        gridAdapter = GridAdapter(requireContext(), emptyList())
+        gridViewRecycler.adapter = gridAdapter
+        gridViewRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
+        gridViewRecycler.isNestedScrollingEnabled = false
+
+        gridAdapter.setOnItemClickListener(object : GridAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                val item = gridAdapter.getItem(position)
+                val intent = Intent(requireContext(), DetailActivity::class.java).apply {
+                    putExtra("EXTRA_PRODUCT_ID", item.id)
+                    putExtra("EXTRA_SELLER_ID", item.sellerId)
+                    putExtra("ITEM_NAME", item.name)
+                    putExtra("ITEM_IMAGE", item.image)
+                }
+                startActivity(intent)
+            }
+        })
+    }
+
+    private fun startRealtimeProductsListener() {
+        productsListenerRegistration?.remove()
+        productsListenerRegistration = FirestoreRepository.listenProducts { realProducts ->
+            if (!isAdded) return@listenProducts
 
             shimmerGrid.stopShimmer()
             shimmerGrid.visibility = View.GONE
 
-            if (realProducts.isEmpty()) {
+            val items = realProducts.map { p ->
+                Item(
+                    image = if (p.imageRes != 0) p.imageRes else R.drawable.bg_image_grid,
+                    name = p.title,
+                    type = p.category,
+                    price = p.price,
+                    id = p.id,
+                    sellerId = p.sellerId,
+                    seller = p.seller,
+                    unit = p.unit.ifBlank { "per pasang" },
+                    imageUrl = p.photoUris.firstOrNull().orEmpty(),
+                    photoDataUrl = p.photoDataUrls.firstOrNull().orEmpty(),
+                    strain = p.strain,
+                    location = p.location,
+                    priceNumeric = p.priceNumeric,
+                    stock = p.effectiveStock(),
+                    description = p.description
+                )
+            }
+
+            gridAdapter.updateItems(items)
+            val activeQuery = if (::etSearchHome.isInitialized) etSearchHome.text.toString() else ""
+            if (activeQuery.isNotBlank()) {
+                gridAdapter.searchItems(activeQuery)
+                toggleNoDataState(activeQuery)
+            } else if (items.isEmpty()) {
                 gridViewRecycler.visibility = View.GONE
                 textNoData.text = "Belum ada varian produk tersedia."
                 textNoData.visibility = View.VISIBLE
             } else {
                 gridViewRecycler.visibility = View.VISIBLE
                 textNoData.visibility = View.GONE
-
-                val items = realProducts.map { p ->
-                    Item(
-                        image = if (p.imageRes != 0) p.imageRes else R.drawable.skyblue,
-                        name = p.title,
-                        type = p.category,
-                        price = p.price
-                    )
-                }
-
-                gridAdapter = GridAdapter(requireContext(), items)
-                gridViewRecycler.adapter = gridAdapter
-
-                val layoutManager = GridLayoutManager(requireContext(), 2)
-                gridViewRecycler.layoutManager = layoutManager
-                gridViewRecycler.isNestedScrollingEnabled = false
-
-                runLayoutAnimation(gridViewRecycler)
-
-                gridAdapter.setOnItemClickListener(object : GridAdapter.OnItemClickListener {
-                    override fun onItemClick(position: Int) {
-                        val item = gridAdapter.getItem(position)
-                        val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-                            putExtra("ITEM_NAME", item.name)
-                            putExtra("ITEM_IMAGE", item.image)
-                        }
-                        startActivity(intent)
-                    }
-                })
             }
         }
     }

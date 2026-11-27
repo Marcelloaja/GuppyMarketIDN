@@ -13,9 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import com.google.android.material.imageview.ShapeableImageView
 import com.stiki.marcelloilham.guppymarketidn.MainActivity
 import com.stiki.marcelloilham.guppymarketidn.R
 import com.stiki.marcelloilham.guppymarketidn.repository.FirestoreRepository
+import com.stiki.marcelloilham.guppymarketidn.util.SafeImageLoader
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -35,6 +37,7 @@ class PaymentSuccessActivity : AppCompatActivity() {
     private lateinit var tvTrackingNumber: TextView
     private lateinit var tvEta: TextView
 
+    private lateinit var ivProductImage: ShapeableImageView
     private lateinit var tvProductName: TextView
     private lateinit var tvProductSub: TextView
     private lateinit var tvProductPrice: TextView
@@ -43,7 +46,7 @@ class PaymentSuccessActivity : AppCompatActivity() {
     private lateinit var tvServiceFee: TextView
     private lateinit var tvTotal: TextView
 
-    private var trackingNumberText = "JT0012398765"
+    private var trackingNumberText = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +84,7 @@ class PaymentSuccessActivity : AppCompatActivity() {
         tvTrackingNumber = findViewById(R.id.tvSuccessTrackingNumber)
         tvEta = findViewById(R.id.tvSuccessEta)
 
+        ivProductImage = findViewById(R.id.ivSuccessProductImage)
         tvProductName = findViewById(R.id.tvSuccessProductName)
         tvProductSub = findViewById(R.id.tvSuccessProductSub)
         tvProductPrice = findViewById(R.id.tvSuccessProductPrice)
@@ -91,22 +95,49 @@ class PaymentSuccessActivity : AppCompatActivity() {
     }
 
     private fun readIntentData() {
-        val orderId = intent.getStringExtra("EXTRA_ORDER_ID") ?: "#GM-20931"
-        val productName = intent.getStringExtra("EXTRA_PRODUCT_NAME") ?: "Red Dragon Delta"
-        val quantity = intent.getIntExtra("EXTRA_QUANTITY", 2)
-        val totalAmount = intent.getLongExtra("EXTRA_TOTAL_AMOUNT", 577000L)
-        val shippingCost = intent.getLongExtra("EXTRA_SHIPPING_COST", 25000L)
+        val orderId = intent.getStringExtra("EXTRA_ORDER_ID") ?: "#GM-00000"
+        val productName = intent.getStringExtra("EXTRA_PRODUCT_NAME") ?: "Pesanan Guppy"
+        val quantity = intent.getIntExtra("EXTRA_QUANTITY", 1).coerceAtLeast(1)
+        val totalAmount = intent.getLongExtra("EXTRA_TOTAL_AMOUNT", 0L)
+        val shippingCost = intent.getLongExtra("EXTRA_SHIPPING_COST", 0L)
         val serviceFee = intent.getLongExtra("EXTRA_SERVICE_FEE", 2000L)
-        val courier = intent.getStringExtra("EXTRA_COURIER") ?: "J&T Express Reguler"
-        val methodText = intent.getStringExtra("EXTRA_PAYMENT_METHOD") ?: "Bank BCA Virtual Account"
-        val seller = intent.getStringExtra("EXTRA_SELLER_NAME") ?: "Guppy Farm Bahagia"
+        val unitPriceExtra = intent.getLongExtra("EXTRA_UNIT_PRICE", 0L)
+        val unitLabel = intent.getStringExtra("EXTRA_UNIT_LABEL") ?: "per pasang"
+        val productImageUrl = intent.getStringExtra("EXTRA_PRODUCT_IMAGE_URL") ?: ""
+        val productImageDataUrl = intent.getStringExtra("EXTRA_PRODUCT_IMAGE_DATA_URL") ?: ""
+        val courier = intent.getStringExtra("EXTRA_COURIER") ?: "Kurir Pengiriman"
+        val shippingEta = intent.getStringExtra("EXTRA_SHIPPING_ETA") ?: ""
+        val methodText = intent.getStringExtra("EXTRA_PAYMENT_METHOD") ?: "Pembayaran Penjual"
+        val payType = intent.getStringExtra("EXTRA_PAYMENT_TYPE") ?: ""
+        val payProvider = intent.getStringExtra("EXTRA_PAYMENT_PROVIDER") ?: ""
+        val seller = intent.getStringExtra("EXTRA_SELLER_NAME") ?: "Penjual Guppy"
+        val passedAddress = intent.getStringExtra("EXTRA_ADDRESS_TEXT") ?: ""
+        val passedTracking = intent.getStringExtra("EXTRA_TRACKING_NUMBER") ?: ""
 
-        val subtotal = 275000L * quantity
+        val subtotal = if (unitPriceExtra > 0L) {
+            unitPriceExtra * quantity
+        } else {
+            (totalAmount - shippingCost - serviceFee).coerceAtLeast(0L)
+        }
+        val effectiveUnitPrice = if (unitPriceExtra > 0L) unitPriceExtra else (subtotal / quantity)
+        val shortU = unitLabel.removePrefix("per ").trim().ifBlank { "pasang" }
 
         tvOrderNumber.text = orderId
         tvProductName.text = productName
-        tvProductSub.text = "$quantity pasang · Setara ${quantity * 2} ekor"
-        tvProductPrice.text = formatCurrency(275000L)
+        tvProductSub.text = if (unitLabel.contains("pasang", true)) {
+            "$quantity $shortU · Setara ${quantity * 2} ekor"
+        } else {
+            "$quantity $shortU"
+        }
+        tvProductPrice.text = formatCurrency(effectiveUnitPrice)
+        SafeImageLoader.loadWithFallbackSafely(
+            this,
+            ivProductImage,
+            productImageUrl,
+            productImageDataUrl,
+            R.drawable.bg_image_grid,
+            256
+        )
 
         tvSubtotal.text = formatCurrency(subtotal)
         tvShipping.text = formatCurrency(shippingCost)
@@ -116,41 +147,44 @@ class PaymentSuccessActivity : AppCompatActivity() {
 
         tvSellerName.text = seller
         tvCourier.text = courier
+        tvEta.text = shippingEta.removePrefix("Estimasi ").trim().ifBlank { "Menunggu penjemputan kurir" }
 
         val formattedDate = SimpleDateFormat("EEEE, dd MMMM yyyy · HH:mm 'WIB'", Locale("id", "ID")).format(Date())
         tvPaymentTime.text = formattedDate
 
         val upperMethod = methodText.uppercase()
-        if (upperMethod.contains("BCA")) {
-            tvPaymentMethod.text = "Transfer Bank"
-            tvBankBadge.text = "BCA VA"
-        } else if (upperMethod.contains("BNI")) {
-            tvPaymentMethod.text = "Transfer Bank"
-            tvBankBadge.text = "BNI VA"
-        } else if (upperMethod.contains("MANDIRI")) {
-            tvPaymentMethod.text = "Transfer Bank"
-            tvBankBadge.text = "MANDIRI VA"
-        } else {
-            tvPaymentMethod.text = "E-Wallet / QRIS"
-            tvBankBadge.text = "INSTAN"
+        val upperProvider = payProvider.uppercase()
+        when {
+            payType.equals("QRIS", true) || upperMethod.contains("QRIS") -> {
+                tvPaymentMethod.text = "QRIS"
+                tvBankBadge.text = payProvider.ifBlank { "QRIS" }.uppercase()
+            }
+            payType.equals("Bank", true) || upperMethod.contains("BANK") ||
+                upperProvider.contains("BCA") || upperProvider.contains("BNI") || upperProvider.contains("MANDIRI") || upperProvider.contains("BRI") -> {
+                tvPaymentMethod.text = "Transfer Bank"
+                tvBankBadge.text = payProvider.ifBlank { "BANK" }.uppercase()
+            }
+            else -> {
+                tvPaymentMethod.text = methodText
+                tvBankBadge.text = payProvider.ifBlank { "E-WALLET" }.uppercase()
+            }
         }
 
-        trackingNumberText = "JT" + (1000000000..9999999999).random().toString()
+        trackingNumberText = passedTracking.ifBlank { "GM" + (1000000000..9999999999).random().toString() }
         tvTrackingNumber.text = trackingNumberText
 
-        // Load user default address
-        val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: "user_default"
-        FirestoreRepository.fetchUserAddresses(currentUserId) { addresses ->
-            val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
-            if (defaultAddr != null) {
-                val shortAddr = if (defaultAddr.fullAddress.length > 30) {
-                    defaultAddr.fullAddress.take(30) + "..."
+        if (passedAddress.isNotBlank()) {
+            tvAddress.text = if (passedAddress.length > 42) passedAddress.take(42) + "..." else passedAddress
+        } else {
+            val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: "user_default"
+            FirestoreRepository.fetchUserAddresses(currentUserId, preferServer = false) { addresses ->
+                if (isFinishing || isDestroyed) return@fetchUserAddresses
+                val defaultAddr = addresses.find { it.isDefault } ?: addresses.firstOrNull()
+                tvAddress.text = if (defaultAddr != null) {
+                    if (defaultAddr.fullAddress.length > 42) defaultAddr.fullAddress.take(42) + "..." else defaultAddr.fullAddress
                 } else {
-                    defaultAddr.fullAddress
+                    "Alamat belum diatur"
                 }
-                tvAddress.text = shortAddr
-            } else {
-                tvAddress.text = "Jl. Melati No. 12, Bandung"
             }
         }
     }
@@ -166,13 +200,13 @@ class PaymentSuccessActivity : AppCompatActivity() {
 
         val btnTrack = findViewById<View>(R.id.btnTrackOrder)
         btnTrack?.setOnClickListener {
-            val intent = Intent(this, OrderTrackingActivity::class.java).apply {
-                putExtra("EXTRA_ORDER_ID", intent.getStringExtra("EXTRA_ORDER_ID") ?: "#GM-20931")
-                putExtra("EXTRA_PRODUCT_NAME", intent.getStringExtra("EXTRA_PRODUCT_NAME") ?: "Red Dragon Delta")
-                putExtra("EXTRA_COURIER", intent.getStringExtra("EXTRA_COURIER") ?: "JNE Express")
+            val trackIntent = Intent(this, OrderTrackingActivity::class.java).apply {
+                putExtra("EXTRA_ORDER_ID", intent.getStringExtra("EXTRA_ORDER_ID") ?: "-")
+                putExtra("EXTRA_PRODUCT_NAME", intent.getStringExtra("EXTRA_PRODUCT_NAME") ?: "Pesanan Guppy")
+                putExtra("EXTRA_COURIER", intent.getStringExtra("EXTRA_COURIER") ?: "Kurir Pengiriman")
                 putExtra("EXTRA_TRACKING_NUMBER", trackingNumberText)
             }
-            startActivity(intent)
+            startActivity(trackIntent)
         }
 
         val btnHome = findViewById<View>(R.id.btnBackToHome)
